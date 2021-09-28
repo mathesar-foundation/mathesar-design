@@ -261,3 +261,7 @@ textarea {
   }
 }
 
+td.editable-cell {
+  min-width: 200px;
+}
+

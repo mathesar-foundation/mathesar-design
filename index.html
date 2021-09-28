@@ -168,7 +168,7 @@
       textColor: 'text-gray-100',
       mutedTextColor : 'text-gray-400',
       mediumTextColor : 'text-gray-200',
-      tableBorderColor: 'border-gray-300',
+      tableBorderColor: 'border-gray-600',
       tableBackgroundColor: 'bg-gray-800'
 
       //backgroundColor: 'bg-white',
@@ -244,13 +244,13 @@
 
     function createRow(row, i) {
       let html = `<td class="py-2 px-3 ${theme.mutedTextColor} border ${theme.tableBorderColor} text-xs">${i + 1}</td>
-                <td class="border ${theme.tableBorderColor}">
+                <td class="border ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.id}">
                 </td>
-                <td class="border ${theme.tableBorderColor}">
+                <td class="border ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.artist}">
                 </td>
-                <td class="border ${theme.tableBorderColor}">
+                <td class="border ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.tracks}">
                 </td>`;
       let rowHtml = document.createElement('tr');
@@ -262,17 +262,18 @@
 
     function renderAllCells() {
       let table = document.querySelector('table');
-      let cellInputs = table.querySelectorAll('input');
+      let cellInputs = table.querySelectorAll('.editable-cell');
       cellInputs.forEach(function(el){
-        el.classList.add('hidden');
-        renderCell(el);
+        let cellInput = el.querySelector('input');
+        cellInput.classList.add('hidden');
+        renderCell(cellInput);
       });
     }
 
     function renderCell(el) {
-      let cellValue = el.getAttribute('value');
+      let cellValue = el.value;
       let contentWrapper = document.createElement('div');
-      let cellContent = val => `<div class="p-2 bg-pink-400 ${theme.textColor}">${val}</div>`;
+      let cellContent = val => `<div class="p-2 ${theme.backgroundColor} ${theme.textColor}">${val}</div>`;
       let cellParent = el.parentNode;
       contentWrapper.innerHTML = cellContent(cellValue);
       cellParent.appendChild(contentWrapper);
