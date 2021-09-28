@@ -102,23 +102,23 @@
           <div class="mutedTextColor">Saving Changes</div>
         </div>
         <div class="mediumBackgroundColor h-full flex items-start table-wrapper">
-          <table class="border lightBorderColor table-records">
+          <table class="border tableBorderColor table-records tableBackgroundColor">
             <thead>
               <tr class="text-left">
-                <th class="textColor p-2 border lightBorderColor font-normal"></th>
-                <th class="textColor p-2 border lightBorderColor font-normal">
+                <th class="textColor p-2 border tableBorderColor font-normal"></th>
+                <th class="textColor p-2 border tableBorderColor font-normal">
                   <div class="flex w-full">
                     <div><i class="ri-hashtag align-bottom border rounded mr-1"></i> id</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </th>
-                <th class="textColor p-2 border lightBorderColor font-normal">
+                <th class="textColor p-2 border tableBorderColor font-normal">
                   <div class="flex w-full">
                     <div><i class="ri-text align-bottom border rounded mr-1"></i> artistName</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </th>
-                <th class="textColor p-2 border lightBorderColor font-normal">
+                <th class="textColor p-2 border tableBorderColor font-normal">
                   <div class="flex w-full">
                     <div><i class="ri-text align-bottom border rounded mr-1"></i> tracks</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
@@ -132,14 +132,14 @@
 
             <tbody class="row-wrapper row-wrapper--add">
               <tr class="new-record">
-                <td class="py-2 px-3 mutedTextColor border lightBorderColor text-xs">*</td>
-                <td class="border lightBorderColor">
+                <td class="py-2 px-3 mutedTextColor border tableBorderColor text-xs">*</td>
+                <td class="border tableBorderColor">
                   <input type="text" class="mediumBackgroundColor textColor p-2 w-full" placeholder="New Record">
                 </td>
-                <td class="border lightBorderColor">
+                <td class="border tableBorderColor">
                   <input type="text" class="mediumBackgroundColor textColor p-2 w-full">
                 </td>
-                <td class="border lightBorderColor">
+                <td class="border tableBorderColor">
                   <input type="text" class="mediumBackgroundColor textColor p-2 w-full">
                 </td>
               </tr>
@@ -167,17 +167,21 @@
       lightBorderColor: 'border-gray-500',
       textColor: 'text-gray-100',
       mutedTextColor : 'text-gray-400',
-      mediumTextColor : 'text-gray-200'
+      mediumTextColor : 'text-gray-200',
+      tableBorderColor: 'border-gray-300',
+      tableBackgroundColor: 'bg-gray-800'
 
       //backgroundColor: 'bg-white',
       //mediumBackgroundColor: 'bg-gray-100',
-      //accentBackgroundColor: 'bg-white',
+      //accentBackgroundColor: 'bg-pink-100',
       //lightBackgroundColor: 'bg-gray-100',
       //mediumBorderColor: 'border-gray-200',
       //lightBorderColor: 'border-gray-100',
       //textColor: 'text-pink-800',
       //mutedTextColor : 'text-pink-800',
-      //mediumTextColor : 'text-pink-900'
+      //mediumTextColor : 'text-pink-900',
+      //tableBorderColor: 'border-gray-300',
+      //tableBackgroundColor: 'bg-white'
     };
 
 
@@ -240,19 +244,38 @@
     }
 
     function createRow(row, i) {
-      let html = `<td class="py-2 px-3 ${theme.mutedTextColor} border ${theme.lightBorderColor} text-xs">${i + 1}</td>
-                <td class="border ${theme.lightBorderColor}">
+      let html = `<td class="py-2 px-3 ${theme.mutedTextColor} border ${theme.tableBorderColor} text-xs">${i + 1}</td>
+                <td class="border ${theme.tableBorderColor}">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.id}">
                 </td>
-                <td class="border ${theme.lightBorderColor}">
+                <td class="border ${theme.tableBorderColor}">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.artist}">
                 </td>
-                <td class="border ${theme.lightBorderColor}">
+                <td class="border ${theme.tableBorderColor}">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.tracks}">
                 </td>`;
       let rowHtml = document.createElement('tr');
       rowHtml.innerHTML = html;
       return rowHtml;
+    }
+
+    renderCellContent()
+
+    function renderCellContent() {
+      let table = document.querySelector('table');
+      let cellInputs = table.querySelectorAll('input');
+      cellInputs.forEach(el => el.classList.add('hidden'));
+      cellInputs.forEach(function(el){
+        let cellValue = el.getAttribute('value');
+        let cellContent = val => `<div class="p-2 ${theme.textColor}">${val}</div>`;
+        let cellParent = el.parentNode;
+        cellParent.classList.add('border-pink-300');
+        cellParent.innerHTML = cellContent(cellValue);
+        console.log(cellValue)
+
+        
+      });
+      
     }
 
     initNewRecord();
@@ -267,7 +290,7 @@
       let row = this.parentNode.parentNode
       let newRow = row.cloneNode(true);
       row.classList.remove('new-record');
-      row.classList.add('bg-green-800');
+      row.classList.add('bg-green-300');
       row.querySelectorAll('input').forEach(function (element) {
         element.removeEventListener('keydown', addRow);
       });
@@ -282,14 +305,11 @@
 
     let addColumnBtn = document.querySelector('#add-column');
 
-    console.log(addColumnBtn);
-
     addColumnBtn.addEventListener('click', addColumn);
 
     addColumn();
 
     function addColumn() {
-      console.log(this)
       let wrapper = document.querySelector('.table-wrapper');
       wrapper.appendChild(createAddColumnMenu())
     }
@@ -311,7 +331,7 @@
       let listColumns = table => table.columns.map(col => `<a href="#" class="block px-2 py-1"><i class="ri-${typeIcon(col)} text-xs text-${table.color}-400 align-text-bottom border border-${table.color}-400 rounded mr-2"></i><span class="${theme.textColor}">${col.name}</span></a>`).join('');
       let tables = tableColumns.map(table => `<div class="px-2 py-1 border-b ${theme.mediumBorderColor}"><span class="${theme.mediumTextColor} text-sm"><i class="ri-table-fill align-bottom mr-1"></i>From ${table.name}</span></div><div>${listColumns(table)}</div>`).join('');
       let html =
-        `<div class="${theme.accentBackgroundColor} border ${theme.mediumBorderColor}">
+        `<div class="${theme.backgroundColor} border ${theme.mediumBorderColor}">
         <h4 class="text-xs ${theme.mutedTextColor} py-1 px-2">Add Column</h4>
         <input type="text" class="${theme.mediumBackgroundColor} w-full p-2 text-sm ${theme.textColor} border-b ${theme.mediumBorderColor}" placeholder="Type to search">
         <div>${tables}</div>
