@@ -240,7 +240,6 @@
     });
 
     function createHeader() {
-
     }
 
     function createRow(row, i) {
@@ -259,23 +258,38 @@
       return rowHtml;
     }
 
-    renderCellContent()
+    renderAllCells()
 
-    function renderCellContent() {
+    function renderAllCells() {
       let table = document.querySelector('table');
       let cellInputs = table.querySelectorAll('input');
-      cellInputs.forEach(el => el.classList.add('hidden'));
       cellInputs.forEach(function(el){
-        let cellValue = el.getAttribute('value');
-        let cellContent = val => `<div class="p-2 ${theme.textColor}">${val}</div>`;
-        let cellParent = el.parentNode;
-        cellParent.classList.add('border-pink-300');
-        cellParent.innerHTML = cellContent(cellValue);
-        console.log(cellValue)
-
-        
+        el.classList.add('hidden');
+        renderCell(el);
       });
-      
+    }
+
+    function renderCell(el) {
+      let cellValue = el.getAttribute('value');
+      let contentWrapper = document.createElement('div');
+      let cellContent = val => `<div class="p-2 bg-pink-400 ${theme.textColor}">${val}</div>`;
+      let cellParent = el.parentNode;
+      contentWrapper.innerHTML = cellContent(cellValue);
+      cellParent.appendChild(contentWrapper);
+      contentWrapper.addEventListener('click',editCell);
+      el.addEventListener('blur',saveCell);
+    }
+
+    function editCell() {
+      let cellInput = this.parentNode.querySelector('input');
+      cellInput.classList.remove('hidden');
+      cellInput.focus();
+      this.remove();
+    }
+
+    function saveCell() {
+      this.classList.add('hidden');
+      renderCell(this);  
     }
 
     initNewRecord();
