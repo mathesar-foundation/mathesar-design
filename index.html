@@ -102,51 +102,53 @@
           <div class="mutedTextColor">Saving Changes</div>
         </div>
         <div class="mediumBackgroundColor h-full flex items-start table-wrapper">
-          <table class="border tableBorderColor table-records tableBackgroundColor">
-            <thead>
-              <tr class="text-left">
-                <th class="textColor p-2 border tableBorderColor font-normal"></th>
-                <th class="textColor p-2 border tableBorderColor font-normal">
+          <div class="t-table border tableBorderColor table-records tableBackgroundColor">
+           
+            <div class="t-head">
+              <div class="t-row text-left">
+                <div class="t-cell textColor p-2 border tableBorderColor font-normal"></div>
+                <div class="t-cell textColor p-2 border tableBorderColor font-normal">
                   <div class="flex w-full">
                     <div><i class="ri-hashtag align-bottom border rounded mr-1"></i> id</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
-                </th>
-                <th class="textColor p-2 border tableBorderColor font-normal">
+                </div>
+                <div class="t-cell textColor p-2 border tableBorderColor font-normal">
                   <div class="flex w-full">
                     <div><i class="ri-text align-bottom border rounded mr-1"></i> artistName</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
-                </th>
-                <th class="textColor p-2 border tableBorderColor font-normal">
+                </div>
+                <div class="t-cell textColor p-2 border tableBorderColor font-normal">
                   <div class="flex w-full">
                     <div><i class="ri-text align-bottom border rounded mr-1"></i> tracks</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
+                </div>
+              </div>
+            </div class="t-head">
+          
+            <div class="t-body">
 
-            </tbody>
+            </div>
 
-            <tbody class="row-wrapper row-wrapper--add">
+            <div class="t-body row-wrapper row-wrapper--add">
               
-              <tr class="add-new-record">
-                <td class="py-2 px-3 mutedTextColor border tableBorderColor text-xs">*</td>
-                <td class="border tableBorderColor">
+              <div class="t-row add-new-record">
+                <div class="t-cell py-2 px-3 mutedTextColor border tableBorderColor text-xs">*</div>
+                <div class="t-cell border tableBorderColor">
                   <input type="text" class="mediumBackgroundColor textColor p-2 w-full" placeholder="New Record">
-                </td>
-                <td class="border tableBorderColor">
+                </div>
+                <div class="t-cell border tableBorderColor">
                   <input type="text" class="mediumBackgroundColor textColor p-2 w-full">
-                </td>
-                <td class="border tableBorderColor">
+                </div>
+                <div class="t-cell border tableBorderColor">
                   <input type="text" class="mediumBackgroundColor textColor p-2 w-full">
-                </td>
-              </tr>
-            </tbody>
+                </div>
+              </div>
+            </div>
 
-          </table>
+          </div>
           <button class="textColor lightBackgroundColor py-2 px-3" id="add-column"><i
               class="ri-add-line align-bottom"></i></button>
 
@@ -237,24 +239,25 @@
     }]
 
     totalReleases.forEach((row, i) => {
-      document.querySelectorAll('tbody')[0].appendChild(createRow(row, i));
+      document.querySelectorAll('.t-body')[0].appendChild(createRow(row, i));
     });
 
     function createHeader() {
     }
 
     function createRow(row, i) {
-      let html = `<td class="py-2 px-3 ${theme.mutedTextColor} border ${theme.tableBorderColor} text-xs">${i + 1}</td>
-                <td class="border ${theme.tableBorderColor} editable-cell">
+      let html = `<div class="t-cell py-2 px-3 ${theme.mutedTextColor} border ${theme.tableBorderColor} text-xs">${i + 1}</div>
+                <div class="t-cell border ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.id}">
-                </td>
-                <td class="border ${theme.tableBorderColor} editable-cell">
+                </div>
+                <div class="t-cell border ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.artist}">
-                </td>
-                <td class="border ${theme.tableBorderColor} editable-cell">
+                </div>
+                <div class="t-cell border ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.tracks}">
-                </td>`;
-      let rowHtml = document.createElement('tr');
+                </div>`;
+      let rowHtml = document.createElement('div');
+      rowHtml.classList.add('t-row')
       rowHtml.innerHTML = html;
       return rowHtml;
     }
@@ -262,7 +265,7 @@
     renderAllCells()
 
     function renderAllCells() {
-      let table = document.querySelector('table');
+      let table = document.querySelector('.t-table');
       let cellInputs = table.querySelectorAll('.editable-cell');
       cellInputs.forEach(function(el){
         let cellInput = el.querySelector('input');
@@ -316,15 +319,15 @@
       let idMax = totalReleases.reduce((a, b) => (a.id > b.id) ? a : b);
       totalReleases.push({ id: idMax.id + 1, artist: '', track: '' });
       row.querySelectorAll('input')[0].setAttribute('value', idMax.id + 1);
-      let rowNumber = document.querySelectorAll('tbody tr').length;
-      row.querySelectorAll('td')[0].innerHTML = rowNumber;
+      let rowNumber = document.querySelectorAll('.t-body .t-row').length;
+      row.querySelectorAll('.t-cell')[0].innerHTML = rowNumber;
 
-      let newRowCount = document.querySelector('.row-wrapper--add').querySelectorAll('tr').length;
+      let newRowCount = document.querySelector('.row-wrapper--add').querySelectorAll('.t-row').length;
       console.log(newRowCount);
 
       if (newRowCount == 1) {
-      let repositionWarning = document.createElement('tr');
-      repositionWarning.innerHTML = `<td colspan="4" class="text-white text-xs bg-green-600 p-1">Records will be repositioned on refresh</td>`
+      let repositionWarning = document.createElement('div');
+      repositionWarning.innerHTML = `<div class="text-white text-xs bg-green-600 p-1">Records will be repositioned on refresh</div>`
       document.querySelector('.row-wrapper--add').prepend(repositionWarning);
       }
       document.querySelector('.row-wrapper--add').append(newRow);

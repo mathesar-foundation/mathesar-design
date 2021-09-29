@@ -261,7 +261,17 @@ textarea {
   }
 }
 
-td.editable-cell {
-  min-width: 200px;
+.t-cell {
+  min-width: 240px;
+}
+
+.t-cell:first-child {
+  min-width: 40px;
+  text-align: center;
+  line-height: 24px;
+}
+
+.t-row {
+  display: flex;
 }
 
