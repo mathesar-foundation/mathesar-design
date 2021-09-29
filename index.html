@@ -206,18 +206,33 @@
     document.querySelector('.swap-theme').addEventListener('click',changeTheme);
     document.querySelector('.swap-theme').selectTheme = lightTheme;
 
+    const urlParams = new URLSearchParams(window.location.search);
+    var activeTheme = urlParams.get('theme');
+    console.log(activeTheme)
+
     function changeTheme(evt) {
+      console.log(evt)
       //for (const property in evt.currentTarget.selectTheme) {applyTheme(property, evt.currentTarget.selectTheme[property]);}
     }
 
-    //var theme = lightTheme;
-    var theme = darkTheme;
+    
+    
+    var defaultTheme = darkTheme;
+
+    if (activeTheme == 'darkTheme') {
+      var theme = darkTheme;
+    } else if (activeTheme == 'lightTheme')  {
+      var theme = lightTheme;
+    } else  {
+      var theme = defaultTheme;
+    }
+
+    
 
     for (const property in theme) {applyTheme(property, theme[property]);}
 
     function applyTheme(property, color) {
       document.querySelectorAll(`.${property}`).forEach(el => {
-        el.classList.remove(`${property}`)
         el.classList.add(`${color}`);
       });
     }
