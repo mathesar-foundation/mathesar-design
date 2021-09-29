@@ -35,14 +35,14 @@
         <div class="primaryColor inverseTextColor text-sm px-1 rounded">M</div>
         <div class="textColor">album_collection</div>
       </div>
-      <input type="text" class="mediumBackgroundColor w-full p-2 text-sm textColor" placeholder="Search or jump to…">
+      <input type="text" class="inputBackgroundColor w-full p-2 text-sm textColor" placeholder="Search or jump to…">
       <button class="textColor py-1 px-2 border mediumBorderColor swap-theme"><i class="ri-sun-fill"></i></button>
     </div>
     <div class="grid grid-cols-6 justify-items-stretch h-full">
       <div class="col-span-1">
         <div class="backgroundColor h-full mediumBorderColor border-r">
           <div class="flex items-center">
-            <input type="text" class="mediumBackgroundColor w-full p-2 text-sm textColor" placeholder="Type to search">
+            <input type="text" class="inputBackgroundColor w-full p-2 text-sm textColor" placeholder="Type to search">
             <button class="px-2"><i class="ri-menu-line textColor align-bottom"></i></button>
 
           </div>
@@ -106,22 +106,22 @@
            
             <div class="t-head">
               <div class="t-row tableHeaderBackgroundColor border-b mediumBorderColor text-left">
-                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal"></div>
-                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal">
+                <div class="t-cell textColor p-2 border-r tableBorderColor"></div>
+                <div class="t-cell textColor p-2 border-r tableBorderColor">
                   <div class="flex w-full">
-                    <div><i class="ri-hashtag align-bottom border darkBorderColor rounded mr-1"></i> id</div> <i
+                    <div><i class="ri-hashtag align-bottom border darkBorderColor rounded mr-1"></i> <span class="font-semibold">id</span></div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </div>
-                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal">
+                <div class="t-cell textColor p-2 border-r tableBorderColor">
                   <div class="flex w-full">
-                    <div><i class="ri-text align-bottom border darkBorderColor rounded mr-1"></i> artistName</div> <i
+                    <div><i class="ri-text align-bottom border darkBorderColor rounded mr-1"></i> <span class="font-semibold">artistName</span></div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </div>
-                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal">
+                <div class="t-cell textColor p-2 border-r tableBorderColor">
                   <div class="flex w-full">
-                    <div><i class="ri-text align-bottom border darkBorderColor rounded mr-1"></i> tracks</div> <i
+                    <div><i class="ri-text align-bottom border darkBorderColor rounded mr-1"></i> <span class="font-semibold">tracks</span></div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </div>
@@ -139,13 +139,13 @@
               <div class="t-row border-b tableBorderColor add-new-record">
                 <div class="t-cell py-2 px-3 mutedTextColor border-r tableBorderColor text-xs">*</div>
                 <div class="t-cell border-r tableBorderColor">
-                  <input type="text" class="mediumBackgroundColor textColor p-2 w-full" placeholder="New Record">
+                  <input type="text" class="inputBackgroundColor textColor p-2 w-full" placeholder="New Record">
                 </div>
                 <div class="t-cell border-r tableBorderColor">
-                  <input type="text" class="mediumBackgroundColor textColor p-2 w-full">
+                  <input type="text" class="inputBackgroundColor textColor p-2 w-full">
                 </div>
                 <div class="t-cell border-r tableBorderColor">
-                  <input type="text" class="mediumBackgroundColor textColor p-2 w-full">
+                  <input type="text" class="inputBackgroundColor textColor p-2 w-full">
                 </div>
               </div>
             </div>
@@ -179,7 +179,8 @@
       tableBackgroundColor: 'bg-gray-800',
       tableHeaderBackgroundColor: 'bg-gray-800',
       primaryColor: 'bg-indigo-300',
-      primaryBorderColor: 'border-indigo-300'
+      primaryBorderColor: 'border-indigo-300',
+      inputBackgroundColor: 'bg-gray-700'
     };
 
     var lightTheme = {
@@ -196,9 +197,10 @@
       mediumTextColor : 'text-gray-900',
       tableBorderColor: 'border-gray-300',
       tableBackgroundColor: 'bg-white',
-      tableHeaderBackgroundColor: 'bg-gray-200',
+      tableHeaderBackgroundColor: 'bg-white',
       primaryColor: 'bg-indigo-400',
-      primaryBorderColor: 'border-indigo-300'
+      primaryBorderColor: 'border-indigo-300',
+      inputBackgroundColor: 'bg-gray-100'
     }
 
     document.querySelector('.swap-theme').addEventListener('click',changeTheme);
@@ -279,13 +281,13 @@
     function createRow(row, i) {
       let html = `<div class="t-cell py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${i + 1}</div>
                 <div class="t-cell border-r ${theme.tableBorderColor} editable-cell">
-                  <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.id}">
+                  <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.id}">
                 </div>
                 <div class="t-cell border-r ${theme.tableBorderColor} editable-cell">
-                  <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.artist}">
+                  <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.artist}">
                 </div>
                 <div class="t-cell border-r ${theme.tableBorderColor} editable-cell">
-                  <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.tracks}">
+                  <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.tracks}">
                 </div>`;
       let rowHtml = document.createElement('div');
       let rowClasses = ['t-row','border-b',theme.tableBorderColor]
@@ -405,7 +407,7 @@
       let html =
         `<div class="${theme.backgroundColor} border ${theme.mediumBorderColor}">
         <h4 class="text-xs ${theme.mutedTextColor} py-1 px-2">Add Column</h4>
-        <input type="text" class="${theme.mediumBackgroundColor} w-full p-2 text-sm ${theme.textColor} border-b ${theme.mediumBorderColor}" placeholder="Type to search">
+        <input type="text" class="${theme.inputBackgroundColor} w-full p-2 text-sm ${theme.textColor} border-b ${theme.mediumBorderColor}" placeholder="Type to search">
         <div>${tables}</div>
       </div>`;
       let menuHtml = document.createElement('div');
