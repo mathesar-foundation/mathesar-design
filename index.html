@@ -32,11 +32,11 @@
   <div style="height: 100vh;">
     <div class="py-2 px-3 mediumBorderColor border-b backgroundColor flex items-center space-x-3">
       <div class="flex space-x-2 items-center">
-        <div class="bg-pink-600 text-sm px-1 rounded">M</div>
+        <div class="primaryColor inverseTextColor text-sm px-1 rounded">M</div>
         <div class="textColor">album_collection</div>
       </div>
       <input type="text" class="mediumBackgroundColor w-full p-2 text-sm textColor" placeholder="Search or jump to…">
-      <button class="textColor py-1 px-2 border mediumBorderColor"><i class="ri-sun-fill"></i></button>
+      <button class="textColor py-1 px-2 border mediumBorderColor swap-theme"><i class="ri-sun-fill"></i></button>
     </div>
     <div class="grid grid-cols-6 justify-items-stretch h-full">
       <div class="col-span-1">
@@ -50,7 +50,7 @@
             <h4 class="textColor uppercase text-xs font-semibold">Views</h4>
             <div class="lightBackgroundColor rounded px-1 text-xs">3</div>
           </div>
-          <ul>
+          <ul class="my-2">
             <li class="textColor"><a href="#" class="block py-1 px-3 accentBackgroundColor"><i
                   class="ri-grid-fill align-bottom mr-1"></i>
                 Total Tracks by Artist</a></li>
@@ -63,7 +63,7 @@
             <h4 class="textColor uppercase text-xs font-semibold">Tables</h4>
             <div class="lightBackgroundColor rounded px-1 text-xs">3</div>
           </div>
-          <ul>
+          <ul class="my-2">
             <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-table-fill align-bottom mr-1"></i>
                 artist</a></li>
             <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-table-fill align-bottom mr-1"></i>
@@ -75,7 +75,7 @@
 
       </div>
       <div class="col-span-5">
-        <div class="backgroundColor flex">
+        <div class="mediumBackgroundColor flex">
           <div class="textColor text-sm py-2 px-3"><i class="ri-table-fill align-bottom mr-1"></i> release <i
               class="ri-close-line align-bottom ml-3"></i> </div>
           <div class="textColor accentBackgroundColor text-sm py-2 px-3"><i class="ri-grid-fill align-bottom mr-1"></i> Total
@@ -83,14 +83,14 @@
           <div class="textColor text-sm py-2 px-3"><i class="ri-table-fill align-bottom mr-1"></i> artist <i
               class="ri-close-line align-bottom ml-3"></i> </div>
 
-          <button class="lightBackgroundColor textColor px-3 text-sm"><i class="ri-add-line align-bottom"></i></button>
+          <button class="primaryColor inverseTextColor px-3 text-sm"><i class="ri-add-line align-bottom"></i></button>
         </div>
-        <div class="accentBackgroundColor py-2 px-3 flex space-x-6 items-center">
+        <div class="accentBackgroundColor border-b mediumBorderColor py-2 px-3 flex space-x-6 items-center">
           <h3 class="textColor text-lg">Total Releases by Artist <i class="ri-arrow-down-s-line align-bottom"></i></h3>
           <button class="textColor border lightBorderColor px-2 py-1"><i class="ri-add-line align-bottom"></i>
             Record</button>
           <div class="space-x-4 flex items-center">
-            <button class="space-x-3 mediumBackgroundColor lightBorderColor border py-1 px-2"><span class="textColor"><i
+            <button class="space-x-3 mediumBackgroundColor primaryBorderColor border py-1 px-2"><span class="textColor"><i
                   class="ri-filter-line align-bottom textColor mr-1"></i>Filter</span>
               <div class="bg-gray-300 align-text-bottom inline-block rounded px-1 text-xs">3</div>
             </button>
@@ -105,23 +105,23 @@
           <div class="t-table table-records tableBackgroundColor">
            
             <div class="t-head">
-              <div class="t-row text-left">
-                <div class="t-cell textColor p-2 border tableBorderColor font-normal"></div>
-                <div class="t-cell textColor p-2 border tableBorderColor font-normal">
+              <div class="t-row tableHeaderBackgroundColor border-b mediumBorderColor text-left">
+                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal"></div>
+                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal">
                   <div class="flex w-full">
-                    <div><i class="ri-hashtag align-bottom border rounded mr-1"></i> id</div> <i
+                    <div><i class="ri-hashtag align-bottom border darkBorderColor rounded mr-1"></i> id</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </div>
-                <div class="t-cell textColor p-2 border tableBorderColor font-normal">
+                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal">
                   <div class="flex w-full">
-                    <div><i class="ri-text align-bottom border rounded mr-1"></i> artistName</div> <i
+                    <div><i class="ri-text align-bottom border darkBorderColor rounded mr-1"></i> artistName</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </div>
-                <div class="t-cell textColor p-2 border tableBorderColor font-normal">
+                <div class="t-cell textColor p-2 border-r tableBorderColor font-normal">
                   <div class="flex w-full">
-                    <div><i class="ri-text align-bottom border rounded mr-1"></i> tracks</div> <i
+                    <div><i class="ri-text align-bottom border darkBorderColor rounded mr-1"></i> tracks</div> <i
                       class="ri-arrow-down-s-line align-bottom ml-auto"></i>
                   </div>
                 </div>
@@ -151,7 +151,7 @@
             </div>
 
           </div>
-          <button class="textColor lightBackgroundColor py-2 px-3" id="add-column"><i
+          <button class="primaryColor inverseTextColor py-2 px-3" id="add-column"><i
               class="ri-add-line align-bottom"></i></button>
 
         </div>
@@ -163,11 +163,12 @@
 
   <script type="text/javascript">
 
-    var theme = {
+    var darkTheme = {
       backgroundColor: 'bg-gray-900',
       mediumBackgroundColor: 'bg-gray-800',
       accentBackgroundColor: 'bg-gray-700',
-      lightBackgroundColor: 'bg-gray-500',
+      lightBackgroundColor: 'bg-gray-200',
+      darkBorderColor: 'border-gray-500',
       mediumBorderColor: 'border-gray-600',
       lightBorderColor: 'border-gray-500',
       textColor: 'text-gray-100',
@@ -175,22 +176,40 @@
       mutedTextColor : 'text-gray-400',
       mediumTextColor : 'text-gray-200',
       tableBorderColor: 'border-gray-600',
-      tableBackgroundColor: 'bg-gray-800'
-
-      //backgroundColor: 'bg-white',
-      //mediumBackgroundColor: 'bg-gray-100',
-      //accentBackgroundColor: 'bg-gray-100',
-      //lightBackgroundColor: 'bg-gray-100',
-      //mediumBorderColor: 'border-gray-200',
-      //lightBorderColor: 'border-gray-100',
-      //textColor: 'text-gray-800',
-      //inverseTextColor: 'text-white',
-      //mutedTextColor : 'text-gray-800',
-      //mediumTextColor : 'text-gray-900',
-      //tableBorderColor: 'border-gray-300',
-      //tableBackgroundColor: 'bg-white'
+      tableBackgroundColor: 'bg-gray-800',
+      tableHeaderBackgroundColor: 'bg-gray-800',
+      primaryColor: 'bg-indigo-300',
+      primaryBorderColor: 'border-indigo-300'
     };
 
+    var lightTheme = {
+      backgroundColor: 'bg-white',
+      mediumBackgroundColor: 'bg-gray-200',
+      accentBackgroundColor: 'bg-white',
+      lightBackgroundColor: 'bg-gray-100',
+      darkBorderColor: 'border-gray-600',
+      mediumBorderColor: 'border-gray-400',
+      lightBorderColor: 'border-gray-100',
+      textColor: 'text-gray-700',
+      inverseTextColor: 'text-white',
+      mutedTextColor : 'text-gray-800',
+      mediumTextColor : 'text-gray-900',
+      tableBorderColor: 'border-gray-300',
+      tableBackgroundColor: 'bg-white',
+      tableHeaderBackgroundColor: 'bg-gray-200',
+      primaryColor: 'bg-indigo-400',
+      primaryBorderColor: 'border-indigo-300'
+    }
+
+    document.querySelector('.swap-theme').addEventListener('click',changeTheme);
+    document.querySelector('.swap-theme').selectTheme = lightTheme;
+
+    function changeTheme(evt) {
+      //for (const property in evt.currentTarget.selectTheme) {applyTheme(property, evt.currentTarget.selectTheme[property]);}
+    }
+
+    //var theme = lightTheme;
+    var theme = darkTheme;
 
     for (const property in theme) {applyTheme(property, theme[property]);}
 
@@ -360,7 +379,7 @@
 
     addColumnBtn.addEventListener('click', addColumn);
 
-    addColumn();
+    //addColumn();
 
     function addColumn() {
       let wrapper = document.querySelector('.table-wrapper');
