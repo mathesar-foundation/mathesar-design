@@ -102,7 +102,7 @@
           <div class="mutedTextColor">Saving Changes</div>
         </div>
         <div class="mediumBackgroundColor h-full flex items-start table-wrapper">
-          <div class="t-table border tableBorderColor table-records tableBackgroundColor">
+          <div class="t-table table-records tableBackgroundColor">
            
             <div class="t-head">
               <div class="t-row text-left">
@@ -134,6 +134,8 @@
 
             <div class="t-body row-wrapper row-wrapper--add">
               
+              
+
               <div class="t-row add-new-record">
                 <div class="t-cell py-2 px-3 mutedTextColor border tableBorderColor text-xs">*</div>
                 <div class="t-cell border tableBorderColor">
@@ -169,6 +171,7 @@
       mediumBorderColor: 'border-gray-600',
       lightBorderColor: 'border-gray-500',
       textColor: 'text-gray-100',
+      inverseTextColor: 'text-dark',
       mutedTextColor : 'text-gray-400',
       mediumTextColor : 'text-gray-200',
       tableBorderColor: 'border-gray-600',
@@ -246,18 +249,19 @@
     }
 
     function createRow(row, i) {
-      let html = `<div class="t-cell py-2 px-3 ${theme.mutedTextColor} border ${theme.tableBorderColor} text-xs">${i + 1}</div>
-                <div class="t-cell border ${theme.tableBorderColor} editable-cell">
+      let html = `<div class="t-cell py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${i + 1}</div>
+                <div class="t-cell border-r ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.id}">
                 </div>
-                <div class="t-cell border ${theme.tableBorderColor} editable-cell">
+                <div class="t-cell border-r ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.artist}">
                 </div>
-                <div class="t-cell border ${theme.tableBorderColor} editable-cell">
+                <div class="t-cell border-r ${theme.tableBorderColor} editable-cell">
                   <input type="text" class="${theme.mediumBackgroundColor} ${theme.textColor} p-2 w-full" value="${row.tracks}">
                 </div>`;
       let rowHtml = document.createElement('div');
-      rowHtml.classList.add('t-row')
+      let rowClasses = ['t-row','border-b',theme.tableBorderColor]
+      rowHtml.classList.add(...rowClasses)
       rowHtml.innerHTML = html;
       return rowHtml;
     }
@@ -276,8 +280,9 @@
 
     function renderCell(el) {
       let cellValue = el.value;
+      
       let contentWrapper = document.createElement('div');
-      let cellContent = val => `<div class="p-2 ${theme.backgroundColor} ${theme.textColor}">${val}</div>`;
+      let cellContent = val => val !== ''? `<div class="p-2 ${theme.backgroundColor} ${theme.textColor}">${val}</div>`:`<div class="p-2 ${theme.backgroundColor} ${theme.mutedTextColor}">null</div>`;
       let cellParent = el.parentNode;
       contentWrapper.innerHTML = cellContent(cellValue);
       cellParent.appendChild(contentWrapper);
@@ -303,14 +308,17 @@
       newRecord.querySelectorAll('input').forEach(function (element) {
         element.addEventListener('keydown', addRow);
       });
+
     }
+
 
     function addRow(e) {
       
       let row = this.parentNode.parentNode
       let newRow = row.cloneNode(true);
       row.classList.remove('add-new-record');
-      row.classList.add('bg-green-300');
+      let newRowClasses = ['border-t','border-b','border-green-200'];
+      row.classList.add(...newRowClasses);
       
       row.querySelectorAll('input').forEach(function (element) {
         element.removeEventListener('keydown', addRow);
@@ -320,17 +328,21 @@
       totalReleases.push({ id: idMax.id + 1, artist: '', track: '' });
       row.querySelectorAll('input')[0].setAttribute('value', idMax.id + 1);
       let rowNumber = document.querySelectorAll('.t-body .t-row').length;
-      row.querySelectorAll('.t-cell')[0].innerHTML = rowNumber;
+      let rowNumberCell = row.querySelectorAll('.t-cell')[0];
+      rowNumberCell.innerHTML = `${rowNumber}*`;
+      rowNumberCell.classList.add('text-green-200','font-bold')
 
       let newRowCount = document.querySelector('.row-wrapper--add').querySelectorAll('.t-row').length;
       console.log(newRowCount);
 
       if (newRowCount == 1) {
       let repositionWarning = document.createElement('div');
-      repositionWarning.innerHTML = `<div class="text-white text-xs bg-green-600 p-1">Records will be repositioned on refresh</div>`
+      repositionWarning.innerHTML = `<div class="text-white text-xs bg-green-600 p-1">New records will be repositioned on refresh</div>`
       document.querySelector('.row-wrapper--add').prepend(repositionWarning);
       }
       document.querySelector('.row-wrapper--add').append(newRow);
+
+      //row.querySelectorAll('input').forEach(cell => renderCell(cell));
       
       initNewRecord();
     }
