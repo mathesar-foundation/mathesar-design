@@ -266,7 +266,7 @@ textarea {
 }
 
 .t-cell:first-child {
-  min-width: 40px;
+  min-width: 48px;
   text-align: center;
   line-height: 24px;
 }
