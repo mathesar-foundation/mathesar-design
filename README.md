@@ -1,6 +1,6 @@
 # Mathesar Design Prototype
 An HTML5 Prototype used to define, test and validate design solutions and support the design process of Mathesar.
-More information about the Mathesar project and Mathesar design can be found in the [project wiki](https://wiki.mathesar.org/)
+More information about the Mathesar project and Mathesar design can be found in the [project wiki](https://wiki.mathesar.org/).
 
 ## What is it for?
 The prototype can be referenced in design specs to demonstrate certain interactions that require details beyond what static wireframes can offer.
