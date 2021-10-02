@@ -317,15 +317,22 @@
       let cellParent = el.parentNode;
       contentWrapper.innerHTML = cellContent(cellValue);
       cellParent.appendChild(contentWrapper);
-      contentWrapper.addEventListener('click', editCell);
+      contentWrapper.addEventListener('dblclick', editCell);
+      contentWrapper.addEventListener('click', selectCell);
       el.addEventListener('blur', saveCell);
     }
 
-    function editCell() {
+    function editCell(e) {
       let cellInput = this.parentNode.querySelector('input');
       cellInput.classList.remove('hidden');
       cellInput.focus();
       this.remove();
+    }
+
+    function selectCell(e) {
+      console.log(e)
+      let row = this.parentNode.parentNode;
+      row.classList.add('border',theme.primaryBorderColor)
     }
 
     function saveCell() {
