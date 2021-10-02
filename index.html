@@ -135,7 +135,8 @@
       tableHeaderBackgroundColor: 'bg-gray-800',
       primaryColor: 'bg-indigo-300',
       primaryBorderColor: 'border-indigo-300',
-      inputBackgroundColor: 'bg-gray-700'
+      inputBackgroundColor: 'bg-gray-700',
+      darkPrimaryColor: 'bg-indigo-800'
     };
 
     var lightTheme = {
@@ -155,8 +156,11 @@
       tableHeaderBackgroundColor: 'bg-white',
       primaryColor: 'bg-indigo-400',
       primaryBorderColor: 'border-indigo-300',
-      inputBackgroundColor: 'bg-gray-100'
+      inputBackgroundColor: 'bg-gray-100',
+      darkPrimaryColor: 'bg-indigo-800'
     }
+
+    
 
     document.querySelector('.swap-theme').addEventListener('click', changeTheme);
     document.querySelector('.swap-theme').selectTheme = lightTheme;
@@ -187,6 +191,7 @@
         el.classList.add(`${color}`);
       });
     }
+
 
 
     var tableColumns = [{
@@ -330,9 +335,11 @@
     }
 
     function selectCell(e) {
-      console.log(e)
+      console.log(this);
       let row = this.parentNode.parentNode;
-      row.classList.add('border',theme.primaryBorderColor)
+      this.childNodes[0].classList.replace(theme.backgroundColor,theme.primaryColor);
+      this.childNodes[0].classList.add('bg-opacity-20')
+      row.childNodes[0].classList.add('font-bold',theme.primaryColor,'bg-opacity-50')
     }
 
     function saveCell() {
