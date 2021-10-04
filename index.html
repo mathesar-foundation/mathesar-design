@@ -46,33 +46,10 @@
           <div class="flex items-center">
             <input type="text" class="inputBackgroundColor w-full p-2 text-sm textColor" placeholder="Type to search">
             <button class="px-2"><i class="ri-menu-line textColor align-bottom"></i></button>
-
           </div>
-          <div class="mediumBorderColor border-b border-t px-3 py-2 flex space-x-3 items-center">
-            <h4 class="textColor uppercase text-xs font-semibold">Views</h4>
-            <div class="lightBackgroundColor rounded px-1 text-xs">3</div>
-          </div>
-          <ul class="my-2">
-            <li class="textColor"><a href="#" class="block py-1 px-3 accentBackgroundColor"><i
-                  class="ri-grid-fill align-bottom mr-1"></i>
-                Total Tracks by Artist</a></li>
-            <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-grid-fill align-bottom mr-1"></i>
-                Summer Playlist</a></li>
-            <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-grid-fill align-bottom mr-1"></i>
-                Award-Winning Releases</a></li>
-          </ul>
-          <div class="mediumBorderColor border-b border-t px-3 py-2 flex space-x-3 items-center">
-            <h4 class="textColor uppercase text-xs font-semibold">Tables</h4>
-            <div class="lightBackgroundColor rounded px-1 text-xs">3</div>
-          </div>
-          <ul class="my-2">
-            <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-table-fill align-bottom mr-1"></i>
-                artist</a></li>
-            <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-table-fill align-bottom mr-1"></i>
-                release</a></li>
-            <li class="textColor"><a href="#" class="block py-1 px-3"><i class="ri-table-fill align-bottom mr-1"></i>
-                track</a></li>
-          </ul>
+          <div class="sidebar-navigation"></div>
+      
+      
         </div>
 
       </div>
@@ -167,10 +144,8 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     var activeTheme = urlParams.get('theme');
-    console.log(activeTheme)
 
     function changeTheme(evt) {
-      console.log(evt)
       //for (const property in evt.currentTarget.selectTheme) {applyTheme(property, evt.currentTarget.selectTheme[property]);}
     }
 
@@ -192,13 +167,13 @@
       });
     }
 
-
-
-    var tableColumns = [{
+    var schemaTables =
+      {tables:[{
       name: 'artist',
+      id: 0,
       columns: [
-        { id: 0, name: 'id', type: 'number', readOnly:true},
-        { id: 1, name: 'artistName', type: 'text' }
+        {name: 'id', type: 'number', readOnly:true},
+        {name: 'artistName', type: 'text' }
       ],
       records: [
         [450, 'Patti Smith'],
@@ -210,46 +185,96 @@
       color: 'purple'
     }, {
       name: 'release',
+      id: 1,
       columns: [
-        { id: 2, name: 'id', type: 'number', readOnly:true},
-        { id: 3, name: 'releaseName', type: 'text' },
-        { id: 4, name: 'releaseGenre', type: 'text' }
+        {name: 'id', type: 'number', readOnly:true},
+        {name: 'releaseName', type: 'text' },
+        {name: 'releaseGenre', type: 'text' }
       ],
       records: [
-        [450, 'Aqua'],
-        [451, 'Elvis Costello']
+        [450, 'Aqua', ''],
+        [451, 'Elvis Costello', '']
       ],
       color: 'green'
     }, {
       name: 'track',
+      id: 2,
       columns: [
-        { id: 5, name: 'id', type: 'number', readOnly:true},
-        { id: 6, name: 'trackName', type: 'text' },
-        { id: 7, name: 'trackLength', type: 'duration' }
+        {name: 'id', type: 'number', readOnly:true},
+        {name: 'trackName', type: 'text' },
+        {name: 'trackLength', type: 'duration' }
       ],
       records: [
-        [450, 'Aqua'],
-        [451, 'Elvis Costello']
+        [450, 'Aqua', ''],
+        [451, 'Elvis Costello', '']
       ],
       color: 'pink'
-    }];
-
-    var viewColumns = [
-      {
+    }],
+      views:[{
         name: 'Total Releases by Artist',
-        columns: [1, 6]
+        id: 3,
+        columns: [
+          {name: 'artistName', type: 'text', referencedTable: 'artist' },
+          {name: 'trackName', type: 'text', referencedTable: 'track' },
+          {name: 'trackName', type: 'text', referencedTable: 'track' }
+        ],
+        records: [
+          ['Patti Smith','',''],
+          ['Elvis Costello','',''],
+          ['Kylie Minogue','',''],
+          ['Artic Monkeys','',''],
+          ['Scorpions','','']
+        ],
+        color: 'purple'
       }
-    ];
+    ]}
+    ;
 
-    var activeTable = tableColumns[0];
 
-    activeTable.records.push([450, 'Gorillaz'])
+    createSidebarNavigation(schemaTables);
 
-    document.querySelector('.table-wrapper').prepend(createTable(activeTable));
+    function createSidebarNavigation(schema) {
 
+      let viewsNavigation = document.createElement('div')
+      viewsNavigation.classList.add('views-navigation');
+      document.querySelector('.sidebar-navigation').append(viewsNavigation);
+
+      let tablesNavigation = document.createElement('div')
+      tablesNavigation.classList.add('tables-navigation');
+      document.querySelector('.sidebar-navigation').append(tablesNavigation);
+
+      let objectHeader = function(key){
+        let listHeader = document.createElement('div');
+        listHeader.classList.add('p-2','border-t','border-b',theme.mediumBorderColor)
+        listHeader.innerHTML = `<div class="flex items-center space-x-2"><div class="uppercase text-xs font-bold ${theme.textColor}">${key}</div> <div class="${theme.lightBackgroundColor} ${theme.inverseTextColor} rounded px-1 text-xs">${schema[key].length}</div><div>`;
+        return listHeader;
+      };
+      
+      let objectList = function(key){
+        let obj = schema[key];
+        let listItem = document.createElement('div');
+        listItem.innerHTML = obj.map(item => `<div class="${theme.textColor}"><a class="p-2 block" href="${window.location.pathname}?activeTable=${item.id}"><i class="ri-table-fill align-bottom mr-2"></i>${item.name}</a></div>`).join('');
+        return listItem;
+      };
+
+      Object.keys(schema).forEach(function(key){
+        document.querySelector(`.${key}-navigation`).append(objectHeader(key));
+       document.querySelector(`.${key}-navigation`).append(objectList(key));
+      });
+      
+    }
+
+    var activeTable = urlParams.get('activeTable');
+
+    function selectTableById(id){
+      return Object.values(schemaTables).flat().find(table => table.id == id);
+
+    }
+
+    document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
 
     function createTable(obj) {
-
+      
       let typeIcon = function (type) {
         if (type == 'text') {
           return 'text';
@@ -273,12 +298,11 @@
       }
 
       let createNewRow = function (columns) {
-        
         let inputControl = function(col) {
           if (col.readOnly) {
             return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" readOnly="true" type="text" placeholder='New Record'>`
           } else {
-          return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="" type="text">`
+          return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="" type="text" placeholder="${col.referencedTable?'Add Record to '+'\''+col.referencedTable+'\'':''}">`
           }
         }
         let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
@@ -287,9 +311,7 @@
       }
 
       let headers = obj.columns.map(col => createHeader(col)).join('');
-
       let records = obj.records.map((record, index) => createRow(record, index)).join('');
-
       let newRecord = createNewRow(obj.columns);
 
       let table = document.createElement('div');
@@ -335,11 +357,19 @@
     }
 
     function selectCell(e) {
-      console.log(this);
       let row = this.parentNode.parentNode;
-      this.childNodes[0].classList.replace(theme.backgroundColor,theme.primaryColor);
-      this.childNodes[0].classList.add('bg-opacity-20')
-      row.childNodes[0].classList.add('font-bold',theme.primaryColor,'bg-opacity-50')
+      let cell = this.childNodes[0];
+      let selectedRowClasses = [];
+      let selectedCellClasses = [theme.primaryColor,'bg-opacity-20'];
+      let selectedRowNumberClasses = ['font-bold',theme.primaryColor,'bg-opacity-50'];
+      document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.remove('selected-cell',...selectedCellClasses));
+      document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.remove(...selectedRowNumberClasses));
+      document.querySelectorAll('.selected-row').forEach(row => row.classList.remove('selected-row',...selectedRowClasses));
+      cell.classList.add('selected-cell');
+      row.classList.add('selected-row');
+      document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.add(...selectedCellClasses));
+      document.querySelectorAll('.selected-row').forEach(row => row.classList.add(...selectedRowClasses));
+      document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.add(...selectedRowNumberClasses));
     }
 
     function saveCell() {
@@ -367,9 +397,8 @@
         element.removeEventListener('keydown', addRow);
       });
 
-      let idMax = activeTable.records.map(record => record[0]).reduce((a, b) => (a.id > b.id) ? a : b);
-      console.log(idMax);
-      activeTable.records.push([idMax+ 1,'']);
+      let idMax = selectTableById(activeTable).records.map(record => record[0]).reduce((a, b) => (a.id > b.id) ? a : b);
+      selectTableById(activeTable).records.push([idMax+ 1,'']);
       row.querySelectorAll('input')[0].setAttribute('value', idMax + 1);
       let rowNumber = document.querySelectorAll('.t-body .t-row').length;
       let rowNumberCell = row.querySelectorAll('.t-cell')[0];
@@ -398,10 +427,12 @@
 
     function addColumn() {
       let wrapper = document.querySelector('.table-wrapper');
-      wrapper.appendChild(createAddColumnMenu())
+      wrapper.appendChild(createAddColumnMenu(schemaTables))
     }
 
-    function createAddColumnMenu() {
+    
+
+    function createAddColumnMenu(schemaTables) {
 
       let typeIcon = function (column) {
         console.log(column.type)
@@ -414,9 +445,8 @@
         }
       }
 
-
       let listColumns = table => table.columns.map(col => `<a href="#" class="block px-2 py-1"><i class="ri-${typeIcon(col)} text-xs text-${table.color}-400 align-text-bottom border border-${table.color}-400 rounded mr-2"></i><span class="${theme.textColor}">${col.name}</span></a>`).join('');
-      let tables = tableColumns.map(table => `<div class="px-2 py-1 border-b ${theme.mediumBorderColor}"><span class="${theme.mediumTextColor} text-sm"><i class="ri-table-fill align-bottom mr-1"></i>From ${table.name}</span></div><div>${listColumns(table)}</div>`).join('');
+      let tables = schemaTables.tables.map(table => `<div class="px-2 py-1 border-b ${theme.mediumBorderColor}"><span class="${theme.mediumTextColor} text-sm"><i class="ri-table-fill align-bottom mr-1"></i>From ${table.name}</span></div><div>${listColumns(table)}</div>`).join('');
       let html =
         `<div class="${theme.backgroundColor} border ${theme.mediumBorderColor}">
         <h4 class="text-xs ${theme.mutedTextColor} py-1 px-2">Add Column</h4>
