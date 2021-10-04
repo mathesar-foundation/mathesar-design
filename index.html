@@ -192,8 +192,8 @@
         {name: 'releaseGenre', type: 'text' }
       ],
       records: [
-        [450, 'Aqua', ''],
-        [451, 'Elvis Costello', '']
+        [20, 'Aquarius', 'Pop'],
+        [21, 'Aquarium', 'Pop']
       ],
       color: 'green'
     }, {
@@ -205,14 +205,29 @@
         {name: 'trackLength', type: 'duration' }
       ],
       records: [
-        [450, 'Aqua', ''],
-        [451, 'Elvis Costello', '']
+        [460, 'Turn Back Time', 180000],
+        [461, 'Roses are Red', 180000]
+      ],
+      color: 'pink'
+    }, {
+      name: 'track_artist',
+      id: 3,
+      columns: [
+        {name: 'id', type: 'number', readOnly:true},
+        {name: 'artistId', type: 'fk', lookup:'artistName' },
+        {name: 'trackId', type: 'fk', lookup:'trackName' }
+      ],
+      records: [
+        [500, 'Aqua', 'Around the World'],
+        [501, 'Aqua', 'Barbie Girl'],
+        [502, 'Aqua', 'Turn Back Time'],
+        [503, 'Aqua', 'Roses are Red']
       ],
       color: 'pink'
     }],
       views:[{
         name: 'Total Releases by Artist',
-        id: 3,
+        id: 4,
         columns: [
           {name: 'artistName', type: 'text', referencedTable: 'artist' },
           {name: 'trackName', type: 'text', referencedTable: 'track' },
@@ -282,8 +297,19 @@
           return 'hashtag';
         } else if (type == 'duration') {
           return 'time-line';
+        } else if (type == 'fk') {
+          return 'key-fill';
+        } else {
+          return 'question-mark';
         }
       }
+
+      let recordType = obj.columns.reduce(function(a,b){
+        a.push(b.type)
+        return a;
+      },[]);
+
+      let tableEdit = `<div class="text-white border p-2">test</div>`
 
       let createHeader = function (col) {
         let header = `<div class="t-cell p-2 ${theme.textColor}"><i class="ri-${typeIcon(col.type)} align-bottom border border-gray-500 rounded mr-2"></i>${col.name}</div>`;
@@ -292,9 +318,21 @@
 
       let createRow = function (record, index) {
         let rowCount = index + 1;
-        let cells = record.map(cell => `<div class="t-cell border-r ${theme.tableBorderColor} editable-cell"><input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text"></div>`).join('')
+        let cells = record.map((cell,i) => `<div class="t-cell border-r ${theme.tableBorderColor} editable-cell" data-type="${recordType[i]}"><input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text"></div>`).join('')
         let row = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-cell py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
         return row;
+      }
+
+      let setPlaceholder = function(col) {
+        if (col.referencedTable) {
+          return `Add Record to '${col.referencedTable}'`
+        } else {
+          if(col.type == 'fk') {
+            return `Search '${col.lookup}'`
+          } else {
+            return ``;
+          }
+        }
       }
 
       let createNewRow = function (columns) {
@@ -302,7 +340,7 @@
           if (col.readOnly) {
             return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" readOnly="true" type="text" placeholder='New Record'>`
           } else {
-          return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="" type="text" placeholder="${col.referencedTable?'Add Record to '+'\''+col.referencedTable+'\'':''}">`
+            return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="" type="text" placeholder="${setPlaceholder(col)}">`
           }
         }
         let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
@@ -315,34 +353,48 @@
       let newRecord = createNewRow(obj.columns);
 
       let table = document.createElement('div');
-      let tableClasses = ['t-table', theme.darkBackgroundColor];
+      let tableClasses = ['t-table', theme.darkBackgroundColor,'flex'];
       table.classList.add(...tableClasses);
       table.innerHTML = `
-      <div class="t-row border-b ${theme.tableBorderColor}">
-        <div class="t-cell"></div>${headers}
+      <div>
+        <div class="t-row border-b ${theme.tableBorderColor}">
+          <div class="t-cell"></div>${headers}
+        </div>
+        <div class="t-body row-wrapper">${records}</div>
+        <div class="t-body row-wrapper row-wrapper--add">${newRecord}</div>
       </div>
-      <div class="t-body row-wrapper">${records}</div>
-      <div class="t-body row-wrapper row-wrapper--add">${newRecord}</div>`;
+      <div>
+        ${tableEdit}
+      </div>`;
 
       renderAllCells(table);
       return table; 
     }
 
     function renderAllCells(obj) {
-      let cellInputs = obj.querySelectorAll('.editable-cell');
-      cellInputs.forEach(function (el) {
+      let cells = obj.querySelectorAll('.editable-cell');
+      cells.forEach(function (el) {
+        let type = el.getAttribute('data-type');
+        
         let cellInput = el.querySelector('input');
         cellInput.classList.add('hidden');
-        renderCell(cellInput);
+        renderCell(cellInput,type);
       });
     }
 
-    function renderCell(el) {
-      let cellValue = el.value;
+    function renderCell(el,type) {  
+      let cellParent = el.parentNode; 
       let contentWrapper = document.createElement('div');
-      let cellContent = val => val !== '' ? `<div class="p-2 ${theme.backgroundColor} ${theme.textColor}">${val}</div>` : `<div class="p-2 ${theme.backgroundColor} ${theme.mutedTextColor}">null</div>`;
-      let cellParent = el.parentNode;
-      contentWrapper.innerHTML = cellContent(cellValue);
+
+      let cellContent = function(cell) {
+        if (type == 'fk') {  
+          return `<div class="p-2"><div class="bg-indigo-500 bg-opacity-60 px-2 rounded inline-block ${theme.textColor}">${el.value}</div></div>`
+        } else {
+          return `<div class="p-2 ${theme.textColor}">${el.value}</div>`
+        }
+      }
+
+      contentWrapper.innerHTML = cellContent(type);
       cellParent.appendChild(contentWrapper);
       contentWrapper.addEventListener('dblclick', editCell);
       contentWrapper.addEventListener('click', selectCell);
@@ -374,7 +426,8 @@
 
     function saveCell() {
       this.classList.add('hidden');
-      renderCell(this);
+      let type = this.parentNode.getAttribute('data-type');
+      renderCell(this,type);
     }
 
     initNewRecord();
