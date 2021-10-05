@@ -176,15 +176,16 @@
       id: 0,
       columns: [
         {name: 'id', type: 'number', readOnly:true},
-        {name: 'artistName', type: 'text' }
+        {name: 'artistName', type: 'text' },
+        {name: 'releaseId', type: 'fk', lookup:'releaseName' }
       ],
       records: [
-        [449, 'Aqua'],
-        [450, 'Patti Smith'],
-        [451, 'Elvis Costello'],
-        [451, 'Kylie Minogue'],
-        [451, 'Artic Monkeys'],
-        [453, 'Scorpions']
+        [449, 'Aqua','Aquarius'],
+        [450, 'Patti Smith','Horses'],
+        [451, 'Elvis Costello','Spike'],
+        [451, 'Kylie Minogue','Golden'],
+        [451, 'Artic Monkeys','AM'],
+        [453, 'Scorpions','Animal Magnetism']
       ],
       color: 'purple'
     }, {
@@ -405,14 +406,14 @@
       };
 
       let createCell = function (cell,i) {        
-        let inputControl = `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text">`
-        return `<div data-position:"${i}" class="t-cell border-r ${theme.tableBorderColor} editable-cell" data-type="${recordType[i]}" data-summary-of="${summaryOf[i]}" data-reference-table="${recordTable[i]}">${inputControl}</div>`;
+        let inputControl = `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text">`;
+        return `<div data-position:"${i}" class="t-cell border-r ${theme.tableBorderColor} editable-cell" data-type="${recordType[i]}" data-summary-of="${summaryOf[i] || ''}" data-reference-table="${recordTable[i]}">${inputControl}</div>`;
       }
 
       let createRow = function (record, index) {
         let rowCount = index + 1;
         let cells = record.map((cell,i) => createCell(cell,i)).join('');        
-        let row = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-row-header py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
+        let row = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
         return row;
       }
 
@@ -437,7 +438,7 @@
           }
         }
         let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
-        let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-row-header py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
+        let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
         return row;
       }
 
@@ -451,7 +452,7 @@
       table.innerHTML = `
       <div>
         <div class="t-row border-b ${theme.tableBorderColor}">
-          <div class="t-row-header"></div>${headers}
+          <div class="t-row-header p-2"></div>${headers}
         </div>
         <div class="t-body row-wrapper">${records}</div>
         <div class="t-body row-wrapper row-wrapper--add">${newRecord}</div>
@@ -519,24 +520,35 @@
       let tableObj = selectTableByName(referenceTable);
       let value = el.getAttribute('value');
       let record = tableObj.records.find(record => record.includes(value));
+      var content = '';
 
-      //let summaryValues = value.split(',');
-      //let summaryRecords = summaryValues.map(value => tableObj.records.find(record => record.includes(value)));
+      let summaryValues = value.split(',');
+      let summaryRecords = summaryValues.map(value => tableObj.records.find(record => record.includes(value))).map(function(record){
 
-      let fields = tableObj.columns.map((col,i) => `<div><label class="block ${theme.textColor}">${col.name}</label><input class="text-sm w-full ${theme.inputBackgroundColor} ${theme.textColor} p-2" type="text" value="${record[i]}"></div>`).join('');
-      
-      
+        let item = record.map(value => `<div>${value}</div>`).join('');
+
+        return `<div class="flex space-x-2 px-2 py-1 ${theme.textColor} ${theme.primaryColor} bg-opacity-40 rounded">${item}</div>`;
+      }).join('');
+
+      if (!summaryOf) {
+        let fields = tableObj.columns.map((col,i) => `<div><label class="block ${theme.textColor}">${col.name}</label><input class="text-sm w-full ${theme.inputBackgroundColor} ${theme.textColor} p-2" type="text" value="${record[i]}"></div>`).join('');
+
+        content = fields;
+      } else {
+        content = `<div class="space-y-2">${summaryRecords}</div> <button class="${theme.textColor} border ${theme.lightBorderColor} px-2 py-1"><i class="ri-add-line align-bottom mr-1"></i>New Record</button>`;
+      }
 
       return `
         <div class="p-2 w-full ${theme.backgroundColor} ${theme.mediumBorderColor} space-y-2">
           <h4 class="${theme.textColor}">Edit Record in '${referenceTable}'</h4>
-          ${fields} 
-          <div class="space-x-1 flex">
-            <button class="${theme.inputBackgroundColor} flex-grow ${theme.textColor} p-2 text-sm">Cancel</button>  
-            <button class="${theme.primaryColor} flex-grow p-2 text-sm">Update Record</button>
-          </div>
-        </div>`
+          ${content}  
+        </div>`;
     }
+
+   // <div class="space-x-1 flex">
+     //       <button class="${theme.inputBackgroundColor} flex-grow ${theme.textColor} p-2 text-sm">Cancel</button>  
+       //     <button class="${theme.primaryColor} flex-grow p-2 text-sm">Save</button>
+         // </div>
 
 
     function editCell(e) {
@@ -546,6 +558,7 @@
       cellInput.classList.remove('hidden');
       cellInput.focus();
       
+      console.log("Cell input", cellInput);
       if (referenceTable !== 'undefined'){ 
         let editDropdown = document.createElement('div');
         editDropdown.classList.add('edit-dropdown','shadow-md');
@@ -633,7 +646,7 @@
       selectTableById(activeTable).records.push([idMax+ 1,'']);
       row.querySelectorAll('input')[0].setAttribute('value', idMax + 1);
       let rowNumber = document.querySelectorAll('.t-body .t-row').length;
-      let rowNumberCell = row.querySelectorAll('.t-cell')[0];
+      let rowNumberCell = row.querySelector('.t-row-header');
       rowNumberCell.innerHTML = `${rowNumber}*`;
       rowNumberCell.classList.add('text-green-400', 'font-bold')
 
