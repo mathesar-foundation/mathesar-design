@@ -54,6 +54,7 @@
 
       </div>
       <div class="col-span-5">
+        <!--
         <div class="mediumBackgroundColor flex">
           <div class="textColor text-sm py-2 px-3"><i class="ri-table-fill align-bottom mr-1"></i> release <i
               class="ri-close-line align-bottom ml-3"></i> </div>
@@ -65,6 +66,7 @@
 
           <button class="primaryColor inverseTextColor px-3 text-sm"><i class="ri-add-line align-bottom"></i></button>
         </div>
+     
         <div class="accentBackgroundColor border-b mediumBorderColor py-2 px-3 flex space-x-6 items-center">
           <h3 class="textColor text-lg">Total Releases by Artist <i class="ri-arrow-down-s-line align-bottom"></i></h3>
           <button class="textColor border lightBorderColor px-2 py-1"><i class="ri-add-line align-bottom"></i>
@@ -81,6 +83,7 @@
             Save</button>
           <div class="mutedTextColor">Saving Changes</div>
         </div>
+        -->
         <div class="mediumBackgroundColor h-full flex items-start table-wrapper">
 
           <button class="primaryColor inverseTextColor py-2 px-3" id="add-column"><i
@@ -176,6 +179,7 @@
         {name: 'artistName', type: 'text' }
       ],
       records: [
+        [449, 'Aqua'],
         [450, 'Patti Smith'],
         [451, 'Elvis Costello'],
         [451, 'Kylie Minogue'],
@@ -193,7 +197,11 @@
       ],
       records: [
         [20, 'Aquarius', 'Pop'],
-        [21, 'Aquarium', 'Pop']
+        [21, 'Aquarium', 'Pop'],
+        [22, 'Spike', 'Rock'],
+        [23, 'Golden', 'Pop'],
+        [24, 'AM', 'Pop'],
+        [25, 'Animal Magnetism', 'Rock']
       ],
       color: 'green'
     }, {
@@ -224,26 +232,51 @@
         [503, 'Aqua', 'Roses are Red']
       ],
       color: 'pink'
+    }, {
+      name: 'release_track',
+      id: 8,
+      columns: [
+        {name: 'id', type: 'number', readOnly:true},
+        {name: 'releaseId', type: 'fk', lookup:'releaseName' },
+        {name: 'trackId', type: 'fk', lookup:'trackName' }
+      ],
+      records: [
+        ['60','Aquarius','Roses are Red'],
+        ['61','Aquarius','Around the World'],
+        ['62','Aquarius','Barbie Girl'],
+        ['63','Aquarius','Good Morning Sunshine']
+      ],
+      color: 'pink'
     }],
       views:[{
-        name: 'Total Releases by Artist',
+        name: 'Releases by Artist',
         id: 4,
         columns: [
           {name: 'artistName', type: 'text', referencedTable: 'artist' },
-          {name: 'trackName', type: 'text', referencedTable: 'track' },
-          {name: 'trackName', type: 'text', referencedTable: 'track' }
+          {name: 'releaseName', type: 'text', referencedTable: 'release' }
         ],
         records: [
-          ['Patti Smith','',''],
-          ['Elvis Costello','',''],
-          ['Kylie Minogue','',''],
-          ['Artic Monkeys','',''],
-          ['Scorpions','','']
+          ['Aqua','Aquarius'],
+          ['Elvis Costello','Spike'],
+          ['Kylie Minogue','Golden'],
+          ['Artic Monkeys','AM'],
+          ['Scorpions','Animal Magnetism']
+        ],
+        color: 'purple'
+      },{
+        name: 'Release with Track',
+        id: 10,
+        columns: [       
+          {name: 'releaseName', type: 'text', referencedTable: 'release' },
+          {name: 'trackName', type: 'text', referencedTable: 'release_track', summaryOf: 'releaseName' }
+        ],
+        records: [
+          ['Aquarius','Roses are Red,Around the World,Barbie Girl,Good Morning Sunshine'],
+          ['Aquarium','']
         ],
         color: 'purple'
       }
-    ]}
-    ;
+    ]};
 
 
     createSidebarNavigation(schemaTables);
@@ -283,10 +316,55 @@
 
     function selectTableById(id){
       return Object.values(schemaTables).flat().find(table => table.id == id);
-
     }
 
+    function selectTableByName(name){
+      return Object.values(schemaTables).flat().find(table => table.name == name);
+    }
+
+    setTableStatus(selectTableById(activeTable),'active');
+    setTableStatus(selectTableById(4),'open');
+    setTableStatus(selectTableById(2),'open');
+
+    function setTableStatus(table,status){ 
+      if (table.id == activeTable) {
+        table.status = 'active';
+      } else {
+        table.status = status;
+      }
+    }
+
+    document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
+    document.querySelector('.table-wrapper').parentNode.prepend(createTabs(schemaTables));
+
     document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
+
+
+    function createTabs(tables) {
+      let openTables = Object.values(tables).flat().filter(table => table.status);
+      console.log(openTables)
+
+      let createTab = table => `<div class="py-2 px-3 ${theme.textColor} ${table.status == 'active'?theme.accentBackgroundColor:theme.backgroundColor}">${table.name}</div>`;
+
+      let tab = openTables.map(table => createTab(table)).join('');
+
+      let tabs = document.createElement('div');
+      tabs.innerHTML = `<div class="flex items-center">${tab}</div>`;
+
+
+      return tabs;
+    }
+
+    function createTableToolbar(obj) {
+      let toolbar = document.createElement('div');
+      toolbar.innerHTML = `
+      <div class="${theme.accentBackgroundColor} py-2 px-3 flex items-center space-x-4">
+        <h2 class="${theme.textColor} text-lg">${obj.name}</h2>
+        <button class="${theme.textColor} border ${theme.lightBorderColor} px-2 py-1"><i class="ri-add-line align-bottom mr-1"></i>Record</button>
+        <div class="${theme.mutedTextColor}">Saving Changes</div>
+      </div>`
+      return toolbar;
+    }
 
     function createTable(obj) {
       
@@ -309,17 +387,32 @@
         return a;
       },[]);
 
-      let tableEdit = `<div class="text-white border p-2">test</div>`
+      let recordTable = obj.columns.reduce(function(a,b){
+        a.push(b.referencedTable)
+        return a;
+      },[]);
+
+      let summaryOf = obj.columns.reduce(function(a,b){
+        a.push(b.summaryOf)
+        return a;
+      },[]);
+
+      let tableEdit = ``
 
       let createHeader = function (col) {
         let header = `<div class="t-cell p-2 ${theme.textColor}"><i class="ri-${typeIcon(col.type)} align-bottom border border-gray-500 rounded mr-2"></i>${col.name}</div>`;
         return header;
       };
 
+      let createCell = function (cell,i) {        
+        let inputControl = `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text">`
+        return `<div data-position:"${i}" class="t-cell border-r ${theme.tableBorderColor} editable-cell" data-type="${recordType[i]}" data-summary-of="${summaryOf[i]}" data-reference-table="${recordTable[i]}">${inputControl}</div>`;
+      }
+
       let createRow = function (record, index) {
         let rowCount = index + 1;
-        let cells = record.map((cell,i) => `<div class="t-cell border-r ${theme.tableBorderColor} editable-cell" data-type="${recordType[i]}"><input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text"></div>`).join('')
-        let row = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-cell py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
+        let cells = record.map((cell,i) => createCell(cell,i)).join('');        
+        let row = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-row-header py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
         return row;
       }
 
@@ -344,7 +437,7 @@
           }
         }
         let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
-        let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-cell py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
+        let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-row-header py-2 px-3 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
         return row;
       }
 
@@ -358,7 +451,7 @@
       table.innerHTML = `
       <div>
         <div class="t-row border-b ${theme.tableBorderColor}">
-          <div class="t-cell"></div>${headers}
+          <div class="t-row-header"></div>${headers}
         </div>
         <div class="t-body row-wrapper">${records}</div>
         <div class="t-body row-wrapper row-wrapper--add">${newRecord}</div>
@@ -367,30 +460,43 @@
         ${tableEdit}
       </div>`;
 
+      resizeColumns(table);
       renderAllCells(table);
       return table; 
     }
 
-    function renderAllCells(obj) {
-      let cells = obj.querySelectorAll('.editable-cell');
+
+    function resizeColumns(table) {
+      cells = table.querySelectorAll('.t-cell');
+      cells.forEach(cell => cell.style.width = '240px');
+
+      rowHeaders = table.querySelectorAll('.t-row-header');
+      rowHeaders.forEach(rowHeader => rowHeader.style.width = '48px')
+
+      return table;
+    }
+
+    function renderAllCells(table) {
+      let cells = table.querySelectorAll('.editable-cell');
       cells.forEach(function (el) {
         let type = el.getAttribute('data-type');
-        
         let cellInput = el.querySelector('input');
         cellInput.classList.add('hidden');
         renderCell(cellInput,type);
       });
+      return table;
     }
 
     function renderCell(el,type) {  
       let cellParent = el.parentNode; 
       let contentWrapper = document.createElement('div');
+      contentWrapper.classList.add('content-wrapper','p-2',theme.textColor);
 
       let cellContent = function(cell) {
         if (type == 'fk') {  
-          return `<div class="p-2"><div class="bg-indigo-500 bg-opacity-60 px-2 rounded inline-block ${theme.textColor}">${el.value}</div></div>`
+          return `<div class="bg-indigo-500 bg-opacity-60 px-2 rounded inline-block ${theme.textColor}">${el.value}</div>`
         } else {
-          return `<div class="p-2 ${theme.textColor}">${el.value}</div>`
+          return `${el.value}`
         }
       }
 
@@ -398,19 +504,85 @@
       cellParent.appendChild(contentWrapper);
       contentWrapper.addEventListener('dblclick', editCell);
       contentWrapper.addEventListener('click', selectCell);
-      el.addEventListener('blur', saveCell);
+
+      return el;   
     }
 
+    var doubleClickEvent = document.createEvent('MouseEvents');
+    doubleClickEvent.initEvent('dblclick', true, true);
+    //document.querySelectorAll('.content-wrapper')[1].dispatchEvent(doubleClickEvent);
+
+    function createEditDropDown(el){
+      let type = el.parentNode.getAttribute('data-type');
+      let referenceTable = el.parentNode.getAttribute('data-reference-table');
+      let summaryOf = el.parentNode.getAttribute('data-summary-of');
+      let tableObj = selectTableByName(referenceTable);
+      let value = el.getAttribute('value');
+      let record = tableObj.records.find(record => record.includes(value));
+
+      //let summaryValues = value.split(',');
+      //let summaryRecords = summaryValues.map(value => tableObj.records.find(record => record.includes(value)));
+
+      let fields = tableObj.columns.map((col,i) => `<div><label class="block ${theme.textColor}">${col.name}</label><input class="text-sm w-full ${theme.inputBackgroundColor} ${theme.textColor} p-2" type="text" value="${record[i]}"></div>`).join('');
+      
+      
+
+      return `
+        <div class="p-2 w-full ${theme.backgroundColor} ${theme.mediumBorderColor} space-y-2">
+          <h4 class="${theme.textColor}">Edit Record in '${referenceTable}'</h4>
+          ${fields} 
+          <div class="space-x-1 flex">
+            <button class="${theme.inputBackgroundColor} flex-grow ${theme.textColor} p-2 text-sm">Cancel</button>  
+            <button class="${theme.primaryColor} flex-grow p-2 text-sm">Update Record</button>
+          </div>
+        </div>`
+    }
+
+
     function editCell(e) {
+      let type = this.parentNode.getAttribute('data-type');
+      let referenceTable = this.parentNode.getAttribute('data-reference-table');
       let cellInput = this.parentNode.querySelector('input');
       cellInput.classList.remove('hidden');
       cellInput.focus();
+      
+      if (referenceTable !== 'undefined'){ 
+        let editDropdown = document.createElement('div');
+        editDropdown.classList.add('edit-dropdown','shadow-md');
+        editDropdown.style.position = 'absolute';
+        editDropdown.style.minWidth = '280px';
+        editDropdown.innerHTML = createEditDropDown(cellInput);
+        cellInput.parentNode.append(editDropdown);
+        cellInput.addEventListener('blur', saveCell);    
+      } else {
+        cellInput.addEventListener('blur', saveCell);
+      }
+
       this.remove();
+
+      return false;
     }
+
+    function closeDropdown(el) {
+      el.remove();
+    }
+
+    function outsideClick(event, notelem)	{
+      var clickedOut = true, i, len = notelem.length;
+      for (i = 0;i < len;i++)  {
+          if (event.target == notelem[i] || notelem[i].contains(event.target)) {
+              clickedOut = false;
+          }
+      }
+      if (clickedOut) return true;
+      else return false;
+    }
+
+  
 
     function selectCell(e) {
       let row = this.parentNode.parentNode;
-      let cell = this.childNodes[0];
+      let cell = this;
       let selectedRowClasses = [];
       let selectedCellClasses = [theme.primaryColor,'bg-opacity-20'];
       let selectedRowNumberClasses = ['font-bold',theme.primaryColor,'bg-opacity-50'];
@@ -422,12 +594,19 @@
       document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.add(...selectedCellClasses));
       document.querySelectorAll('.selected-row').forEach(row => row.classList.add(...selectedRowClasses));
       document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.add(...selectedRowNumberClasses));
+      return false;
     }
 
-    function saveCell() {
+    function saveCell(e) {
+      let dropdown = this.parentNode.querySelector('.edit-dropdown');
+      if (dropdown !== null) {
+      dropdown.remove();
+      }
+
       this.classList.add('hidden');
       let type = this.parentNode.getAttribute('data-type');
       renderCell(this,type);
+      return false;
     }
 
     initNewRecord();
@@ -495,6 +674,8 @@
           return 'hashtag';
         } else if (column.type == 'duration') {
           return 'time-line';
+        } else {
+          return 'question-mark';
         }
       }
 

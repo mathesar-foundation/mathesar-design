@@ -261,9 +261,6 @@ textarea {
   }
 }
 
-.t-cell {
-  min-width: 240px;
-}
 
 .t-cell:first-child {
   min-width: 48px;
