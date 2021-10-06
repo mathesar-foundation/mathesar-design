@@ -412,6 +412,9 @@
         return a;
       }, []);
 
+      let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
+      let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs']
+      let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, theme.mediumBackgroundColor, 'editable-cell'];
 
       let createHeader = function (col) {
         let header = document.createElement('div');
@@ -423,23 +426,23 @@
 
       let createCell = function (cell, i) {
         let cellElement = document.createElement('div');
-        cellElement.classList.add('t-cell', 'border-r', theme.tableBorderColor,theme.mediumBackgroundColor,'editable-cell');
+        cellElement.classList.add(...cellClasses);
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor,'p-2','rendered-cell');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell');
         renderedCell.style.cursor = 'pointer';
         renderedCell.innerHTML = cell;
 
         let cellInput = document.createElement('input');
         cellInput.setAttribute('type', 'text');
         cellInput.setAttribute('value', cell);
-        cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full','hidden');
+        cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full', 'hidden');
 
-        if (summaryOf[i] && recordTable[i]) {       
+        if (summaryOf[i] && recordTable[i]) {
           renderedCell.addEventListener('dblclick', editSummaryRecord);
           renderedCell.table = recordTable[i];
           renderedCell.field = summaryOf[i];
         } else if (recordTable[i]) {
-          console.log('linked',recordTable[i],cell)
+          console.log('linked', recordTable[i], cell)
           renderedCell.addEventListener('dblclick', editLinkedRecord);
           renderedCell.table = recordTable[i];
           renderedCell.value = cell;
@@ -461,9 +464,9 @@
       let createRow = function (record, i) {
         let rowCount = i + 1;
         let row = document.createElement('div');
-        row.classList.add('t-row', 'border-b', theme.tableBorderColor);
+        row.classList.add(...rowClasses);
         let rowNumber = document.createElement('div');
-        rowNumber.classList.add('t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs');
+        rowNumber.classList.add(...rowHeaderClasses);
         rowNumber.innerHTML = `${rowCount}`;
         record.forEach((cell, i) => row.appendChild(rowNumber));
         record.forEach((cell, i) => row.appendChild(createCell(cell, i)));
@@ -484,6 +487,36 @@
       }
 
       let createNewRow = function (columns) {
+        let row = document.createElement('div');
+        row.classList.add(...rowClasses);
+        let rowNumber = document.createElement('div');
+        rowNumber.classList.add(...rowHeaderClasses);
+        rowNumber.innerHTML = `*`;
+        row.appendChild(rowNumber);
+
+        let placeholderValue = function(col) {
+          if (col.referencedTable) {
+            return `Add Record to '${col.referencedTable}'`
+          } else if (col.type == 'fk') {
+            return `Search from '${col.lookupField}'`
+          } else {
+            return `Add Record`
+          }
+        }
+        
+        columns.forEach(function(col){
+          console.log(col.referencedTable)
+          let cell = document.createElement('div');
+          cell.classList.add(...cellClasses)
+          let cellInput = document.createElement('input');
+          cellInput.setAttribute('type', 'text');
+          cellInput.setAttribute('placeholder', placeholderValue(col));
+          cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
+          cell.appendChild(cellInput);
+          row.appendChild(cell);
+
+        })
+        
         let inputControl = function (col) {
           if (col.readOnly) {
             return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" readOnly="true" type="text" placeholder='New Record'>`
@@ -491,8 +524,8 @@
             return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="" type="text" placeholder="${setPlaceholder(col)}">`
           }
         }
-        let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
-        let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
+        //let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
+        //let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
         return row;
       }
 
@@ -516,12 +549,13 @@
       obj.records.forEach((record, index) => rowWrapper.appendChild(createRow(record, index)));
       table.appendChild(headerWrapper);
       table.appendChild(rowWrapper);
+      table.appendChild(createNewRow(obj.columns));
 
       return resizeColumns(table);
     }
 
 
-    function createEditRecordMenu(table,value) {
+    function createEditRecordMenu(table, value) {
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -534,10 +568,10 @@
       let records = selectTableByName(table).records.find(record => record.includes(value));
 
       let createFormGroup = function (field, i) {
-      let formGroup = document.createElement('div');
-      let input = document.createElement('input');
-      input.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full')
-      let label = document.createElement('label');
+        let formGroup = document.createElement('div');
+        let input = document.createElement('input');
+        input.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full')
+        let label = document.createElement('label');
         label.classList.add(theme.textColor, 'block')
         label.innerHTML = `<i class="ri-${typeIcon(field.type)} align-bottom border ${theme.lightBorderColor} rounded mr-1"></i> ${field.name}`;
         input.setAttribute('value', records[i]);
@@ -545,7 +579,7 @@
         formGroup.appendChild(input);
         return formGroup;
       }
-      
+
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
       addDropdownOutsideClickHandler(menu);
@@ -553,7 +587,7 @@
       return menu;
     }
 
-    function createRecordListMenu(table,field) {
+    function createRecordListMenu(table, field) {
 
       let summary = field;
       let menu = document.createElement('div');
@@ -566,7 +600,7 @@
       menu.appendChild(menuHeader);
 
 
-      let columnPosition = selectTableByName(table).columns.map((col,i)=> col.name == field? i:'').join('');
+      let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
       let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
 
       let createRecordsList = function (record, i) {
@@ -600,7 +634,7 @@
       return menu;
     }
 
-    function createLookupMenu(table,field,value) {
+    function createLookupMenu(table, field, value) {
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -609,15 +643,15 @@
       menuHeader.classList.add(theme.textColor);
       menuHeader.innerHTML = `Lookup records in '${table}' Lookup field: ${field}`;
       menu.appendChild(menuHeader);
-      
-      let columnPosition = selectTableByName(table).columns.map((col,i)=> col.name == field? i:'').join('');
+
+      let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
       let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
 
       console.log(summaryRecords);
 
-      summaryRecords.forEach(function(record){
+      summaryRecords.forEach(function (record) {
         let item = document.createElement('div');
-        item.classList.add(theme.textColor,'p-2',theme.primaryColor, 'bg-opacity-40')
+        item.classList.add(theme.textColor, 'p-2', theme.primaryColor, 'bg-opacity-40')
         item.innerHTML = `${record}`
         menu.appendChild(item);
       });
@@ -702,10 +736,10 @@
       console.log(evt)
       let table = evt.target.table;
       let value = evt.target.value;
-      console.log(table,value)
+      console.log(table, value)
       enableInput(this)
       //let cellInput = this.querySelector('input');
-      this.parentNode.appendChild(createEditRecordMenu(table,value));
+      this.parentNode.appendChild(createEditRecordMenu(table, value));
     }
 
     function editSummaryRecord(evt) {
@@ -713,8 +747,7 @@
       let field = evt.target.field;
       enableInput(this)
 
-
-      this.parentNode.appendChild(createRecordListMenu(table,field));
+      this.parentNode.appendChild(createRecordListMenu(table, field));
     }
 
     function editLookupField(evt) {
@@ -722,12 +755,13 @@
       let value = evt.target.value;
       let field = evt.target.field;
       let cellInput = this.querySelector('input');
-      this.parentNode.appendChild(createLookupMenu(table,field,value));
       enableInput(this)
+      this.parentNode.appendChild(createLookupMenu(table, field, value));
+
     }
 
     function editField(evt) {
-      
+
     }
 
     function selectCell(e) {
