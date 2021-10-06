@@ -425,13 +425,14 @@
         let cellElement = document.createElement('div');
         cellElement.classList.add('t-cell', 'border-r', theme.tableBorderColor,theme.mediumBackgroundColor,'editable-cell');
         let renderedCell = document.createElement('div');
-
-        renderedCell.innerHTML = `<div class="rendered-cell ${theme.textColor} p-2">${cell}</div>`;
+        renderedCell.classList.add(theme.textColor,'p-2','rendered-cell');
+        renderedCell.style.cursor = 'pointer';
+        renderedCell.innerHTML = cell;
 
         let cellInput = document.createElement('input');
         cellInput.setAttribute('type', 'text');
         cellInput.setAttribute('value', cell);
-        cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
+        cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full','hidden');
 
         if (summaryOf[i] && recordTable[i]) {       
           renderedCell.addEventListener('dblclick', editSummaryRecord);
@@ -533,10 +534,10 @@
       let records = selectTableByName(table).records.find(record => record.includes(value));
 
       let createFormGroup = function (field, i) {
-        let formGroup = document.createElement('div');
-        let input = document.createElement('input');
-        input.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full')
-        let label = document.createElement('label');
+      let formGroup = document.createElement('div');
+      let input = document.createElement('input');
+      input.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full')
+      let label = document.createElement('label');
         label.classList.add(theme.textColor, 'block')
         label.innerHTML = `<i class="ri-${typeIcon(field.type)} align-bottom border ${theme.lightBorderColor} rounded mr-1"></i> ${field.name}`;
         input.setAttribute('value', records[i]);
@@ -633,6 +634,7 @@
         if (!isClickInsideElement) {
           console.log('outside')
           //renderCell(el.parentNode);
+          renderCell(menu);
           menu.remove();
           document.removeEventListener('click', handler);
         }
@@ -650,8 +652,11 @@
     }
 
     function renderCell(el) {
-      console.log(el)
-      //let input = el.querySelector('input');
+      let input = el.parentNode.querySelector('input');
+      let renderedCell = el.parentNode.querySelector('.rendered-cell');
+      console.log(renderedCell)
+      input.classList.add('hidden');
+      renderedCell.classList.remove('hidden');
 
       //input.classList.add('hidden');
       //let value = input.getAttribute('value');
@@ -685,36 +690,40 @@
     // </div>
 
     function enableInput(el) {
-      let cellInput = el.querySelector('input');
+      let cellInput = el.parentNode.querySelector('input');
+      let renderedCell = el.parentNode.querySelector('.rendered-cell');
       cellInput.classList.remove('hidden');
+      renderedCell.classList.add('hidden');
       cellInput.focus();
+      console.log(renderedCell)
     }
 
     function editLinkedRecord(evt) {
       console.log(evt)
-      let table = evt.target.parentNode.table;
-      let value = evt.target.parentNode.value;
+      let table = evt.target.table;
+      let value = evt.target.value;
       console.log(table,value)
-      //enableInput(this)
+      enableInput(this)
       //let cellInput = this.querySelector('input');
-      this.appendChild(createEditRecordMenu(table,value));
+      this.parentNode.appendChild(createEditRecordMenu(table,value));
     }
 
     function editSummaryRecord(evt) {
-      let table = evt.target.parentNode.table;
-      let field = evt.target.parentNode.field;
-      //enableInput(this)
-      //let cellInput = this.querySelector('input');
+      let table = evt.target.table;
+      let field = evt.target.field;
+      enableInput(this)
 
-      this.appendChild(createRecordListMenu(table,field));
+
+      this.parentNode.appendChild(createRecordListMenu(table,field));
     }
 
     function editLookupField(evt) {
-      let table = evt.target.parentNode.table;
-      let value = evt.target.parentNode.value;
-      let field = evt.target.parentNode.field;
+      let table = evt.target.table;
+      let value = evt.target.value;
+      let field = evt.target.field;
       let cellInput = this.querySelector('input');
-      this.appendChild(createLookupMenu(table,field,value));
+      this.parentNode.appendChild(createLookupMenu(table,field,value));
+      enableInput(this)
     }
 
     function editField(evt) {
