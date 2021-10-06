@@ -279,11 +279,14 @@
       }
     ]};
 
-
+    var activeTable = urlParams.get('activeTable');
     createSidebarNavigation(schemaTables);
-
+    document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
+    document.querySelector('.table-wrapper').parentNode.prepend(createTabs(schemaTables));
+    document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
+    
+    // CREATE SIDEBAR
     function createSidebarNavigation(schema) {
-
       let viewsNavigation = document.createElement('div')
       viewsNavigation.classList.add('views-navigation');
       document.querySelector('.sidebar-navigation').append(viewsNavigation);
@@ -308,21 +311,21 @@
 
       Object.keys(schema).forEach(function(key){
         document.querySelector(`.${key}-navigation`).append(objectHeader(key));
-       document.querySelector(`.${key}-navigation`).append(objectList(key));
-      });
-      
-    }
+        document.querySelector(`.${key}-navigation`).append(objectList(key));
+      });   
+    } 
 
-    var activeTable = urlParams.get('activeTable');
-
+    // SELECT TABLE BY ID
     function selectTableById(id){
       return Object.values(schemaTables).flat().find(table => table.id == id);
     }
 
+    // SELECT TABLE BY NAME
     function selectTableByName(name){
       return Object.values(schemaTables).flat().find(table => table.name == name);
     }
 
+    // STATUS FOR TABS
     setTableStatus(selectTableById(activeTable),'active');
     setTableStatus(selectTableById(4),'open');
     setTableStatus(selectTableById(2),'open');
@@ -335,12 +338,7 @@
       }
     }
 
-    document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
-    document.querySelector('.table-wrapper').parentNode.prepend(createTabs(schemaTables));
-
-    document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
-
-
+    // TABS
     function createTabs(tables) {
       let openTables = Object.values(tables).flat().filter(table => table.status);
       console.log(openTables)
@@ -350,8 +348,7 @@
       let tab = openTables.map(table => createTab(table)).join('');
 
       let tabs = document.createElement('div');
-      tabs.innerHTML = `<div class="flex items-center">${tab}</div>`;
-
+      tabs.innerHTML = `<div class="flex items-center">${tab}</div>`
 
       return tabs;
     }
@@ -367,9 +364,8 @@
       return toolbar;
     }
 
-    function createTable(obj) {
-      
-      let typeIcon = function (type) {
+    // SET ICONS
+    function typeIcon(type) {
         if (type == 'text') {
           return 'text';
         } else if (type == 'number') {
@@ -380,8 +376,10 @@
           return 'key-fill';
         } else {
           return 'question-mark';
-        }
-      }
+        } 
+    }
+
+    function createTable(obj) {
 
       let recordType = obj.columns.reduce(function(a,b){
         a.push(b.type)
@@ -398,22 +396,42 @@
         return a;
       },[]);
 
-      let tableEdit = ``
 
       let createHeader = function (col) {
-        let header = `<div class="t-cell p-2 ${theme.textColor}"><i class="ri-${typeIcon(col.type)} align-bottom border border-gray-500 rounded mr-2"></i>${col.name}</div>`;
+        let header = document.createElement('div');
+        header.classList.add('t-cell', 'p-2', theme.textColor);
+        header.innerHTML = `<i class="ri-${typeIcon(col.type)} align-bottom border border-gray-500 rounded mr-2"></i>${col.name}`;
         return header;
       };
 
-      let createCell = function (cell,i) {        
-        let inputControl = `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text">`;
-        return `<div data-position:"${i}" class="t-cell border-r ${theme.tableBorderColor} editable-cell" data-type="${recordType[i]}" data-summary-of="${summaryOf[i] || ''}" data-reference-table="${recordTable[i]}">${inputControl}</div>`;
-      }
 
-      let createRow = function (record, index) {
-        let rowCount = index + 1;
-        let cells = record.map((cell,i) => createCell(cell,i)).join('');        
-        let row = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
+      let createCell = function (cell,i) {  
+        let cellElement = document.createElement('div');
+        cellElement.classList.add('t-cell', 'border-r', theme.tableBorderColor, 'editable-cell');
+        let cellInput = document.createElement('input');
+        cellInput.setAttribute('type','text');
+        cellInput.setAttribute('value', cell);
+        cellInput.setAttribute('data-type',recordType[i]);
+        cellInput.setAttribute('data-dropdown',recordTable[i]||'');
+        cellInput.classList.add(theme.inputBackgroundColor,theme.textColor,'p-2','w-full');
+        cellElement.appendChild(cellInput);
+        //cellElement.innerHTML = `<div data-position:"${i}" class="" data-type="${recordType[i]}" data-summary-of="${summaryOf[i] || ''}" data-reference-table="${recordTable[i]}"><input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="${cell}" type="text"></div>`;        
+        //cellElement.addEventListener('click',selectCell);
+        //cellElement.addEventListener('dblclick',editCell);
+        let renderedCell = renderCell(cellElement);
+        return renderedCell;
+      }  
+
+      let createRow = function (record, i) {
+        let rowCount = i + 1;
+        let row = document.createElement('div');  
+        row.classList.add('t-row','border-b',theme.tableBorderColor);
+        let rowNumber = document.createElement('div');
+        rowNumber.classList.add('t-row-header','p-3', theme.mutedTextColor, 'border-r',theme.tableBorderColor,'text-xs');
+        rowNumber.innerHTML = `${rowCount}`;
+        record.forEach((cell,i) => row.appendChild(rowNumber));
+        record.forEach((cell,i) => row.appendChild(createCell(cell,i)));
+        //row.innerHTML = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
         return row;
       }
 
@@ -442,76 +460,124 @@
         return row;
       }
 
-      let headers = obj.columns.map(col => createHeader(col)).join('');
-      let records = obj.records.map((record, index) => createRow(record, index)).join('');
+    
+      
       let newRecord = createNewRow(obj.columns);
 
       let table = document.createElement('div');
-      let tableClasses = ['t-table', theme.darkBackgroundColor,'flex'];
+      let tableClasses = ['t-table', theme.backgroundColor];
       table.classList.add(...tableClasses);
-      table.innerHTML = `
-      <div>
-        <div class="t-row border-b ${theme.tableBorderColor}">
-          <div class="t-row-header p-2"></div>${headers}
-        </div>
-        <div class="t-body row-wrapper">${records}</div>
-        <div class="t-body row-wrapper row-wrapper--add">${newRecord}</div>
-      </div>
-      <div>
-        ${tableEdit}
-      </div>`;
+      let rowWrapper = document.createElement('div');
+      rowWrapper.classList.add('t-body','row-wrapper');
+      let headerWrapper = document.createElement('div');
+      let headerRow = document.createElement('div');
+      let headerRowSelect = document.createElement('div');
+      headerRowSelect.classList.add('t-row-header','p-2');
+      headerRow.classList.add('t-row','border-b',theme.tableBorderColor);
+      headerRow.appendChild(headerRowSelect);
+      headerWrapper.appendChild(headerRow);
+      headerWrapper.classList.add('t-head','row-wrapper');
+      
+      obj.columns.forEach(col => headerRow.appendChild(createHeader(col)));
+      obj.records.forEach((record, index) => rowWrapper.appendChild(createRow(record, index)));
+      table.appendChild(headerWrapper);
+      table.appendChild(rowWrapper);
+      
 
-      resizeColumns(table);
-      renderAllCells(table);
-      return table; 
+      
+      //table.innerHTML = `
+      //<div>
+      //  <div class="t-row border-b ${theme.tableBorderColor}">
+      //    <div class="t-row-header p-2"></div>${headers}
+      //  </div>
+      //  <div class="t-body row-wrapper">${records}</div>
+      //  <div class="t-body row-wrapper row-wrapper--add">${newRecord}</div>
+      //</div>
+      //<div>
+      //  ${tableEdit}
+      //</div>`;
+      return resizeColumns(table);
+    }
+
+    function createEditMenu(table,el) {
+      console.log(el)
+      let value = el.getAttribute('value');
+      let menu = document.createElement('div');
+      menu.classList.add('edit-dropdown','shadow-md',theme.backgroundColor,'p-3','space-y-3');
+      menu.style.position = 'absolute';
+      menu.style.minWidth = '280px';
+
+      let createFormGroup = function(field,i) {
+        let formGroup = document.createElement('div');
+        let input = document.createElement('input');
+        input.classList.add(theme.inputBackgroundColor,theme.textColor,'p-2','w-full')
+        let label = document.createElement('label');
+        label.classList.add(theme.textColor,'block')
+        label.innerHTML = `${field.name}`;
+        input.setAttribute('value',records[i]);
+        formGroup.appendChild(label);
+        formGroup.appendChild(input);
+        return formGroup;
+      }
+
+      let records = selectTableByName(table).records.find(record => record.includes(value));
+      let columns = selectTableByName(table).columns.forEach((field,i) => menu.appendChild(createFormGroup(field,i)));
+
+
+      document.addEventListener('click', function(event) {
+      var isClickInsideElement = menu.contains(event.target);
+      if (!isClickInsideElement) {
+        console.log('outside')
+          renderCell(el.parentNode);
+          menu.remove();          
+        }
+      }, {once: true});
+      
+      return menu;
+    }
+
+    function dropdownVisible(){
+      return false;
     }
 
 
     function resizeColumns(table) {
       cells = table.querySelectorAll('.t-cell');
       cells.forEach(cell => cell.style.width = '240px');
-
       rowHeaders = table.querySelectorAll('.t-row-header');
       rowHeaders.forEach(rowHeader => rowHeader.style.width = '48px')
-
       return table;
     }
 
-    function renderAllCells(table) {
-      let cells = table.querySelectorAll('.editable-cell');
-      cells.forEach(function (el) {
-        let type = el.getAttribute('data-type');
-        let cellInput = el.querySelector('input');
-        cellInput.classList.add('hidden');
-        renderCell(cellInput,type);
-      });
-      return table;
-    }
 
-    function renderCell(el,type) {  
-      let cellParent = el.parentNode; 
+    function renderCell(el) {
+      let input = el.querySelector('input');
+
+      input.classList.add('hidden');
+      let value = input.getAttribute('value');
       let contentWrapper = document.createElement('div');
       contentWrapper.classList.add('content-wrapper','p-2',theme.textColor);
+      let type = input.getAttribute('data-type');
 
-      let cellContent = function(cell) {
+      let cellContent = function(type) {
         if (type == 'fk') {  
-          return `<div class="bg-indigo-500 bg-opacity-60 px-2 rounded inline-block ${theme.textColor}">${el.value}</div>`
+          return `<div class="bg-indigo-500 bg-opacity-60 px-2 rounded inline-block ${theme.textColor}">${value}</div>`
         } else {
-          return `${el.value}`
+          return `${value}`
         }
       }
 
       contentWrapper.innerHTML = cellContent(type);
-      cellParent.appendChild(contentWrapper);
+      el.appendChild(contentWrapper);
       contentWrapper.addEventListener('dblclick', editCell);
       contentWrapper.addEventListener('click', selectCell);
-
+      
       return el;   
     }
 
     var doubleClickEvent = document.createEvent('MouseEvents');
     doubleClickEvent.initEvent('dblclick', true, true);
-    //document.querySelectorAll('.content-wrapper')[1].dispatchEvent(doubleClickEvent);
+    document.querySelectorAll('.content-wrapper')[1].dispatchEvent(doubleClickEvent);
 
     function createEditDropDown(el){
       let type = el.parentNode.getAttribute('data-type');
@@ -552,77 +618,62 @@
 
 
     function editCell(e) {
-      let type = this.parentNode.getAttribute('data-type');
-      let referenceTable = this.parentNode.getAttribute('data-reference-table');
       let cellInput = this.parentNode.querySelector('input');
       cellInput.classList.remove('hidden');
       cellInput.focus();
-      
-      console.log("Cell input", cellInput);
-      if (referenceTable !== 'undefined'){ 
-        let editDropdown = document.createElement('div');
-        editDropdown.classList.add('edit-dropdown','shadow-md');
-        editDropdown.style.position = 'absolute';
-        editDropdown.style.minWidth = '280px';
-        editDropdown.innerHTML = createEditDropDown(cellInput);
-        cellInput.parentNode.append(editDropdown);
-        cellInput.addEventListener('blur', saveCell);    
-      } else {
+
+      let dropdown = cellInput.getAttribute('data-dropdown');
+
+      if (!dropdown) {
         cellInput.addEventListener('blur', saveCell);
+      } else {
+        this.parentNode.appendChild(createEditMenu(dropdown,cellInput));
       }
+      //
+      //if (referenceTable !== 'undefined'){ 
+      //  let editDropdown = document.createElement('div');
+      //  editDropdown.classList.add('edit-dropdown','shadow-md');
+      //  editDropdown.style.position = 'absolute';
+      //  editDropdown.style.minWidth = '280px';
+      //  editDropdown.innerHTML = createEditDropDown(cellInput);
+      //  cellInput.parentNode.append(editDropdown);
+      //  //cellInput.addEventListener('blur', saveCell);    
+      //} else {
+      //  cellInput.addEventListener('blur', saveCell);
+      //}
 
+      
       this.remove();
+      
 
-      return false;
+      //return false;
     }
-
-    function closeDropdown(el) {
-      el.remove();
-    }
-
-    function outsideClick(event, notelem)	{
-      var clickedOut = true, i, len = notelem.length;
-      for (i = 0;i < len;i++)  {
-          if (event.target == notelem[i] || notelem[i].contains(event.target)) {
-              clickedOut = false;
-          }
-      }
-      if (clickedOut) return true;
-      else return false;
-    }
-
-  
 
     function selectCell(e) {
-      let row = this.parentNode.parentNode;
-      let cell = this;
-      let selectedRowClasses = [];
-      let selectedCellClasses = [theme.primaryColor,'bg-opacity-20'];
-      let selectedRowNumberClasses = ['font-bold',theme.primaryColor,'bg-opacity-50'];
-      document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.remove('selected-cell',...selectedCellClasses));
-      document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.remove(...selectedRowNumberClasses));
-      document.querySelectorAll('.selected-row').forEach(row => row.classList.remove('selected-row',...selectedRowClasses));
-      cell.classList.add('selected-cell');
-      row.classList.add('selected-row');
-      document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.add(...selectedCellClasses));
-      document.querySelectorAll('.selected-row').forEach(row => row.classList.add(...selectedRowClasses));
-      document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.add(...selectedRowNumberClasses));
-      return false;
+      console.log('select')
+      //let row = this.parentNode.parentNode;
+      //let cell = this;
+      //let selectedRowClasses = [];
+      //let selectedCellClasses = [theme.primaryColor,'bg-opacity-20'];
+      //let selectedRowNumberClasses = ['font-bold',theme.primaryColor,'bg-opacity-50'];
+      //document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.remove('selected-cell',...selectedCellClasses));
+      //document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.remove(...selectedRowNumberClasses));
+      //document.querySelectorAll('.selected-row').forEach(row => row.classList.remove('selected-row',...selectedRowClasses));
+      //cell.classList.add('selected-cell');
+      //row.classList.add('selected-row');
+      //document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.add(...selectedCellClasses));
+      //document.querySelectorAll('.selected-row').forEach(row => row.classList.add(...selectedRowClasses));
+      //document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.add(...selectedRowNumberClasses));
+      //return false;
     }
 
     function saveCell(e) {
-      let dropdown = this.parentNode.querySelector('.edit-dropdown');
-      if (dropdown !== null) {
-      dropdown.remove();
-      }
-
       this.classList.add('hidden');
-      let type = this.parentNode.getAttribute('data-type');
-      renderCell(this,type);
+      renderCell(this.parentNode);
       return false;
     }
 
-    initNewRecord();
+    //initNewRecord();
     function initNewRecord() {
       let newRecord = document.querySelector('.add-new-record');
       newRecord.querySelectorAll('input').forEach(function (element) {
@@ -661,7 +712,7 @@
 
       //row.querySelectorAll('input').forEach(cell => renderCell(cell));
 
-      initNewRecord();
+      //initNewRecord();
     }
 
     let addColumnBtn = document.querySelector('#add-column');
