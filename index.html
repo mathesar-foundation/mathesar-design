@@ -547,13 +547,7 @@
       
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
-      document.addEventListener('click', function (event) {
-        var isClickInsideElement = menu.contains(event.target);
-        if (!isClickInsideElement) {
-          console.log('outside')
-          menu.remove();
-        }
-      });
+      addDropdownOutsideClickHandler(menu);
 
       return menu;
     }
@@ -600,14 +594,7 @@
         selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
       })
 
-      document.addEventListener('click', function (event) {
-        var isClickInsideElement = menu.contains(event.target);
-        if (!isClickInsideElement) {
-          console.log('outside')
-          //renderCell(el.parentNode);
-          menu.remove();
-        }
-      });
+      addDropdownOutsideClickHandler(menu);
 
       return menu;
     }
@@ -635,16 +622,23 @@
       });
 
 
-      document.addEventListener('click', function (event) {
+      addDropdownOutsideClickHandler(menu);
+
+      return menu;
+    }
+
+    function addDropdownOutsideClickHandler(menu) {
+      function handler(event) {
         var isClickInsideElement = menu.contains(event.target);
         if (!isClickInsideElement) {
           console.log('outside')
           //renderCell(el.parentNode);
           menu.remove();
+          document.removeEventListener('click', handler);
         }
-      });
+      }
 
-      return menu;
+      document.addEventListener('click', handler);
     }
 
     function resizeColumns(table) {
