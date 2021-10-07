@@ -284,7 +284,6 @@
     var activeTable = urlParams.get('activeTable');
     createSidebarNavigation(schemaTables);
     document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
-
     document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
 
     // CREATE SIDEBAR
@@ -356,14 +355,30 @@
       return tabs;
     }
 
+    function createButton(value,icon) {
+      let btn = document.createElement('button');
+      btn.classList.add('px-2','py-1',theme.textColor,'border',theme.lightBorderColor)
+      btn.innerHTML = `${value}`;
+      if (icon) {
+        let btnIcon = document.createElement('i');
+        btnIcon.classList.add(`ri-${icon}-line`,'align-bottom','mr-2');
+        btn.prepend(btnIcon);
+      }
+      return btn;
+    }
+
     function createTableToolbar(obj) {
+      console.log(obj)
       let toolbar = document.createElement('div');
-      toolbar.innerHTML = `
-      <div class="${theme.accentBackgroundColor} py-2 px-3 flex items-center space-x-4">
-        <h2 class="${theme.textColor} text-lg">${obj.name}</h2>
-        <button class="${theme.textColor} border ${theme.lightBorderColor} px-2 py-1"><i class="ri-add-line align-bottom mr-1"></i>Record</button>
-        <div class="${theme.mutedTextColor}">Saving Changes</div>
-      </div>`
+      toolbar.classList.add(theme.accentBackgroundColor,'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
+      let saveAsViewBtn = createButton('Save as View','save');
+      let addRecordBtn = createButton('Add Record','add');
+      let tableTitle = document.createElement('h2');
+      tableTitle.classList.add(theme.textColor,'text-lg');
+      tableTitle.innerHTML = obj.name;
+      toolbar.appendChild(tableTitle);
+      toolbar.appendChild(addRecordBtn);
+      toolbar.appendChild(saveAsViewBtn);
       return toolbar;
     }
 
@@ -664,7 +679,6 @@
         var isClickInsideElement = menu.contains(event.target);
         if (!isClickInsideElement) {
           console.log('outside')
-          //renderCell(el.parentNode);
           renderCell(menu);
           menu.remove();
           document.removeEventListener('click', handler);
@@ -710,7 +724,6 @@
       let value = evt.target.value;
       console.log(table, value)
       enableInput(this)
-      //let cellInput = this.querySelector('input');
       this.parentNode.appendChild(createEditRecordMenu(table, value));
     }
 
@@ -718,7 +731,6 @@
       let table = evt.target.table;
       let field = evt.target.field;
       enableInput(this)
-
       this.parentNode.appendChild(createRecordListMenu(table, field));
     }
 
@@ -729,11 +741,10 @@
       let cellInput = this.querySelector('input');
       enableInput(this)
       this.parentNode.appendChild(createLookupMenu(table, field, value));
-
     }
 
     function editField(evt) {
-
+      enableInput(this);
     }
 
     function selectCell(e) {
