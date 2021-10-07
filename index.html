@@ -141,16 +141,8 @@
     }
 
 
-
-    document.querySelector('.swap-theme').addEventListener('click', changeTheme);
-    document.querySelector('.swap-theme').selectTheme = lightTheme;
-
     const urlParams = new URLSearchParams(window.location.search);
     var activeTheme = urlParams.get('theme');
-
-    function changeTheme(evt) {
-      //for (const property in evt.currentTarget.selectTheme) {applyTheme(property, evt.currentTarget.selectTheme[property]);}
-    }
 
     var defaultTheme = darkTheme;
 
@@ -281,8 +273,18 @@
       ]
     };
 
+    if (localStorage.getItem('tables') === null) {
+      localStorage.setItem('tables', JSON.stringify(schemaTables));
+    }    
+    
+
+    let savedTables = JSON.parse(localStorage.getItem('tables'));
+  
+
+    console.log(savedTables)
+
     var activeTable = urlParams.get('activeTable');
-    createSidebarNavigation(schemaTables);
+    createSidebarNavigation(savedTables);
     document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
     document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
 
@@ -318,29 +320,29 @@
 
     // SELECT TABLE BY ID
     function selectTableById(id) {
-      return Object.values(schemaTables).flat().find(table => table.id == id);
+      return Object.values(savedTables).flat().find(table => table.id == id);
     }
     // SELECT TABLE BY NAME
     function selectTableByName(name) {
-      return Object.values(schemaTables).flat().find(table => table.name == name);
+      return Object.values(savedTables).flat().find(table => table.name == name);
     }
 
     // STATUS FOR TABS
-    setTableStatus(selectTableById(activeTable), 'active');
-    setTableStatus(selectTableById(4), 'open');
-    setTableStatus(selectTableById(2), 'open');
-
-    function setTableStatus(table, status) {
-      if (table.id == activeTable) {
-        table.status = 'active';
-      } else {
-        table.status = status;
-      }
-    }
+    //setTableStatus(selectTableById(activeTable), 'active');
+    //setTableStatus(selectTableById(4), 'open');
+    //setTableStatus(selectTableById(2), 'open');
+//
+    //function setTableStatus(table, status) {
+    //  if (table.id == activeTable) {
+    //    table.status = 'active';
+    //  } else {
+    //    table.status = status;
+    //  }
+    //}
 
     // TABS
 
-    document.querySelector('.table-wrapper').parentNode.prepend(createTabs(schemaTables));
+    document.querySelector('.table-wrapper').parentNode.prepend(createTabs(savedTables));
     function createTabs(tables) {
       let openTables = Object.values(tables).flat().filter(table => table.status);
       console.log(openTables)
@@ -367,8 +369,15 @@
       return btn;
     }
 
+    function getKeyByValue(object, value) {
+      return Object.keys(object).find(key => object[key] === value);
+    }
+
+
     function createTableToolbar(obj) {
-      console.log(obj)
+      
+      const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
+      
       let toolbar = document.createElement('div');
       toolbar.classList.add(theme.accentBackgroundColor,'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
       let saveAsViewBtn = createButton('Save as View','save');
@@ -378,9 +387,34 @@
       tableTitle.innerHTML = obj.name;
       toolbar.appendChild(tableTitle);
       toolbar.appendChild(addRecordBtn);
-      toolbar.appendChild(saveAsViewBtn);
+
+      if (type == 'tables') {
+        toolbar.appendChild(saveAsViewBtn);
+      }
+      // EVENTS
+      saveAsViewBtn.addEventListener('click',saveAsView);
+      saveAsViewBtn.table = obj;
       return toolbar;
     }
+
+    console.log(savedTables);
+
+    function saveAsView(e){
+      let selTable= e.target.table;
+      let table = {...selTable};
+      let tableId = savedTables.views.map(table => table.id);
+      let maxId = Math.max(...tableId);
+      table.id = maxId+1;
+      table.columns.forEach(col => col.referencedTable = table.name);
+      table.name = `View of ${table.name}`
+      
+      savedTables.views.push(table);
+      localStorage.setItem('tables', JSON.stringify(savedTables));
+      location.reload();
+      //document.querySelector('.table-wrapper').appendChild(createTable(table));
+    }
+
+    //console.log(savedTables.tables);
 
     // SET ICONS
     function typeIcon(type) {
@@ -821,12 +855,12 @@
 
     function addColumn() {
       let wrapper = document.querySelector('.table-wrapper');
-      wrapper.appendChild(createAddColumnMenu(schemaTables))
+      wrapper.appendChild(createAddColumnMenu(savedTables))
     }
 
 
 
-    function createAddColumnMenu(schemaTables) {
+    function createAddColumnMenu(savedTables) {
 
       let typeIcon = function (column) {
         console.log(column.type)
@@ -842,7 +876,7 @@
       }
 
       let listColumns = table => table.columns.map(col => `<a href="#" class="block px-2 py-1"><i class="ri-${typeIcon(col)} text-xs text-${table.color}-400 align-text-bottom border border-${table.color}-400 rounded mr-2"></i><span class="${theme.textColor}">${col.name}</span></a>`).join('');
-      let tables = schemaTables.tables.map(table => `<div class="px-2 py-1 border-b ${theme.mediumBorderColor}"><span class="${theme.mediumTextColor} text-sm"><i class="ri-table-fill align-bottom mr-1"></i>From ${table.name}</span></div><div>${listColumns(table)}</div>`).join('');
+      let tables = savedTables.tables.map(table => `<div class="px-2 py-1 border-b ${theme.mediumBorderColor}"><span class="${theme.mediumTextColor} text-sm"><i class="ri-table-fill align-bottom mr-1"></i>From ${table.name}</span></div><div>${listColumns(table)}</div>`).join('');
       let html =
         `<div class="${theme.backgroundColor} border ${theme.mediumBorderColor}">
         <h4 class="text-xs ${theme.mutedTextColor} py-1 px-2">Add Column</h4>
