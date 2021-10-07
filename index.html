@@ -321,7 +321,6 @@
     function selectTableById(id) {
       return Object.values(schemaTables).flat().find(table => table.id == id);
     }
-
     // SELECT TABLE BY NAME
     function selectTableByName(name) {
       return Object.values(schemaTables).flat().find(table => table.name == name);
@@ -383,6 +382,10 @@
       }
     }
 
+
+
+
+    //CREATE TABLE
     function createTable(obj) {
 
       let recordType = obj.columns.reduce(function (a, b) {
@@ -405,8 +408,6 @@
         return a;
       }, []);
 
-      console.log(lookupField)
-
       let lookupTable = obj.columns.reduce(function (a, b) {
         a.push(b.lookupTable)
         return a;
@@ -418,7 +419,7 @@
 
       let createHeader = function (col) {
         let header = document.createElement('div');
-        header.classList.add('t-cell', 'p-2', theme.textColor);
+        header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor);
         header.innerHTML = `<i class="ri-${typeIcon(col.type)} align-bottom border border-gray-500 rounded mr-2"></i>${col.name}`;
         return header;
       };
@@ -470,21 +471,9 @@
         rowNumber.innerHTML = `${rowCount}`;
         record.forEach((cell, i) => row.appendChild(rowNumber));
         record.forEach((cell, i) => row.appendChild(createCell(cell, i)));
-        //row.innerHTML = `<div class="t-row border-b ${theme.tableBorderColor}"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">${rowCount}</div>${cells}</div>`;
         return row;
       }
 
-      let setPlaceholder = function (col) {
-        if (col.referencedTable) {
-          return `Add Record to '${col.referencedTable}'`
-        } else {
-          if (col.type == 'fk') {
-            return `Search '${col.lookup}'`
-          } else {
-            return ``;
-          }
-        }
-      }
 
       let createNewRow = function (columns) {
         let row = document.createElement('div');
@@ -493,8 +482,7 @@
         rowNumber.classList.add(...rowHeaderClasses);
         rowNumber.innerHTML = `*`;
         row.appendChild(rowNumber);
-
-        let placeholderValue = function(col) {
+        let placeholderValue = function (col) {
           if (col.referencedTable) {
             return `Add Record to '${col.referencedTable}'`
           } else if (col.type == 'fk') {
@@ -503,9 +491,8 @@
             return `Add Record`
           }
         }
-        
-        columns.forEach(function(col){
-          console.log(col.referencedTable)
+
+        columns.forEach(function (col) {
           let cell = document.createElement('div');
           cell.classList.add(...cellClasses)
           let cellInput = document.createElement('input');
@@ -514,22 +501,12 @@
           cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
           cell.appendChild(cellInput);
           row.appendChild(cell);
+          cellInput.addEventListener('keydown', newRow);
+        });
 
-        })
-        
-        let inputControl = function (col) {
-          if (col.readOnly) {
-            return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" readOnly="true" type="text" placeholder='New Record'>`
-          } else {
-            return `<input class="${theme.inputBackgroundColor} ${theme.textColor} p-2 w-full" value="" type="text" placeholder="${setPlaceholder(col)}">`
-          }
-        }
-        //let cells = columns.map(col => `<div class="t-cell border-r ${theme.tableBorderColor}">${inputControl(col)}</div>`).join('');
-        //let row = `<div class="t-row border-b ${theme.tableBorderColor} add-new-record"><div class="t-row-header p-2 ${theme.mutedTextColor} border-r ${theme.tableBorderColor} text-xs">*</div>${cells}</div>`
         return row;
       }
 
-      let newRecord = createNewRow(obj.columns);
 
       let table = document.createElement('div');
       let tableClasses = ['t-table', theme.backgroundColor];
@@ -549,10 +526,30 @@
       obj.records.forEach((record, index) => rowWrapper.appendChild(createRow(record, index)));
       table.appendChild(headerWrapper);
       table.appendChild(rowWrapper);
-      table.appendChild(createNewRow(obj.columns));
 
-      return resizeColumns(table);
+      let newRowWrapper = document.createElement('div');
+      newRowWrapper.classList.add('t-body', 'row-wrapper');
+      table.appendChild(newRowWrapper);
+      newRowWrapper.appendChild(createNewRow(obj.columns));
+
+      let repositionWarning = document.createElement('div');
+      repositionWarning.classList.add('p-1', theme.textColor, 'bg-green-700', 'text-sm');
+      repositionWarning.innerHTML = `New records will be repositioned on refresh`;
+
+      console.log(newRowWrapper.contains(repositionWarning))
+
+      //ADD NEW ROW
+      function newRow(e) {
+        newRowWrapper.prepend(repositionWarning);
+        this.parentNode.parentNode.querySelectorAll('input').forEach(el => el.removeEventListener('keydown', newRow));
+        newRowWrapper.appendChild(createNewRow(obj.columns));
+        resizeColumns(table);
+      }
+      resizeColumns(table);
+      return table;
     }
+
+
 
 
     function createEditRecordMenu(table, value) {
@@ -691,37 +688,12 @@
       console.log(renderedCell)
       input.classList.add('hidden');
       renderedCell.classList.remove('hidden');
-
-      //input.classList.add('hidden');
-      //let value = input.getAttribute('value');
-      //let contentWrapper = document.createElement('div');
-      //contentWrapper.classList.add('content-wrapper', 'p-2', theme.textColor);
-      //let type = input.getAttribute('data-type');
-
-      //let cellContent = function (type) {
-      //  if (type == 'fk') {
-      //    return `<div class="bg-indigo-500 bg-opacity-60 px-2 rounded inline-block ${theme.textColor}">${value}</div>`
-      //  } else {
-      //    return `${value}`
-      //  }
-      //}
-
-      //contentWrapper.innerHTML = cellContent(type);
-      //el.appendChild(contentWrapper);
-      //contentWrapper.addEventListener('dblclick', editCell);
-      //contentWrapper.addEventListener('click', selectCell);
-
       return el;
     }
 
     var doubleClickEvent = document.createEvent('MouseEvents');
     doubleClickEvent.initEvent('dblclick', true, true);
-    //document.querySelectorAll('.rendered-cell')[5].dispatchEvent(doubleClickEvent);
-
-    // <div class="space-x-1 flex">
-    //       <button class="${theme.inputBackgroundColor} flex-grow ${theme.textColor} p-2 text-sm">Cancel</button>  
-    //     <button class="${theme.primaryColor} flex-grow p-2 text-sm">Save</button>
-    // </div>
+    //document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
 
     function enableInput(el) {
       let cellInput = el.parentNode.querySelector('input');
