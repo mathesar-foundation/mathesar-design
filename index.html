@@ -328,17 +328,17 @@
     }
 
     // STATUS FOR TABS
-    //setTableStatus(selectTableById(activeTable), 'active');
+    setTableStatus(selectTableById(activeTable), 'active');
     //setTableStatus(selectTableById(4), 'open');
     //setTableStatus(selectTableById(2), 'open');
 //
-    //function setTableStatus(table, status) {
-    //  if (table.id == activeTable) {
-    //    table.status = 'active';
-    //  } else {
-    //    table.status = status;
-    //  }
-    //}
+    function setTableStatus(table, status) {
+      if (table.id == activeTable) {
+        table.status = 'active';
+      } else {
+        table.status = status;
+      }
+    }
 
     // TABS
 
