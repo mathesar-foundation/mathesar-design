@@ -533,14 +533,14 @@
           //ADD MENU ITEMS
           let menuItems = [
             dataTypeOption,
-            createMenuItem('Link to Another Table', menuAction),
-            createMenuItem('Insert New Column', menuAction),
-            createMenuItem('Rename Column', menuAction),
-            createMenuItem('Duplicate Column', menuAction),
-            createMenuItem('Filter Column', menuAction),
-            createMenuItem('Sort Column', menuAction),
-            createMenuItem('Group Column', menuAction),
-            createMenuItem('Delete Column', menuAction)
+            createMenuItem('Link to Another Table', menuAction(menu)),
+            createMenuItem('Insert New Column', menuAction(menu)),
+            createMenuItem('Rename Column', menuAction(menu)),
+            createMenuItem('Duplicate Column', menuAction(menu)),
+            createMenuItem('Filter Column', menuAction(menu)),
+            createMenuItem('Sort Column', menuAction(menu)),
+            createMenuItem('Group Column', menuAction(menu)),
+            createMenuItem('Delete Column', menuAction(menu))
           ];
           menuItems.forEach(item => menu.appendChild(item));
 
@@ -559,15 +559,20 @@
           return menu;
         }
 
-        function menuAction() {
-          console.log('test')
+        function menuAction(menu) {
+          return function () {
+            menu.parentElement.removeChild(menu);
+          }
         }
 
         //header.appendChild(createHeaderMenu(col));
         //header.appendChild(createTypeMenu(col));
 
         function openColumnMenu(e) {
-          header.appendChild(createHeaderMenu(col));
+          let menu = createHeaderMenu(col);
+          header.appendChild(menu);
+
+          addDropdownOutsideClickHandler(menu, () => console.log());
         }
 
         function openDataTypeMenu(e) {
@@ -808,11 +813,20 @@
       return menu;
     }
 
+    function isNodeChildOf(obj, parentObj) {
+      while (obj != undefined && obj != null && obj.tagName.toLowerCase() != 'body') {
+        if (obj == parentObj) {
+          return true;
+        }
+        obj = obj.parentNode;
+      }
+      return false;
+    }
+
     function addDropdownOutsideClickHandler(menu, callback) {
 
       function handler(event) {
-        console.log(menu)
-        var isClickInsideElement = menu.contains(event.target);
+        var isClickInsideElement = isNodeChildOf(event.target, menu);
         console.log(isClickInsideElement);
         if (!isClickInsideElement) {
           console.log('outside')
@@ -821,7 +835,10 @@
           document.removeEventListener('click', handler);
         }
       }
-      document.addEventListener('click', handler);
+
+      setTimeout(function() {
+        document.addEventListener('click', handler);
+      }, 0);
     }
 
     function resizeColumns(table) {
