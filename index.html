@@ -170,15 +170,16 @@
         columns: [
           { name: 'id', type: 'number', readOnly: true },
           { name: 'artistName', type: 'text' },
-          { name: 'releaseId', type: 'fk', lookupField: 'releaseName', lookupTable: 'release' }
+          { name: 'releaseId', type: 'fk', lookupField: 'releaseName', lookupTable: 'release' },
+          { name: 'trackId', type: 'text' }
         ],
         records: [
-          [449, 'Aqua', 'Aquarius'],
-          [450, 'Patti Smith', 'Horses'],
-          [451, 'Elvis Costello', 'Spike'],
-          [451, 'Kylie Minogue', 'Golden'],
-          [451, 'Artic Monkeys', 'AM'],
-          [453, 'Scorpions', 'Animal Magnetism']
+          [449, 'Aqua', 'Aquarius', ''],
+          [450, 'Patti Smith', 'Horses', ''],
+          [451, 'Elvis Costello', 'Spike', ''],
+          [451, 'Kylie Minogue', 'Golden', ''],
+          [451, 'Artic Monkeys', 'AM', ''],
+          [453, 'Scorpions', 'Animal Magnetism', '']
         ],
         color: 'purple'
       }, {
@@ -273,15 +274,15 @@
       ]
     };
 
+    //localStorage.clear();
+
     if (localStorage.getItem('tables') === null) {
       localStorage.setItem('tables', JSON.stringify(schemaTables));
-    }    
-    
+    }
+
 
     let savedTables = JSON.parse(localStorage.getItem('tables'));
-  
 
-    console.log(savedTables)
 
     var activeTable = urlParams.get('activeTable');
     createSidebarNavigation(savedTables);
@@ -331,7 +332,7 @@
     setTableStatus(selectTableById(activeTable), 'active');
     //setTableStatus(selectTableById(4), 'open');
     //setTableStatus(selectTableById(2), 'open');
-//
+    //
     function setTableStatus(table, status) {
       if (table.id == activeTable) {
         table.status = 'active';
@@ -345,7 +346,6 @@
     document.querySelector('.table-wrapper').parentNode.prepend(createTabs(savedTables));
     function createTabs(tables) {
       let openTables = Object.values(tables).flat().filter(table => table.status);
-      console.log(openTables)
 
       let createTab = table => `<div class="py-2 px-3 ${theme.textColor} ${table.status == 'active' ? theme.accentBackgroundColor : theme.backgroundColor}">${table.name}</div>`;
 
@@ -357,13 +357,13 @@
       return tabs;
     }
 
-    function createButton(value,icon) {
+    function createButton(value, icon) {
       let btn = document.createElement('button');
-      btn.classList.add('px-2','py-1',theme.textColor,'border',theme.lightBorderColor)
+      btn.classList.add('px-2', 'py-1', theme.textColor, 'border', theme.lightBorderColor)
       btn.innerHTML = `${value}`;
       if (icon) {
         let btnIcon = document.createElement('i');
-        btnIcon.classList.add(`ri-${icon}-line`,'align-bottom','mr-2');
+        btnIcon.classList.add(`ri-${icon}-line`, 'align-bottom', 'mr-2');
         btn.prepend(btnIcon);
       }
       return btn;
@@ -375,15 +375,15 @@
 
 
     function createTableToolbar(obj) {
-      
+
       const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
-      
+
       let toolbar = document.createElement('div');
-      toolbar.classList.add(theme.accentBackgroundColor,'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
-      let saveAsViewBtn = createButton('Save as View','save');
-      let addRecordBtn = createButton('Add Record','add');
+      toolbar.classList.add(theme.accentBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
+      let saveAsViewBtn = createButton('Save as View', 'save');
+      let addRecordBtn = createButton('Add Record', 'add');
       let tableTitle = document.createElement('h2');
-      tableTitle.classList.add(theme.textColor,'text-lg');
+      tableTitle.classList.add(theme.textColor, 'text-lg');
       tableTitle.innerHTML = obj.name;
       toolbar.appendChild(tableTitle);
       toolbar.appendChild(addRecordBtn);
@@ -392,22 +392,21 @@
         toolbar.appendChild(saveAsViewBtn);
       }
       // EVENTS
-      saveAsViewBtn.addEventListener('click',saveAsView);
+      saveAsViewBtn.addEventListener('click', saveAsView);
       saveAsViewBtn.table = obj;
       return toolbar;
     }
 
-    console.log(savedTables);
 
-    function saveAsView(e){
-      let selTable= e.target.table;
-      let table = {...selTable};
+    function saveAsView(e) {
+      let selTable = e.target.table;
+      let table = { ...selTable };
       let tableId = savedTables.views.map(table => table.id);
       let maxId = Math.max(...tableId);
-      table.id = maxId+1;
+      table.id = maxId + 1;
       table.columns.forEach(col => col.referencedTable = table.name);
       table.name = `View of ${table.name}`
-      
+
       savedTables.views.push(table);
       localStorage.setItem('tables', JSON.stringify(savedTables));
       location.reload();
@@ -468,8 +467,113 @@
 
       let createHeader = function (col) {
         let header = document.createElement('div');
-        header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor);
-        header.innerHTML = `<i class="ri-${typeIcon(col.type)} align-bottom border border-gray-500 rounded mr-2"></i>${col.name}`;
+        header.style.position = 'relative';
+        header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
+        let headerLabel = document.createElement('div');
+        let headerIcon = document.createElement('i');
+        headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-2');
+        headerLabel.innerHTML = col.name;
+        header.appendChild(headerLabel);
+        headerLabel.prepend(headerIcon);
+
+        let headerMenuToggle = document.createElement('button');
+        headerMenuToggle.innerHTML = `<i class="ri-arrow-down-s-line align-bottom"></i>`;
+        headerMenuToggle.classList.add('ml-auto')
+        header.appendChild(headerMenuToggle);
+        headerMenuToggle.addEventListener('click', openColumnMenu);
+
+        // CREATE MENU
+
+        let menuWrapper = function () {
+          let menuWrapper = document.createElement('div');
+          menuWrapper.classList.add(theme.backgroundColor, theme.mediumBorderColor, 'border', 'w-full', 'shadow-md', 'text-sm', 'column-menu');
+          menuWrapper.style.top = '40px';
+          menuWrapper.style.left = '0';
+          menuWrapper.style.position = 'absolute';
+          return menuWrapper;
+        }
+
+        let createMenuItem = function (label, callback) {
+          let menuItem = document.createElement('a');
+          menuItem.classList.add('block', 'p-2')
+          menuItem.setAttribute('href', 'javascript:void(0)');
+          menuItem.innerText = label;
+          menuItem.addEventListener('click', callback);
+          return menuItem;
+        }
+
+        let createMenuTextInput = function (label) {
+          let menuInput = document.createElement('div');
+          let input = document.createElement('input');
+          let inputLabel = document.createElement('label');
+          inputLabel.innerText = label;
+          input.setAttribute('type','text');
+          menuInput.appendChild(inputLabel);
+          menuInput.appendChild(input);
+          return menuInput;
+        }
+
+        let createHeaderMenu = function (col) {
+
+          let menu = menuWrapper();
+
+          // CREATE MENU ITEMS
+          let dataTypeOption = document.createElement('a');
+          dataTypeOption.setAttribute('href', 'javascript:void(0)');
+          dataTypeOption.classList.add('p-2', 'border-b', theme.mediumBorderColor, 'flex', 'items-center', 'block');
+          let dataTypeLabel = document.createElement('div');
+          dataTypeLabel.classList.add('text-base');
+          dataTypeOption.appendChild(dataTypeLabel);
+          let dataTypeIcon = document.createElement('i');
+          dataTypeIcon.classList.add('ri-' + typeIcon(col.type), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
+          dataTypeLabel.innerHTML = col.type;
+          dataTypeLabel.prepend(dataTypeIcon);
+          dataTypeOption.addEventListener('click', openDataTypeMenu);
+
+          //ADD MENU ITEMS
+          let menuItems = [
+            dataTypeOption,
+            createMenuItem('Link to Another Table', menuAction),
+            createMenuItem('Insert New Column', menuAction),
+            createMenuItem('Rename Column', menuAction),
+            createMenuItem('Duplicate Column', menuAction),
+            createMenuItem('Filter Column', menuAction),
+            createMenuItem('Sort Column', menuAction),
+            createMenuItem('Group Column', menuAction),
+            createMenuItem('Delete Column', menuAction)
+          ];
+          menuItems.forEach(item => menu.appendChild(item));
+
+          //addDropdownOutsideClickHandler(headerMenu, menuAction);
+          return menu;
+        }
+
+        let createTypeMenu = function (col) {
+          let menu = menuWrapper();
+          menu.innerText = 'TEST';
+          let menuItems = [
+            createMenuTextInput('Field Size Limit')
+          ];
+          menuItems.forEach(item => menu.appendChild(item));
+
+          return menu;
+        }
+
+        function menuAction() {
+          console.log('test')
+        }
+
+        //header.appendChild(createHeaderMenu(col));
+        //header.appendChild(createTypeMenu(col));
+
+        function openColumnMenu(e) {
+          header.appendChild(createHeaderMenu(col));
+        }
+
+        function openDataTypeMenu(e) {
+          console.log('datatypesshow');
+        }
+
         return header;
       };
 
@@ -492,7 +596,6 @@
           renderedCell.table = recordTable[i];
           renderedCell.field = summaryOf[i];
         } else if (recordTable[i]) {
-          console.log('linked', recordTable[i], cell)
           renderedCell.addEventListener('dblclick', editLinkedRecord);
           renderedCell.table = recordTable[i];
           renderedCell.value = cell;
@@ -585,7 +688,6 @@
       repositionWarning.classList.add('p-1', theme.textColor, 'bg-green-700', 'text-sm');
       repositionWarning.innerHTML = `New records will be repositioned on refresh`;
 
-      console.log(newRowWrapper.contains(repositionWarning))
 
       //ADD NEW ROW
       function newRow(e) {
@@ -628,8 +730,8 @@
 
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
-      addDropdownOutsideClickHandler(menu);
-
+      addDropdownOutsideClickHandler(menu, renderCell);
+      console.log(menu);
       return menu;
     }
 
@@ -675,7 +777,7 @@
         selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
       })
 
-      addDropdownOutsideClickHandler(menu);
+      addDropdownOutsideClickHandler(menu, renderCell);
 
       return menu;
     }
@@ -693,8 +795,6 @@
       let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
       let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
 
-      console.log(summaryRecords);
-
       summaryRecords.forEach(function (record) {
         let item = document.createElement('div');
         item.classList.add(theme.textColor, 'p-2', theme.primaryColor, 'bg-opacity-40')
@@ -703,22 +803,24 @@
       });
 
 
-      addDropdownOutsideClickHandler(menu);
+      addDropdownOutsideClickHandler(menu, renderCell);
 
       return menu;
     }
 
-    function addDropdownOutsideClickHandler(menu) {
+    function addDropdownOutsideClickHandler(menu, callback) {
+
       function handler(event) {
+        console.log(menu)
         var isClickInsideElement = menu.contains(event.target);
+        console.log(isClickInsideElement);
         if (!isClickInsideElement) {
           console.log('outside')
-          renderCell(menu);
+          callback(menu);
           menu.remove();
           document.removeEventListener('click', handler);
         }
       }
-
       document.addEventListener('click', handler);
     }
 
@@ -733,7 +835,6 @@
     function renderCell(el) {
       let input = el.parentNode.querySelector('input');
       let renderedCell = el.parentNode.querySelector('.rendered-cell');
-      console.log(renderedCell)
       input.classList.add('hidden');
       renderedCell.classList.remove('hidden');
       return el;
@@ -749,14 +850,11 @@
       cellInput.classList.remove('hidden');
       renderedCell.classList.add('hidden');
       cellInput.focus();
-      console.log(renderedCell)
     }
 
     function editLinkedRecord(evt) {
-      console.log(evt)
       let table = evt.target.table;
       let value = evt.target.value;
-      console.log(table, value)
       enableInput(this)
       this.parentNode.appendChild(createEditRecordMenu(table, value));
     }
@@ -782,7 +880,6 @@
     }
 
     function selectCell(e) {
-      console.log('select')
       let row = this.parentNode.parentNode;
       let cell = this;
       let selectedRowClasses = [];
@@ -863,7 +960,6 @@
     function createAddColumnMenu(savedTables) {
 
       let typeIcon = function (column) {
-        console.log(column.type)
         if (column.type == 'text') {
           return 'text';
         } else if (column.type == 'number') {
