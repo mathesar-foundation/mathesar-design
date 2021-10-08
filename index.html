@@ -561,7 +561,9 @@
 
         function menuAction(menu) {
           return function () {
+            console.log("Clicked on createHeaderMenu -> menuAction item");
             menu.parentElement.removeChild(menu);
+            removeDropdownOutsideClickHandler(menu);
           }
         }
 
@@ -572,7 +574,7 @@
           let menu = createHeaderMenu(col);
           header.appendChild(menu);
 
-          addDropdownOutsideClickHandler(menu, () => console.log());
+          addDropdownOutsideClickHandler(menu, () => console.log("Clicked outside when openColumnMenu was open"));
         }
 
         function openDataTypeMenu(e) {
@@ -823,8 +825,13 @@
       return false;
     }
 
-    function addDropdownOutsideClickHandler(menu, callback) {
+    function removeDropdownOutsideClickHandler(menu) {
+      if (menu.outsideClickHandler) {
+        document.removeEventListener('click', menu.outsideClickHandler);
+      }
+    }
 
+    function addDropdownOutsideClickHandler(menu, callback) {
       function handler(event) {
         var isClickInsideElement = isNodeChildOf(event.target, menu);
         console.log(isClickInsideElement);
@@ -833,11 +840,15 @@
           callback(menu);
           menu.remove();
           document.removeEventListener('click', handler);
+          menu.outsideClickHandler = null;
         }
       }
 
+      removeDropdownOutsideClickHandler(menu);
+
       setTimeout(function() {
         document.addEventListener('click', handler);
+        menu.outsideClickHandler = handler;
       }, 0);
     }
 
