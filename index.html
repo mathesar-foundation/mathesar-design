@@ -498,7 +498,9 @@
           menuItem.classList.add('block', 'p-2')
           menuItem.setAttribute('href', 'javascript:void(0)');
           menuItem.innerText = label;
-          menuItem.addEventListener('click', callback);
+          menuItem.addEventListener('click', function(){
+            callback(col);
+          }, false);
           return menuItem;
         }
 
@@ -533,18 +535,17 @@
           //ADD MENU ITEMS
           let menuItems = [
             dataTypeOption,
-            createMenuItem('Link to Another Table', menuAction(menu)),
-            createMenuItem('Insert New Column', menuAction(menu)),
-            createMenuItem('Rename Column', menuAction(menu)),
-            createMenuItem('Duplicate Column', menuAction(menu)),
-            createMenuItem('Filter Column', menuAction(menu)),
-            createMenuItem('Sort Column', menuAction(menu)),
-            createMenuItem('Group Column', menuAction(menu)),
-            createMenuItem('Delete Column', menuAction(menu))
+            createMenuItem('Link to Another Table',linkToTable),
+            createMenuItem('Insert New Column'),
+            createMenuItem('Rename Column'),
+            createMenuItem('Duplicate Column'),
+            createMenuItem('Filter Column'),
+            createMenuItem('Sort Column'),
+            createMenuItem('Group Column'),
+            createMenuItem('Delete Column')
           ];
           menuItems.forEach(item => menu.appendChild(item));
 
-          //addDropdownOutsideClickHandler(headerMenu, menuAction);
           return menu;
         }
 
@@ -560,6 +561,7 @@
         }
 
         function menuAction(menu) {
+          console.log(menu)
           return function () {
             console.log("Clicked on createHeaderMenu -> menuAction item");
             menu.parentElement.removeChild(menu);
@@ -567,13 +569,9 @@
           }
         }
 
-        //header.appendChild(createHeaderMenu(col));
-        //header.appendChild(createTypeMenu(col));
-
         function openColumnMenu(e) {
           let menu = createHeaderMenu(col);
           header.appendChild(menu);
-
           addDropdownOutsideClickHandler(menu, () => console.log("Clicked outside when openColumnMenu was open"));
         }
 
@@ -589,7 +587,7 @@
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell','h-full');
         renderedCell.style.cursor = 'pointer';
         renderedCell.innerHTML = cell;
 
@@ -599,20 +597,35 @@
         cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full', 'hidden');
 
         if (summaryOf[i] && recordTable[i]) {
-          renderedCell.addEventListener('dblclick', editSummaryRecord);
-          renderedCell.table = recordTable[i];
-          renderedCell.field = summaryOf[i];
+          renderedCell.addEventListener('dblclick', function(){
+            cellInput.classList.remove('hidden');
+            cellInput.focus();
+            renderedCell.classList.add('hidden');
+            cellElement.appendChild(createRecordListMenu(cellInput,recordTable[i],summaryOf[i]));
+          });
         } else if (recordTable[i]) {
-          renderedCell.addEventListener('dblclick', editLinkedRecord);
-          renderedCell.table = recordTable[i];
-          renderedCell.value = cell;
+          renderedCell.addEventListener('dblclick', function(){
+            cellInput.classList.remove('hidden');
+            cellInput.focus();
+            renderedCell.classList.add('hidden');
+            cellElement.appendChild(createEditRecordMenu(cellInput,recordTable[i],cell));
+          });
         } else if (lookupTable[i]) {
-          renderedCell.addEventListener('dblclick', editLookupField);
-          renderedCell.table = lookupTable[i];
-          renderedCell.field = lookupField[i];
-          renderedCell.value = cell;
+          renderedCell.addEventListener('dblclick', function(){
+            cellInput.classList.remove('hidden');
+            cellInput.focus();
+            renderedCell.classList.add('hidden');
+            cellElement.appendChild(createLookupMenu(cellInput,lookupTable[i],lookupField[i],cell));
+          });
         } else {
-          renderedCell.addEventListener('dblclick', editField);
+          renderedCell.addEventListener('dblclick', function(){
+            cellInput.classList.remove('hidden');
+            cellInput.focus();
+            renderedCell.classList.add('hidden');
+            cellInput.addEventListener('blur', function(){
+              renderCell(cellInput);
+            })
+          });
         }
 
         cellElement.appendChild(cellInput);
@@ -707,10 +720,19 @@
       return table;
     }
 
+    
 
+    function linkToTable(col) {
+      col.type = 'fk';
+      col.lookupField = 'trackName';
+      col.lookupTable = 'track';
+      col.referencedTable = '';
+      document.querySelector('.table-wrapper').innerHTML = '';
+      document.querySelector('.table-wrapper').appendChild(createTable(selectTableById(activeTable)))
+    }
 
-
-    function createEditRecordMenu(table, value) {
+    function createEditRecordMenu(input, table, value) {
+      console.log(input,table,value)
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -737,12 +759,14 @@
 
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
-      addDropdownOutsideClickHandler(menu, renderCell);
-      console.log(menu);
+      addDropdownOutsideClickHandler(menu, function(){
+        renderCell(input);
+      });
+
       return menu;
     }
 
-    function createRecordListMenu(table, field) {
+    function createRecordListMenu(input, table, field) {
 
       let summary = field;
       let menu = document.createElement('div');
@@ -784,33 +808,50 @@
         selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
       })
 
-      addDropdownOutsideClickHandler(menu, renderCell);
+      addDropdownOutsideClickHandler(menu, function(){
+        renderCell(input);
+      });
 
       return menu;
     }
 
-    function createLookupMenu(table, field, value) {
+    function createLookupMenu(input, table, field, value) {
+      
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
       menu.style.minWidth = '280px';
       let menuHeader = document.createElement('h4');
       menuHeader.classList.add(theme.textColor);
-      menuHeader.innerHTML = `Lookup records in '${table}' Lookup field: ${field}`;
+      menuHeader.innerHTML = `Lookup records in '${table}'`;
+      menuLookupField = document.createElement('div');
+      menuLookupField.classList.add(theme.mutedTextColor,'text-sm')
+      menuLookupField.innerHTML = `Lookup field: ${field}`;
       menu.appendChild(menuHeader);
+      menu.appendChild(menuLookupField);
 
       let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
       let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
 
       summaryRecords.forEach(function (record) {
-        let item = document.createElement('div');
-        item.classList.add(theme.textColor, 'p-2', theme.primaryColor, 'bg-opacity-40')
+        let item = document.createElement('a');
+        item.setAttribute('href','javascript:void(0)');
+        item.classList.add(theme.textColor, 'p-2', theme.primaryColor, 'bg-opacity-40','block')
         item.innerHTML = `${record}`
+        item.addEventListener('click',function(){
+          linkRecord(record);
+        });
         menu.appendChild(item);
       });
 
+      function linkRecord(record) {
+        input.setAttribute('value',record);
+        console.log(record)
+      }
 
-      addDropdownOutsideClickHandler(menu, renderCell);
+      addDropdownOutsideClickHandler(menu, function(){
+        renderCell(input);
+      });
 
       return menu;
     }
@@ -860,12 +901,11 @@
       return table;
     }
 
-    function renderCell(el) {
-      let input = el.parentNode.querySelector('input');
-      let renderedCell = el.parentNode.querySelector('.rendered-cell');
+    function renderCell(input) {
       input.classList.add('hidden');
-      renderedCell.classList.remove('hidden');
-      return el;
+      input.parentNode.childNodes[1].innerHTML = input.getAttribute('value');
+      input.parentNode.childNodes[1].classList.remove('hidden');
+      return input;
     }
 
     var doubleClickEvent = document.createEvent('MouseEvents');
@@ -880,28 +920,6 @@
       cellInput.focus();
     }
 
-    function editLinkedRecord(evt) {
-      let table = evt.target.table;
-      let value = evt.target.value;
-      enableInput(this)
-      this.parentNode.appendChild(createEditRecordMenu(table, value));
-    }
-
-    function editSummaryRecord(evt) {
-      let table = evt.target.table;
-      let field = evt.target.field;
-      enableInput(this)
-      this.parentNode.appendChild(createRecordListMenu(table, field));
-    }
-
-    function editLookupField(evt) {
-      let table = evt.target.table;
-      let value = evt.target.value;
-      let field = evt.target.field;
-      let cellInput = this.querySelector('input');
-      enableInput(this)
-      this.parentNode.appendChild(createLookupMenu(table, field, value));
-    }
 
     function editField(evt) {
       enableInput(this);
@@ -966,10 +984,6 @@
         document.querySelector('.row-wrapper--add').prepend(repositionWarning);
       }
       document.querySelector('.row-wrapper--add').append(newRow);
-
-      //row.querySelectorAll('input').forEach(cell => renderCell(cell));
-
-      //initNewRecord();
     }
 
     let addColumnBtn = document.querySelector('#add-column');
