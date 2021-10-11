@@ -85,9 +85,10 @@
         </div>
         -->
         <div class="mediumBackgroundColor h-full flex items-start table-wrapper">
-
+          <!--
           <button class="primaryColor inverseTextColor py-2 px-3" id="add-column"><i
               class="ri-add-line align-bottom"></i></button>
+              -->
 
         </div>
       </div>
@@ -219,14 +220,14 @@
         id: 3,
         columns: [
           { name: 'id', type: 'number', readOnly: true },
+          { name: 'trackId', type: 'fk', lookupField: 'trackName', lookupTable: 'track' },
           { name: 'artistId', type: 'fk', lookupField: 'artistName', lookupTable: 'artist' },
-          { name: 'trackId', type: 'fk', lookupField: 'trackName', lookupTable: 'track' }
         ],
         records: [
-          [500, 'Aqua', 'Around the World'],
-          [501, 'Aqua', 'Barbie Girl'],
-          [502, 'Aqua', 'Turn Back Time'],
-          [503, 'Aqua', 'Roses are Red']
+          [500, 'Around the World',''],
+          [501, 'Barbie Girl',''],
+          [502, 'Turn Back Time',''],
+          [503, 'Roses are Red','']
         ],
         color: 'pink'
       }, {
@@ -276,7 +277,7 @@
       ]
     };
 
-    //localStorage.clear();
+    localStorage.clear();
 
     if (localStorage.getItem('tables') === null) {
       localStorage.setItem('tables', JSON.stringify(schemaTables));
@@ -433,19 +434,20 @@
     }
 
     function createModal(content){
-      let modal = document.createElement('div');
       let overlay = document.createElement('div');
-      
-      let modalClasses = [theme.backgroundColor,'p-2',theme.textColor];
+      let modal = document.createElement('div');
+      modal.style.maxWidth = '600px';
+      let modalClasses = [theme.backgroundColor,'p-2',theme.textColor,'border','mx-auto',theme.darkBorderColor];
       modal.classList.add(...modalClasses);
-      overlay.classList.add(theme.backgroundColor);
-      modal.style.position = 'absolute';
-      modal.style.top = '30%';
-      modal.style.left = '50%';
+      overlay.classList.add(theme.backgroundColor,'w-full','h-full','flex','items-center','bg-opacity-70');
+      overlay.style.position = 'absolute';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
       let modalContent = document.createElement('div');
       modalContent.appendChild(content);
       modal.appendChild(modalContent);
-      return modal;
+      overlay.appendChild(modal);
+      return overlay;
     }
 
     //CREATE TABLE
@@ -747,7 +749,7 @@
       return table;
     }
 
-    linkToTable({ name: 'trackId', type: 'text' });
+    //linkToTable({ name: 'trackId', type: 'text' });
 
     function linkToTable(col) {
       console.log(col);
@@ -761,7 +763,7 @@
         let item = document.createElement('a');
         item.setAttribute('href','javascript:void(0)')
         item.classList.add('border',theme.lightBorderColor,'p-1','block');
-        item.innerHTML = table.name;
+        item.innerHTML = `${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
         item.addEventListener('click',function(){
           col.type = 'fk';
           col.lookupField = 'trackName';
@@ -769,7 +771,7 @@
           col.referencedTable = '';
           document.querySelector('.table-wrapper').innerHTML = '';
           document.querySelector('.table-wrapper').appendChild(createTable(selectTableById(activeTable)));
-          linkTableForm.parentNode.parentNode.remove();
+          linkTableForm.parentNode.parentNode.parentNode.remove();
         });
         tableSelector.appendChild(item);
 
@@ -863,7 +865,6 @@
     }
 
     function createLookupMenu(input, table, field, value) {
-
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -889,6 +890,21 @@
           linkRecord(record);
         });
         menu.appendChild(item);
+      });
+
+      let allowMultiple = createButton('Add Multiple','add');
+      menu.appendChild(allowMultiple);
+
+      allowMultiple.addEventListener('click',function(){
+        let warning = document.createElement('div');
+        warning.innerHTML = `<div class="mb-2">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
+        let warningActions = document.createElement('div');
+        warning.appendChild(warningActions);
+        warningActions.classList.add('space-x-2');
+        warningActions.appendChild(createButton('Cancel'));
+        warningActions.appendChild(createButton('Create Table'));
+        
+        document.querySelector('body').appendChild(createModal(warning));
       });
 
       function linkRecord(record) {
