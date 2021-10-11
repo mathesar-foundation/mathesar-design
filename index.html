@@ -209,7 +209,9 @@
         ],
         records: [
           [460, 'Turn Back Time', 180000],
-          [461, 'Roses are Red', 180000]
+          [461, 'Roses are Red', 180000],
+          [462, 'Barbie Girl', 180000],
+          [462, 'Around the World', 180000],
         ],
         color: 'pink'
       }, {
@@ -430,8 +432,21 @@
       }
     }
 
-
-
+    function createModal(content){
+      let modal = document.createElement('div');
+      let overlay = document.createElement('div');
+      
+      let modalClasses = [theme.backgroundColor,'p-2',theme.textColor];
+      modal.classList.add(...modalClasses);
+      overlay.classList.add(theme.backgroundColor);
+      modal.style.position = 'absolute';
+      modal.style.top = '30%';
+      modal.style.left = '50%';
+      let modalContent = document.createElement('div');
+      modalContent.appendChild(content);
+      modal.appendChild(modalContent);
+      return modal;
+    }
 
     //CREATE TABLE
     function createTable(obj) {
@@ -498,7 +513,7 @@
           menuItem.classList.add('block', 'p-2')
           menuItem.setAttribute('href', 'javascript:void(0)');
           menuItem.innerText = label;
-          menuItem.addEventListener('click', function(){
+          menuItem.addEventListener('click', function () {
             callback(col);
           }, false);
           return menuItem;
@@ -509,7 +524,7 @@
           let input = document.createElement('input');
           let inputLabel = document.createElement('label');
           inputLabel.innerText = label;
-          input.setAttribute('type','text');
+          input.setAttribute('type', 'text');
           menuInput.appendChild(inputLabel);
           menuInput.appendChild(input);
           return menuInput;
@@ -535,7 +550,7 @@
           //ADD MENU ITEMS
           let menuItems = [
             dataTypeOption,
-            createMenuItem('Link to Another Table',linkToTable),
+            createMenuItem('Link to Another Table', linkToTable),
             createMenuItem('Insert New Column'),
             createMenuItem('Rename Column'),
             createMenuItem('Duplicate Column'),
@@ -545,7 +560,6 @@
             createMenuItem('Delete Column')
           ];
           menuItems.forEach(item => menu.appendChild(item));
-
           return menu;
         }
 
@@ -582,47 +596,61 @@
         return header;
       };
 
+      let getColumnByPosition = function (int) {
+        return obj.columns[int];
+      }
 
       let createCell = function (cell, i) {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
+        let cellType = getColumnByPosition(i).type;
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell','h-full');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full');
         renderedCell.style.cursor = 'pointer';
-        renderedCell.innerHTML = cell;
+
+        if (cellType == 'fk') {
+          let linkedCell = document.createElement('div');
+          linkedCell.classList.add(theme.primaryColor, 'rounded', 'px-1', 'inline-block', 'bg-opacity-50');
+          linkedCell.innerHTML = cell;
+          renderedCell.appendChild(linkedCell);
+
+        } else {
+          renderedCell.innerHTML = cell;
+        }
 
         let cellInput = document.createElement('input');
         cellInput.setAttribute('type', 'text');
         cellInput.setAttribute('value', cell);
         cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full', 'hidden');
 
+
         if (summaryOf[i] && recordTable[i]) {
-          renderedCell.addEventListener('dblclick', function(){
+          renderedCell.addEventListener('dblclick', function () {
             cellInput.classList.remove('hidden');
             cellInput.focus();
             renderedCell.classList.add('hidden');
-            cellElement.appendChild(createRecordListMenu(cellInput,recordTable[i],summaryOf[i]));
+            cellElement.appendChild(createRecordListMenu(cellInput, recordTable[i], summaryOf[i]));
           });
         } else if (recordTable[i]) {
-          renderedCell.addEventListener('dblclick', function(){
+          renderedCell.addEventListener('dblclick', function () {
             cellInput.classList.remove('hidden');
             cellInput.focus();
             renderedCell.classList.add('hidden');
-            cellElement.appendChild(createEditRecordMenu(cellInput,recordTable[i],cell));
+            cellElement.appendChild(createEditRecordMenu(cellInput, recordTable[i], cell));
           });
         } else if (lookupTable[i]) {
-          renderedCell.addEventListener('dblclick', function(){
+          renderedCell.addEventListener('dblclick', function () {
             cellInput.classList.remove('hidden');
             cellInput.focus();
             renderedCell.classList.add('hidden');
-            cellElement.appendChild(createLookupMenu(cellInput,lookupTable[i],lookupField[i],cell));
+            cellElement.appendChild(createLookupMenu(cellInput, lookupTable[i], lookupField[i], cell));
           });
         } else {
-          renderedCell.addEventListener('dblclick', function(){
+          renderedCell.addEventListener('dblclick', function () {
             cellInput.classList.remove('hidden');
             cellInput.focus();
             renderedCell.classList.add('hidden');
-            cellInput.addEventListener('blur', function(){
+            cellInput.addEventListener('blur', function () {
               renderCell(cellInput);
             })
           });
@@ -679,7 +707,6 @@
         return row;
       }
 
-
       let table = document.createElement('div');
       let tableClasses = ['t-table', theme.backgroundColor];
       table.classList.add(...tableClasses);
@@ -720,19 +747,39 @@
       return table;
     }
 
-    
+    linkToTable({ name: 'trackId', type: 'text' });
 
     function linkToTable(col) {
-      col.type = 'fk';
-      col.lookupField = 'trackName';
-      col.lookupTable = 'track';
-      col.referencedTable = '';
-      document.querySelector('.table-wrapper').innerHTML = '';
-      document.querySelector('.table-wrapper').appendChild(createTable(selectTableById(activeTable)))
+      console.log(col);
+      let linkTableForm = document.createElement('div');
+      linkTableForm.innerHTML = '<h4>Select Table</h4>';
+      document.querySelector('body').appendChild(createModal(linkTableForm));
+      
+      let tableSelector = document.createElement('div');
+      linkTableForm.appendChild(tableSelector);
+      savedTables.tables.forEach(function(table){
+        let item = document.createElement('a');
+        item.setAttribute('href','javascript:void(0)')
+        item.classList.add('border',theme.lightBorderColor,'p-1','block');
+        item.innerHTML = table.name;
+        item.addEventListener('click',function(){
+          col.type = 'fk';
+          col.lookupField = 'trackName';
+          col.lookupTable = 'track';
+          col.referencedTable = '';
+          document.querySelector('.table-wrapper').innerHTML = '';
+          document.querySelector('.table-wrapper').appendChild(createTable(selectTableById(activeTable)));
+          linkTableForm.parentNode.parentNode.remove();
+        });
+        tableSelector.appendChild(item);
+
+      });
+      
+
     }
 
     function createEditRecordMenu(input, table, value) {
-      console.log(input,table,value)
+      console.log(input, table, value)
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -759,7 +806,7 @@
 
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
-      addDropdownOutsideClickHandler(menu, function(){
+      addDropdownOutsideClickHandler(menu, function () {
         renderCell(input);
       });
 
@@ -808,7 +855,7 @@
         selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
       })
 
-      addDropdownOutsideClickHandler(menu, function(){
+      addDropdownOutsideClickHandler(menu, function () {
         renderCell(input);
       });
 
@@ -816,7 +863,7 @@
     }
 
     function createLookupMenu(input, table, field, value) {
-      
+
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -825,7 +872,7 @@
       menuHeader.classList.add(theme.textColor);
       menuHeader.innerHTML = `Lookup records in '${table}'`;
       menuLookupField = document.createElement('div');
-      menuLookupField.classList.add(theme.mutedTextColor,'text-sm')
+      menuLookupField.classList.add(theme.mutedTextColor, 'text-sm')
       menuLookupField.innerHTML = `Lookup field: ${field}`;
       menu.appendChild(menuHeader);
       menu.appendChild(menuLookupField);
@@ -835,21 +882,20 @@
 
       summaryRecords.forEach(function (record) {
         let item = document.createElement('a');
-        item.setAttribute('href','javascript:void(0)');
-        item.classList.add(theme.textColor, 'p-2', theme.primaryColor, 'bg-opacity-40','block')
+        item.setAttribute('href', 'javascript:void(0)');
+        item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
         item.innerHTML = `${record}`
-        item.addEventListener('click',function(){
+        item.addEventListener('click', function () {
           linkRecord(record);
         });
         menu.appendChild(item);
       });
 
       function linkRecord(record) {
-        input.setAttribute('value',record);
-        console.log(record)
+        input.setAttribute('value', record);
       }
 
-      addDropdownOutsideClickHandler(menu, function(){
+      addDropdownOutsideClickHandler(menu, function () {
         renderCell(input);
       });
 
@@ -887,7 +933,7 @@
 
       removeDropdownOutsideClickHandler(menu);
 
-      setTimeout(function() {
+      setTimeout(function () {
         document.addEventListener('click', handler);
         menu.outsideClickHandler = handler;
       }, 0);
@@ -910,7 +956,7 @@
 
     var doubleClickEvent = document.createEvent('MouseEvents');
     doubleClickEvent.initEvent('dblclick', true, true);
-    //document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
+    //document.querySelectorAll('.rendered-cell')[2].dispatchEvent(doubleClickEvent);
 
     function enableInput(el) {
       let cellInput = el.parentNode.querySelector('input');
