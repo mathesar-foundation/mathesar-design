@@ -172,15 +172,15 @@
           { name: 'id', type: 'number', readOnly: true },
           { name: 'artistName', type: 'text' },
           { name: 'releaseId', type: 'fk', lookupField: 'releaseName', lookupTable: 'release' },
-          { name: 'trackId', type: 'text' }
+          //{ name: 'trackId', type: 'text' }
         ],
         records: [
-          [449, 'Aqua', 'Aquarius', ''],
-          [450, 'Patti Smith', 'Horses', ''],
-          [451, 'Elvis Costello', 'Spike', ''],
-          [451, 'Kylie Minogue', 'Golden', ''],
-          [451, 'Artic Monkeys', 'AM', ''],
-          [453, 'Scorpions', 'Animal Magnetism', '']
+          [449, 'Aqua', 'Aquarius'],
+          [450, 'Patti Smith', 'Horses'],
+          [451, 'Elvis Costello', 'Spike'],
+          [451, 'Kylie Minogue', 'Golden'],
+          [451, 'Artic Monkeys', 'AM'],
+          [453, 'Scorpions', 'Animal Magnetism']
         ],
         color: 'purple'
       }, {
@@ -277,7 +277,7 @@
       ]
     };
 
-    localStorage.clear();
+    //localStorage.clear();
 
     if (localStorage.getItem('tables') === null) {
       localStorage.setItem('tables', JSON.stringify(schemaTables));
@@ -285,7 +285,7 @@
 
 
     let savedTables = JSON.parse(localStorage.getItem('tables'));
-
+    console.log(savedTables);
 
     var activeTable = urlParams.get('activeTable');
     createSidebarNavigation(savedTables);
@@ -384,15 +384,36 @@
       let toolbar = document.createElement('div');
       toolbar.classList.add(theme.accentBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
       let saveAsViewBtn = createButton('Save as View', 'save');
-      let addRecordBtn = createButton('Add Record', 'add');
+      let addRecordBtn = createButton('Add', 'add');
+      let LinkRecordsBtn = createButton('Link to Multiple');
       let tableTitle = document.createElement('h2');
       tableTitle.classList.add(theme.textColor, 'text-lg');
       tableTitle.innerHTML = obj.name;
       toolbar.appendChild(tableTitle);
-      toolbar.appendChild(addRecordBtn);
+
+      let createSection = function(name,content) {
+        let section = document.createElement('div');
+        let sectionHeader = document.createElement('h4');
+        sectionHeader.classList.add(theme.mutedTextColor,'text-sm')
+        sectionHeader.innerText = name;
+        let sectionContent = document.createElement('div');
+        sectionContent.classList.add('space-x-2');
+        content.forEach(c => sectionContent.appendChild(c));
+        section.appendChild(sectionHeader);
+        section.appendChild(sectionContent);
+        return section;
+      }
+
+      let recordsContent = [addRecordBtn,LinkRecordsBtn];
+      let viewsContent = [saveAsViewBtn];
 
       if (type == 'tables') {
-        toolbar.appendChild(saveAsViewBtn);
+        toolbar.appendChild(createSection('Records',recordsContent));
+      
+      LinkRecordsBtn.addEventListener('click', function(){
+        linkToMultiple(obj);
+      });
+        toolbar.appendChild(createSection('Views',viewsContent));
       }
       // EVENTS
       saveAsViewBtn.addEventListener('click', saveAsView);
@@ -404,7 +425,7 @@
     function saveAsView(e) {
       let selTable = e.target.table;
       let table = { ...selTable };
-      let tableId = savedTables.views.map(table => table.id);
+      let tableId = Object.values(savedTables).flat().map(table => table.id);
       let maxId = Math.max(...tableId);
       table.id = maxId + 1;
       table.columns.forEach(col => col.referencedTable = table.name);
@@ -749,17 +770,17 @@
       return table;
     }
 
-    //linkToTable({ name: 'trackId', type: 'text' });
+    //linkToMultiple({ name: 'trackId', type: 'text' });
+
 
     function linkToTable(col) {
-      console.log(col);
       let linkTableForm = document.createElement('div');
       linkTableForm.innerHTML = '<h4>Select Table</h4>';
       document.querySelector('body').appendChild(createModal(linkTableForm));
       
       let tableSelector = document.createElement('div');
       linkTableForm.appendChild(tableSelector);
-      savedTables.tables.forEach(function(table){
+      savedTables.tables.filter(table => table.id != activeTable).forEach(function(table){
         let item = document.createElement('a');
         item.setAttribute('href','javascript:void(0)')
         item.classList.add('border',theme.lightBorderColor,'p-1','block');
@@ -774,9 +795,80 @@
           linkTableForm.parentNode.parentNode.parentNode.remove();
         });
         tableSelector.appendChild(item);
-
       });
       
+
+    }
+
+    //linkToMultiple(savedTables.tables[0]);
+
+
+    function linkToMultiple(table) {
+      let form = document.createElement('div');
+      form.innerHTML = `
+      <h4 class="text-lg mb-2">Link Multiple Records to '${table.name}'</h4>
+      <p class="mb-2">You need to create a view to link this table records to multiple records from another table.</p>
+      <p>Select the table from which you want to link the records from:</p>
+      `;
+      document.querySelector('body').appendChild(createModal(form));
+
+      let tableSelector = document.createElement('div');
+      form.appendChild(tableSelector);
+      savedTables.tables.filter(table => table.id != activeTable).forEach(function(table){
+        let item = document.createElement('a');
+        item.setAttribute('href','javascript:void(0)')
+        item.classList.add('border',theme.lightBorderColor,'p-1','block');
+        item.innerHTML = `${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
+        item.addEventListener('click',function(){
+          selectedTable.push(table);
+          item.classList.add(theme.mediumBackgroundColor);
+        });
+        tableSelector.appendChild(item);
+      });
+
+      selectedTable = [];
+
+      let formActions = document.createElement('div');
+      formActions.classList.add('mt-2');
+      let createViewBtn = createButton('Create View');
+      
+      formActions.appendChild(createButton('Cancel'));
+      formActions.appendChild(createViewBtn);
+      createViewBtn.addEventListener('click',function(){
+      
+        let tableId = Object.values(savedTables).flat().map(table => table.id);
+        let maxId = Math.max(...tableId);
+        let sourceTable = JSON.parse(JSON.stringify(table));
+        let newView = {
+          name: `${selectedTable[0].name} by ${sourceTable.name}`,
+          id: maxId+1,
+          columns: sourceTable.columns,
+          records: sourceTable.records,
+          color: 'purple'
+        };
+
+        newView.columns.push({
+          name: 'trackSummary', type: 'fk', lookupField: 'trackName', lookupTable: 'track'
+        });
+     
+        newView.records.forEach(record => record.push(''));
+
+        console.log(newView);
+       
+        savedTables.views.push(newView);
+        localStorage.setItem('tables', JSON.stringify(savedTables));
+        
+        form.parentNode.parentNode.parentNode.remove();
+        location.reload();
+      });
+
+      
+
+      let warning = document.createElement('div');
+      warning.innerHTML = `<div class="mt-2 text-sm ${theme.mutedTextColor}">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
+
+      form.appendChild(warning);
+      form.appendChild(formActions);
 
     }
 
@@ -893,7 +985,7 @@
       });
 
       let allowMultiple = createButton('Add Multiple','add');
-      menu.appendChild(allowMultiple);
+      //menu.appendChild(allowMultiple);
 
       allowMultiple.addEventListener('click',function(){
         let warning = document.createElement('div');
@@ -1050,7 +1142,7 @@
 
     let addColumnBtn = document.querySelector('#add-column');
 
-    addColumnBtn.addEventListener('click', addColumn);
+    //addColumnBtn.addEventListener('click', addColumn);
 
     //addColumn();
 
