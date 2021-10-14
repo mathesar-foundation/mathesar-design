@@ -99,6 +99,8 @@
 
   <script type="text/javascript">
 
+    //localStorage.clear();
+
     var darkTheme = {
       backgroundColor: 'bg-gray-900',
       mediumBackgroundColor: 'bg-gray-800',
@@ -224,10 +226,10 @@
           { name: 'artistId', type: 'fk', lookupField: 'artistName', lookupTable: 'artist' },
         ],
         records: [
-          [500, 'Around the World',''],
-          [501, 'Barbie Girl',''],
-          [502, 'Turn Back Time',''],
-          [503, 'Roses are Red','']
+          [500, 'Around the World', ''],
+          [501, 'Barbie Girl', ''],
+          [502, 'Turn Back Time', ''],
+          [503, 'Roses are Red', '']
         ],
         color: 'pink'
       }, {
@@ -391,10 +393,10 @@
       tableTitle.innerHTML = obj.name;
       toolbar.appendChild(tableTitle);
 
-      let createSection = function(name,content) {
+      let createSection = function (name, content) {
         let section = document.createElement('div');
         let sectionHeader = document.createElement('h4');
-        sectionHeader.classList.add(theme.mutedTextColor,'text-sm')
+        sectionHeader.classList.add(theme.mutedTextColor, 'text-sm')
         sectionHeader.innerText = name;
         let sectionContent = document.createElement('div');
         sectionContent.classList.add('space-x-2');
@@ -404,16 +406,16 @@
         return section;
       }
 
-      let recordsContent = [addRecordBtn,LinkRecordsBtn];
+      let recordsContent = [addRecordBtn, LinkRecordsBtn];
       let viewsContent = [saveAsViewBtn];
 
       if (type == 'tables') {
-        toolbar.appendChild(createSection('Records',recordsContent));
-      
-      LinkRecordsBtn.addEventListener('click', function(){
-        linkToMultiple(obj);
-      });
-        toolbar.appendChild(createSection('Views',viewsContent));
+        toolbar.appendChild(createSection('Records', recordsContent));
+
+        LinkRecordsBtn.addEventListener('click', function () {
+          linkToMultiple(obj);
+        });
+        toolbar.appendChild(createSection('Views', viewsContent));
       }
       // EVENTS
       saveAsViewBtn.addEventListener('click', saveAsView);
@@ -449,18 +451,20 @@
         return 'time-line';
       } else if (type == 'fk') {
         return 'key-fill';
+      } else if (type == 'lookup') {
+        return 'search-line';
       } else {
         return 'question-mark';
       }
     }
 
-    function createModal(content){
+    function createModal(content) {
       let overlay = document.createElement('div');
       let modal = document.createElement('div');
       modal.style.maxWidth = '600px';
-      let modalClasses = [theme.backgroundColor,'p-2',theme.textColor,'border','mx-auto',theme.darkBorderColor];
+      let modalClasses = [theme.backgroundColor, 'p-2', theme.textColor, 'border', 'mx-auto', theme.darkBorderColor];
       modal.classList.add(...modalClasses);
-      overlay.classList.add(theme.backgroundColor,'w-full','h-full','flex','items-center','bg-opacity-70');
+      overlay.classList.add(theme.backgroundColor, 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
       overlay.style.position = 'absolute';
       overlay.style.top = '0';
       overlay.style.left = '0';
@@ -498,6 +502,8 @@
         a.push(b.lookupTable)
         return a;
       }, []);
+
+      const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
 
       let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
       let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs']
@@ -598,7 +604,6 @@
         }
 
         function menuAction(menu) {
-          console.log(menu)
           return function () {
             console.log("Clicked on createHeaderMenu -> menuAction item");
             menu.parentElement.removeChild(menu);
@@ -699,12 +704,15 @@
 
 
       let createNewRow = function (columns) {
+
         let row = document.createElement('div');
         row.classList.add(...rowClasses);
+
         let rowNumber = document.createElement('div');
         rowNumber.classList.add(...rowHeaderClasses);
         rowNumber.innerHTML = `*`;
         row.appendChild(rowNumber);
+
         let placeholderValue = function (col) {
           if (col.referencedTable) {
             return `Add Record to '${col.referencedTable}'`
@@ -724,8 +732,14 @@
           cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
           cell.appendChild(cellInput);
           row.appendChild(cell);
-          cellInput.addEventListener('keydown', newRow);
+          cellInput.addEventListener('keydown', function () {
+            newRowWrapper.prepend(repositionWarning);
+            newRowWrapper.appendChild(createNewRow(obj.columns));
+            resizeColumns(table);
+          });
         });
+
+
 
         return row;
       }
@@ -758,34 +772,27 @@
       repositionWarning.classList.add('p-1', theme.textColor, 'bg-green-700', 'text-sm');
       repositionWarning.innerHTML = `New records will be repositioned on refresh`;
 
-
-      //ADD NEW ROW
-      function newRow(e) {
-        newRowWrapper.prepend(repositionWarning);
-        this.parentNode.parentNode.querySelectorAll('input').forEach(el => el.removeEventListener('keydown', newRow));
-        newRowWrapper.appendChild(createNewRow(obj.columns));
-        resizeColumns(table);
-      }
       resizeColumns(table);
       return table;
     }
 
     //linkToMultiple({ name: 'trackId', type: 'text' });
+   
 
 
     function linkToTable(col) {
       let linkTableForm = document.createElement('div');
       linkTableForm.innerHTML = '<h4>Select Table</h4>';
       document.querySelector('body').appendChild(createModal(linkTableForm));
-      
+
       let tableSelector = document.createElement('div');
       linkTableForm.appendChild(tableSelector);
-      savedTables.tables.filter(table => table.id != activeTable).forEach(function(table){
+      savedTables.tables.filter(table => table.id != activeTable).forEach(function (table) {
         let item = document.createElement('a');
-        item.setAttribute('href','javascript:void(0)')
-        item.classList.add('border',theme.lightBorderColor,'p-1','block');
+        item.setAttribute('href', 'javascript:void(0)')
+        item.classList.add('border', theme.lightBorderColor, 'p-1', 'block');
         item.innerHTML = `${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
-        item.addEventListener('click',function(){
+        item.addEventListener('click', function () {
           col.type = 'fk';
           col.lookupField = 'trackName';
           col.lookupTable = 'track';
@@ -796,7 +803,7 @@
         });
         tableSelector.appendChild(item);
       });
-      
+
 
     }
 
@@ -814,12 +821,12 @@
 
       let tableSelector = document.createElement('div');
       form.appendChild(tableSelector);
-      savedTables.tables.filter(table => table.id != activeTable).forEach(function(table){
+      savedTables.tables.filter(table => table.id != activeTable).forEach(function (table) {
         let item = document.createElement('a');
-        item.setAttribute('href','javascript:void(0)')
-        item.classList.add('border',theme.lightBorderColor,'p-1','block');
+        item.setAttribute('href', 'javascript:void(0)')
+        item.classList.add('border', theme.lightBorderColor, 'p-1', 'block');
         item.innerHTML = `${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
-        item.addEventListener('click',function(){
+        item.addEventListener('click', function () {
           selectedTable.push(table);
           item.classList.add(theme.mediumBackgroundColor);
         });
@@ -831,17 +838,17 @@
       let formActions = document.createElement('div');
       formActions.classList.add('mt-2');
       let createViewBtn = createButton('Create View');
-      
+
       formActions.appendChild(createButton('Cancel'));
       formActions.appendChild(createViewBtn);
-      createViewBtn.addEventListener('click',function(){
-      
+      createViewBtn.addEventListener('click', function () {
+
         let tableId = Object.values(savedTables).flat().map(table => table.id);
         let maxId = Math.max(...tableId);
         let sourceTable = JSON.parse(JSON.stringify(table));
         let newView = {
           name: `${selectedTable[0].name} by ${sourceTable.name}`,
-          id: maxId+1,
+          id: maxId + 1,
           columns: sourceTable.columns,
           records: sourceTable.records,
           color: 'purple'
@@ -850,19 +857,19 @@
         newView.columns.push({
           name: 'trackSummary', type: 'fk', lookupField: 'trackName', lookupTable: 'track'
         });
-     
+
         newView.records.forEach(record => record.push(''));
 
         console.log(newView);
-       
+
         savedTables.views.push(newView);
         localStorage.setItem('tables', JSON.stringify(savedTables));
-        
+
         form.parentNode.parentNode.parentNode.remove();
         location.reload();
       });
 
-      
+
 
       let warning = document.createElement('div');
       warning.innerHTML = `<div class="mt-2 text-sm ${theme.mutedTextColor}">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
@@ -870,6 +877,12 @@
       form.appendChild(warning);
       form.appendChild(formActions);
 
+    }
+
+    function createIcon(type) {
+      let icon = document.createElement('i');
+      icon.classList.add('ri-' + typeIcon(type), 'align-bottom', 'border', theme.lightBorderColor, 'rounded', 'mr-1');
+      return icon;
     }
 
     function createEditRecordMenu(input, table, value) {
@@ -886,23 +899,45 @@
       let records = selectTableByName(table).records.find(record => record.includes(value));
 
       let createFormGroup = function (field, i) {
+        console.log(field.name, i)
         let formGroup = document.createElement('div');
-        let input = document.createElement('input');
-        input.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full')
+        let control = document.createElement('input');
+        control.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
         let label = document.createElement('label');
-        label.classList.add(theme.textColor, 'block')
-        label.innerHTML = `<i class="ri-${typeIcon(field.type)} align-bottom border ${theme.lightBorderColor} rounded mr-1"></i> ${field.name}`;
-        input.setAttribute('value', records[i]);
+        label.classList.add(theme.textColor, 'block');
+        label.innerHTML = `${field.name}`;
+        label.prepend(createIcon(field.type));
+
+        control.setAttribute('value', records[i]);
         formGroup.appendChild(label);
-        formGroup.appendChild(input);
+        formGroup.appendChild(control);
+
+        if (i == 1) {
+          label.classList.add('font-semibold');
+          label.prepend(createIcon('lookup'));
+          control.addEventListener('keyup', function () {
+            let newValue = control.value;
+            input.setAttribute('value', newValue);
+          });
+        }
+
         return formGroup;
       }
+
+
 
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
       addDropdownOutsideClickHandler(menu, function () {
         renderCell(input);
       });
+
+      let deleteRecordBtn = createButton('Delete Record', 'delete-bin');
+      let goToTableBtn = createButton('Go to Table', 'table');
+
+      menu.appendChild(deleteRecordBtn);
+      //menu.appendChild(goToTableBtn);
+
 
       return menu;
     }
@@ -984,10 +1019,10 @@
         menu.appendChild(item);
       });
 
-      let allowMultiple = createButton('Add Multiple','add');
+      let allowMultiple = createButton('Add Multiple', 'add');
       //menu.appendChild(allowMultiple);
 
-      allowMultiple.addEventListener('click',function(){
+      allowMultiple.addEventListener('click', function () {
         let warning = document.createElement('div');
         warning.innerHTML = `<div class="mb-2">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
         let warningActions = document.createElement('div');
@@ -995,7 +1030,7 @@
         warningActions.classList.add('space-x-2');
         warningActions.appendChild(createButton('Cancel'));
         warningActions.appendChild(createButton('Create Table'));
-        
+
         document.querySelector('body').appendChild(createModal(warning));
       });
 
@@ -1064,7 +1099,9 @@
 
     var doubleClickEvent = document.createEvent('MouseEvents');
     doubleClickEvent.initEvent('dblclick', true, true);
-    //document.querySelectorAll('.rendered-cell')[2].dispatchEvent(doubleClickEvent);
+    var clickEvent = document.createEvent('MouseEvents');
+    clickEvent.initEvent('click', true, true);
+    //document.querySelectorAll('input')[3].dispatchEvent(clickEvent);
 
     function enableInput(el) {
       let cellInput = el.parentNode.querySelector('input');
@@ -1154,18 +1191,6 @@
 
 
     function createAddColumnMenu(savedTables) {
-
-      let typeIcon = function (column) {
-        if (column.type == 'text') {
-          return 'text';
-        } else if (column.type == 'number') {
-          return 'hashtag';
-        } else if (column.type == 'duration') {
-          return 'time-line';
-        } else {
-          return 'question-mark';
-        }
-      }
 
       let listColumns = table => table.columns.map(col => `<a href="#" class="block px-2 py-1"><i class="ri-${typeIcon(col)} text-xs text-${table.color}-400 align-text-bottom border border-${table.color}-400 rounded mr-2"></i><span class="${theme.textColor}">${col.name}</span></a>`).join('');
       let tables = savedTables.tables.map(table => `<div class="px-2 py-1 border-b ${theme.mediumBorderColor}"><span class="${theme.mediumTextColor} text-sm"><i class="ri-table-fill align-bottom mr-1"></i>From ${table.name}</span></div><div>${listColumns(table)}</div>`).join('');
