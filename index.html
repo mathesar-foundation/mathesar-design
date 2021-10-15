@@ -99,7 +99,7 @@
 
   <script type="text/javascript">
 
-    localStorage.clear();
+    //localStorage.clear();
 
     var darkTheme = {
       backgroundColor: 'bg-gray-900',
@@ -418,11 +418,24 @@
         toolbar.appendChild(createSection('Views', viewsContent));
       }
       // EVENTS
-      saveAsViewBtn.addEventListener('click', saveAsView);
-      saveAsViewBtn.table = obj;
+      saveAsViewBtn.addEventListener('click', function () {
+        let newTable = JSON.parse(JSON.stringify(obj));
+        let tableId = Object.values(savedTables).flat().map(table => table.id);
+        let maxId = Math.max(...tableId);
+        newTable.id = maxId + 1;
+        newTable.columns.forEach(col => col.referencedTable = newTable.name);
+        newTable.name = `View of ${newTable.name}`
+
+        savedTables.views.push(newTable);
+        console.log(savedTables)
+        localStorage.setItem('tables', JSON.stringify(savedTables));
+        location.reload();
+      });
+
       return toolbar;
     }
 
+    //localStorage.clear();
 
     function saveAsView(e) {
       let selTable = e.target.table;
@@ -877,12 +890,11 @@
         };
 
         newView.columns.push({
-          name: 'trackSummary', type: 'fk', lookupField: 'trackName', lookupTable: 'track'
+          name: selectedTable[0].name+'Summary', type: 'summary', summaryOf: selectedTable[0].columns[1].name, referencedTable: selectedTable[0].name
         });
 
         newView.records.forEach(record => record.push(''));
 
-        console.log(newView);
 
         savedTables.views.push(newView);
         localStorage.setItem('tables', JSON.stringify(savedTables));
@@ -972,7 +984,7 @@
 
     function createRecordListMenu(input, table, field, cell) {
 
-      
+
 
       let summary = field;
       let menu = document.createElement('div');
@@ -995,22 +1007,22 @@
         let removeRecord = document.createElement('button');
         removeRecord.classList.add('border', theme.lightBorderColor, 'rounded', 'px-1', 'ml-auto')
         removeRecord.innerHTML = `<i class="ri-delete-bin-line align-bottom"></i>`;
-        
+
         if (activeRecords.includes(record[columnPosition])) {
           recordsList.classList.add(theme.primaryColor, 'bg-opacity-70', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center');
-          recordsList.addEventListener('click',function(){
-            input.setAttribute('value',input.value.split(',').map(v => v !== record[columnPosition]?v:'').filter(v => v.length > 0).join(','));           
+          recordsList.addEventListener('click', function () {
+            input.setAttribute('value', input.value.split(',').map(v => v !== record[columnPosition] ? v : '').filter(v => v.length > 0).join(','));
             menu.remove();
             input.parentNode.append(createRecordListMenu(input, table, field, input.value));
           });
         } else {
           recordsList.classList.add(theme.primaryColor, 'bg-opacity-20', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center');
-          recordsList.addEventListener('click',function(){
+          recordsList.addEventListener('click', function () {
             console.log(input.value);
             if (input.value.length > 0) {
-              input.setAttribute('value',input.value+','+record[columnPosition]);
+              input.setAttribute('value', input.value + ',' + record[columnPosition]);
             } else {
-              input.setAttribute('value',record[columnPosition]);
+              input.setAttribute('value', record[columnPosition]);
             }
             menu.remove();
             input.parentNode.append(createRecordListMenu(input, table, field, input.value));
@@ -1030,17 +1042,17 @@
 
       let newRecordButton = createButton('New Record', 'add');
       menu.appendChild(newRecordButton);
-      
-      let createList = function(records){
+
+      let createList = function (records) {
         records.forEach(function (summaryValue) {
           selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
         });
-        
+
       }
 
       createList(summaryRecords);
-      
-      
+
+
 
       addDropdownOutsideClickHandler(menu, function () {
         //console.log(menu);
@@ -1052,7 +1064,7 @@
         document.querySelector('.table-wrapper').appendChild(createTable(selectedTable));
       });
 
-      
+
 
       return menu;
     }
