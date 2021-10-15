@@ -99,7 +99,7 @@
 
   <script type="text/javascript">
 
-    //localStorage.clear();
+    localStorage.clear();
 
     var darkTheme = {
       backgroundColor: 'bg-gray-900',
@@ -268,10 +268,10 @@
         id: 10,
         columns: [
           { name: 'releaseName', type: 'text', referencedTable: 'release' },
-          { name: 'trackName', type: 'text', referencedTable: 'release_track', summaryOf: 'trackId' }
+          { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
         ],
         records: [
-          ['Aquarius', 'Roses are Red,Around the World,Barbie Girl,Good Morning Sunshine'],
+          ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
           ['Aquarium', '']
         ],
         color: 'purple'
@@ -588,6 +588,7 @@
             createMenuItem('Group Column'),
             createMenuItem('Delete Column')
           ];
+
           menuItems.forEach(item => menu.appendChild(item));
           return menu;
         }
@@ -633,16 +634,22 @@
         cellElement.classList.add(...cellClasses);
         let cellType = getColumnByPosition(i).type;
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1');
         renderedCell.style.cursor = 'pointer';
 
-        if (cellType == 'fk') {
-          let linkedCell = document.createElement('div');
-          linkedCell.classList.add(theme.primaryColor, 'rounded', 'px-1', 'inline-block', 'bg-opacity-50');
-          linkedCell.innerHTML = cell;
-          renderedCell.appendChild(linkedCell);
+        let createRecordLink = function (cell) {
+          let link = document.createElement('div');
+          link.classList.add(theme.primaryColor, 'rounded', 'px-1', 'inline-block', 'bg-opacity-50', 'mr-1');
+          link.innerHTML = cell;
+          return link;
+        }
 
-        } else {
+        if (cellType == 'fk') {
+          renderedCell.appendChild(createRecordLink(cell));
+        } else if (cellType == 'summary') {
+          cell.split(',').forEach(c => renderedCell.appendChild(createRecordLink(c)))
+        }
+        else {
           renderedCell.innerHTML = cell;
         }
 
@@ -657,7 +664,7 @@
             cellInput.classList.remove('hidden');
             cellInput.focus();
             renderedCell.classList.add('hidden');
-            cellElement.appendChild(createRecordListMenu(cellInput, recordTable[i], summaryOf[i]));
+            cellElement.appendChild(createRecordListMenu(cellInput, recordTable[i], summaryOf[i], cell));
           });
         } else if (recordTable[i]) {
           renderedCell.addEventListener('dblclick', function () {
@@ -679,7 +686,14 @@
             cellInput.focus();
             renderedCell.classList.add('hidden');
             cellInput.addEventListener('blur', function () {
-              renderCell(cellInput);
+              renderedCell.innerHTML = cellInput.value;
+              cellInput.classList.add('hidden');
+              renderedCell.classList.remove('hidden');
+              let editedRecord = obj.records.find(record => record.includes(cell));
+              let recordIndex = editedRecord.indexOf(cell);
+              editedRecord[recordIndex] = cellInput.value;
+              document.querySelector('.table-wrapper').innerHTML = '';
+              document.querySelector('.table-wrapper').appendChild(createTable(obj));
             })
           });
         }
@@ -723,7 +737,8 @@
           }
         }
 
-        columns.forEach(function (col) {
+        columns.forEach(function (col, i) {
+
           let cell = document.createElement('div');
           cell.classList.add(...cellClasses)
           let cellInput = document.createElement('input');
@@ -733,9 +748,16 @@
           cell.appendChild(cellInput);
           row.appendChild(cell);
           cellInput.addEventListener('keydown', function () {
-            newRowWrapper.prepend(repositionWarning);
-            newRowWrapper.appendChild(createNewRow(obj.columns));
-            resizeColumns(table);
+            if (!row.newRowCreated) {
+              row.newRowCreated = true;
+              newRowWrapper.prepend(repositionWarning);
+              newRowWrapper.appendChild(createNewRow(obj.columns));
+              if (recordTable[i]) {
+                console.log('table', recordTable[i])
+                cellInput.parentNode.appendChild(createEditRecordMenu(cellInput, recordTable[i], ''))
+              }
+              resizeColumns(table);
+            }
           });
         });
 
@@ -777,7 +799,7 @@
     }
 
     //linkToMultiple({ name: 'trackId', type: 'text' });
-   
+
 
 
     function linkToTable(col) {
@@ -886,7 +908,7 @@
     }
 
     function createEditRecordMenu(input, table, value) {
-      console.log(input, table, value)
+      console.log(value);
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
       menu.style.position = 'absolute';
@@ -896,7 +918,11 @@
       menuHeader.innerHTML = `Edit record in '${table}'`;
       menu.appendChild(menuHeader);
 
+
+
       let records = selectTableByName(table).records.find(record => record.includes(value));
+
+
 
       let createFormGroup = function (field, i) {
         console.log(field.name, i)
@@ -907,8 +933,7 @@
         label.classList.add(theme.textColor, 'block');
         label.innerHTML = `${field.name}`;
         label.prepend(createIcon(field.type));
-
-        control.setAttribute('value', records[i]);
+        if (records) { control.setAttribute('value', records[i]); }
         formGroup.appendChild(label);
         formGroup.appendChild(control);
 
@@ -924,12 +949,15 @@
         return formGroup;
       }
 
-
-
       selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
 
       addDropdownOutsideClickHandler(menu, function () {
-        renderCell(input);
+        let selectedTable = selectTableById(activeTable);
+        let editedRecord = selectedTable.records.find(record => record.includes(value));
+        let recordIndex = editedRecord.indexOf(value);
+        editedRecord[recordIndex] = input.value;
+        document.querySelector('.table-wrapper').innerHTML = '';
+        document.querySelector('.table-wrapper').appendChild(createTable(selectedTable));
       });
 
       let deleteRecordBtn = createButton('Delete Record', 'delete-bin');
@@ -942,8 +970,7 @@
       return menu;
     }
 
-    function createRecordListMenu(input, table, field) {
-
+    function createRecordListMenu(input, table, field, cell) {
       let summary = field;
       let menu = document.createElement('div');
       menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
@@ -954,18 +981,40 @@
       menuHeader.innerHTML = `Edit records in '${table}'`;
       menu.appendChild(menuHeader);
 
-
       let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
       let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
+      let activeRecords = cell.split(',');
 
       let createRecordsList = function (record, i) {
-        let recordsList = document.createElement('div');
-        recordsList.classList.add(theme.primaryColor, 'bg-opacity-40', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center')
+        let recordsList = document.createElement('a');
+        recordsList.setAttribute('href', 'javascript:void(0)');
         recordsList.innerHTML = record.map(item => `<div class="mr-2">${item}</div>`).join('');
         let removeRecord = document.createElement('button');
         removeRecord.classList.add('border', theme.lightBorderColor, 'rounded', 'px-1', 'ml-auto')
         removeRecord.innerHTML = `<i class="ri-delete-bin-line align-bottom"></i>`;
-        recordsList.appendChild(removeRecord);
+        
+        if (activeRecords.includes(record[columnPosition])) {
+          recordsList.classList.add(theme.primaryColor, 'bg-opacity-70', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center');
+          recordsList.addEventListener('click',function(){
+            input.setAttribute('value',input.value.split(',').map(v => v !== record[columnPosition]?v:'').filter(v => v.length > 0).join(','));
+            activeRecords = input.value.split(',');
+            menu.remove();
+            input.parentNode.append(createRecordListMenu(input, table, field, input.value));
+          });
+        } else {
+          recordsList.classList.add(theme.primaryColor, 'bg-opacity-20', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center');
+          recordsList.addEventListener('click',function(){
+            console.log(input.value);
+
+            input.setAttribute('value',input.value+','+record[columnPosition]);
+            
+            activeRecords = input.value.split(',');
+            menu.remove();
+            input.parentNode.append(createRecordListMenu(input, table, field, input.value));
+          });
+        }
+
+        //recordsList.appendChild(removeRecord);
         return recordsList;
       }
 
@@ -976,17 +1025,31 @@
       listWrapper.classList.add('border', 'space-y-2', 'p-1', theme.mediumBorderColor);
       menu.appendChild(listWrapper);
 
-      let newRecordButton = document.createElement('button');
-      newRecordButton.classList.add(theme.textColor, 'border', theme.lightBorderColor, 'px-2', 'py-1');
-      newRecordButton.innerHTML = `<i class="ri-add-line align-bottom mr-1"></i>New Record`;
+      let newRecordButton = createButton('New Record', 'add');
       menu.appendChild(newRecordButton);
-      summaryRecords.forEach(function (summaryValue) {
-        selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
-      })
+      
+      let createList = function(records){
+        records.forEach(function (summaryValue) {
+          selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
+        });
+        
+      }
+
+      createList(summaryRecords);
+      
+      
 
       addDropdownOutsideClickHandler(menu, function () {
-        renderCell(input);
+        let selectedTable = selectTableById(activeTable);
+        console.log(selectedTable);
+        let editedRecord = selectedTable.records.find(record => record.includes(cell));
+        let recordIndex = editedRecord.indexOf(cell);
+        editedRecord[recordIndex] = input.value;
+        document.querySelector('.table-wrapper').innerHTML = '';
+        document.querySelector('.table-wrapper').appendChild(createTable(selectedTable));
       });
+
+      
 
       return menu;
     }
@@ -1039,7 +1102,14 @@
       }
 
       addDropdownOutsideClickHandler(menu, function () {
-        renderCell(input);
+        let selectedTable = selectTableById(activeTable);
+        let editedRecord = selectedTable.records.find(record => record.includes(value));
+        let recordIndex = editedRecord.indexOf(value);
+        console.log(recordIndex);
+        editedRecord[recordIndex] = input.value;
+        document.querySelector('.table-wrapper').innerHTML = '';
+        document.querySelector('.table-wrapper').appendChild(createTable(selectedTable));
+
       });
 
       return menu;
@@ -1064,7 +1134,6 @@
     function addDropdownOutsideClickHandler(menu, callback) {
       function handler(event) {
         var isClickInsideElement = isNodeChildOf(event.target, menu);
-        console.log(isClickInsideElement);
         if (!isClickInsideElement) {
           console.log('outside')
           callback(menu);
@@ -1084,24 +1153,26 @@
 
     function resizeColumns(table) {
       cells = table.querySelectorAll('.t-cell');
-      cells.forEach(cell => cell.style.width = '240px');
+      cells.forEach(cell => cell.style.width = '260px');
       rowHeaders = table.querySelectorAll('.t-row-header');
       rowHeaders.forEach(rowHeader => rowHeader.style.width = '48px')
       return table;
     }
 
     function renderCell(input) {
-      input.classList.add('hidden');
-      input.parentNode.childNodes[1].innerHTML = input.getAttribute('value');
-      input.parentNode.childNodes[1].classList.remove('hidden');
+      //console.log(input.parentNode);
+
+
+      //input.classList.add('hidden');
+      //input.parentNode.childNodes[1].innerHTML = input.getAttribute('value');
+      //input.parentNode.childNodes[1].classList.remove('hidden');
       return input;
     }
 
     var doubleClickEvent = document.createEvent('MouseEvents');
     doubleClickEvent.initEvent('dblclick', true, true);
-    var clickEvent = document.createEvent('MouseEvents');
-    clickEvent.initEvent('click', true, true);
-    //document.querySelectorAll('input')[3].dispatchEvent(clickEvent);
+
+    //document.querySelectorAll('.rendered-cell')[3].dispatchEvent(doubleClickEvent);
 
     function enableInput(el) {
       let cellInput = el.parentNode.querySelector('input');
@@ -1130,12 +1201,6 @@
       document.querySelectorAll('.selected-cell').forEach(cell => cell.classList.add(...selectedCellClasses));
       document.querySelectorAll('.selected-row').forEach(row => row.classList.add(...selectedRowClasses));
       document.querySelectorAll('.selected-row').forEach(row => row.childNodes[0].classList.add(...selectedRowNumberClasses));
-      return false;
-    }
-
-    function saveCell(e) {
-      this.classList.add('hidden');
-      renderCell(this.parentNode);
       return false;
     }
 
