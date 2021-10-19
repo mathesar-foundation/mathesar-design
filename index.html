@@ -477,7 +477,7 @@
       }
     }
 
-    function createModal(content) {
+    function createModal(content, footer) {
       let overlay = document.createElement('div');
       let modal = document.createElement('div');
       modal.style.width = '600px';
@@ -492,6 +492,7 @@
       modal.appendChild(modalContent);
       overlay.appendChild(modal);
       overlay.style.zIndex = '9999';
+      modal.appendChild(footer);
       return overlay;
     }
 
@@ -896,24 +897,88 @@
       return selector;
     }
 
-    //linkToTable({ name: 'trackLength', type: 'duration' })
+    function createTitle(title, subtitle) {
+      let titleWrapper = document.createElement('div');
+      let mainTitle = document.createElement('h2');
+      mainTitle.classList.add('text-lg');
+      mainTitle.innerText = title;
+      titleWrapper.appendChild(mainTitle);
+
+      let subTitle = document.createElement('h3');
+      if (subtitle) {
+        subTitle.innerText = subtitle;
+        subTitle.classList.add(theme.mutedTextColor);
+        titleWrapper.appendChild(subTitle);
+      }
+
+      return titleWrapper;
+    }
+
+    function createColumnSelector(table, fn) {
+
+      let selector = document.createElement('div');
+      let selectorHeader = document.createElement('h4');
+      selectorHeader.classList.add('my-2');
+      selectorHeader.innerHTML = `
+          <h4>Select a Column from '${table.name}' table</h4>
+          <p class="${theme.mutedTextColor} text-sm">Note: Select the column that contains the data that is unique and related to this table</p>
+          `
+      selector.appendChild(selectorHeader);
+
+      let selectorList = document.createElement('div');
+      selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
+
+      let selectorItem = function (col) {
+        let item = document.createElement('div');
+        item.classList.add('p-1', 'block');
+        let input = document.createElement('input');
+        input.setAttribute('type', 'radio');
+        input.setAttribute('value', col.name);
+        input.setAttribute('name', 'columnSelector');
+        item.appendChild(input);
+        let label = document.createElement('label');
+        label.innerHTML = col.name;
+        item.appendChild(label);
+
+        item.addEventListener('click', function () {
+          input.setAttribute('checked', true);
+          let selectedColumn = input.getAttribute('value');
+          fn(selectedColumn, table.name)
+        });
+
+        return item;
+      }
 
 
+
+      table.columns.forEach(function (col) {
+        selectorList.appendChild(selectorItem(col));
+      });
+
+      selector.appendChild(selectorList);
+      return selector;
+
+
+    }
+
+    linkToTable({ name: 'trackLength', type: 'duration' })
 
     function linkToTable(col) {
       let linkTableForm = document.createElement('div');
-      let modal = createModal(linkTableForm);
+      let linkTableActions = document.createElement('div');
+      let modal = createModal(linkTableForm, linkTableActions);
       document.querySelector('body').appendChild(modal);
 
-      let formHeader = document.createElement('h3');
-      formHeader.classList.add('text-lg', 'mb-2');
-      formHeader.innerText = `Link to Another Table`;
-      linkTableForm.appendChild(formHeader);
+
+
+      linkTableForm.appendChild(createTitle('Create One-to-Many Relationship', 'Select records from another table using a foreign key'));
+
+
 
       let tableSelector = document.createElement('div');
       let selectorHeader = document.createElement('h4');
       selectorHeader.classList.add('my-2');
-      selectorHeader.innerText = `Select a Table`
+      selectorHeader.innerHTML = `<h4>Select a Parent Table</h4><p class="${theme.mutedTextColor} text-sm">Note: In a one-to-many relationship, this table should be on the 'one' side.</p>`
 
       tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
       linkTableForm.appendChild(selectorHeader);
@@ -931,75 +996,26 @@
         label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
         item.addEventListener('click', function () {
           input.setAttribute('checked', true);
-          
           let selectedTableId = input.getAttribute('value');
-
-          linkTableForm.appendChild(columnSelector(selectTableById(selectedTableId)));
+          linkTableForm.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
 
         });
-
-        let columnSelector = function (table) {
-          let selector = document.createElement('div');
-          let selectorHeader = document.createElement('h4');
-          selectorHeader.classList.add('my-2');
-          selectorHeader.innerText = `Select a Column from '${table.name}'`
-          selector.appendChild(selectorHeader);
-
-          let selectorList = document.createElement('div');
-          selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
-
-          let selectorItem = function (col) {
-            let item = document.createElement('div');
-            item.classList.add('p-1', 'block');
-            let input = document.createElement('input');
-            input.setAttribute('type', 'radio');
-            input.setAttribute('value', col.name);
-            input.setAttribute('name', 'columnSelector');
-            item.appendChild(input);
-            let label = document.createElement('label');
-            label.innerHTML = col.name;
-            item.appendChild(label);
-
-            item.addEventListener('click', function () {
-              input.setAttribute('checked', true);
-              let selectedColumn = input.getAttribute('value');
-              showLinkOptions(selectedColumn, table.name)
-            });
-
-            return item;
-          }
-
-
-
-          table.columns.forEach(function (col) {
-            selectorList.appendChild(selectorItem(col));
-          });
-
-          selector.appendChild(selectorList);
-          return selector;
-        }
-
-
-
-
-
 
         tableSelector.appendChild(item);
       });
 
-      
+
+      let addLinkBtn = createButton(`Add Table Relationship`);
+      linkTableActions.appendChild(createButton('Cancel'));
+      linkTableActions.appendChild(addLinkBtn);
+
+
+
       let showLinkOptions = function (colName, tableName) {
-        let options = document.createElement('div');
-        options.classList.add('my-2')
-        options.innerHTML = `<h3>Do you want to...</h3>`
 
-        let singleLinkOption = document.createElement('div');
-        singleLinkOption.classList.add('my-2');
-        singleLinkOption.innerHTML = `<h4 class="mb-2">Link single records from '${tableName}' to multiple records in this table?</h4> `
-        let addLinkBtn = createButton(`Add Link to '${colName}'`);
-        singleLinkOption.appendChild(addLinkBtn);
 
-        addLinkBtn.addEventListener('click',function(){
+
+        addLinkBtn.addEventListener('click', function () {
           console.log(col);
           col.type = 'fk';
           col.lookupField = colName;
@@ -1010,35 +1026,7 @@
           modal.remove();
         });
 
-        let multipleLinkOption = document.createElement('div');
-        multipleLinkOption.classList.add('my-2');
-        multipleLinkOption.innerHTML = `<h4>Link single records from this table to multiple records in '${tableName}' table?</h4>
-        <p class="${theme.mutedTextColor} text-sm mb-2">You must add a link to a column from this table from '${tableName}' table instead.</p>`
-
-        let goToTableBtn = document.createElement('a');
-        goToTableBtn.innerText = `Open '${tableName}' table`;
-        goToTableBtn.setAttribute('href','javascript:void(0)');
-        goToTableBtn.classList.add(theme.primaryTextColor,'underline');
-        multipleLinkOption.appendChild(goToTableBtn);
-
-        goToTableBtn.addEventListener('click',function(){
-          let table = selectTableByName(tableName);
-          let url = `${window.location.pathname}?activeTable=${table.id}`
-          window.location = url;
-          console.log(url);
-        });
-
-        //multipleLinkOption.appendChild(createButton(`Go to '${tableName}' table`));
-
-        linkTableForm.appendChild(options);
-        options.appendChild(singleLinkOption);
-        options.appendChild(multipleLinkOption);
       }
-
-
-
-
-
 
       return linkTableForm;
     }
