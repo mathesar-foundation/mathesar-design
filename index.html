@@ -961,7 +961,7 @@
 
     }
 
-    linkToTable({ name: 'trackLength', type: 'duration' })
+   // linkToTable({ name: 'trackLength', type: 'duration' })
 
     function linkToTable(col) {
       let linkTableForm = document.createElement('div');
@@ -983,6 +983,8 @@
       tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
       linkTableForm.appendChild(selectorHeader);
       linkTableForm.appendChild(tableSelector);
+      let columnSelector = document.createElement('div');
+      linkTableForm.appendChild(columnSelector);
       savedTables.tables.filter(table => table.id != activeTable).forEach(function (table) {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
@@ -997,8 +999,9 @@
         item.addEventListener('click', function () {
           input.setAttribute('checked', true);
           let selectedTableId = input.getAttribute('value');
-          linkTableForm.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
-
+          // APPEND COLUMN SELECTOR
+          columnSelector.innerHTML = '';
+          columnSelector.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
         });
 
         tableSelector.appendChild(item);
