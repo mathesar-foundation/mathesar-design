@@ -879,43 +879,7 @@
       saveTable(table);
     }
 
-    function createColumnSelector(table) {
-
-      let selector = document.createElement('div');
-      let selectorHeader = document.createElement('h4');
-      selectorHeader.classList.add('my-2');
-      selectorHeader.innerText = `Select a Column from '${table.name}'`
-      selector.appendChild(selectorHeader);
-
-      let selectorList = document.createElement('div');
-      selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
-
-      let selectorItem = function (col) {
-        let item = document.createElement('div');
-        item.classList.add('p-1', 'block');
-        let input = document.createElement('input');
-        input.setAttribute('type', 'radio');
-        input.setAttribute('value', col.name);
-        input.setAttribute('name', 'columnSelector');
-        item.appendChild(input);
-        let label = document.createElement('label');
-        label.innerHTML = col.name;
-        item.appendChild(label);
-
-        item.addEventListener('click', function () {
-          input.setAttribute('checked', true);
-        });
-
-        return item;
-      }
-
-      table.columns.forEach(function (col) {
-        selectorList.appendChild(selectorItem(col));
-      });
-
-      selector.appendChild(selectorList);
-      return selector;
-    }
+   
 
     function createTitle(title, subtitle) {
       let titleWrapper = document.createElement('div');
@@ -939,26 +903,37 @@
       let selector = document.createElement('div');
       let selectorHeader = document.createElement('h4');
       selectorHeader.classList.add('my-2');
-      selectorHeader.innerHTML = `
-          <h4>Select a Column from '${table.name}' table</h4>
-          <p class="${theme.mutedTextColor} text-sm">Note: Select the column that contains the data that is unique and related to this table</p>
-          `
+      selectorHeader.innerHTML = `<h4>Select a Column from '${table.name}' table</h4><p class="${theme.mutedTextColor} text-sm">Note: Select the column that contains the data that is unique and related to this table</p>`
       selector.appendChild(selectorHeader);
 
       let selectorList = document.createElement('div');
       selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
 
-      let selectorItem = function (col) {
+      let selectorItem = function (col,i) {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
         let input = document.createElement('input');
+        input.classList.add('mr-1');
         input.setAttribute('type', 'radio');
         input.setAttribute('value', col.name);
         input.setAttribute('name', 'columnSelector');
         item.appendChild(input);
+
+        
+
+        let valueSample = savedTables.tables.find(table => table.columns.includes(col)).records.map(record => record[i]).splice(0,2).join(',');
+        console.log(valueSample)
+
         let label = document.createElement('label');
-        label.innerHTML = col.name;
+        label.innerHTML = `${col.name} <span class="text-xs ${theme.mutedTextColor}">(Example values: ${valueSample})</span>`;
+        label.prepend(createIcon(col.type));
         item.appendChild(label);
+
+
+        if (i == 0) {
+          input.setAttribute('checked', true);
+        }
+        
 
         item.addEventListener('click', function () {
           input.setAttribute('checked', true);
@@ -969,19 +944,16 @@
         return item;
       }
 
-
-
-      table.columns.forEach(function (col) {
-        selectorList.appendChild(selectorItem(col));
+      table.columns.forEach(function (col,i) {
+        selectorList.appendChild(selectorItem(col,i));
       });
 
       selector.appendChild(selectorList);
       return selector;
 
-
     }
 
-    linkToTable({ name: 'trackLength', type: 'duration' })
+    //linkToTable({ name: 'trackLength', type: 'duration' })
 
     function linkToTable(col) {
       let linkTableForm = document.createElement('div');
@@ -989,11 +961,7 @@
       let modal = createModal(linkTableForm, linkTableActions);
       document.querySelector('body').appendChild(modal);
 
-
-
       linkTableForm.appendChild(createTitle('Create One-to-Many Relationship', 'Select records from another table using a foreign key'));
-
-
 
       let tableSelector = document.createElement('div');
       let selectorHeader = document.createElement('h4');
@@ -1005,17 +973,19 @@
       linkTableForm.appendChild(tableSelector);
       let columnSelector = document.createElement('div');
       linkTableForm.appendChild(columnSelector);
+      //ADD ITEMS
       savedTables.tables.filter(table => table.id != activeTable).forEach(function (table) {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
         let input = document.createElement('input');
+        input.classList.add('mr-1');
         input.setAttribute('type', 'radio');
         input.setAttribute('value', table.id);
         input.setAttribute('name', 'tableSelection');
         item.appendChild(input);
         let label = document.createElement('label');
         item.appendChild(label);
-        label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
+        label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name} <span class="${theme.mutedTextColor} text-xs">${table.columns[1].name}</span>`;
         item.addEventListener('click', function () {
           input.setAttribute('checked', true);
           let selectedTableId = input.getAttribute('value');
@@ -1024,14 +994,15 @@
           columnSelector.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
         });
 
+        
+
         tableSelector.appendChild(item);
       });
 
-
+      
       let addLinkBtn = createButton(`Add Table Relationship`);
       linkTableActions.appendChild(createButton('Cancel'));
       linkTableActions.appendChild(addLinkBtn);
-
 
 
       let showLinkOptions = function (colName, tableName) {

@@ -261,7 +261,6 @@ textarea {
   }
 }
 
-
 .t-cell:first-child {
   min-width: 48px;
   text-align: center;
@@ -271,4 +270,5 @@ textarea {
 .t-row {
   display: flex;
 }
+
 
