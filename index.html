@@ -179,7 +179,7 @@
           { name: 'trackId', type: 'text' }
         ],
         records: [
-          [449, 'Aqua', 'Aquarius', ''],
+          [449, 'Aqua', '', ''],
           [450, 'Patti Smith', 'Horses', ''],
           [451, 'Elvis Costello', 'Spike', ''],
           [451, 'Kylie Minogue', 'Golden', ''],
@@ -497,11 +497,11 @@
       closeModalBtn.classList.add('px-2')
       closeModalBtn.style.position = 'absolute';
       closeModalBtn.style.right = '0',
-      closeModalBtn.innerHTML = `<i class="ri-close-line"></i>`;
-      closeModalBtn.addEventListener('click',function(){
+        closeModalBtn.innerHTML = `<i class="ri-close-line"></i>`;
+      closeModalBtn.addEventListener('click', function () {
         overlay.remove();
       });
-      overlay.addEventListener('click',function(event){
+      overlay.addEventListener('click', function (event) {
         console.log(event.target);
         if (event.target == overlay) {
           overlay.remove();
@@ -510,7 +510,7 @@
       modal.prepend(closeModalBtn);
       if (footer) {
         let footerContent = footer;
-        footerContent.classList.add('mt-4','space-x-2')
+        footerContent.classList.add('mt-4', 'space-x-2')
         modal.appendChild(footerContent);
       }
       return overlay;
@@ -608,7 +608,7 @@
           if (options) {
             if (options.icon) {
               let icon = document.createElement('i');
-              icon.classList.add(`ri-${options.icon}-line`,'mr-1')
+              icon.classList.add(`ri-${options.icon}-line`, 'mr-1')
               menuItem.prepend(icon);
             }
           }
@@ -646,7 +646,7 @@
           //ADD MENU ITEMS
           let menuItems = [
             dataTypeOption,
-            createMenuItem('Link to Another Table', linkToTable, {icon:'key'}),
+            createMenuItem('Link to Another Table', linkToTable, { icon: 'key' }),
             createMenuItem('Insert New Column'),
             createMenuItem('Rename Column'),
             createMenuItem('Duplicate Column'),
@@ -886,7 +886,7 @@
       saveTable(table);
     }
 
-   
+
 
     function createTitle(title, subtitle) {
       let titleWrapper = document.createElement('div');
@@ -916,7 +916,7 @@
       let selectorList = document.createElement('div');
       selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
 
-      let selectorItem = function (col,i) {
+      let selectorItem = function (col, i) {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
         let input = document.createElement('input');
@@ -926,9 +926,9 @@
         input.setAttribute('name', 'columnSelector');
         item.appendChild(input);
 
-        
 
-        let valueSample = savedTables.tables.find(table => table.columns.includes(col)).records.map(record => record[i]).splice(0,2).join(',');
+
+        let valueSample = savedTables.tables.find(table => table.columns.includes(col)).records.map(record => record[i]).splice(0, 2).join(',');
         console.log(valueSample)
 
         let label = document.createElement('label');
@@ -940,7 +940,7 @@
         if (i == 0) {
           input.setAttribute('checked', true);
         }
-        
+
 
         item.addEventListener('click', function () {
           input.setAttribute('checked', true);
@@ -951,8 +951,8 @@
         return item;
       }
 
-      table.columns.forEach(function (col,i) {
-        selectorList.appendChild(selectorItem(col,i));
+      table.columns.forEach(function (col, i) {
+        selectorList.appendChild(selectorItem(col, i));
       });
 
       selector.appendChild(selectorList);
@@ -1001,12 +1001,12 @@
           columnSelector.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
         });
 
-        
+
 
         tableSelector.appendChild(item);
       });
 
-      
+
       let addLinkBtn = createButton(`Add Table Relationship`);
       linkTableActions.appendChild(createButton('Cancel'));
       linkTableActions.appendChild(addLinkBtn);
@@ -1319,7 +1319,7 @@
 
     function createLookupMenu(input, table, field, value) {
       let menu = document.createElement('div');
-      menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
+      menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1');
       menu.style.position = 'absolute';
       menu.style.minWidth = '280px';
       let menuHeader = document.createElement('h4');
@@ -1327,23 +1327,43 @@
       menuHeader.innerHTML = `Lookup records in '${table}'`;
       menuLookupField = document.createElement('div');
       menuLookupField.classList.add(theme.mutedTextColor, 'text-sm')
-      menuLookupField.innerHTML = `Lookup field: ${field}`;
-      menu.appendChild(menuHeader);
-      menu.appendChild(menuLookupField);
+
 
       let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
       let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
+      let summaryIds = selectTableByName(table).records.map(record => record[0]);
+      let columnType = selectTableByName(table).columns.map((col, i) => col.name == field ? col.type : '').join('');
 
-      summaryRecords.forEach(function (record) {
-        let item = document.createElement('a');
-        item.setAttribute('href', 'javascript:void(0)');
-        item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
-        item.innerHTML = `${record}`
-        item.addEventListener('click', function () {
-          linkRecord(record);
-        });
-        menu.appendChild(item);
-      });
+      menuLookupField.innerHTML = `Lookup field:`;
+      menuLookupField.appendChild(createIcon(columnType));
+      let lookupLabel = document.createElement('span');
+      lookupLabel.innerText = field;
+      menuLookupField.appendChild(lookupLabel);
+      menu.appendChild(menuHeader);
+      menu.appendChild(menuLookupField);
+
+      let recordsList = document.createElement('div');
+      menu.append(recordsList);
+
+      let createRecords = function (records) {
+        let list = document.createElement('div');
+        list.classList.add('space-y-1')
+          records.forEach(function (record, i) {
+            let item = document.createElement('a');
+            item.setAttribute('href', 'javascript:void(0)');
+            item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
+            item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`
+            item.addEventListener('click', function () {
+              linkRecord(record);
+            });
+            //item.prepend(createIcon(columnType))
+            list.appendChild(item)
+          });
+        return list;
+      }
+
+      recordsList.appendChild(createRecords(summaryRecords))
+
 
       let allowMultiple = createButton('Add Multiple', 'add');
       //menu.appendChild(allowMultiple);
@@ -1361,8 +1381,21 @@
       });
 
       function linkRecord(record) {
+        
         input.setAttribute('value', record);
-      }
+      };
+
+      input.addEventListener('keyup', function () {
+
+        recordsList.innerHTML = '';
+        let filteredRecords = summaryRecords.filter(record => record.match(input.value));
+        recordsList.appendChild(createRecords(filteredRecords))
+
+        if (filteredRecords.length == 0) {
+          recordsList.appendChild(createButton('Add Record','add'))
+        }
+
+      })
 
       addDropdownOutsideClickHandler(menu, function () {
         let selectedTable = selectTableById(activeTable);
@@ -1396,7 +1429,6 @@
       function handler(event) {
         var isClickInsideElement = isNodeChildOf(event.target, menu);
         if (!isClickInsideElement) {
-          console.log('outside')
           callback(menu);
           menu.remove();
           document.removeEventListener('click', handler);
@@ -1433,7 +1465,7 @@
     var doubleClickEvent = document.createEvent('MouseEvents');
     doubleClickEvent.initEvent('dblclick', true, true);
 
-    //document.querySelectorAll('.rendered-cell')[3].dispatchEvent(doubleClickEvent);
+    //document.querySelectorAll('.rendered-cell')[2].dispatchEvent(doubleClickEvent);
 
     function enableInput(el) {
       let cellInput = el.parentNode.querySelector('input');
