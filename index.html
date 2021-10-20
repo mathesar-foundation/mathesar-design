@@ -480,6 +480,7 @@
     function createModal(content, footer) {
       let overlay = document.createElement('div');
       let modal = document.createElement('div');
+      modal.style.position = 'relative';
       modal.style.width = '600px';
       let modalClasses = [theme.backgroundColor, 'p-2', theme.textColor, 'border', 'mx-auto', theme.darkBorderColor];
       modal.classList.add(...modalClasses);
@@ -492,7 +493,26 @@
       modal.appendChild(modalContent);
       overlay.appendChild(modal);
       overlay.style.zIndex = '9999';
-      modal.appendChild(footer);
+      let closeModalBtn = document.createElement('button');
+      closeModalBtn.classList.add('px-2')
+      closeModalBtn.style.position = 'absolute';
+      closeModalBtn.style.right = '0',
+      closeModalBtn.innerHTML = `<i class="ri-close-line"></i>`;
+      closeModalBtn.addEventListener('click',function(){
+        overlay.remove();
+      });
+      overlay.addEventListener('click',function(event){
+        console.log(event.target);
+        if (event.target == overlay) {
+          overlay.remove();
+        }
+      });
+      modal.prepend(closeModalBtn);
+      if (footer) {
+        let footerContent = footer;
+        footerContent.classList.add('mt-4','space-x-2')
+        modal.appendChild(footerContent);
+      }
       return overlay;
     }
 
@@ -961,7 +981,7 @@
 
     }
 
-   // linkToTable({ name: 'trackLength', type: 'duration' })
+    linkToTable({ name: 'trackLength', type: 'duration' })
 
     function linkToTable(col) {
       let linkTableForm = document.createElement('div');
@@ -1015,8 +1035,6 @@
 
 
       let showLinkOptions = function (colName, tableName) {
-
-
 
         addLinkBtn.addEventListener('click', function () {
           console.log(col);
