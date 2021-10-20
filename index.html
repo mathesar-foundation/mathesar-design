@@ -608,7 +608,7 @@
           if (options) {
             if (options.icon) {
               let icon = document.createElement('i');
-              icon.classList.add(`ri-${options.icon}-line`,'align-bottom', 'mr-1')
+              icon.classList.add(`ri-${options.icon}-line`, 'align-bottom', 'mr-1')
               menuItem.prepend(icon);
             }
           }
@@ -664,7 +664,7 @@
           return menu;
         }
 
-        let removeLink = function(){
+        let removeLink = function () {
 
         }
 
@@ -895,13 +895,13 @@
     }
 
 
-
     function createTitle(title, subtitle) {
       let titleWrapper = document.createElement('div');
       let mainTitle = document.createElement('h2');
       mainTitle.classList.add('text-lg');
       mainTitle.innerText = title;
       titleWrapper.appendChild(mainTitle);
+      titleWrapper.classList.add('mb-2');
 
       let subTitle = document.createElement('h3');
       if (subtitle) {
@@ -1128,30 +1128,69 @@
       return menu;
     }
 
+    //setTableConstraints(selectTableById(0));
+
+    function createTooltip(content) {
+      let tooltip = document.createElement('a');
+      tooltip.style.position = 'relative';
+      tooltip.setAttribute('href','javascript:void(0)');
+      tooltip.classList.add('ml-1');
+      tooltip.innerHTML = `<i class="ri-question-line align-bottom"></i>`;
+      let tooltipWrapper = document.createElement('div');
+      tooltipWrapper.classList.add('p-2',theme.textColor,'text-xs',theme.backgroundColor,'bg-opacity-80','border',theme.mediumBorderColor)
+      tooltipWrapper.innerHTML = content;
+      tooltipWrapper.style.position = 'absolute';
+      tooltipWrapper.style.minWidth = '200px';
+      tooltip.addEventListener('mouseover',function(){
+        tooltip.appendChild(tooltipWrapper);
+      });
+      tooltip.addEventListener('mouseleave',function(){
+        tooltip.removeChild(tooltipWrapper);
+      });
+      return tooltip;
+    }
+
     function setTableConstraints(table) {
       let constraintsForm = document.createElement('div');
-      constraintsForm.innerHTML = `<div>Set Table Constraints</div>`;
+
       let modal = createModal(constraintsForm);
       document.querySelector('body').appendChild(modal);
+      constraintsForm.appendChild(createTitle('Table Constraints', 'Constraints limit the type of data that can go into this table'))
 
-      constraintsForm.appendChild(createButton('Add Constraint', 'add'))
+      constraintsForm.appendChild(createButton('New Constraint', 'add'))
 
-      let createConstraintItem = function (column) {
+      let createConstraintItem = function (column,type) {
         let item = document.createElement('div');
-        item.classList.add('border', theme.tableBorderColor, 'p-2', 'my-1', 'flex');
-        item.innerHTML =
-          `<div><div>${column.name}_${column.type}</div>
-        <div class="text-sm ${theme.mutedTextColor}">foreign key</div></div>`
+        item.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor, 'p-2', 'my-1', 'flex','items-center');
+
+        let itemLabel = document.createElement('h4');
+        itemLabel.classList.add('mr-2')
+        itemLabel.innerHTML = `${column.name}_${type.match(/[A-Z]+/g).join("")}`
+        let itemDescription = document.createElement('p');
+        itemDescription.classList.add('text-sm',theme.mutedTextColor);
+        itemDescription.innerText = type;
+        item.appendChild(itemLabel);
+        item.appendChild(itemDescription);
+        itemDescription.appendChild(createTooltip('Enforces Child Relationship With a Parent Table'))
+        
+
+        
+
         let deleteBtn = createButton('Delete', 'delete-bin');
         deleteBtn.classList.add('ml-auto');
-        item.appendChild(deleteBtn)
+        item.appendChild(deleteBtn);
         return item;
       }
 
+      
 
+      let pkConstraints = table.columns.filter(column => column.readOnly);
+      pkConstraints.forEach(item => constraintsForm.appendChild(createConstraintItem(item,'Primary Key')))
 
-      let columnConstraints = table.columns.filter(column => column.type == 'fk');
-      columnConstraints.forEach(item => constraintsForm.appendChild(createConstraintItem(item)))
+      let fkConstraints = table.columns.filter(column => column.type == 'fk');
+      fkConstraints.forEach(item => constraintsForm.appendChild(createConstraintItem(item,'Foreign Key')))
+
+      
 
       let closeModal = constraintsForm.appendChild(createButton('Close'));
       closeModal.addEventListener('click', function () {
@@ -1356,17 +1395,17 @@
       let createRecords = function (records) {
         let list = document.createElement('div');
         list.classList.add('space-y-1')
-          records.forEach(function (record, i) {
-            let item = document.createElement('a');
-            item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
-            item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`
-            item.addEventListener('click', function () {
-              input.value = record;
-            });
-            //item.prepend(createIcon(columnType))
-            list.appendChild(item)
+        records.forEach(function (record, i) {
+          let item = document.createElement('a');
+          item.setAttribute('href', 'javascript:void(0)');
+          item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
+          item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`
+          item.addEventListener('click', function () {
+            input.value = record;
           });
+          //item.prepend(createIcon(columnType))
+          list.appendChild(item)
+        });
         return list;
       }
 
@@ -1388,7 +1427,7 @@
         document.querySelector('body').appendChild(createModal(warning));
       });
 
-     
+
 
       input.addEventListener('keyup', function () {
 
@@ -1397,7 +1436,7 @@
         recordsList.appendChild(createRecords(filteredRecords))
 
         if (filteredRecords.length == 0) {
-          recordsList.appendChild(createButton('Add Record','add'))
+          recordsList.appendChild(createButton('Add Record', 'add'))
         }
         if (filteredRecords.length == 1) {
           //input.value = filteredRecords[0];
