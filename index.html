@@ -1354,7 +1354,7 @@
             item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
             item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`
             item.addEventListener('click', function () {
-              linkRecord(record);
+              input.value = record;
             });
             //item.prepend(createIcon(columnType))
             list.appendChild(item)
@@ -1380,19 +1380,19 @@
         document.querySelector('body').appendChild(createModal(warning));
       });
 
-      function linkRecord(record) {
-        
-        input.setAttribute('value', record);
-      };
+     
 
       input.addEventListener('keyup', function () {
 
         recordsList.innerHTML = '';
-        let filteredRecords = summaryRecords.filter(record => record.match(input.value));
+        let filteredRecords = summaryRecords.filter(record => record.match(input.value.trim()));
         recordsList.appendChild(createRecords(filteredRecords))
 
         if (filteredRecords.length == 0) {
           recordsList.appendChild(createButton('Add Record','add'))
+        }
+        if (filteredRecords.length == 1) {
+          //input.value = filteredRecords[0];
         }
 
       })
