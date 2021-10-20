@@ -597,7 +597,7 @@
           return menuWrapper;
         }
 
-        let createMenuItem = function (label, callback) {
+        let createMenuItem = function (label, callback, options) {
           let menuItem = document.createElement('a');
           menuItem.classList.add('block', 'p-2')
           menuItem.setAttribute('href', 'javascript:void(0)');
@@ -605,6 +605,13 @@
           menuItem.addEventListener('click', function () {
             callback(col);
           }, false);
+          if (options) {
+            if (options.icon) {
+              let icon = document.createElement('i');
+              icon.classList.add(`ri-${options.icon}-line`,'mr-1')
+              menuItem.prepend(icon);
+            }
+          }
           return menuItem;
         }
 
@@ -639,7 +646,7 @@
           //ADD MENU ITEMS
           let menuItems = [
             dataTypeOption,
-            createMenuItem('Link to Another Table', linkToTable),
+            createMenuItem('Link to Another Table', linkToTable, {icon:'key'}),
             createMenuItem('Insert New Column'),
             createMenuItem('Rename Column'),
             createMenuItem('Duplicate Column'),
