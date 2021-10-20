@@ -985,7 +985,7 @@
         item.appendChild(input);
         let label = document.createElement('label');
         item.appendChild(label);
-        label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name} <span class="${theme.mutedTextColor} text-xs">${table.columns[1].name}</span>`;
+        label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name}`;
         item.addEventListener('click', function () {
           input.setAttribute('checked', true);
           let selectedTableId = input.getAttribute('value');
