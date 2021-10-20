@@ -608,7 +608,7 @@
           if (options) {
             if (options.icon) {
               let icon = document.createElement('i');
-              icon.classList.add(`ri-${options.icon}-line`, 'mr-1')
+              icon.classList.add(`ri-${options.icon}-line`,'align-bottom', 'mr-1')
               menuItem.prepend(icon);
             }
           }
@@ -656,8 +656,16 @@
             createMenuItem('Delete Column')
           ];
 
+          if (col.type == 'fk') {
+            menuItems.splice(1, 2, createMenuItem('Remove Link to Table', removeLink, { icon: 'close' }))
+          }
+
           menuItems.forEach(item => menu.appendChild(item));
           return menu;
+        }
+
+        let removeLink = function(){
+
         }
 
         let createTypeMenu = function (col) {
