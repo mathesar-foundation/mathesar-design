@@ -73,6 +73,9 @@ var schemaTables =
     tables: [{
         name: 'artist',
         id: 0,
+        constraints: [
+            { column: 'releaseId', type: 'foreignKey'}
+        ],
         columns: [
             { name: 'id', type: 'number', readOnly: true },
             { name: 'artistName', type: 'text' },
@@ -417,6 +420,11 @@ function createModal(content, footer) {
     return overlay;
 }
 
+function getColumnType(table,column) {
+    let columnType = selectTableByName(table).columns.find(col => col.name == column).type;
+    return columnType;
+}
+
 //CREATE TABLE
 function createTable(obj) {
 
@@ -458,10 +466,21 @@ function createTable(obj) {
         header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
         let headerLabel = document.createElement('div');
         let headerIcon = document.createElement('i');
-        headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-2');
-        headerLabel.innerHTML = col.name;
+        headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-1');
+        
+        let headerColumnName = document.createElement('span');
+        headerColumnName.innerHTML = col.name;
         header.appendChild(headerLabel);
-        headerLabel.prepend(headerIcon);
+        headerLabel.appendChild(headerIcon);
+        headerLabel.appendChild(headerColumnName);
+        
+        if (col.type == 'fk') {
+            let linkedColumnType = getColumnType(col.lookupTable,col.lookupField);
+            headerIcon.classList.add('ri-' + typeIcon(linkedColumnType), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-1');
+            let foreignKeyIcon = document.createElement('i');
+            foreignKeyIcon.classList.add('ri-key-fill','mr-1','text-xs');
+            headerLabel.insertBefore(foreignKeyIcon,headerColumnName);
+        }
 
         //RENAME HEADER
         headerLabel.addEventListener('click', function () {
@@ -556,8 +575,16 @@ function createTable(obj) {
             let dataTypeIcon = document.createElement('i');
             dataTypeIcon.classList.add('ri-' + typeIcon(col.type), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
             dataTypeLabel.innerHTML = col.type;
-            dataTypeLabel.prepend(dataTypeIcon);
+            
             dataTypeOption.addEventListener('click', openDataTypeMenu);
+
+            if (col.type == 'fk') {
+                let linkedColumnType = getColumnType(col.lookupTable,col.lookupField);
+                dataTypeIcon.classList.add('ri-' + typeIcon(linkedColumnType), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
+                dataTypeLabel.innerHTML = linkedColumnType;
+            }
+
+            dataTypeLabel.prepend(dataTypeIcon);
 
             //ADD MENU ITEMS
             let menuItems = [
@@ -818,7 +845,7 @@ function addColumn(table) {
 }
 
 
-openInfoModal('tableRelationships')
+//openInfoModal('tableRelationships')
 function openInfoModal(name) {
     let modalContent = document.createElement('div');
     
