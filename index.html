@@ -911,7 +911,7 @@
     }
 
 
-    function createTitle(title, subtitle) {
+    function createTitle(title, subtitle, options) {
       let titleWrapper = document.createElement('div');
       let mainTitle = document.createElement('h2');
       mainTitle.classList.add('text-lg');
@@ -925,8 +925,21 @@
         subTitle.classList.add(theme.mutedTextColor);
         titleWrapper.appendChild(subTitle);
       }
+      console.log(options)
+      if (options) {
+        if (options.tooltip) {
+          subTitle.appendChild(createTooltip(options.tooltip));
+        }
+      }
 
       return titleWrapper;
+    }
+
+    function createNote(content) {
+      let note = document.createElement('div');
+      note.classList.add('text-sm',theme.mutedTextColor,'my-2')
+      note.innerHTML = content;
+      return note;
     }
 
     function createColumnSelector(table, fn) {
@@ -934,7 +947,7 @@
       let selector = document.createElement('div');
       let selectorHeader = document.createElement('h4');
       selectorHeader.classList.add('my-2');
-      selectorHeader.innerHTML = `<h4>Select a Column from '${table.name}' table</h4><p class="${theme.mutedTextColor} text-sm">Note: Select the column that contains the data that is unique and related to this table</p>`
+      selectorHeader.innerHTML = `<h4>Select a Column To Link To</h4>`
       selector.appendChild(selectorHeader);
 
       let selectorList = document.createElement('div');
@@ -980,6 +993,8 @@
       });
 
       selector.appendChild(selectorList);
+      let noteContent = `Note: We recommend that you select a column that has unique values. We've pre-selected a column for you if we've found one.`
+      selector.appendChild(createNote(noteContent));
       return selector;
 
     }
@@ -992,16 +1007,25 @@
       let modal = createModal(linkTableForm, linkTableActions);
       document.querySelector('body').appendChild(modal);
 
-      linkTableForm.appendChild(createTitle('Create One-to-Many Relationship', 'Select records from another table using a foreign key'));
+      let foreignKeyInfo = `A foreign key links a column from this table to a column in another table and ensures that entered values already exist in the other column.`
+
+      linkTableForm.appendChild(createTitle(
+        'Create Relationship',
+        'Link this column to records from another table',
+        {tooltip:foreignKeyInfo}
+      ));
 
       let tableSelector = document.createElement('div');
       let selectorHeader = document.createElement('h4');
       selectorHeader.classList.add('my-2');
-      selectorHeader.innerHTML = `<h4>Select a Parent Table</h4><p class="${theme.mutedTextColor} text-sm">Note: In a one-to-many relationship, this table should be on the 'one' side.</p>`
+      selectorHeader.innerHTML = `<h4>Select a Table</h4>`;
 
       tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
       linkTableForm.appendChild(selectorHeader);
       linkTableForm.appendChild(tableSelector);
+
+      
+
       let columnSelector = document.createElement('div');
       linkTableForm.appendChild(columnSelector);
       //ADD ITEMS
@@ -1018,10 +1042,16 @@
         item.appendChild(label);
         label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name}`;
         item.addEventListener('click', function () {
+
           input.setAttribute('checked', true);
           let selectedTableId = input.getAttribute('value');
+          let activeTableName = selectTableById(activeTable).name;
+          let noteContent = `Note: You can only link a single record from the <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> table to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> records to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="#" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`
+          
           // APPEND COLUMN SELECTOR
+          
           columnSelector.innerHTML = '';
+          columnSelector.prepend(createNote(noteContent));
           columnSelector.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
         });
 
@@ -1031,7 +1061,7 @@
       });
 
 
-      let addLinkBtn = createButton(`Add Table Relationship`);
+      let addLinkBtn = createButton(`Add Link`);
       linkTableActions.appendChild(createButton('Cancel'));
       linkTableActions.appendChild(addLinkBtn);
 
@@ -1157,6 +1187,7 @@
       tooltipWrapper.innerHTML = content;
       tooltipWrapper.style.position = 'absolute';
       tooltipWrapper.style.minWidth = '200px';
+      tooltipWrapper.style.left = '0';
       tooltip.addEventListener('mouseover',function(){
         tooltip.appendChild(tooltipWrapper);
       });
@@ -1168,10 +1199,14 @@
 
     function setTableConstraints(table) {
       let constraintsForm = document.createElement('div');
-
       let modal = createModal(constraintsForm);
       document.querySelector('body').appendChild(modal);
-      constraintsForm.appendChild(createTitle('Table Constraints', 'Constraints limit the type of data that can go into this table'))
+
+      constraintsForm.appendChild(createTitle(
+        'Table Constraints',
+        'Constraints limit the type of data that can go into this table',
+        {tooltip:'test'}
+      ));
 
       constraintsForm.appendChild(createButton('New Constraint', 'add'))
 
