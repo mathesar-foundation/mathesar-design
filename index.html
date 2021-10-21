@@ -599,12 +599,19 @@
 
         let createMenuItem = function (label, callback, options) {
           let menuItem = document.createElement('a');
-          menuItem.classList.add('block', 'p-2')
+          menuItem.classList.add('block','m-1','py-1','px-2');
           menuItem.setAttribute('href', 'javascript:void(0)');
           menuItem.innerText = label;
+          let hoverClasses = [theme.primaryColor,'bg-opacity-30','rounded'];
           menuItem.addEventListener('click', function () {
             callback(col);
           }, false);
+          menuItem.addEventListener('mouseover',function(){
+            menuItem.classList.add(...hoverClasses)
+          });
+          menuItem.addEventListener('mouseleave',function(){
+            menuItem.classList.remove(...hoverClasses)
+          });
           if (options) {
             if (options.icon) {
               let icon = document.createElement('i');
@@ -612,7 +619,14 @@
               menuItem.prepend(icon);
             }
           }
+
           return menuItem;
+        }
+
+        let createMenuDivider = function(){
+          let divider = document.createElement('div');
+          divider.classList.add('border-b',theme.tableBorderColor,'mx-2');
+          return divider;
         }
 
         let createMenuTextInput = function (label) {
@@ -633,7 +647,7 @@
           // CREATE MENU ITEMS
           let dataTypeOption = document.createElement('a');
           dataTypeOption.setAttribute('href', 'javascript:void(0)');
-          dataTypeOption.classList.add('p-2', 'border-b', theme.mediumBorderColor, 'flex', 'items-center', 'block');
+          dataTypeOption.classList.add('m-1','py-1','px-2','flex','items-center','block');
           let dataTypeLabel = document.createElement('div');
           dataTypeLabel.classList.add('text-base');
           dataTypeOption.appendChild(dataTypeLabel);
@@ -646,6 +660,7 @@
           //ADD MENU ITEMS
           let menuItems = [
             dataTypeOption,
+            createMenuDivider(),
             createMenuItem('Link to Another Table', linkToTable, { icon: 'key' }),
             createMenuItem('Insert New Column'),
             createMenuItem('Rename Column'),
@@ -653,11 +668,12 @@
             createMenuItem('Filter Column'),
             createMenuItem('Sort Column'),
             createMenuItem('Group Column'),
-            createMenuItem('Delete Column')
+            createMenuDivider(),
+            createMenuItem('Delete Column', menuAction, { icon: 'delete-bin'})
           ];
 
           if (col.type == 'fk') {
-            menuItems.splice(1, 2, createMenuItem('Remove Link to Table', removeLink, { icon: 'close' }))
+            menuItems.splice(2, 3, createMenuItem('Remove Link to Table', removeLink, { icon: 'close' }))
           }
 
           menuItems.forEach(item => menu.appendChild(item));
