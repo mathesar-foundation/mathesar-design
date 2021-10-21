@@ -818,7 +818,7 @@ function addColumn(table) {
 }
 
 
-//openInfoModal('tableRelationships')
+openInfoModal('tableRelationships')
 function openInfoModal(name) {
     let modalContent = document.createElement('div');
     
