@@ -83,7 +83,7 @@ var schemaTables =
             { name: 'trackId', type: 'text' }
         ],
         records: [
-            [449, 'Aqua', '', ''],
+            [449, 'Aqua', 'Aquarius', ''],
             [450, 'Patti Smith', 'Horses', ''],
             [451, 'Elvis Costello', 'Spike', ''],
             [451, 'Kylie Minogue', 'Golden', ''],
@@ -194,7 +194,8 @@ if (localStorage.getItem('tables') === null) {
 }
 
 
-let savedTables = JSON.parse(localStorage.getItem('tables'));
+//let savedTables = JSON.parse(localStorage.getItem('tables'));
+let savedTables = schemaTables;
 
 var activeTable = urlParams.get('activeTable');
 createSidebarNavigation(savedTables);
