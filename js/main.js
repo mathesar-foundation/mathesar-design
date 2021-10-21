@@ -602,7 +602,7 @@ function createTable(obj) {
             ];
 
             if (col.type == 'fk') {
-                menuItems.splice(2, 3, createMenuItem('Remove Link to Table', removeLink, { icon: 'close' }))
+                menuItems.splice(2, 3, createMenuItem(`Remove '${col.lookupTable}' Link`, removeLink, { icon: 'close' }))
             }
 
             menuItems.forEach(item => menu.appendChild(item));
@@ -1150,8 +1150,11 @@ function createTooltip(content) {
     return tooltip;
 }
 
+//setTableConstraints(selectTableByName('artist'));
+
 function setTableConstraints(table) {
     let constraintsForm = document.createElement('div');
+    constraintsForm.classList.add('space-y-2');
     let modal = createModal(constraintsForm);
     document.querySelector('body').appendChild(modal);
 
@@ -1160,8 +1163,21 @@ function setTableConstraints(table) {
         'Constraints limit the type of data that can go into this table',
         { tooltip: 'test' }
     ));
+    
+    let newConstraint = document.createElement('div');
+    newConstraint.classList.add('flex','items-center','space-x-2')
+    let newConstraintColumn = document.createElement('input');
+    newConstraintColumn.classList.add(theme.inputBackgroundColor,'p-1','flex-grow','border',theme.darkBorderColor)
+    newConstraintColumn.setAttribute('placeholder','Select Column');
+    let newConstraintType = document.createElement('input');
+    newConstraintType.classList.add(theme.inputBackgroundColor,'p-1','flex-grow','border',theme.darkBorderColor)
+    newConstraintType.setAttribute('placeholder','Constraint Type');
+    
+    newConstraint.appendChild(newConstraintColumn)
+    newConstraint.appendChild(newConstraintType)
+    newConstraint.appendChild(createButton('Add Constraint', 'add'))
 
-    constraintsForm.appendChild(createButton('New Constraint', 'add'))
+    constraintsForm.appendChild(newConstraint);
 
     let createConstraintItem = function (column, type) {
         let item = document.createElement('div');
