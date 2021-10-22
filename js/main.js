@@ -70,8 +70,6 @@ function applyTheme(property, color) {
     });
 }
 
-
-
 //sessionStorage.clear();
 
 if (sessionStorage.getItem('tables') === null) {
@@ -1013,7 +1011,7 @@ function createDropdownMenu(header) {
     return menu;
 }
 
-//setTableConstraints(selectTableById(0));
+
 
 function createTooltip(content) {
     let tooltip = document.createElement('a');
@@ -1036,7 +1034,7 @@ function createTooltip(content) {
     return tooltip;
 }
 
-//setTableConstraints(selectTableByName('artist'));
+//setTableConstraints(selectTableById(0));
 
 function setTableConstraints(table) {
     let constraintsForm = document.createElement('div');
@@ -1051,40 +1049,48 @@ function setTableConstraints(table) {
     ));
     
     let newConstraint = document.createElement('div');
-    newConstraint.classList.add('flex','items-center','space-x-2')
+    newConstraint.classList.add('flex','items-center','space-x-2');
+
     let newConstraintColumn = document.createElement('input');
     newConstraintColumn.classList.add(theme.inputBackgroundColor,'p-1','flex-grow','border',theme.darkBorderColor)
     newConstraintColumn.setAttribute('placeholder','Select Column');
+
     let newConstraintType = document.createElement('input');
     newConstraintType.classList.add(theme.inputBackgroundColor,'p-1','flex-grow','border',theme.darkBorderColor)
     newConstraintType.setAttribute('placeholder','Constraint Type');
-    
-    newConstraint.appendChild(newConstraintColumn)
-    newConstraint.appendChild(newConstraintType)
-    newConstraint.appendChild(createButton('Add Constraint', 'add'))
 
+    newConstraint.append(newConstraintColumn,newConstraintType,createButton('Add Constraint', 'add'))
     constraintsForm.appendChild(newConstraint);
 
     let createConstraintItem = function (column, type) {
         let item = document.createElement('div');
         item.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor, 'p-2', 'my-1', 'flex', 'items-center');
 
+        let labelWrapper = document.createElement('div');
+
         let itemLabel = document.createElement('h4');
         itemLabel.classList.add('mr-2')
-        itemLabel.innerHTML = `${column.name}_${type.match(/[A-Z]+/g).join("")}`
+        itemLabel.innerHTML = `${column.name}_${type.match(/[A-Z]+/g).join("")}`;
+
+        let itemReferences = document.createElement('div');
+        console.log(column)
+
+        itemReferences.innerHTML = `<span class="text-sm">${column.name}</span> <span class="text-xs ${theme.mutedTextColor}">from '${table.name}'</span>`;
+
+        if(column.lookupTable) {
+            itemReferences.innerHTML = `<span class="text-sm">${column.name}</span> <span class="text-xs ${theme.mutedTextColor}">from '${table.name}'</span> <i class="ri-arrow-right-line align-bottom mr-1 ${theme.mutedTextColor}"></i> <span class="text-sm">${column.lookupField}</span> <span class="text-xs ${theme.mutedTextColor}">from '${column.lookupTable}'</span>`;
+        }
+
         let itemDescription = document.createElement('p');
         itemDescription.classList.add('text-sm', theme.mutedTextColor);
         itemDescription.innerText = type;
-        item.appendChild(itemLabel);
-        item.appendChild(itemDescription);
-        itemDescription.appendChild(createTooltip('Enforces Child Relationship With a Parent Table'))
-
-
-
+        //itemDescription.appendChild(createTooltip('Enforces Child Relationship With a Parent Table'));
+        
+        labelWrapper.append(itemLabel,itemDescription,itemReferences);
 
         let deleteBtn = createButton('Delete', 'delete-bin');
         deleteBtn.classList.add('ml-auto');
-        item.appendChild(deleteBtn);
+        item.append(labelWrapper,deleteBtn);
         return item;
     }
 
@@ -1146,8 +1152,7 @@ function createEditRecordMenu(input, table, value) {
         label.innerHTML = `${field.name}`;
         label.prepend(createIcon(field.type));
         if (records) { control.setAttribute('value', records[i]); }
-        formGroup.appendChild(label);
-        formGroup.appendChild(control);
+        formGroup.append(label,control);
 
         if (i == 1) {
             label.classList.add('font-semibold');
