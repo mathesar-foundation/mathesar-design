@@ -786,6 +786,11 @@ function createColumnSelector(table, fn) {
     selectorHeader.innerHTML = `<h4>Select a Column To Link To</h4>`
     selector.appendChild(selectorHeader);
 
+    let searchInput = document.createElement('input');
+    searchInput.classList.add(theme.inputBackgroundColor, 'p-1','border','border-b-0',theme.tableBorderColor,'w-full');
+    searchInput.setAttribute('placeholder',`Search Columns in '${table.name}''`);
+    selector.appendChild(searchInput);
+
     let selectorList = document.createElement('div');
     selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
 
@@ -855,6 +860,11 @@ function linkToTable(col) {
     let selectorHeader = document.createElement('h4');
     selectorHeader.classList.add('my-2');
     selectorHeader.innerHTML = `<h4>Select a Table</h4>`;
+
+    let searchInput = document.createElement('input');
+    searchInput.classList.add(theme.inputBackgroundColor, 'p-1','border-b',theme.tableBorderColor,'w-full');
+    searchInput.setAttribute('placeholder',`Search Tables in 'album-collection'`);
+    tableSelector.appendChild(searchInput);
 
     tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
     linkTableForm.appendChild(selectorHeader);
