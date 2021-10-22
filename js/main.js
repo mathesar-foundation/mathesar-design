@@ -765,7 +765,7 @@ function createColumnSelector(table, fn) {
 
     let searchInput = document.createElement('input');
     searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border', 'border-b-0', theme.tableBorderColor, 'w-full');
-    searchInput.setAttribute('placeholder', `Search Columns in '${table.name}''`);
+    searchInput.setAttribute('placeholder', `Search columns in '${table.name}''`);
     selector.appendChild(searchInput);
 
     let selectorList = document.createElement('div');
@@ -840,7 +840,7 @@ function linkToTable(col) {
 
     let searchInput = document.createElement('input');
     searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border-b', theme.tableBorderColor, 'w-full');
-    searchInput.setAttribute('placeholder', `Search Tables in 'album-collection'`);
+    searchInput.setAttribute('placeholder', `Search tables in 'album-collection'`);
     tableSelector.appendChild(searchInput);
 
     tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);

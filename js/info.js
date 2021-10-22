@@ -1,6 +1,6 @@
 var info = {
     tableRelationships: {
-        title: 'Setting up Relationships',
+        title: 'Setting up Relationships [THIS CONTENT WILL NOT BE IN A MODAL. MODAL ADDED AS PLACEHOLDER ONLY]',
         content: `
         <p>If you need to link multiple <span>artist</span> records to each <span>release</span>, you will need to create a linked column on the <span>release</span> table instead of this table.</p>
         <a href="#">Click here to go to the release table.</a>
