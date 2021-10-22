@@ -1,7 +1,6 @@
 import { info } from './info.js';
 import { tables } from './tables.js';
 
-
 //sessionStorage.clear();
 
 var darkTheme = {
@@ -95,14 +94,14 @@ function createSidebarNavigation(schema) {
     tablesNavigation.classList.add('tables-navigation');
     document.querySelector('.sidebar-navigation').append(tablesNavigation);
 
-    let objectHeader = function (key) {
+    let objectHeader = (key) => {
         let listHeader = document.createElement('div');
-        listHeader.classList.add('p-2', 'border-t', 'border-b', theme.mediumBorderColor)
+        listHeader.classList.add('p-2', 'border-t', 'border-b', theme.mediumBorderColor);
         listHeader.innerHTML = `<div class="flex items-center space-x-2"><div class="uppercase text-xs font-bold ${theme.textColor}">${key}</div> <div class="${theme.lightBackgroundColor} ${theme.inverseTextColor} rounded px-1 text-xs">${schema[key].length}</div><div>`;
         return listHeader;
     };
 
-    let objectList = function (key) {
+    let objectList = (key) => {
         let obj = schema[key];
         let listItem = document.createElement('div');
         listItem.innerHTML = obj.map(item => `<div class="${theme.textColor}"><a class="p-2 block" href="${window.location.pathname}?activeTable=${item.id}"><i class="ri-table-fill align-bottom mr-2"></i>${item.name}</a></div>`).join('');
@@ -188,10 +187,10 @@ function createTableToolbar(obj) {
         tableTitle.appendChild(createTableOptionsMenu(obj));
     });
 
-    let createSection = function (name, content) {
+    let createSection = (name, content) => {
         let section = document.createElement('div');
         let sectionHeader = document.createElement('h4');
-        sectionHeader.classList.add(theme.mutedTextColor, 'text-sm')
+        sectionHeader.classList.add(theme.mutedTextColor, 'text-sm');
         sectionHeader.innerText = name;
         let sectionContent = document.createElement('div');
         sectionContent.classList.add('space-x-2');
@@ -304,7 +303,7 @@ function createModal(content, footer) {
     return overlay;
 }
 
-function getColumnType(table,column) {
+function getColumnType(table, column) {
     let columnType = selectTableByName(table).columns.find(col => col.name == column).type;
     return columnType;
 }
@@ -343,7 +342,7 @@ function createTable(obj) {
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs']
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, theme.mediumBackgroundColor, 'editable-cell'];
 
-    let createHeader = function (col) {
+    let createHeader = (col) => {
         let header = document.createElement('div');
         header.style.width = '240px';
         header.style.position = 'relative';
@@ -351,19 +350,19 @@ function createTable(obj) {
         let headerLabel = document.createElement('div');
         let headerIcon = document.createElement('i');
         headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-1');
-        
+
         let headerColumnName = document.createElement('span');
         headerColumnName.innerHTML = col.name;
         header.appendChild(headerLabel);
         headerLabel.appendChild(headerIcon);
         headerLabel.appendChild(headerColumnName);
-        
+
         if (col.type == 'fk') {
-            let linkedColumnType = getColumnType(col.lookupTable,col.lookupField);
+            let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
             headerIcon.classList.add('ri-' + typeIcon(linkedColumnType), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-1');
             let foreignKeyIcon = document.createElement('i');
-            foreignKeyIcon.classList.add('ri-key-fill','mr-1','text-xs');
-            headerLabel.insertBefore(foreignKeyIcon,headerColumnName);
+            foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
+            headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
         }
 
         //RENAME HEADER
@@ -381,26 +380,16 @@ function createTable(obj) {
                 col.name = renameInput.value;
                 tableWrapper.remove();
                 saveTable(obj);
-
-            })
+            });
         });
 
         let headerMenuToggle = document.createElement('button');
         headerMenuToggle.innerHTML = `<i class="ri-arrow-down-s-line align-bottom"></i>`;
-        headerMenuToggle.classList.add('ml-auto')
+        headerMenuToggle.classList.add('ml-auto');
         header.appendChild(headerMenuToggle);
         headerMenuToggle.addEventListener('click', openColumnMenu);
 
-        // CREATE MENU
 
-        let menuWrapper = function () {
-            let menuWrapper = document.createElement('div');
-            menuWrapper.classList.add(theme.backgroundColor, theme.mediumBorderColor, 'border', 'w-full', 'shadow-md', 'text-sm', 'column-menu');
-            menuWrapper.style.top = '40px';
-            menuWrapper.style.left = '0';
-            menuWrapper.style.position = 'absolute';
-            return menuWrapper;
-        }
 
         let createMenuItem = function (label, callback, options) {
             let menuItem = document.createElement('a');
@@ -412,27 +401,27 @@ function createTable(obj) {
                 callback(col);
             }, false);
             menuItem.addEventListener('mouseover', function () {
-                menuItem.classList.add(...hoverClasses)
+                menuItem.classList.add(...hoverClasses);
             });
             menuItem.addEventListener('mouseleave', function () {
-                menuItem.classList.remove(...hoverClasses)
+                menuItem.classList.remove(...hoverClasses);
             });
             if (options) {
                 if (options.icon) {
                     let icon = document.createElement('i');
-                    icon.classList.add(`ri-${options.icon}-line`, 'align-bottom', 'mr-1')
+                    icon.classList.add(`ri-${options.icon}-line`, 'align-bottom', 'mr-1');
                     menuItem.prepend(icon);
                 }
             }
 
             return menuItem;
-        }
+        };
 
         let createMenuDivider = function () {
             let divider = document.createElement('div');
             divider.classList.add('border-b', theme.tableBorderColor, 'mx-2');
             return divider;
-        }
+        };
 
         let createMenuTextInput = function (label) {
             let menuInput = document.createElement('div');
@@ -443,11 +432,15 @@ function createTable(obj) {
             menuInput.appendChild(inputLabel);
             menuInput.appendChild(input);
             return menuInput;
-        }
+        };
 
         let createHeaderMenu = function (col) {
 
-            let menu = menuWrapper();
+            let menu = document.createElement('div');
+            menu.classList.add(theme.backgroundColor, theme.mediumBorderColor, 'border', 'w-full', 'shadow-md', 'text-sm', 'column-menu');
+            menu.style.top = '40px';
+            menu.style.left = '0';
+            menu.style.position = 'absolute';
 
             // CREATE MENU ITEMS
             let dataTypeOption = document.createElement('a');
@@ -459,11 +452,11 @@ function createTable(obj) {
             let dataTypeIcon = document.createElement('i');
             dataTypeIcon.classList.add('ri-' + typeIcon(col.type), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
             dataTypeLabel.innerHTML = col.type;
-            
+
             dataTypeOption.addEventListener('click', openDataTypeMenu);
 
             if (col.type == 'fk') {
-                let linkedColumnType = getColumnType(col.lookupTable,col.lookupField);
+                let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
                 dataTypeIcon.classList.add('ri-' + typeIcon(linkedColumnType), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
                 dataTypeLabel.innerHTML = linkedColumnType;
             }
@@ -486,34 +479,23 @@ function createTable(obj) {
             ];
 
             if (col.type == 'fk') {
-                menuItems.splice(2, 3, createMenuItem(`Remove '${col.lookupTable}' Link`, removeLink, { icon: 'close' }))
+                menuItems.splice(2, 3, createMenuItem(`Remove '${col.lookupTable}' Link`, removeLink, { icon: 'close' }));
             }
 
             menuItems.forEach(item => menu.appendChild(item));
             return menu;
-        }
+        };
 
         let removeLink = function () {
+        };
 
-        }
-
-        let createTypeMenu = function (col) {
-            let menu = menuWrapper();
-            menu.innerText = 'TEST';
-            let menuItems = [
-                createMenuTextInput('Field Size Limit')
-            ];
-            menuItems.forEach(item => menu.appendChild(item));
-
-            return menu;
-        }
 
         function menuAction(menu) {
             return function () {
                 console.log("Clicked on createHeaderMenu -> menuAction item");
                 menu.parentElement.removeChild(menu);
                 removeDropdownOutsideClickHandler(menu);
-            }
+            };
         }
 
         function openColumnMenu(e) {
@@ -633,18 +615,17 @@ function createTable(obj) {
         rowNumber.style.width = '40px';
         row.appendChild(rowNumber);
 
-        let placeholderValue = function (col) {
+        let placeholderValue = (col) => {
             if (col.referencedTable) {
-                return `Add Record to '${col.referencedTable}'`
+                return `Add Record to '${col.referencedTable}'`;
             } else if (col.type == 'fk') {
-                return `Search from '${col.lookupField}'`
+                return `Search from '${col.lookupField}'`;
             } else {
-                return `Add Record`
+                return `Add Record`;
             }
         }
 
         columns.forEach(function (col, i) {
-
             let cell = document.createElement('div');
             cell.classList.add(...cellClasses)
             cell.style.width = '240px';
@@ -666,9 +647,6 @@ function createTable(obj) {
                 }
             });
         });
-
-
-
         return row;
     }
 
@@ -732,10 +710,10 @@ function addColumn(table) {
 //openInfoModal('tableRelationships')
 function openInfoModal(name) {
     let modalContent = document.createElement('div');
-    
+
     modalContent.innerHTML = info[name].content;
     modalContent.prepend(createTitle(info[name].title));
-    
+
     let modal = createModal(modalContent);
     document.querySelector('body').appendChild(modal);
 }
@@ -755,7 +733,6 @@ function createTitle(title, subtitle, options) {
         subTitle.classList.add(theme.mutedTextColor);
         titleWrapper.appendChild(subTitle);
     }
-    console.log(options)
     if (options) {
         if (options.tooltip) {
             subTitle.appendChild(createTooltip(options.tooltip));
@@ -769,11 +746,11 @@ function createNote(content) {
     let note = document.createElement('div');
     note.classList.add('text-sm', theme.mutedTextColor, 'my-2')
     note.innerHTML = content;
-    note.querySelectorAll('[data-modal]').forEach(function(modalToggle){
-        modalToggle.addEventListener('click',function(){
+    note.querySelectorAll('[data-modal]').forEach((modalToggle) => {
+        modalToggle.addEventListener('click', function () {
             openInfoModal(modalToggle.getAttribute('data-modal'));
-        })
-     
+        });
+
     });
     return note;
 }
@@ -787,14 +764,14 @@ function createColumnSelector(table, fn) {
     selector.appendChild(selectorHeader);
 
     let searchInput = document.createElement('input');
-    searchInput.classList.add(theme.inputBackgroundColor, 'p-1','border','border-b-0',theme.tableBorderColor,'w-full');
-    searchInput.setAttribute('placeholder',`Search Columns in '${table.name}''`);
+    searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border', 'border-b-0', theme.tableBorderColor, 'w-full');
+    searchInput.setAttribute('placeholder', `Search Columns in '${table.name}''`);
     selector.appendChild(searchInput);
 
     let selectorList = document.createElement('div');
     selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
 
-    let selectorItem = function (col, i) {
+    let selectorItem = (col, i) => {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
         let input = document.createElement('input');
@@ -807,7 +784,7 @@ function createColumnSelector(table, fn) {
 
 
         let valueSample = savedTables.tables.find(table => table.columns.includes(col)).records.map(record => record[i]).splice(0, 2).join(',');
-        console.log(valueSample)
+        console.log(valueSample);
 
         let label = document.createElement('label');
         label.innerHTML = `${col.name} <span class="text-xs ${theme.mutedTextColor}">(Example values: ${valueSample})</span>`;
@@ -823,13 +800,13 @@ function createColumnSelector(table, fn) {
         item.addEventListener('click', function () {
             input.setAttribute('checked', true);
             let selectedColumn = input.getAttribute('value');
-            fn(selectedColumn, table.name)
+            fn(selectedColumn, table.name);
         });
 
         return item;
     }
 
-    table.columns.forEach(function (col, i) {
+    table.columns.forEach((col, i) => {
         selectorList.appendChild(selectorItem(col, i));
     });
 
@@ -862,20 +839,18 @@ function linkToTable(col) {
     selectorHeader.innerHTML = `<h4>Select a Table</h4>`;
 
     let searchInput = document.createElement('input');
-    searchInput.classList.add(theme.inputBackgroundColor, 'p-1','border-b',theme.tableBorderColor,'w-full');
-    searchInput.setAttribute('placeholder',`Search Tables in 'album-collection'`);
+    searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border-b', theme.tableBorderColor, 'w-full');
+    searchInput.setAttribute('placeholder', `Search Tables in 'album-collection'`);
     tableSelector.appendChild(searchInput);
 
     tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
     linkTableForm.appendChild(selectorHeader);
     linkTableForm.appendChild(tableSelector);
 
-
-
     let columnSelector = document.createElement('div');
     linkTableForm.appendChild(columnSelector);
     //ADD ITEMS
-    savedTables.tables.filter(table => table.id != activeTable).forEach(function (table) {
+    savedTables.tables.filter(table => table.id != activeTable).forEach((table) => {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
         let input = document.createElement('input');
@@ -892,10 +867,9 @@ function linkToTable(col) {
             input.setAttribute('checked', true);
             let selectedTableId = input.getAttribute('value');
             let activeTableName = selectTableById(activeTable).name;
-            let noteContent = `Note: You can only link a single record from the <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> table to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> records to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="javascript:void(0)" data-modal="tableRelationships" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`
-            
-            // APPEND COLUMN SELECTOR
+            let noteContent = `Note: You can only link a single record from the <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> table to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> records to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="javascript:void(0)" data-modal="tableRelationships" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`;
 
+            // APPEND COLUMN SELECTOR
             columnSelector.innerHTML = '';
 
             columnSelector.prepend(createNote(noteContent));
@@ -913,7 +887,7 @@ function linkToTable(col) {
     linkTableActions.appendChild(addLinkBtn);
 
 
-    let showLinkOptions = function (colName, tableName) {
+    let showLinkOptions = (colName, tableName) => {
 
         addLinkBtn.addEventListener('click', function () {
             console.log(col);
@@ -1057,50 +1031,49 @@ function setTableConstraints(table) {
         'Constraints limit the type of data that can go into this table',
         { tooltip: 'test' }
     ));
-    
+
     let newConstraint = document.createElement('div');
-    newConstraint.classList.add('flex','items-center','space-x-2');
+    newConstraint.classList.add('flex', 'items-center', 'space-x-2');
 
     let newConstraintColumn = document.createElement('input');
-    newConstraintColumn.classList.add(theme.inputBackgroundColor,'p-1','flex-grow','border',theme.darkBorderColor)
-    newConstraintColumn.setAttribute('placeholder','Select Column');
+    newConstraintColumn.classList.add(theme.inputBackgroundColor, 'p-1', 'flex-grow', 'border', theme.darkBorderColor)
+    newConstraintColumn.setAttribute('placeholder', 'Select Column');
 
     let newConstraintType = document.createElement('input');
-    newConstraintType.classList.add(theme.inputBackgroundColor,'p-1','flex-grow','border',theme.darkBorderColor)
-    newConstraintType.setAttribute('placeholder','Constraint Type');
+    newConstraintType.classList.add(theme.inputBackgroundColor, 'p-1', 'flex-grow', 'border', theme.darkBorderColor)
+    newConstraintType.setAttribute('placeholder', 'Constraint Type');
 
-    newConstraint.append(newConstraintColumn,newConstraintType,createButton('Add Constraint', 'add'))
+    newConstraint.append(newConstraintColumn, newConstraintType, createButton('Add Constraint', 'add'))
     constraintsForm.appendChild(newConstraint);
 
-    let createConstraintItem = function (column, type) {
+    let createConstraintItem = (column, type) => {
         let item = document.createElement('div');
         item.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor, 'p-2', 'my-1', 'flex', 'items-center');
 
         let labelWrapper = document.createElement('div');
 
         let itemLabel = document.createElement('h4');
-        itemLabel.classList.add('mr-2')
+        itemLabel.classList.add('mr-2');
         itemLabel.innerHTML = `${column.name}_${type.match(/[A-Z]+/g).join("")}`;
 
         let itemReferences = document.createElement('div');
-        console.log(column)
+        console.log(column);
 
         itemReferences.innerHTML = `<span class="text-sm">${column.name}</span> <span class="text-xs ${theme.mutedTextColor}">from '${table.name}'</span>`;
 
-        if(column.lookupTable) {
-            itemReferences.innerHTML = `<span class="text-sm">${column.name}</span> <span class="text-xs ${theme.mutedTextColor}">from '${table.name}'</span> <i class="ri-arrow-right-line align-bottom mr-1 ${theme.mutedTextColor}"></i> <span class="text-sm">${column.lookupField}</span> <span class="text-xs ${theme.mutedTextColor}">from '${column.lookupTable}'</span>`;
+        if (column.lookupTable) {
+            itemReferences.innerHTML = `<span class="text-sm">${column.lookupField}</span> <span class="text-xs ${theme.mutedTextColor}">from '${column.lookupTable}'</span> <i class="ri-arrow-right-line align-bottom text-sm mr-1 ${theme.mutedTextColor}"></i> <span class="text-sm">${column.name}</span> <span class="text-xs ${theme.mutedTextColor}">from '${table.name}'</span>`;
         }
 
         let itemDescription = document.createElement('p');
         itemDescription.classList.add('text-sm', theme.mutedTextColor);
         itemDescription.innerText = type;
         //itemDescription.appendChild(createTooltip('Enforces Child Relationship With a Parent Table'));
-        
-        labelWrapper.append(itemLabel,itemDescription,itemReferences);
+        labelWrapper.append(itemLabel, itemDescription, itemReferences);
 
         let deleteBtn = createButton('Delete', 'delete-bin');
         deleteBtn.classList.add('ml-auto');
-        item.append(labelWrapper,deleteBtn);
+        item.append(labelWrapper, deleteBtn);
         return item;
     }
 
@@ -1122,9 +1095,9 @@ function createTableOptionsMenu(table) {
     let header = `Table Options`;
     let menu = createDropdownMenu(header);
 
-    let createMenuItem = function (label, callback) {
+    let createMenuItem = (label, callback) => {
         let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'text-sm')
+        menuItem.classList.add('block', 'text-sm');
         menuItem.setAttribute('href', 'javascript:void(0)');
         menuItem.innerText = label;
         menuItem.addEventListener('click', function () {
@@ -1153,7 +1126,7 @@ function createEditRecordMenu(input, table, value) {
 
     let records = selectTableByName(table).records.find(record => record.includes(value));
 
-    let createFormGroup = function (field, i) {
+    let createFormGroup = (field, i) => {
         let formGroup = document.createElement('div');
         let control = document.createElement('input');
         control.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
@@ -1162,7 +1135,7 @@ function createEditRecordMenu(input, table, value) {
         label.innerHTML = `${field.name}`;
         label.prepend(createIcon(field.type));
         if (records) { control.setAttribute('value', records[i]); }
-        formGroup.append(label,control);
+        formGroup.append(label, control);
 
         if (i == 1) {
             label.classList.add('font-semibold');
@@ -1196,10 +1169,6 @@ function createEditRecordMenu(input, table, value) {
 }
 
 function createRecordListMenu(input, table, field, cell) {
-
-
-
-    let summary = field;
     let menu = document.createElement('div');
     menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
     menu.style.position = 'absolute';
@@ -1213,12 +1182,12 @@ function createRecordListMenu(input, table, field, cell) {
     let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
     let activeRecords = input.value.split(',');
 
-    let createRecordsList = function (record, i) {
+    let createRecordsList = (record, i) => {
         let recordsList = document.createElement('a');
         recordsList.setAttribute('href', 'javascript:void(0)');
         recordsList.innerHTML = record.map(item => `<div class="mr-2">${item}</div>`).join('');
         let removeRecord = document.createElement('button');
-        removeRecord.classList.add('border', theme.lightBorderColor, 'rounded', 'px-1', 'ml-auto')
+        removeRecord.classList.add('border', theme.lightBorderColor, 'rounded', 'px-1', 'ml-auto');
         removeRecord.innerHTML = `<i class="ri-delete-bin-line align-bottom"></i>`;
 
         if (activeRecords.includes(record[columnPosition])) {
@@ -1255,8 +1224,8 @@ function createRecordListMenu(input, table, field, cell) {
     let newRecordButton = createButton('New Record', 'add');
     menu.appendChild(newRecordButton);
 
-    let createList = function (records) {
-        records.forEach(function (summaryValue) {
+    let createList = (records) => {
+        records.forEach((summaryValue) => {
             selectTableByName(table).records.filter(record => record.includes(summaryValue)).forEach((record, i) => listWrapper.appendChild(createRecordsList(record, i)));;
         });
 
@@ -1312,16 +1281,16 @@ function createLookupMenu(input, table, field, value) {
     let createRecords = function (records) {
         let list = document.createElement('div');
         list.classList.add('space-y-1')
-        records.forEach(function (record, i) {
+        records.forEach((record, i) => {
             let item = document.createElement('a');
             item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block')
-            item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`
+            item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block');
+            item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`;
             item.addEventListener('click', function () {
                 input.value = record;
             });
             //item.prepend(createIcon(columnType))
-            list.appendChild(item)
+            list.appendChild(item);
         });
         return list;
     }
