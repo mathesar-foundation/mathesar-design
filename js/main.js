@@ -2,6 +2,8 @@ import { info } from './info.js';
 import { loadedTables } from './tables.js';
 import { theme } from './themes.js';
 import { sidebarNav } from './sidebarNav';
+import { topNav } from './topNav';
+import { components } from './components.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -13,8 +15,14 @@ function applyTheme(property, color) {
     });
 };
 
+let schema = {
+    name: 'album_collection'
+}
+
 let appWrapper = document.querySelector('body');
+appWrapper.prepend(topNav(schema));
 appWrapper.classList.add(theme.backgroundColor);
+
 
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
@@ -23,6 +31,8 @@ if (sessionStorage.getItem('tables') === null) {
 let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
+
+
 document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
 document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
@@ -187,7 +197,7 @@ function createModal(content, footer) {
     let modal = document.createElement('div');
     modal.style.position = 'relative';
     modal.style.width = '600px';
-    let modalClasses = [theme.backgroundColor, 'p-2', theme.textColor, 'border', 'mx-auto', theme.darkBorderColor];
+    let modalClasses = [theme.backgroundColor, 'p-2', theme.textColor, 'border', 'mx-auto', theme.mediumBorderColor];
     modal.classList.add(...modalClasses);
     overlay.classList.add(theme.backgroundColor, 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
     overlay.style.position = 'absolute';

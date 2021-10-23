@@ -1,6 +1,7 @@
 import { addNew } from './addNew';
 import { activeTable } from './main';
 import { theme } from './themes.js';
+import { components } from './components.js';
 
 
 // CREATE SIDEBAR
@@ -8,6 +9,19 @@ export function sidebarNav(tables) {
 
     let sidebar = document.createElement('div');
     let sections = tables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
+
+    let searchBar = document.createElement('div');
+    searchBar.classList.add('flex');
+    let searchInput = components.createInput({placeholder: 'Type to search'});
+    searchInput.classList.add('w-full');
+    searchInput.classList.remove('border');
+    
+    let moreMenu = document.createElement('div');
+    moreMenu.classList.add('py-1','px-2')
+    moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
+    searchBar.append(searchInput,moreMenu);
+    sidebar.append(searchBar);
+
 
     let createNavItem = function (table) {
         let item = document.createElement('a');
@@ -43,7 +57,7 @@ export function sidebarNav(tables) {
         let sectionWrapper = document.createElement('div');
         let sectionHeader = document.createElement('div');
         sectionHeader.classList.add('border-b','border-t','pl-2', theme.tableBorderColor, theme.textColor,'flex','items-center');
-        sectionHeader.innerHTML = `<span class="capitalize mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded text-sm px-1">${items.length}</span>`;
+        sectionHeader.innerHTML = `<span class="uppercase text-sm mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded text-sm px-1">${items.length}</span>`;
         
         let addBtn = document.createElement('button');
         addBtn.classList.add('ml-auto',theme.darkPrimaryColor,'py-1','px-2');
