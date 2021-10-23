@@ -1,19 +1,9 @@
 import { info } from './info.js';
 import { tables } from './tables.js';
-import { themes } from './themes.js';
+import { theme } from './themes.js';
+import { sidebarNav } from './sidebarNav';
 
 const urlParams = new URLSearchParams(window.location.search);
-var activeTheme = urlParams.get('theme');
-
-var defaultTheme = themes.darkTheme;
-
-if (activeTheme == 'darkTheme') {
-    var theme = themes.darkTheme;
-} else if (activeTheme == 'lightTheme') {
-    var theme = themes.lightTheme;
-} else {
-    var theme = defaultTheme;
-}
 
 for (const property in theme) { applyTheme(property, theme[property]); }
 
@@ -21,52 +11,36 @@ function applyTheme(property, color) {
     document.querySelectorAll(`.${property}`).forEach(el => {
         el.classList.add(`${color}`);
     });
-}
+};
+
+console.log(theme);
 
 let appWrapper = document.querySelector('body');
 appWrapper.classList.add(theme.backgroundColor);
+
+let loadedTables = tables.map((data,index) => {
+        return {
+            'id' : index,
+            'name' : data.name,
+            'columns' : data.columns,
+            'records' : data.records,
+            'type' : data.type,
+        }
+    }
+);
 
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(tables));
 }
 
-let savedTables = JSON.parse(sessionStorage.getItem('tables'));
-//let savedTables = schemaTables;
+//let savedTables = JSON.parse(sessionStorage.getItem('tables'));
+let savedTables = loadedTables;
 
-var activeTable = urlParams.get('activeTable');
-createSidebarNavigation(savedTables);
+export var activeTable = urlParams.get('activeTable');
+document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
 document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
 
-// CREATE SIDEBAR
-function createSidebarNavigation(schema) {
-    let viewsNavigation = document.createElement('div')
-    viewsNavigation.classList.add('views-navigation');
-    document.querySelector('.sidebar-navigation').append(viewsNavigation);
-
-    let tablesNavigation = document.createElement('div')
-    tablesNavigation.classList.add('tables-navigation');
-    document.querySelector('.sidebar-navigation').append(tablesNavigation);
-
-    let objectHeader = (key) => {
-        let listHeader = document.createElement('div');
-        listHeader.classList.add('p-2', 'border-t', 'border-b', theme.mediumBorderColor);
-        listHeader.innerHTML = `<div class="flex items-center space-x-2"><div class="uppercase text-xs font-bold ${theme.textColor}">${key}</div> <div class="${theme.lightBackgroundColor} ${theme.inverseTextColor} rounded px-1 text-xs">${schema[key].length}</div><div>`;
-        return listHeader;
-    };
-
-    let objectList = (key) => {
-        let obj = schema[key];
-        let listItem = document.createElement('div');
-        listItem.innerHTML = obj.map(item => `<div class="${theme.textColor}"><a class="p-2 block" href="${window.location.pathname}?activeTable=${item.id}"><i class="ri-table-fill align-bottom mr-2"></i>${item.name}</a></div>`).join('');
-        return listItem;
-    };
-
-    Object.keys(schema).forEach(function (key) {
-        document.querySelector(`.${key}-navigation`).append(objectHeader(key));
-        document.querySelector(`.${key}-navigation`).append(objectList(key));
-    });
-}
 
 // SELECT TABLE BY ID
 function selectTableById(id) {
@@ -78,7 +52,7 @@ function selectTableByName(name) {
 }
 
 // STATUS FOR TABS
-setTableStatus(selectTableById(activeTable), 'active');
+//setTableStatus(selectTableById(activeTable), 'active');
 //setTableStatus(selectTableById(4), 'open');
 //setTableStatus(selectTableById(2), 'open');
 //
@@ -122,10 +96,9 @@ function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
 
-
 function createTableToolbar(obj) {
 
-    const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
+    const type = obj.type;
 
     let toolbar = document.createElement('div');
     toolbar.classList.add(theme.accentBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
@@ -157,7 +130,7 @@ function createTableToolbar(obj) {
     let recordsContent = [addRecordBtn];
     let viewsContent = [saveAsViewBtn];
 
-    if (type == 'tables') {
+    if (type == 'table') {
         toolbar.appendChild(createSection('Records', recordsContent));
 
         LinkRecordsBtn.addEventListener('click', function () {
@@ -295,7 +268,7 @@ function createTable(obj) {
 
     console.log(savedTables)
 
-    const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
+    //const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
 
     let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs']
@@ -718,7 +691,6 @@ function createColumnSelector(table, fn) {
 
     let selector = document.createElement('div');
 
-
     let searchInput = document.createElement('input');
     searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border', 'border-b-0', theme.tableBorderColor, 'w-full');
     searchInput.setAttribute('placeholder', `Search columns in '${table.name}''`);
@@ -737,9 +709,7 @@ function createColumnSelector(table, fn) {
         input.setAttribute('name', 'columnSelector');
         item.appendChild(input);
 
-
-
-        let valueSample = savedTables.tables.find(table => table.columns.includes(col)).records.map(record => record[i]).splice(0, 2).join(',');
+        let valueSample = savedTables.find(table => table.columns.includes(col)).records.map(record => record[i]).splice(0, 2).join(',');
         console.log(valueSample);
 
         let label = document.createElement('label');
@@ -769,7 +739,6 @@ function createColumnSelector(table, fn) {
     selector.appendChild(selectorList);
 
     return selector;
-
 }
 
 //linkToTable({ name: 'trackLength', type: 'duration' })
@@ -805,7 +774,7 @@ function linkToTable(col) {
     let columnSelector = document.createElement('div');
     linkTableForm.appendChild(columnSelector);
     //ADD ITEMS
-    savedTables.tables.filter(table => table.id != activeTable).forEach((table) => {
+    savedTables.filter(table => table.id != activeTable && table.type == 'table').forEach((table) => {
         let item = document.createElement('div');
         item.classList.add('p-1', 'block');
         let input = document.createElement('input');
@@ -1245,7 +1214,7 @@ function createRecordListMenu(input, table, field, cell) {
 
 function createLookupMenu(input, table, field, value) {
     let menu = document.createElement('div');
-    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1');
+    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1','border',theme.tableBorderColor);
     menu.style.position = 'absolute';
     menu.style.minWidth = '280px';
     let menuHeader = document.createElement('h4');

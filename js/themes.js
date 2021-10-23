@@ -45,8 +45,10 @@ var themes = {
 
 
 
+var theme = themes.darkTheme;
 
 
 
 
-module.exports = { themes };
+
+module.exports = { theme };
