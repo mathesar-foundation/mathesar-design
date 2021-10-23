@@ -23,7 +23,9 @@ function applyTheme(property, color) {
     });
 }
 
-//sessionStorage.clear();
+let appWrapper = document.querySelector('body');
+appWrapper.classList.add(theme.backgroundColor);
+
 
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(tables));
@@ -134,7 +136,7 @@ function createTableToolbar(obj) {
     let LinkRecordsBtn = createButton('Link to Multiple');
     let tableTitle = document.createElement('h2');
     tableTitle.classList.add(theme.textColor, 'text-lg');
-    tableTitle.innerHTML = obj.name;
+    tableTitle.innerHTML = `${obj.name} <i class="ri-arrow-drop-down-line align-bottom"></i>`;
     toolbar.appendChild(tableTitle);
 
     tableTitle.addEventListener('click', function () {
@@ -154,7 +156,7 @@ function createTableToolbar(obj) {
         return section;
     }
 
-    let recordsContent = [addRecordBtn, LinkRecordsBtn];
+    let recordsContent = [addRecordBtn];
     let viewsContent = [saveAsViewBtn];
 
     if (type == 'tables') {
@@ -294,7 +296,7 @@ function createTable(obj) {
 
     let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs']
-    let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, theme.mediumBackgroundColor, 'editable-cell'];
+    let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
     let createHeader = (col) => {
         let header = document.createElement('div');
@@ -712,10 +714,7 @@ function createNote(content) {
 function createColumnSelector(table, fn) {
 
     let selector = document.createElement('div');
-    let selectorHeader = document.createElement('h4');
-    selectorHeader.classList.add('my-2');
-    selectorHeader.innerHTML = `<h4>Select a Column To Link To</h4>`
-    selector.appendChild(selectorHeader);
+
 
     let searchInput = document.createElement('input');
     searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border', 'border-b-0', theme.tableBorderColor, 'w-full');
@@ -765,8 +764,7 @@ function createColumnSelector(table, fn) {
     });
 
     selector.appendChild(selectorList);
-    let noteContent = `Note: We recommend that you select a column that has unique values. We've pre-selected a column for you if we've found one.`
-    selector.appendChild(createNote(noteContent));
+
     return selector;
 
 }
@@ -816,18 +814,26 @@ function linkToTable(col) {
         let label = document.createElement('label');
         item.appendChild(label);
         label.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name}`;
+
+
         item.addEventListener('click', function () {
 
             input.setAttribute('checked', true);
             let selectedTableId = input.getAttribute('value');
             let activeTableName = selectTableById(activeTable).name;
-            let noteContent = `Note: You can only link a single record from the <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> table to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> records to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="javascript:void(0)" data-modal="tableRelationships" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`;
 
             // APPEND COLUMN SELECTOR
             columnSelector.innerHTML = '';
 
-            columnSelector.prepend(createNote(noteContent));
+            let selectorHeader = document.createElement('h4');
+            selectorHeader.classList.add('my-2');
+            selectorHeader.innerHTML = `<h4>Select a Column To Link To</h4>`
+            columnSelector.appendChild(selectorHeader);
+
+            columnSelector.prepend(createNote(`Note: You can only link a single record from the <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> table to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> records to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="javascript:void(0)" data-modal="tableRelationships" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`));
             columnSelector.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
+
+            columnSelector.appendChild(createNote(`Note: We recommend that you select a column that has unique values. We've pre-selected a column for you if we've found one.`));
         });
 
 
@@ -934,17 +940,14 @@ function createIcon(type) {
     return icon;
 }
 
-function createDropdownMenu(header) {
+function createDropdownMenu(content) {
     let menu = document.createElement('div');
-    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
+    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2', 'border', theme.tableBorderColor);
     menu.style.position = 'absolute';
-    menu.style.minWidth = '280px';
+    //menu.style.minWidth = '280px';
     menu.style.zIndex = '999';
 
-    let menuHeader = document.createElement('h4');
-    menuHeader.classList.add(theme.textColor);
-    menuHeader.innerHTML = header;
-    menu.appendChild(menuHeader);
+    menu.appendChild(content);
 
     return menu;
 }
@@ -1041,17 +1044,45 @@ function setTableConstraints(table) {
     closeModal.addEventListener('click', function () {
         modal.remove();
     });
+}
 
+//setLookupColumn(selectTableById(1))
+
+function setLookupColumn(table) {
+    let form = document.createElement('div');
+    let actions = document.createElement('div');
+    form.classList.add('space-y-2');
+    let modal = createModal(form,actions);
+    document.querySelector('body').appendChild(modal);
+
+    form.appendChild(createTitle(
+        'Set Lookup Column',
+        'Lookup columns are used to identify records with a more user-friendly value when retrieving them from another table'
+    ));
+
+    let columnSelector = document.createElement('div');
+    form.appendChild(columnSelector);
+
+    let selectorHeader = document.createElement('h4');
+    selectorHeader.classList.add('my-2');
+    selectorHeader.innerHTML = `<h4>Select a Column</h4>`
+    columnSelector.appendChild(selectorHeader);
+
+    columnSelector.appendChild(createColumnSelector(table));
+
+    let confirmBtn = createButton(`Set Lookup Column`);
+    actions.appendChild(createButton('Cancel'));
+    actions.appendChild(confirmBtn);
 
 }
 
 function createTableOptionsMenu(table) {
-    let header = `Table Options`;
-    let menu = createDropdownMenu(header);
+    let content = document.createElement('div');
+    let menu = createDropdownMenu(content);
 
     let createMenuItem = (label, callback) => {
         let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'text-sm');
+        menuItem.classList.add('block', 'text-sm', 'p-2');
         menuItem.setAttribute('href', 'javascript:void(0)');
         menuItem.innerText = label;
         menuItem.addEventListener('click', function () {
@@ -1062,10 +1093,11 @@ function createTableOptionsMenu(table) {
 
     let menuItems = [
         createMenuItem('Table Constraints', setTableConstraints),
+        createMenuItem('Set Lookup Column', setLookupColumn),
         createMenuItem('Delete Table')
     ];
 
-    menuItems.forEach(item => menu.appendChild(item));
+    menuItems.forEach(item => content.appendChild(item));
 
     addDropdownOutsideClickHandler(menu, function () {
 

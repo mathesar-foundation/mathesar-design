@@ -8,16 +8,15 @@ var tables = {
         columns: [
             { name: 'id', type: 'number', readOnly: true },
             { name: 'artistName', type: 'text' },
-            { name: 'releaseId', type: 'fk', lookupField: 'releaseName', lookupTable: 'release' },
             { name: 'trackId', type: 'text' }
         ],
         records: [
-            [449, 'Aqua', 'Aquarius', ''],
-            [450, 'Patti Smith', 'Horses', ''],
-            [451, 'Elvis Costello', 'Spike', ''],
-            [451, 'Kylie Minogue', 'Golden', ''],
-            [451, 'Artic Monkeys', 'AM', ''],
-            [453, 'Scorpions', 'Animal Magnetism', '']
+            [449, 'Aqua', ''],
+            [450, 'Patti Smith', ''],
+            [451, 'Elvis Costello', ''],
+            [451, 'Kylie Minogue', ''],
+            [451, 'Artic Monkeys', ''],
+            [453, 'Scorpions', '']
         ],
         color: 'purple'
     }, {
