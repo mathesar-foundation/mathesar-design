@@ -100,7 +100,7 @@ function createTableToolbar(obj) {
     const type = obj.type;
 
     let toolbar = document.createElement('div');
-    toolbar.classList.add(theme.accentBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4');
+    toolbar.classList.add(theme.accentBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4','border-b',theme.tableBorderColor);
     let saveAsViewBtn = createButton('Save as View', 'save');
     let addRecordBtn = createButton('Add', 'add');
     let LinkRecordsBtn = createButton('Link to Multiple');
@@ -618,7 +618,11 @@ function createTable(obj) {
     tableWrapper.classList.add('flex', 'items-start')
     tableWrapper.appendChild(table)
 
-    let addColumnBtn = createButton('Add Column', 'add');
+    let addColumnBtn = document.createElement('button');
+    addColumnBtn.classList.add(theme.darkPrimaryColor,theme.textColor);
+    addColumnBtn.style.height = '40px';
+    addColumnBtn.style.width = '40px';
+    addColumnBtn.innerHTML = `<i class="ri-add-line align-middle text-xl"></i>`;
     tableWrapper.appendChild(addColumnBtn);
 
     addColumnBtn.addEventListener('click', function () {

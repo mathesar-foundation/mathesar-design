@@ -12,7 +12,7 @@ export function sidebarNav(tables) {
         let item = document.createElement('a');
         item.setAttribute('href', 'javascript:void(0)');
         item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'm-1');
-        item.innerHTML = `${table.name}`;
+        item.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name}`;
 
         let hoverClasses = [theme.darkPrimaryColor, 'bg-opacity-40'];
 
