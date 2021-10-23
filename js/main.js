@@ -26,11 +26,9 @@ function applyTheme(property, color) {
 let appWrapper = document.querySelector('body');
 appWrapper.classList.add(theme.backgroundColor);
 
-
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(tables));
 }
-
 
 let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 //let savedTables = schemaTables;
@@ -260,12 +258,15 @@ function createModal(content, footer) {
 }
 
 function getColumnType(table, column) {
+    console.log(table,column)
     let columnType = selectTableByName(table).columns.find(col => col.name == column).type;
     return columnType;
 }
 
 //CREATE TABLE
 function createTable(obj) {
+
+    console.log(obj)
 
     let recordType = obj.columns.reduce(function (a, b) {
         a.push(b.type)
@@ -291,6 +292,8 @@ function createTable(obj) {
         a.push(b.lookupTable)
         return a;
     }, []);
+
+    console.log(savedTables)
 
     const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
 
@@ -944,7 +947,7 @@ function createDropdownMenu(content) {
     let menu = document.createElement('div');
     menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2', 'border', theme.tableBorderColor);
     menu.style.position = 'absolute';
-    //menu.style.minWidth = '280px';
+    menu.style.minWidth = '240px';
     menu.style.zIndex = '999';
 
     menu.appendChild(content);
@@ -1107,8 +1110,12 @@ function createTableOptionsMenu(table) {
 }
 
 function createEditRecordMenu(input, table, value) {
-    let header = `Edit record in '${table}'`;
-    let menu = createDropdownMenu(header);
+    let content = document.createElement('div');
+    let header = document.createElement('h4');
+    header.innerHTML = `Edit record in '${table}'`;
+    header.classList.add(theme.textColor);
+    content.appendChild(header);
+    let menu = createDropdownMenu(content);
 
     let records = selectTableByName(table).records.find(record => record.includes(value));
 
@@ -1135,7 +1142,7 @@ function createEditRecordMenu(input, table, value) {
         return formGroup;
     }
 
-    selectTableByName(table).columns.forEach((field, i) => menu.appendChild(createFormGroup(field, i)));
+    selectTableByName(table).columns.forEach((field, i) => content.appendChild(createFormGroup(field, i)));
 
     addDropdownOutsideClickHandler(menu, function () {
         let selectedTable = selectTableById(activeTable);
@@ -1149,14 +1156,14 @@ function createEditRecordMenu(input, table, value) {
     let deleteRecordBtn = createButton('Delete Record', 'delete-bin');
     let goToTableBtn = createButton('Go to Table', 'table');
 
-    menu.appendChild(deleteRecordBtn);
+    content.appendChild(deleteRecordBtn);
 
     return menu;
 }
 
 function createRecordListMenu(input, table, field, cell) {
     let menu = document.createElement('div');
-    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2');
+    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2','border',theme.tableBorderColor);
     menu.style.position = 'absolute';
     menu.style.minWidth = '280px';
     let menuHeader = document.createElement('h4');

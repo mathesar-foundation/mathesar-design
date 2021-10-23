@@ -1,6 +1,6 @@
 var tables = {
     tables: [{
-        name: 'artists',
+        name: 'artist',
         id: 0,
         constraints: [
             { column: 'releaseId', type: 'foreignKey'}
