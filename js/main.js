@@ -301,9 +301,9 @@ function createTable(obj) {
         //RENAME HEADER
         headerLabel.addEventListener('click', function () {
             headerLabel.remove();
-            let renameInput = document.createElement('input');
+            let renameInput = components.createInput({value: col.name});
             renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
-            renameInput.setAttribute('value', col.name);
+            renameInput.classList.remove('p-1','border');
             let headerForm = document.createElement('div');
             header.prepend(headerForm);
             headerForm.appendChild(renameInput);
@@ -358,7 +358,7 @@ function createTable(obj) {
 
         let createMenuTextInput = function (label) {
             let menuInput = document.createElement('div');
-            let input = document.createElement('input');
+            let input = components.createInput({value:''});
             let inputLabel = document.createElement('label');
             inputLabel.innerText = label;
             input.setAttribute('type', 'text');
@@ -472,10 +472,9 @@ function createTable(obj) {
             renderedCell.innerHTML = cell;
         }
 
-        let cellInput = document.createElement('input');
-        cellInput.setAttribute('type', 'text');
-        cellInput.setAttribute('value', cell);
-        cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full', 'hidden');
+        let cellInput = components.createInput({value: cell});
+        cellInput.classList.add('p-2', 'w-full', 'hidden');
+        cellInput.classList.remove('border');
 
 
         if (summaryOf[i] && recordTable[i]) {
@@ -562,10 +561,9 @@ function createTable(obj) {
             let cell = document.createElement('div');
             cell.classList.add(...cellClasses)
             cell.style.width = '240px';
-            let cellInput = document.createElement('input');
-            cellInput.setAttribute('type', 'text');
-            cellInput.setAttribute('placeholder', placeholderValue(col));
-            cellInput.classList.add(theme.inputBackgroundColor, theme.textColor, 'p-2', 'w-full');
+            let cellInput = components.createInput({placeholder:placeholderValue(col)});
+            cellInput.classList.add('p-2', 'w-full');
+            cellInput.classList.remove('border');
             cell.appendChild(cellInput);
             row.appendChild(cell);
             cellInput.addEventListener('keydown', function () {
@@ -696,9 +694,8 @@ function createColumnSelector(table, fn) {
 
     let selector = document.createElement('div');
 
-    let searchInput = document.createElement('input');
-    searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border', 'border-b-0', theme.tableBorderColor, 'w-full');
-    searchInput.setAttribute('placeholder', `Search columns in '${table.name}''`);
+    let searchInput = components.createInput({placeholder:`Search columns in '${table.name}'`});
+    searchInput.classList.add('w-full');
     selector.appendChild(searchInput);
 
     let selectorList = document.createElement('div');
@@ -767,9 +764,9 @@ function linkToTable(col) {
     selectorHeader.classList.add('my-2');
     selectorHeader.innerHTML = `<h4>Select a Table</h4>`;
 
-    let searchInput = document.createElement('input');
+    let searchInput = components.createInput({placeholder:`Search tables in 'album-collection'`});
+    searchInput.classList.remove('border');
     searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border-b', theme.tableBorderColor, 'w-full');
-    searchInput.setAttribute('placeholder', `Search tables in 'album-collection'`);
     tableSelector.appendChild(searchInput);
 
     tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
@@ -827,7 +824,6 @@ function linkToTable(col) {
     let showLinkOptions = (colName, tableName) => {
 
         addLinkBtn.addEventListener('click', function () {
-            console.log(col);
             col.type = 'fk';
             col.lookupField = colName;
             col.lookupTable = tableName;
