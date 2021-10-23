@@ -30,11 +30,10 @@ let loadedTables = tables.map((data,index) => {
 );
 
 if (sessionStorage.getItem('tables') === null) {
-    sessionStorage.setItem('tables', JSON.stringify(tables));
+    sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
-//let savedTables = JSON.parse(sessionStorage.getItem('tables'));
-let savedTables = loadedTables;
+let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
 document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
@@ -141,13 +140,16 @@ function createTableToolbar(obj) {
     // EVENTS
     saveAsViewBtn.addEventListener('click', function () {
         let newTable = JSON.parse(JSON.stringify(obj));
+        
         let tableId = Object.values(savedTables).flat().map(table => table.id);
         let maxId = Math.max(...tableId);
         newTable.id = maxId + 1;
+        newTable.type = 'view';
         newTable.columns.forEach(col => col.referencedTable = newTable.name);
         newTable.name = `View of ${newTable.name}`
 
-        savedTables.views.push(newTable);
+        savedTables.push(newTable);
+
         sessionStorage.setItem('tables', JSON.stringify(savedTables));
         location.reload();
     });
