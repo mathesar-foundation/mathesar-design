@@ -1,5 +1,5 @@
 import { info } from './info.js';
-import { tables } from './tables.js';
+import { loadedTables } from './tables.js';
 import { theme } from './themes.js';
 import { sidebarNav } from './sidebarNav';
 
@@ -13,21 +13,8 @@ function applyTheme(property, color) {
     });
 };
 
-console.log(theme);
-
 let appWrapper = document.querySelector('body');
 appWrapper.classList.add(theme.backgroundColor);
-
-let loadedTables = tables.map((data,index) => {
-        return {
-            'id' : index,
-            'name' : data.name,
-            'columns' : data.columns,
-            'records' : data.records,
-            'type' : data.type,
-        }
-    }
-);
 
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
@@ -51,9 +38,9 @@ function selectTableByName(name) {
 }
 
 // STATUS FOR TABS
-//setTableStatus(selectTableById(activeTable), 'active');
-//setTableStatus(selectTableById(4), 'open');
-//setTableStatus(selectTableById(2), 'open');
+setTableStatus(selectTableById(activeTable), 'active');
+setTableStatus(selectTableById(4), 'open');
+setTableStatus(selectTableById(2), 'open');
 //
 function setTableStatus(table, status) {
     if (table.id == activeTable) {
@@ -78,6 +65,8 @@ function createTabs(tables) {
 
     return tabs;
 }
+
+
 
 function createButton(value, icon) {
     let btn = document.createElement('button');

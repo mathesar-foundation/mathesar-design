@@ -1,4 +1,4 @@
-var tables = [{
+var allTables = [{
     name: 'artist',
     type: 'table',
     constraints: [
@@ -111,4 +111,15 @@ var tables = [{
     color: 'purple'
 }];
 
-module.exports = { tables };
+let loadedTables = allTables.map((data,index) => {
+    return {
+        'id' : index,
+        'name' : data.name,
+        'columns' : data.columns,
+        'records' : data.records,
+        'type' : data.type,
+    }
+}
+);
+
+module.exports = { loadedTables };

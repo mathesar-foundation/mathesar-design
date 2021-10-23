@@ -1,3 +1,4 @@
+import { addNew } from './addNew';
 import { activeTable } from './main';
 import { theme } from './themes.js';
 
@@ -41,8 +42,20 @@ export function sidebarNav(tables) {
         let items = tables.filter(table => table.type == section);
         let sectionWrapper = document.createElement('div');
         let sectionHeader = document.createElement('div');
-        sectionHeader.classList.add('border-b','border-t', 'p-2', theme.tableBorderColor, theme.textColor);
-        sectionHeader.innerHTML = `<span class="capitalize">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded text-sm px-1">${items.length}</span>`;
+        sectionHeader.classList.add('border-b','border-t','pl-2', theme.tableBorderColor, theme.textColor,'flex','items-center');
+        sectionHeader.innerHTML = `<span class="capitalize mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded text-sm px-1">${items.length}</span>`;
+        
+        let addBtn = document.createElement('button');
+        addBtn.classList.add('ml-auto',theme.darkPrimaryColor,'py-1','px-2');
+        addBtn.innerHTML = `<i class="ri-add-line"></i>`;
+        sectionHeader.append(addBtn);
+
+        addBtn.addEventListener('click',function(){
+            //allTables.push(addNew(section))
+            //sessionStorage.setItem('tables', JSON.stringify(tables));
+            //location.reload();
+        });
+        
         sectionWrapper.append(sectionHeader);
 
         items.forEach(table => sectionWrapper.appendChild(createNavItem(table)));
@@ -55,3 +68,4 @@ export function sidebarNav(tables) {
 
     return sidebar;
 };
+
