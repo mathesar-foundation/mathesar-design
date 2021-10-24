@@ -12,7 +12,7 @@ export function sidebarNav(tables) {
     let sections = tables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
 
     let searchBar = document.createElement('div');
-    searchBar.classList.add('flex');
+    searchBar.classList.add('flex','p-1');
     let searchInput = components.createInput({placeholder: 'Type to search'});
     searchInput.classList.add('w-full');
     searchInput.classList.remove('border');
@@ -28,7 +28,7 @@ export function sidebarNav(tables) {
         let item = document.createElement('a');
         item.setAttribute('href', 'javascript:void(0)');
         item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'm-1');
-        item.innerHTML = `<i class="ri-table-fill align-bottom mr-1"></i> ${table.name}`;
+        item.innerHTML = `<i class="ri-table-fill align-bottom mr-1 ${theme.primaryTextColor}"></i> ${table.name}`;
 
         let hoverClasses = [theme.darkPrimaryColor, 'bg-opacity-40'];
 
@@ -59,7 +59,7 @@ export function sidebarNav(tables) {
         let sectionWrapper = document.createElement('div');
         let sectionHeader = document.createElement('div');
         sectionHeader.classList.add('border-b','border-t','pl-2', theme.tableBorderColor, theme.textColor,'flex','items-center');
-        sectionHeader.innerHTML = `<span class="uppercase text-sm mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded text-sm px-1">${items.length}</span>`;
+        sectionHeader.innerHTML = `<span class="uppercase text-sm mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded text-xs px-1">${items.length}</span>`;
         
         let addBtn = document.createElement('button');
         addBtn.classList.add('ml-auto',theme.darkPrimaryColor,'py-1','px-2');

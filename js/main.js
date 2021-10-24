@@ -297,7 +297,8 @@ function createTable(obj) {
         header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
         let headerLabel = document.createElement('div');
         let headerIcon = document.createElement('i');
-        headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-1');
+        headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'rounded', 'mr-2', theme.primaryColor, 'bg-opacity-60');
+        headerIcon.style.padding = '2px'
 
         let headerColumnName = document.createElement('span');
         headerColumnName.innerHTML = col.name;
@@ -307,7 +308,7 @@ function createTable(obj) {
 
         if (col.type == 'fk') {
             let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
-            headerIcon.classList.add('ri-' + typeIcon(linkedColumnType), 'align-bottom', 'border', 'border-gray-500', 'rounded', 'mr-1');
+            headerIcon.classList.add('ri-' + typeIcon(linkedColumnType));
             let foreignKeyIcon = document.createElement('i');
             foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
             headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
@@ -1245,25 +1246,36 @@ function createLookupMenu(input, table, field, value) {
 
     let recordsList = document.createElement('div');
     menu.append(recordsList);
+  
 
-    let createRecords = function (records) {
+    let setSelection = function(record){
+        input.value = record;
+        recordsList.innerHTML = '';
+    }
+
+    let createRecords = function (records,callback) {
         let list = document.createElement('div');
         list.classList.add('space-y-1')
         records.forEach((record, i) => {
             let item = document.createElement('a');
             item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'p-1', theme.primaryColor, 'bg-opacity-50', 'block');
+            item.classList.add(theme.textColor, 'py-1','px-2', theme.primaryColor, 'bg-opacity-50', 'block','rounded','text-sm');
             item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`;
+            if (record == input.value) {
+                item.classList.replace('bg-opacity-50','bg-opacity-80');  
+            }
             item.addEventListener('click', function () {
-                input.value = record;
+                callback(record);
             });
-            //item.prepend(createIcon(columnType))
             list.appendChild(item);
         });
         return list;
     }
 
-    recordsList.appendChild(createRecords(summaryRecords))
+
+    recordsList.appendChild(createRecords(summaryRecords,setSelection));
+
+    
 
 
     let allowMultiple = createButton('Add Multiple', 'add');
@@ -1287,7 +1299,7 @@ function createLookupMenu(input, table, field, value) {
 
         recordsList.innerHTML = '';
         let filteredRecords = summaryRecords.filter(record => record.match(input.value.trim()));
-        recordsList.appendChild(createRecords(filteredRecords))
+        recordsList.appendChild(createRecords(filteredRecords,setSelection))
 
         if (filteredRecords.length == 0) {
             recordsList.appendChild(createButton('Add Record', 'add'))
@@ -1349,7 +1361,7 @@ function addDropdownOutsideClickHandler(menu, callback) {
 var doubleClickEvent = document.createEvent('MouseEvents');
 doubleClickEvent.initEvent('dblclick', true, true);
 
-//document.querySelectorAll('.rendered-cell')[2].dispatchEvent(doubleClickEvent);
+//document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
 
 
 
