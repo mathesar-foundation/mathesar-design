@@ -1107,14 +1107,14 @@ function createRecordListMenu(input, table, field, cell) {
         removeRecord.innerHTML = `<i class="ri-delete-bin-line align-bottom"></i>`;
 
         if (activeRecords.includes(record[columnPosition])) {
-            recordsList.classList.add(theme.primaryColor, 'bg-opacity-70', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center');
+            recordsList.classList.add(theme.primaryColor, 'bg-opacity-70', theme.textColor, 'flex','py-1', 'px-2', 'rounded', 'items-center','text-sm');
             recordsList.addEventListener('click', function () {
                 input.setAttribute('value', input.value.split(',').map(v => v !== record[columnPosition] ? v : '').filter(v => v.length > 0).join(','));
                 menu.remove();
                 input.parentNode.append(createRecordListMenu(input, table, field, input.value));
             });
         } else {
-            recordsList.classList.add(theme.primaryColor, 'bg-opacity-20', theme.textColor, 'flex', 'p-1', 'rounded', 'items-center');
+            recordsList.classList.add(theme.primaryColor, 'bg-opacity-20', theme.textColor, 'flex','py-1', 'px-2', 'rounded', 'items-center','text-sm');
             recordsList.addEventListener('click', function () {
                 if (input.value.length > 0) {
                     input.setAttribute('value', input.value + ',' + record[columnPosition]);
@@ -1134,10 +1134,10 @@ function createRecordListMenu(input, table, field, cell) {
     searchRecords.classList.add(theme.inputBackgroundColor, 'p-2', 'w-full')
     menu.appendChild(searchRecords);
     let listWrapper = document.createElement('div');
-    listWrapper.classList.add('border', 'space-y-2', 'p-1', theme.mediumBorderColor);
+    listWrapper.classList.add('border', 'space-y-1', 'p-1', theme.mediumBorderColor);
     menu.appendChild(listWrapper);
 
-    let newRecordButton = components.createButton('New Record', { icon: 'add' });
+    let newRecordButton = components.createButton('New Record', { icon: 'add', style: 'secondary' });
     menu.appendChild(newRecordButton);
 
     let createList = (records) => {
@@ -1149,10 +1149,7 @@ function createRecordListMenu(input, table, field, cell) {
 
     createList(summaryRecords);
 
-
-
     addDropdownOutsideClickHandler(menu, function () {
-        //console.log(menu);
         let selectedTable = selectTableById(activeTable);
         let editedRecord = selectedTable.records.find(record => record.includes(cell));
         let recordIndex = editedRecord.indexOf(cell);
@@ -1160,8 +1157,6 @@ function createRecordListMenu(input, table, field, cell) {
         document.querySelector('.table-wrapper').innerHTML = '';
         saveTable(selectedTable);
     });
-
-
 
     return menu;
 }
