@@ -28,19 +28,13 @@ if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
-
-
 let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
 
-
 document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
 document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
-
-
-
 
 // SELECT TABLE BY ID
 function selectTableById(id) {
@@ -272,13 +266,6 @@ function getColumnType(table, column) {
 //CREATE TABLE
 function createTable(obj) {
 
-    console.log(obj)
-
-    let recordType = obj.columns.reduce(function (a, b) {
-        a.push(b.type)
-        return a;
-    }, []);
-
     let recordTable = obj.columns.reduce(function (a, b) {
         a.push(b.referencedTable)
         return a;
@@ -298,10 +285,6 @@ function createTable(obj) {
         a.push(b.lookupTable)
         return a;
     }, []);
-
-    console.log(savedTables)
-
-    //const type = Object.keys(savedTables).find(key => savedTables[key].includes(obj));
 
     let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs']
@@ -388,16 +371,6 @@ function createTable(obj) {
             return divider;
         };
 
-        let createMenuTextInput = function (label) {
-            let menuInput = document.createElement('div');
-            let input = components.createInput({value:''});
-            let inputLabel = document.createElement('label');
-            inputLabel.innerText = label;
-            input.setAttribute('type', 'text');
-            menuInput.appendChild(inputLabel);
-            menuInput.appendChild(input);
-            return menuInput;
-        };
 
         let createHeaderMenu = function (col) {
 
