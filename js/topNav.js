@@ -3,7 +3,7 @@ import { components } from './components.js';
  
 export function topNav(schema) {
     let topNav = document.createElement('div');
-    topNav.classList.add('p-2','border-b',theme.tableBorderColor,'flex','space-x-2','items-center');
+    topNav.classList.add('py-1','px-2','border-b',theme.tableBorderColor,'flex','space-x-2','items-center');
     let schemaName = document.createElement('div');
     schemaName.innerHTML = `<div class="flex space-x-2 items-center mr-2">
     <div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded">M</div>
