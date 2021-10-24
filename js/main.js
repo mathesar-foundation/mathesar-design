@@ -28,6 +28,8 @@ if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
+
+
 let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
@@ -36,6 +38,8 @@ export var activeTable = urlParams.get('activeTable');
 document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
 document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
+
+
 
 
 // SELECT TABLE BY ID
@@ -62,16 +66,44 @@ function setTableStatus(table, status) {
 
 // TABS
 
-document.querySelector('.table-wrapper').parentNode.prepend(createTabs(savedTables));
-function createTabs(tables) {
-    let openTables = Object.values(tables).flat().filter(table => table.status);
 
-    let createTab = table => `<div class="py-2 px-3 ${theme.textColor} ${table.status == 'active' ? theme.accentBackgroundColor : theme.backgroundColor}">${table.name}</div>`;
+let openTables = [];
+openTables.push(selectTableById(activeTable))
+document.querySelector('.table-wrapper').parentNode.prepend(createTabs(openTables));
 
-    let tab = openTables.map(table => createTab(table)).join('');
-
+function createTabs(openTables) {
     let tabs = document.createElement('div');
-    tabs.innerHTML = `<div class="flex items-center">${tab}</div>`
+    tabs.classList.add('flex');
+
+    let createTab = function(table) {
+        let tab = document.createElement('div');
+        tab.classList.add('py-2','px-3',theme.textColor,'border-r',theme.darkBorderColor,'text-sm','space-x-2');
+        tab.innerHTML = `<i class="ri-table-fill align-bottom"></i> ${table.name}`;
+
+        let closeTabBtn = document.createElement('button');
+        closeTabBtn.innerHTML = `<i class="ri-close-fill align-bottom"></i>`;
+
+        tab.append(closeTabBtn);
+
+        if (table.id == activeTable) {
+            tab.classList.add(theme.mediumBackgroundColor);
+        }
+
+        return tab;
+    };
+
+    openTables.forEach(function(table){
+        tabs.appendChild(createTab(table));
+    });
+
+    //let openTables = Object.values(tables).flat().filter(table => table.status);
+//
+    //let createTab = table => `<div class="py-2 px-3 ${theme.textColor} ${table.status == 'active' ? theme.accentBackgroundColor : theme.backgroundColor}">${table.name}</div>`;
+//
+    //let tab = openTables.map(table => createTab(table)).join('');
+//
+    //let tabs = document.createElement('div');
+    //tabs.innerHTML = `<div class="flex items-center">${tab}</div>`
 
     return tabs;
 }
@@ -99,7 +131,7 @@ function createTableToolbar(obj) {
     const type = obj.type;
 
     let toolbar = document.createElement('div');
-    toolbar.classList.add(theme.accentBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4','border-b',theme.tableBorderColor);
+    toolbar.classList.add(theme.mediumBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4','border-b',theme.tableBorderColor);
     let saveAsViewBtn = createButton('Save as View', 'save');
     let addRecordBtn = createButton('Add', 'add');
     let LinkRecordsBtn = createButton('Link to Multiple');

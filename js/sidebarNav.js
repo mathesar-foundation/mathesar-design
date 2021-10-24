@@ -2,6 +2,7 @@ import { addNew } from './addNew';
 import { activeTable } from './main';
 import { theme } from './themes.js';
 import { components } from './components.js';
+import { openTables } from './main';
 
 
 // CREATE SIDEBAR
@@ -37,7 +38,8 @@ export function sidebarNav(tables) {
 
         item.addEventListener('click', function () {
             let url = `${window.location.pathname}?activeTable=${table.id}`;
-            console.log(url);
+            
+
             location.assign(url);
         });
 
