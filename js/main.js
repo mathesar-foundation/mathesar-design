@@ -4,6 +4,7 @@ import { theme } from './themes.js';
 import { sidebarNav } from './sidebarNav';
 import { topNav } from './topNav';
 import { components } from './components.js';
+import { createModal } from './createModal';
 
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -69,13 +70,14 @@ function createTabs(openTables) {
     let tabs = document.createElement('div');
     tabs.classList.add('flex');
 
-    let createTab = function(table) {
+    let createTab = function (table) {
         let tab = document.createElement('div');
-        tab.classList.add('py-2','px-3',theme.textColor,'border-r',theme.darkBorderColor,'text-sm','space-x-2');
+        tab.classList.add('py-2', 'px-3', theme.textColor, 'border-r', theme.darkBorderColor, 'text-sm', 'space-x-2');
         tab.innerHTML = `<i class="ri-table-fill align-bottom"></i> ${table.name}`;
 
+
         let closeTabBtn = document.createElement('button');
-        closeTabBtn.innerHTML = `<i class="ri-close-fill align-bottom"></i>`;
+        closeTabBtn.append(components.createIcon('close'));
 
         tab.append(closeTabBtn);
 
@@ -86,35 +88,22 @@ function createTabs(openTables) {
         return tab;
     };
 
-    openTables.forEach(function(table){
+    openTables.forEach(function (table) {
         tabs.appendChild(createTab(table));
     });
 
     //let openTables = Object.values(tables).flat().filter(table => table.status);
-//
+    //
     //let createTab = table => `<div class="py-2 px-3 ${theme.textColor} ${table.status == 'active' ? theme.accentBackgroundColor : theme.backgroundColor}">${table.name}</div>`;
-//
+    //
     //let tab = openTables.map(table => createTab(table)).join('');
-//
+    //
     //let tabs = document.createElement('div');
     //tabs.innerHTML = `<div class="flex items-center">${tab}</div>`
 
     return tabs;
 }
 
-
-
-function createButton(value, icon) {
-    let btn = document.createElement('button');
-    btn.classList.add('px-2', 'py-1', theme.textColor, 'border', theme.lightBorderColor)
-    btn.innerHTML = `${value}`;
-    if (icon) {
-        let btnIcon = document.createElement('i');
-        btnIcon.classList.add(`ri-${icon}-line`, 'align-bottom', 'mr-2');
-        btn.prepend(btnIcon);
-    }
-    return btn;
-}
 
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
@@ -125,13 +114,14 @@ function createTableToolbar(obj) {
     const type = obj.type;
 
     let toolbar = document.createElement('div');
-    toolbar.classList.add(theme.mediumBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4','border-b',theme.tableBorderColor);
-    let saveAsViewBtn = createButton('Save as View', 'save');
-    let addRecordBtn = createButton('Add', 'add');
-    let LinkRecordsBtn = createButton('Link to Multiple');
+    toolbar.classList.add(theme.mediumBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4', 'border-b', theme.tableBorderColor);
+    let saveAsViewBtn = components.createButton('Save as View', { icon: 'save', style:'secondary' });
+    let addRecordBtn = components.createButton('Add', { icon: 'add', style:'secondary' })
+    let LinkRecordsBtn = components.createButton('Link to Multiple');
     let tableTitle = document.createElement('h2');
-    tableTitle.classList.add(theme.textColor, 'text-lg');
-    tableTitle.innerHTML = `${obj.name} <i class="ri-arrow-drop-down-line align-bottom"></i>`;
+    tableTitle.classList.add(theme.textColor, 'text-lg','space-x-2');
+    tableTitle.innerHTML = `${obj.name}`;
+    tableTitle.append(components.createIcon('arrow-drop-down'));
     toolbar.appendChild(tableTitle);
 
     tableTitle.addEventListener('click', function () {
@@ -165,7 +155,7 @@ function createTableToolbar(obj) {
     // EVENTS
     saveAsViewBtn.addEventListener('click', function () {
         let newTable = JSON.parse(JSON.stringify(obj));
-        
+
         let tableId = Object.values(savedTables).flat().map(table => table.id);
         let maxId = Math.max(...tableId);
         newTable.id = maxId + 1;
@@ -218,47 +208,8 @@ function typeIcon(type) {
     }
 }
 
-function createModal(content, footer) {
-    let overlay = document.createElement('div');
-    let modal = document.createElement('div');
-    modal.style.position = 'relative';
-    modal.style.width = '600px';
-    let modalClasses = [theme.backgroundColor, 'p-2', theme.textColor, 'border', 'mx-auto', theme.mediumBorderColor];
-    modal.classList.add(...modalClasses);
-    overlay.classList.add(theme.backgroundColor, 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
-    overlay.style.position = 'absolute';
-    overlay.style.top = '0';
-    overlay.style.left = '0';
-    let modalContent = document.createElement('div');
-    modalContent.appendChild(content);
-    modal.appendChild(modalContent);
-    overlay.appendChild(modal);
-    overlay.style.zIndex = '9999';
-    let closeModalBtn = document.createElement('button');
-    closeModalBtn.classList.add('px-2')
-    closeModalBtn.style.position = 'absolute';
-    closeModalBtn.style.right = '0',
-        closeModalBtn.innerHTML = `<i class="ri-close-line"></i>`;
-    closeModalBtn.addEventListener('click', function () {
-        overlay.remove();
-    });
-    overlay.addEventListener('click', function (event) {
-        console.log(event.target);
-        if (event.target == overlay) {
-            overlay.remove();
-        }
-    });
-    modal.prepend(closeModalBtn);
-    if (footer) {
-        let footerContent = footer;
-        footerContent.classList.add('mt-4', 'space-x-2')
-        modal.appendChild(footerContent);
-    }
-    return overlay;
-}
-
 function getColumnType(table, column) {
-    console.log(table,column)
+    console.log(table, column)
     let columnType = selectTableByName(table).columns.find(col => col.name == column).type;
     return columnType;
 }
@@ -317,9 +268,9 @@ function createTable(obj) {
         //RENAME HEADER
         headerLabel.addEventListener('click', function () {
             headerLabel.remove();
-            let renameInput = components.createInput({value: col.name});
+            let renameInput = components.createInput({ value: col.name });
             renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
-            renameInput.classList.remove('p-1','border');
+            renameInput.classList.remove('p-1', 'border');
             let headerForm = document.createElement('div');
             header.prepend(headerForm);
             headerForm.appendChild(renameInput);
@@ -478,7 +429,7 @@ function createTable(obj) {
             renderedCell.innerHTML = cell;
         }
 
-        let cellInput = components.createInput({value: cell});
+        let cellInput = components.createInput({ value: cell });
         cellInput.classList.add('p-2', 'w-full', 'hidden');
         cellInput.classList.remove('border');
 
@@ -567,7 +518,7 @@ function createTable(obj) {
             let cell = document.createElement('div');
             cell.classList.add(...cellClasses)
             cell.style.width = '240px';
-            let cellInput = components.createInput({placeholder:placeholderValue(col)});
+            let cellInput = components.createInput({ placeholder: placeholderValue(col) });
             cellInput.classList.add('p-2', 'w-full');
             cellInput.classList.remove('border');
             cell.appendChild(cellInput);
@@ -622,7 +573,7 @@ function createTable(obj) {
     tableWrapper.appendChild(table)
 
     let addColumnBtn = document.createElement('button');
-    addColumnBtn.classList.add(theme.darkPrimaryColor,theme.textColor);
+    addColumnBtn.classList.add(theme.darkPrimaryColor, theme.textColor);
     addColumnBtn.style.height = '40px';
     addColumnBtn.style.width = '40px';
     addColumnBtn.innerHTML = `<i class="ri-add-line align-middle text-xl"></i>`;
@@ -700,7 +651,7 @@ function createColumnSelector(table, fn) {
 
     let selector = document.createElement('div');
 
-    let searchInput = components.createInput({placeholder:`Search columns in '${table.name}'`});
+    let searchInput = components.createInput({ placeholder: `Search columns in '${table.name}'` });
     searchInput.classList.add('w-full');
     selector.appendChild(searchInput);
 
@@ -770,7 +721,7 @@ function linkToTable(col) {
     selectorHeader.classList.add('my-2');
     selectorHeader.innerHTML = `<h4>Select a Table</h4>`;
 
-    let searchInput = components.createInput({placeholder:`Search tables in 'album-collection'`});
+    let searchInput = components.createInput({ placeholder: `Search tables in 'album-collection'` });
     searchInput.classList.remove('border');
     searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border-b', theme.tableBorderColor, 'w-full');
     tableSelector.appendChild(searchInput);
@@ -821,14 +772,11 @@ function linkToTable(col) {
         tableSelector.appendChild(item);
     });
 
-
-    let addLinkBtn = createButton(`Add Link`);
-    linkTableActions.appendChild(createButton('Cancel'));
+    let addLinkBtn = components.createButton(`Add Link`, { style: 'primary' });
+    linkTableActions.appendChild(components.createButton('Cancel', { style: 'secondary' }));
     linkTableActions.appendChild(addLinkBtn);
 
-
     let showLinkOptions = (colName, tableName) => {
-
         addLinkBtn.addEventListener('click', function () {
             col.type = 'fk';
             col.lookupField = colName;
@@ -838,7 +786,6 @@ function linkToTable(col) {
             saveTable(selectTableById(activeTable));
             modal.remove();
         });
-
     }
 
     return linkTableForm;
@@ -872,9 +819,9 @@ function linkToMultiple(table) {
 
     let formActions = document.createElement('div');
     formActions.classList.add('mt-2');
-    let createViewBtn = createButton('Create View');
+    let createViewBtn = components.createButton('Create View',{style:'primary'});
 
-    formActions.appendChild(createButton('Cancel'));
+    formActions.appendChild(components.createButton('Cancel',{style:'secondary'}));
     formActions.appendChild(createViewBtn);
     createViewBtn.addEventListener('click', function () {
 
@@ -979,7 +926,7 @@ function setTableConstraints(table) {
     newConstraintType.classList.add(theme.inputBackgroundColor, 'p-1', 'flex-grow', 'border', theme.darkBorderColor)
     newConstraintType.setAttribute('placeholder', 'Constraint Type');
 
-    newConstraint.append(newConstraintColumn, newConstraintType, createButton('Add Constraint', 'add'))
+    newConstraint.append(newConstraintColumn, newConstraintType, components.createButton('Add Constraint', { icon: 'add',style:'primary' }))
     constraintsForm.appendChild(newConstraint);
 
     let createConstraintItem = (column, type) => {
@@ -1007,7 +954,7 @@ function setTableConstraints(table) {
         //itemDescription.appendChild(createTooltip('Enforces Child Relationship With a Parent Table'));
         labelWrapper.append(itemLabel, itemDescription, itemReferences);
 
-        let deleteBtn = createButton('Delete', 'delete-bin');
+        let deleteBtn = components.createButton('Delete', { icon: 'delete-bin', style:'secondary' });
         deleteBtn.classList.add('ml-auto');
         item.append(labelWrapper, deleteBtn);
         return item;
@@ -1019,7 +966,7 @@ function setTableConstraints(table) {
     let fkConstraints = table.columns.filter(column => column.type == 'fk');
     fkConstraints.forEach(item => constraintsForm.appendChild(createConstraintItem(item, 'Foreign Key')))
 
-    let closeModal = constraintsForm.appendChild(createButton('Close'));
+    let closeModal = constraintsForm.appendChild(components.createButton('Close',{style:'secondary'}));
     closeModal.addEventListener('click', function () {
         modal.remove();
     });
@@ -1031,7 +978,7 @@ function setLookupColumn(table) {
     let form = document.createElement('div');
     let actions = document.createElement('div');
     form.classList.add('space-y-2');
-    let modal = createModal(form,actions);
+    let modal = createModal(form, actions);
     document.querySelector('body').appendChild(modal);
 
     form.appendChild(createTitle(
@@ -1049,8 +996,8 @@ function setLookupColumn(table) {
 
     columnSelector.appendChild(createColumnSelector(table));
 
-    let confirmBtn = createButton(`Set Lookup Column`);
-    actions.appendChild(createButton('Cancel'));
+    let confirmBtn = components.createButton(`Set Lookup Column`,{style:'primary'});
+    actions.appendChild(components.createButton('Cancel',{style:'secondary'}));
     actions.appendChild(confirmBtn);
 
 }
@@ -1129,8 +1076,8 @@ function createEditRecordMenu(input, table, value) {
         saveTable(selectedTable);
     });
 
-    let deleteRecordBtn = createButton('Delete Record', 'delete-bin');
-    let goToTableBtn = createButton('Go to Table', 'table');
+    let deleteRecordBtn = components.createButton('Delete Record', { icon: 'delete-bin' });
+    let goToTableBtn = components.createButton('Go to Table', { icon: 'table' });
 
     content.appendChild(deleteRecordBtn);
 
@@ -1139,7 +1086,7 @@ function createEditRecordMenu(input, table, value) {
 
 function createRecordListMenu(input, table, field, cell) {
     let menu = document.createElement('div');
-    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2','border',theme.tableBorderColor);
+    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2', 'border', theme.tableBorderColor);
     menu.style.position = 'absolute';
     menu.style.minWidth = '280px';
     let menuHeader = document.createElement('h4');
@@ -1190,7 +1137,7 @@ function createRecordListMenu(input, table, field, cell) {
     listWrapper.classList.add('border', 'space-y-2', 'p-1', theme.mediumBorderColor);
     menu.appendChild(listWrapper);
 
-    let newRecordButton = createButton('New Record', 'add');
+    let newRecordButton = components.createButton('New Record', { icon: 'add' });
     menu.appendChild(newRecordButton);
 
     let createList = (records) => {
@@ -1221,7 +1168,7 @@ function createRecordListMenu(input, table, field, cell) {
 
 function createLookupMenu(input, table, field, value) {
     let menu = document.createElement('div');
-    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1','border',theme.tableBorderColor);
+    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1', 'border', theme.tableBorderColor);
     menu.style.position = 'absolute';
     menu.style.minWidth = '280px';
     let menuHeader = document.createElement('h4');
@@ -1246,23 +1193,24 @@ function createLookupMenu(input, table, field, value) {
 
     let recordsList = document.createElement('div');
     menu.append(recordsList);
-  
 
-    let setSelection = function(record){
+
+    let setSelection = function (record) {
         input.value = record;
         recordsList.innerHTML = '';
     }
 
-    let createRecords = function (records,callback) {
+    let createRecords = function (records, callback) {
         let list = document.createElement('div');
         list.classList.add('space-y-1')
         records.forEach((record, i) => {
             let item = document.createElement('a');
             item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'py-1','px-2', theme.primaryColor, 'bg-opacity-50', 'block','rounded','text-sm');
+            item.classList.add(theme.textColor, 'py-1', 'px-2', theme.primaryColor, 'bg-opacity-50', 'block', 'rounded', 'text-sm');
             item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`;
             if (record == input.value) {
-                item.classList.replace('bg-opacity-50','bg-opacity-80');  
+                item.classList.replace('bg-opacity-50', 'bg-opacity-80');
+                //item.prepend(components.createIcon('check'));
             }
             item.addEventListener('click', function () {
                 callback(record);
@@ -1273,12 +1221,12 @@ function createLookupMenu(input, table, field, value) {
     }
 
 
-    recordsList.appendChild(createRecords(summaryRecords,setSelection));
-
-    
+    recordsList.appendChild(createRecords(summaryRecords, setSelection));
 
 
-    let allowMultiple = createButton('Add Multiple', 'add');
+
+
+    let allowMultiple = components.createButton('Add Multiple', { icon: 'add' });
     //menu.appendChild(allowMultiple);
 
     allowMultiple.addEventListener('click', function () {
@@ -1287,8 +1235,8 @@ function createLookupMenu(input, table, field, value) {
         let warningActions = document.createElement('div');
         warning.appendChild(warningActions);
         warningActions.classList.add('space-x-2');
-        warningActions.appendChild(createButton('Cancel'));
-        warningActions.appendChild(createButton('Create Table'));
+        warningActions.appendChild(components.createButton('Cancel'));
+        warningActions.appendChild(components.createButton('Create Table'));
 
         document.querySelector('body').appendChild(createModal(warning));
     });
@@ -1299,10 +1247,10 @@ function createLookupMenu(input, table, field, value) {
 
         recordsList.innerHTML = '';
         let filteredRecords = summaryRecords.filter(record => record.match(input.value.trim()));
-        recordsList.appendChild(createRecords(filteredRecords,setSelection))
+        recordsList.appendChild(createRecords(filteredRecords, setSelection))
 
         if (filteredRecords.length == 0) {
-            recordsList.appendChild(createButton('Add Record', 'add'))
+            recordsList.appendChild(components.createButton('Add Record', { icon: 'add' }))
         }
         if (filteredRecords.length == 1) {
             //input.value = filteredRecords[0];
