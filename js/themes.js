@@ -1,7 +1,7 @@
 var themes = {
     darkTheme: {
         backgroundColor: 'bg-gray-900',
-        mediumBackgroundColor: 'bg-gray-800',
+        mediumBackgroundColor: 'bg-gray-700',
         accentBackgroundColor: 'bg-gray-700',
         lightBackgroundColor: 'bg-gray-200',
         darkBorderColor: 'border-gray-800',
@@ -16,7 +16,7 @@ var themes = {
         tableHeaderBackgroundColor: 'bg-gray-800',
         primaryColor: 'bg-indigo-400',
         primaryBorderColor: 'border-indigo-300',
-        inputBackgroundColor: 'bg-gray-700',
+        inputBackgroundColor: 'bg-gray-800',
         darkPrimaryColor: 'bg-indigo-900',
         primaryTextColor: 'text-indigo-300'
     },

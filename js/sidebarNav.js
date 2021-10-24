@@ -9,6 +9,7 @@ import { openTables } from './main';
 export function sidebarNav(tables) {
 
     let sidebar = document.createElement('div');
+    //sidebar.classList.add('bg-gray-800','h-full');
     let sections = tables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
 
     let searchBar = document.createElement('div');

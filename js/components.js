@@ -30,7 +30,10 @@ var components = {
                 }
                 if (options.style == 'secondary') {
                     btn.classList.add('border',theme.lightBorderColor);
-                }   
+                } 
+                if (options.style == 'link') {
+                    btn.classList.add('border','border-opacity-0');
+                }    
             }
         }
         return btn;

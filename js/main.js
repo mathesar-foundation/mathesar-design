@@ -5,6 +5,7 @@ import { sidebarNav } from './sidebarNav';
 import { topNav } from './topNav';
 import { components } from './components.js';
 import { createModal } from './createModal';
+import { createTableToolbar } from './createTableToolbar';
 
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -29,7 +30,7 @@ if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
-let savedTables = JSON.parse(sessionStorage.getItem('tables'));
+export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
 
@@ -64,6 +65,7 @@ function setTableStatus(table, status) {
 
 let openTables = [];
 openTables.push(selectTableById(activeTable))
+openTables.push(selectTableById(5))
 document.querySelector('.table-wrapper').parentNode.prepend(createTabs(openTables));
 
 function createTabs(openTables) {
@@ -72,7 +74,7 @@ function createTabs(openTables) {
 
     let createTab = function (table) {
         let tab = document.createElement('div');
-        tab.classList.add('py-2', 'px-3', theme.textColor, 'border-r', theme.darkBorderColor, 'text-sm', 'space-x-2');
+        tab.classList.add('py-2', 'px-3', theme.textColor, 'border-r', theme.tableBorderColor, 'text-sm', 'space-x-2');
         tab.innerHTML = `<i class="ri-table-fill align-bottom"></i> ${table.name}`;
 
 
@@ -107,69 +109,6 @@ function createTabs(openTables) {
 
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
-}
-
-function createTableToolbar(obj) {
-
-    const type = obj.type;
-
-    let toolbar = document.createElement('div');
-    toolbar.classList.add(theme.mediumBackgroundColor, 'py-2', 'px-3', 'flex', 'items-center', 'space-x-4', 'border-b', theme.tableBorderColor);
-    let saveAsViewBtn = components.createButton('Save as View', { icon: 'save', style:'secondary' });
-    let addRecordBtn = components.createButton('Add', { icon: 'add', style:'secondary' })
-    let LinkRecordsBtn = components.createButton('Link to Multiple');
-    let tableTitle = document.createElement('h2');
-    tableTitle.classList.add(theme.textColor, 'text-lg','space-x-2');
-    tableTitle.innerHTML = `${obj.name}`;
-    tableTitle.append(components.createIcon('arrow-drop-down'));
-    toolbar.appendChild(tableTitle);
-
-    tableTitle.addEventListener('click', function () {
-        tableTitle.appendChild(createTableOptionsMenu(obj));
-    });
-
-    let createSection = (name, content) => {
-        let section = document.createElement('div');
-        let sectionHeader = document.createElement('h4');
-        sectionHeader.classList.add(theme.mutedTextColor, 'text-sm');
-        sectionHeader.innerText = name;
-        let sectionContent = document.createElement('div');
-        sectionContent.classList.add('space-x-2');
-        content.forEach(c => sectionContent.appendChild(c));
-        //section.appendChild(sectionHeader);
-        section.appendChild(sectionContent);
-        return section;
-    }
-
-    let recordsContent = [addRecordBtn];
-    let viewsContent = [saveAsViewBtn];
-
-    if (type == 'table') {
-        toolbar.appendChild(createSection('Records', recordsContent));
-
-        LinkRecordsBtn.addEventListener('click', function () {
-            linkToMultiple(obj);
-        });
-        toolbar.appendChild(createSection('Views', viewsContent));
-    }
-    // EVENTS
-    saveAsViewBtn.addEventListener('click', function () {
-        let newTable = JSON.parse(JSON.stringify(obj));
-
-        let tableId = Object.values(savedTables).flat().map(table => table.id);
-        let maxId = Math.max(...tableId);
-        newTable.id = maxId + 1;
-        newTable.type = 'view';
-        newTable.columns.forEach(col => col.referencedTable = newTable.name);
-        newTable.name = `View of ${newTable.name}`
-
-        savedTables.push(newTable);
-
-        sessionStorage.setItem('tables', JSON.stringify(savedTables));
-        location.reload();
-    });
-
-    return toolbar;
 }
 
 //sessionStorage.clear();
@@ -550,6 +489,7 @@ function createTable(obj) {
     headerRowSelect.classList.add('t-row-header', 'p-2');
     headerRowSelect.style.width = '40px';
     headerRow.classList.add('t-row', 'border-b', theme.tableBorderColor);
+    //headerRow.style.borderBottomWidth = '4px';
     headerRow.appendChild(headerRowSelect);
     headerWrapper.appendChild(headerRow);
     headerWrapper.classList.add('t-head', 'row-wrapper');
@@ -792,7 +732,7 @@ function linkToTable(col) {
 }
 
 
-function linkToMultiple(table) {
+export function linkToMultiple(table) {
     let form = document.createElement('div');
     form.innerHTML = `
       <h4 class="text-lg mb-2">Link Multiple Records to '${table.name}'</h4>
@@ -1002,7 +942,7 @@ function setLookupColumn(table) {
 
 }
 
-function createTableOptionsMenu(table) {
+export function createTableOptionsMenu(table) {
     let content = document.createElement('div');
     let menu = createDropdownMenu(content);
 
