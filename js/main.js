@@ -191,11 +191,12 @@ function createTable(obj) {
         let headerIcon = document.createElement('i');
         headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'rounded', 'mr-2', theme.primaryColor, 'bg-opacity-60');
         headerIcon.style.padding = '2px'
+    
 
         let headerColumnName = document.createElement('span');
         headerColumnName.innerHTML = col.name;
-        header.appendChild(headerLabel);
-        headerLabel.appendChild(headerIcon);
+        header.append(headerLabel);
+        headerLabel.append(headerIcon);
         headerLabel.appendChild(headerColumnName);
 
         if (col.type == 'fk') {
@@ -208,20 +209,20 @@ function createTable(obj) {
 
         if (col.isLookup) {
             let lookupIcon = components.createIcon('search');
-            lookupIcon.classList.add('ml-2','text-sm');
+            lookupIcon.classList.add('ml-2', 'text-sm');
             headerLabel.append(lookupIcon);
         }
 
+
+
+
         //RENAME HEADER
         headerLabel.addEventListener('click', function () {
-            headerLabel.remove();
+            headerLabel.innerHTML = '';
             let renameInput = components.createInput({ value: col.name });
             renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
-            renameInput.classList.remove('p-1', 'border');
-            let headerForm = document.createElement('div');
-            header.prepend(headerForm);
-            headerForm.appendChild(renameInput);
-            headerForm.prepend(headerIcon);
+            renameInput.classList.remove('p-1');
+            headerLabel.append(renameInput);
             renameInput.focus();
             renameInput.addEventListener('blur', function () {
                 col.name = renameInput.value;
@@ -598,13 +599,12 @@ function createNote(content) {
 function createColumnSelector(table, fn) {
 
     let selector = document.createElement('div');
-
     let searchInput = components.createInput({ placeholder: `Search columns in '${table.name}'` });
     searchInput.classList.add('w-full');
     selector.appendChild(searchInput);
 
     let selectorList = document.createElement('div');
-    selectorList.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
+    selector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
 
     let selectorItem = (col, i) => {
         let item = document.createElement('div');
@@ -621,12 +621,21 @@ function createColumnSelector(table, fn) {
 
         let label = document.createElement('label');
         label.innerHTML = `${col.name} <span class="text-xs ${theme.mutedTextColor}">(Example values: ${valueSample})</span>`;
-        label.prepend(createIcon(col.type));
-        item.appendChild(label);
+        let iconType = createIcon(col.type);
+        iconType.classList.add('mr-2');
+
+        item.append(label);
+        item.insertBefore(iconType, label);
 
 
         if (i == 0) {
             input.setAttribute('checked', true);
+        }
+
+        if (col.isLookup) {
+            let lookupIcon = components.createIcon('search');
+            lookupIcon.classList.add('text-sm', 'mr-1')
+            item.insertBefore(lookupIcon, label)
         }
 
 
@@ -665,21 +674,20 @@ function linkToTable(col) {
     ));
 
     let tableSelector = document.createElement('div');
+    tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
     let selectorHeader = document.createElement('h4');
     selectorHeader.classList.add('my-2');
     selectorHeader.innerHTML = `<h4>Select a Table</h4>`;
 
     let searchInput = components.createInput({ placeholder: `Search tables in 'album-collection'` });
     searchInput.classList.remove('border');
-    searchInput.classList.add(theme.inputBackgroundColor, 'p-1', 'border-b', theme.tableBorderColor, 'w-full');
-    tableSelector.appendChild(searchInput);
-
-    tableSelector.classList.add('border', theme.tableBorderColor, theme.mediumBackgroundColor);
-    linkTableForm.appendChild(selectorHeader);
-    linkTableForm.appendChild(tableSelector);
+    searchInput.classList.add('w-full');
 
     let columnSelector = document.createElement('div');
-    linkTableForm.appendChild(columnSelector);
+
+    tableSelector.appendChild(searchInput);
+    linkTableForm.append(selectorHeader, tableSelector, columnSelector);
+
     //ADD ITEMS
     savedTables.filter(table => table.id != activeTable && table.type == 'table').forEach((table) => {
         let item = document.createElement('div');
@@ -767,9 +775,9 @@ export function linkToMultiple(table) {
 
     let formActions = document.createElement('div');
     formActions.classList.add('mt-2');
-    let createViewBtn = components.createButton('Create View',{style:'primary'});
+    let createViewBtn = components.createButton('Create View', { style: 'primary' });
 
-    formActions.appendChild(components.createButton('Cancel',{style:'secondary'}));
+    formActions.appendChild(components.createButton('Cancel', { style: 'secondary' }));
     formActions.appendChild(createViewBtn);
     createViewBtn.addEventListener('click', function () {
 
@@ -874,7 +882,7 @@ function setTableConstraints(table) {
     newConstraintType.classList.add(theme.inputBackgroundColor, 'p-1', 'flex-grow', 'border', theme.darkBorderColor)
     newConstraintType.setAttribute('placeholder', 'Constraint Type');
 
-    newConstraint.append(newConstraintColumn, newConstraintType, components.createButton('Add Constraint', { icon: 'add',style:'primary' }))
+    newConstraint.append(newConstraintColumn, newConstraintType, components.createButton('Add Constraint', { icon: 'add', style: 'primary' }))
     constraintsForm.appendChild(newConstraint);
 
     let createConstraintItem = (column, type) => {
@@ -902,7 +910,7 @@ function setTableConstraints(table) {
         //itemDescription.appendChild(createTooltip('Enforces Child Relationship With a Parent Table'));
         labelWrapper.append(itemLabel, itemDescription, itemReferences);
 
-        let deleteBtn = components.createButton('Delete', { icon: 'delete-bin', style:'secondary' });
+        let deleteBtn = components.createButton('Delete', { icon: 'delete-bin', style: 'secondary' });
         deleteBtn.classList.add('ml-auto');
         item.append(labelWrapper, deleteBtn);
         return item;
@@ -914,7 +922,7 @@ function setTableConstraints(table) {
     let fkConstraints = table.columns.filter(column => column.type == 'fk');
     fkConstraints.forEach(item => constraintsForm.appendChild(createConstraintItem(item, 'Foreign Key')))
 
-    let closeModal = constraintsForm.appendChild(components.createButton('Close',{style:'secondary'}));
+    let closeModal = constraintsForm.appendChild(components.createButton('Close', { style: 'secondary' }));
     closeModal.addEventListener('click', function () {
         modal.remove();
     });
@@ -944,8 +952,8 @@ function setLookupColumn(table) {
 
     columnSelector.appendChild(createColumnSelector(table));
 
-    let confirmBtn = components.createButton(`Set Lookup Column`,{style:'primary'});
-    actions.appendChild(components.createButton('Cancel',{style:'secondary'}));
+    let confirmBtn = components.createButton(`Set Lookup Column`, { style: 'primary' });
+    actions.appendChild(components.createButton('Cancel', { style: 'secondary' }));
     actions.appendChild(confirmBtn);
 
 }
@@ -1055,14 +1063,14 @@ function createRecordListMenu(input, table, field, cell) {
         removeRecord.innerHTML = `<i class="ri-delete-bin-line align-bottom"></i>`;
 
         if (activeRecords.includes(record[columnPosition])) {
-            recordsList.classList.add(theme.primaryColor, 'bg-opacity-70', theme.textColor, 'flex','py-1', 'px-2', 'rounded', 'items-center','text-sm');
+            recordsList.classList.add(theme.primaryColor, 'bg-opacity-70', theme.textColor, 'flex', 'py-1', 'px-2', 'rounded', 'items-center', 'text-sm');
             recordsList.addEventListener('click', function () {
                 input.setAttribute('value', input.value.split(',').map(v => v !== record[columnPosition] ? v : '').filter(v => v.length > 0).join(','));
                 menu.remove();
                 input.parentNode.append(createRecordListMenu(input, table, field, input.value));
             });
         } else {
-            recordsList.classList.add(theme.primaryColor, 'bg-opacity-20', theme.textColor, 'flex','py-1', 'px-2', 'rounded', 'items-center','text-sm');
+            recordsList.classList.add(theme.primaryColor, 'bg-opacity-20', theme.textColor, 'flex', 'py-1', 'px-2', 'rounded', 'items-center', 'text-sm');
             recordsList.addEventListener('click', function () {
                 if (input.value.length > 0) {
                     input.setAttribute('value', input.value + ',' + record[columnPosition]);
