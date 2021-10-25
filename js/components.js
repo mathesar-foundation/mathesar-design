@@ -3,7 +3,7 @@ import { theme } from './themes.js';
 var components = {
     createInput : function(options) {
         let input = document.createElement('input');
-        input.classList.add('p-1',theme.inputBackgroundColor,theme.textColor);
+        input.classList.add('p-1',theme.inputBackgroundColor,theme.textColor,'bg-opacity-20');
         input.setAttribute('type','text');
         if (options.placeholder) {
             input.setAttribute('placeholder', options.placeholder);
@@ -21,7 +21,7 @@ var components = {
         if (options) {
             if (options.icon) {
                 let btnIcon = document.createElement('i');
-                btnIcon.classList.add(`ri-${options.icon}-line`, 'align-bottom', 'mr-2');
+                btnIcon.classList.add(`ri-${options.icon}-line`, 'align-bottom', 'mr-2',theme.primaryTextColor);
                 btn.prepend(btnIcon);
             }
             if (options.style) {

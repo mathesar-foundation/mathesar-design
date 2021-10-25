@@ -16,7 +16,7 @@ var themes = {
         tableHeaderBackgroundColor: 'bg-gray-800',
         primaryColor: 'bg-indigo-400',
         primaryBorderColor: 'border-indigo-300',
-        inputBackgroundColor: 'bg-gray-800',
+        inputBackgroundColor: 'bg-gray-600',
         darkPrimaryColor: 'bg-indigo-900',
         primaryTextColor: 'text-indigo-300'
     },
@@ -37,9 +37,29 @@ var themes = {
         tableHeaderBackgroundColor: 'bg-white',
         primaryColor: 'bg-indigo-400',
         primaryBorderColor: 'border-indigo-300',
-        inputBackgroundColor: 'bg-gray-100',
+        inputBackgroundColor: 'bg-gray-400',
         darkPrimaryColor: 'bg-indigo-300',
         primaryTextColor: 'text-indigo-400'
+    },pinkTheme: {
+        backgroundColor: 'bg-pink-50',
+        mediumBackgroundColor: 'bg-pink-100',
+        accentBackgroundColor: 'bg-white',
+        lightBackgroundColor: 'bg-gray-50',
+        darkBorderColor: 'border-gray-600',
+        mediumBorderColor: 'border-gray-300',
+        lightBorderColor: 'border-gray-400',
+        textColor: 'text-gray-600',
+        inverseTextColor: 'text-white',
+        mutedTextColor: 'text-gray-500',
+        mediumTextColor: 'text-gray-700',
+        tableBorderColor: 'border-pink-200',
+        tableBackgroundColor: 'bg-white',
+        tableHeaderBackgroundColor: 'bg-white',
+        primaryColor: 'bg-pink-500',
+        primaryBorderColor: 'border-pink-300',
+        inputBackgroundColor: 'bg-pink-400',
+        darkPrimaryColor: 'bg-pink-300',
+        primaryTextColor: 'text-pink-500'
     }
 };
 
