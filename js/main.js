@@ -34,6 +34,8 @@ export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
 
+console.log(loadedTables);
+
 document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
 document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
@@ -202,6 +204,12 @@ function createTable(obj) {
             let foreignKeyIcon = document.createElement('i');
             foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
             headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
+        }
+
+        if (col.isLookup) {
+            let lookupIcon = components.createIcon('search');
+            lookupIcon.classList.add('ml-2','text-sm');
+            headerLabel.append(lookupIcon);
         }
 
         //RENAME HEADER

@@ -115,7 +115,7 @@ let loadedTables = allTables.map((data,index) => {
     return {
         'id' : index,
         'name' : data.name,
-        'columns' : data.columns,
+        'columns' : data.columns.map((col,i) => i == 1?({...col, isLookup : true}):({...col, isLookup : false})),
         'records' : data.records,
         'type' : data.type,
     }

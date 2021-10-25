@@ -44,10 +44,7 @@ var themes = {
 };
 
 
-
 var theme = themes.darkTheme;
-
-
 
 
 
