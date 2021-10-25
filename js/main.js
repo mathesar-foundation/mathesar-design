@@ -1304,6 +1304,8 @@ doubleClickEvent.initEvent('dblclick', true, true);
 //document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
 
 
-
+function changeThemeModal() {
+    console.log('test');
+}
 
 

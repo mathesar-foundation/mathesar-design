@@ -44,5 +44,21 @@ var themes = {
 };
 
 var theme = themes.darkTheme;
+var activeTheme = window.sessionStorage.getItem('activeTheme');
+if (activeTheme) {
+    theme = themes[activeTheme];
+}
 
-module.exports = { theme };
+function setNextTheme() {
+    let list = Object.keys(themes);
+    let idx = activeTheme?list.indexOf(activeTheme):0;
+    let newTheme = list[(idx+1)%list.length];
+    setTheme(newTheme);
+}
+
+function setTheme(_theme) {
+    window.sessionStorage.setItem('activeTheme',_theme);
+    location.reload();
+}
+
+module.exports = { theme, themes, setTheme, setNextTheme };

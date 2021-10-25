@@ -1,4 +1,4 @@
-import { theme } from './themes.js';
+import { theme, themes, setNextTheme } from './themes.js';
 import { components } from './components.js';
  
 export function topNav(schema) {
@@ -20,6 +20,13 @@ export function topNav(schema) {
     accountSelector.classList.add('p-1');
     accountSelector.innerHTML = `<i class="ri-user-fill align-bottom ${theme.textColor}"></i> <i class="ri-more-2-line align-bottom ${theme.textColor}"></i>`;
 
-    topNav.append(schemaName,searchBar,accountSelector);
+    let changeThemeBtn = components.createButton('Change Theme');
+
+    changeThemeBtn.addEventListener('click',function(){
+        setNextTheme();
+        
+    });  
+
+    topNav.append(schemaName,searchBar,changeThemeBtn,accountSelector);
     return topNav;
 }
