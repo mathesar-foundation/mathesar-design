@@ -1149,20 +1149,21 @@ function createLookupMenu(input, table, field, value) {
     menu.style.minWidth = '280px';
     let menuHeader = document.createElement('h4');
     menuHeader.classList.add(theme.textColor);
-    menuHeader.innerHTML = `Lookup records in '${table}'`;
+    menuHeader.innerHTML = `Lookup records in <span class="${theme.mediumBackgroundColor} px-1 rounded"><i class="ri-table-fill text-xs"></i> ${table}</span>`;
     let menuLookupField = document.createElement('div');
     menuLookupField.classList.add(theme.mutedTextColor, 'text-sm')
 
+    const isLookup = (column) => column.isLookup;
+    let columnPosition = selectTableByName(table).columns.findIndex(isLookup);
 
-    let columnPosition = selectTableByName(table).columns.map((col, i) => col.name == field ? i : '').join('');
     let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
     let summaryIds = selectTableByName(table).records.map(record => record[0]);
     let columnType = selectTableByName(table).columns.map((col, i) => col.name == field ? col.type : '').join('');
 
-    menuLookupField.innerHTML = `Lookup field:`;
+    menuLookupField.innerHTML = `Lookup field: `;
     menuLookupField.appendChild(createIcon(columnType));
     let lookupLabel = document.createElement('span');
-    lookupLabel.innerText = field;
+    lookupLabel.innerText = selectTableByName(table).columns.filter(col=> col.isLookup).map(col=> col.name);
     menuLookupField.appendChild(lookupLabel);
     menu.appendChild(menuHeader);
     menu.appendChild(menuLookupField);
