@@ -596,7 +596,7 @@ function createNote(content) {
     return note;
 }
 
-function createColumnSelector(table, fn) {
+function createColumnSelector(table, fn, options) {
 
     let selector = document.createElement('div');
     let searchInput = components.createInput({ placeholder: `Search columns in '${table.name}'` });
@@ -627,9 +627,16 @@ function createColumnSelector(table, fn) {
         item.append(label);
         item.insertBefore(iconType, label);
 
-
         if (i == 0) {
             input.setAttribute('checked', true);
+        }
+
+        if (options) {
+            if (options.selected) {
+                if (i == options.selected) {
+                    input.setAttribute('checked', true);
+                }
+            }
         }
 
         if (col.isLookup) {
@@ -745,6 +752,52 @@ function linkToTable(col) {
     }
 
     return linkTableForm;
+}
+
+//setLookupColumn(selectTableById(2))
+
+function setLookupColumn(table) {
+    let form = document.createElement('div');
+    let actions = document.createElement('div');
+    form.classList.add('space-y-2');
+    let modal = createModal(form, actions);
+    document.querySelector('body').appendChild(modal);
+
+    form.appendChild(createTitle(
+        'Set Lookup Column',
+        'Lookup columns are used to identify records with a more user-friendly value when retrieving them from another table'
+    ));
+
+    let columnSelector = document.createElement('div');
+    form.appendChild(columnSelector);
+
+    let selectorHeader = document.createElement('h4');
+    selectorHeader.classList.add('my-2');
+    selectorHeader.innerHTML = `<h4>Select a Column</h4>`
+    columnSelector.appendChild(selectorHeader);
+
+    let setLookup = function(columnName,tableName){
+        let newTable = JSON.parse(JSON.stringify(selectTableByName(tableName)));
+        let newColumns = newTable.columns.map((col,i) => col.name == columnName?({...col, isLookup : true}):({...col, isLookup : false}));
+        newTable.columns = newColumns;
+        console.log(newTable);
+        let index = savedTables.indexOf(selectTableByName(tableName));
+        savedTables[index] = {...newTable};
+        sessionStorage.setItem('tables', JSON.stringify(savedTables)); 
+    }
+
+    columnSelector.appendChild(createColumnSelector(table,setLookup,{ selected : 1 }));
+
+    let confirmBtn = components.createButton(`Set Lookup Column`, { style: 'primary' });
+
+    confirmBtn.addEventListener('click',function(){
+        modal.remove();
+        location.reload();
+    });
+
+    actions.appendChild(components.createButton('Cancel', { style: 'secondary' }));
+    actions.appendChild(confirmBtn);
+
 }
 
 
@@ -928,35 +981,7 @@ function setTableConstraints(table) {
     });
 }
 
-//setLookupColumn(selectTableById(1))
 
-function setLookupColumn(table) {
-    let form = document.createElement('div');
-    let actions = document.createElement('div');
-    form.classList.add('space-y-2');
-    let modal = createModal(form, actions);
-    document.querySelector('body').appendChild(modal);
-
-    form.appendChild(createTitle(
-        'Set Lookup Column',
-        'Lookup columns are used to identify records with a more user-friendly value when retrieving them from another table'
-    ));
-
-    let columnSelector = document.createElement('div');
-    form.appendChild(columnSelector);
-
-    let selectorHeader = document.createElement('h4');
-    selectorHeader.classList.add('my-2');
-    selectorHeader.innerHTML = `<h4>Select a Column</h4>`
-    columnSelector.appendChild(selectorHeader);
-
-    columnSelector.appendChild(createColumnSelector(table));
-
-    let confirmBtn = components.createButton(`Set Lookup Column`, { style: 'primary' });
-    actions.appendChild(components.createButton('Cancel', { style: 'secondary' }));
-    actions.appendChild(confirmBtn);
-
-}
 
 export function createTableOptionsMenu(table) {
     let content = document.createElement('div');

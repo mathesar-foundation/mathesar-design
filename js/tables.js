@@ -40,16 +40,17 @@ var allTables = [{
     type: 'table',
     columns: [
         { name: 'id', type: 'number', readOnly: true },
+        { name: 'ISRC', type: 'text' },
         { name: 'trackName', type: 'text' },
         { name: 'trackLength', type: 'duration' }
     ],
     records: [
-        [460, 'Turn Back Time', 180000],
-        [461, 'Roses are Red', 180000],
-        [462, 'Barbie Girl', 180000],
-        [463, 'Around the World', 180000],
-        [464, 'My Oh My', 180000],
-        [465, 'Love And Lust', 180000]
+        [460,'X63000000226', 'Turn Back Time', 180000],
+        [461,'GBXHC1810600', 'Roses are Red', 180000],
+        [462,'DKBKA9700408', 'Barbie Girl', 180000],
+        [463,'GBBKA0000502', 'Around the World', 180000],
+        [464,'USGF19822012', 'My Oh My', 180000],
+        [465,'DKBKA0000105', 'Love And Lust', 180000]
     ],
     color: 'pink'
 }, {
