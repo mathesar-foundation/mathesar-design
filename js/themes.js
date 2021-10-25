@@ -24,28 +24,25 @@ var themes = {
         backgroundColor: 'bg-white',
         mediumBackgroundColor: 'bg-gray-200',
         accentBackgroundColor: 'bg-white',
-        lightBackgroundColor: 'bg-gray-100',
+        lightBackgroundColor: 'bg-gray-50',
         darkBorderColor: 'border-gray-600',
-        mediumBorderColor: 'border-gray-400',
-        lightBorderColor: 'border-gray-100',
+        mediumBorderColor: 'border-gray-300',
+        lightBorderColor: 'border-gray-400',
         textColor: 'text-gray-600',
         inverseTextColor: 'text-white',
-        mutedTextColor: 'text-gray-800',
-        mediumTextColor: 'text-gray-900',
+        mutedTextColor: 'text-gray-500',
+        mediumTextColor: 'text-gray-700',
         tableBorderColor: 'border-gray-300',
         tableBackgroundColor: 'bg-white',
         tableHeaderBackgroundColor: 'bg-white',
         primaryColor: 'bg-indigo-400',
         primaryBorderColor: 'border-indigo-300',
         inputBackgroundColor: 'bg-gray-100',
-        darkPrimaryColor: 'bg-indigo-800',
-        primaryTextColor: 'text-indigo-300'
+        darkPrimaryColor: 'bg-indigo-300',
+        primaryTextColor: 'text-indigo-400'
     }
 };
 
-
 var theme = themes.darkTheme;
-
-
 
 module.exports = { theme };

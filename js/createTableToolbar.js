@@ -45,7 +45,7 @@ export function createTableToolbar(obj) {
 
     let sectionDivider = function(){
         let divider = document.createElement('div');
-        divider.classList.add('border-r','py-2');
+        divider.classList.add('border-r','py-2',theme.lightBorderColor);
         return divider;
     } 
 

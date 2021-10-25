@@ -7,7 +7,7 @@ export function createModal(content, footer) {
     modal.style.width = '600px';
     let modalClasses = [theme.backgroundColor, theme.textColor, 'border', 'mx-auto', theme.mediumBorderColor];
     modal.classList.add(...modalClasses);
-    overlay.classList.add(theme.backgroundColor, 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
+    overlay.classList.add('bg-gray-900', 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
     overlay.style.position = 'absolute';
     overlay.style.top = '0';
     overlay.style.left = '0';

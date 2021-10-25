@@ -13,9 +13,9 @@ var allTables = [{
         [449, 'Aqua', ''],
         [450, 'Patti Smith', ''],
         [451, 'Elvis Costello', ''],
-        [451, 'Kylie Minogue', ''],
-        [451, 'Artic Monkeys', ''],
-        [453, 'Scorpions', '']
+        [452, 'Kylie Minogue', ''],
+        [453, 'Artic Monkeys', ''],
+        [454, 'Scorpions', '']
     ],
     color: 'purple'
 }, {
@@ -62,10 +62,10 @@ var allTables = [{
         { name: 'artistId', type: 'fk', lookupField: 'artistName', lookupTable: 'artist' },
     ],
     records: [
-        [500, 'Around the World', ''],
-        [501, 'Barbie Girl', ''],
-        [502, 'Turn Back Time', ''],
-        [503, 'Roses are Red', '']
+        [500, 460, ''],
+        [501, 461, ''],
+        [502, 462, ''],
+        [503, 463, '']
     ],
     color: 'pink'
 }, {

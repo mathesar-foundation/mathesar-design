@@ -352,6 +352,20 @@ function createTable(obj) {
         return obj.columns[int];
     }
 
+    let getRecordByValue = function(tableName,value) {
+        let lookupTable = selectTableByName(tableName);
+        let columns = selectTableByName(tableName).columns;
+        const isLookup = (column) => column.isLookup;
+        let columnPosition = columns.findIndex(isLookup);
+        let records = lookupTable.records.find(r => r.includes(value));
+        if (records !== undefined) {
+        return records[columnPosition];
+        } else {
+            return '';
+        }
+        //console.log(lookupTable.records.map(record => record[columnPosition]));
+    }
+
     let createCell = function (cell, i) {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
@@ -369,6 +383,7 @@ function createTable(obj) {
         }
 
         if (cellType == 'fk') {
+            let renderedValue = getRecordByValue(getColumnByPosition(i).lookupTable,cell)
             renderedCell.appendChild(createRecordLink(cell));
         } else if (cellType == 'summary') {
             cell.split(',').forEach(c => renderedCell.appendChild(createRecordLink(c)))
