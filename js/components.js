@@ -13,15 +13,82 @@ var components = {
         }
         return input;
     },
+    createRadioInput : function(options) {
+        let formGroup = document.createElement('div');
+        formGroup.classList.add('space-x-2')
+        let input = document.createElement('input');
+        input.setAttribute('type','radio');
+        input.setAttribute('value',options.value);
+        input.setAttribute('name',options.name);
+        let label = document.createElement('label');
+        label.innerHTML = options.label;
+        formGroup.append(input,label);
+    
+        return formGroup;
+    }, createCheckInput : function(options) {
+        let formGroup = document.createElement('div');
+        formGroup.classList.add('space-x-2')
+        let input = document.createElement('input');
+        input.setAttribute('type','checkbox');
+        input.setAttribute('value',options.value);
+        input.setAttribute('name',options.name);
+        let label = document.createElement('label');
+        label.innerHTML = options.label;
+        formGroup.append(input,label);
+        
+
+        return formGroup;
+    },
+    createSelectInput : function(list,options){
+        let formGroup = document.createElement('div');
+        let input = document.createElement('select');
+        input.classList.add('p-1',theme.inputBackgroundColor,theme.textColor,'bg-opacity-20');
+        input.classList.add('border',theme.tableBorderColor,'p-1');
+
+        let blankOption = document.createElement('option');
+        blankOption.innerText = `Select`;
+        blankOption.selected = true;
+        blankOption.disabled = true;
+        input.prepend(blankOption);
+
+        list.forEach(item => {
+           let option = document.createElement('option');
+           option.innerText = item;
+           option.setAttribute('value',item); 
+           if (item == options.selected) {
+            option.setAttribute('selected',true);
+           }
+           input.append(option);
+        });
+
+        let label = document.createElement('label');
+        label.classList.add('block');
+        label.innerHTML = options.label;
+        formGroup.append(label,input);
+    
+        return formGroup;
+    },
+    createFormGroup : function(input,label) {
+        let formGroup = document.createElement('div');
+        let formControl = input;
+        let controlLabel = document.createElement('label');
+        controlLabel.classList.add('block');
+        controlLabel.innerHTML = label;
+        formGroup.append(controlLabel,formControl)
+        return formGroup;
+    },
     createButton : function(value, options) {
         let btn = document.createElement('button');
-        btn.classList.add('px-2', 'py-1',theme.textColor);
+        btn.classList.add('px-2', 'py-1',theme.textColor,'space-x-2');
         btn.innerHTML = `${value}`;
     
         if (options) {
+            if (options.noLabel) {
+                btn.innerHTML = ``;
+            }
             if (options.icon) {
                 let btnIcon = document.createElement('i');
-                btnIcon.classList.add(`ri-${options.icon}-line`, 'align-bottom', 'mr-2',theme.primaryTextColor);
+                btnIcon.classList.add(`ri-${options.icon}-line`, 'align-bottom',theme.primaryTextColor,'mr-1');
                 btn.prepend(btnIcon);
             }
             if (options.style) {
@@ -38,9 +105,19 @@ var components = {
         }
         return btn;
     },
-    createIcon : function(name) {
+    createIcon : function(name,options) {
         let icon = document.createElement('i');
-        icon.classList.add(`ri-${name}-line`,'align-bottom');
+        icon.classList.add(name,'align-bottom');
+
+        if (options) {
+            if (options.style) {
+                if (options.style == 'type') {
+                    icon.classList.add(theme.primaryColor,'rounded','mr-1');
+                    icon.style.padding = '1px'
+                }  
+            }
+        }
+
         return icon;
     } 
 }

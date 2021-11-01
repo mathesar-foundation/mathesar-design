@@ -6,16 +6,15 @@ var allTables = [{
     ],
     columns: [
         { name: 'id', type: 'number', readOnly: true },
-        { name: 'artistName', type: 'text' },
-        { name: 'trackId', type: 'text' }
+        { name: 'artistName', type: 'text' }
     ],
     records: [
-        [449, 'Aqua', ''],
-        [450, 'Patti Smith', ''],
-        [451, 'Elvis Costello', ''],
-        [452, 'Kylie Minogue', ''],
-        [453, 'Artic Monkeys', ''],
-        [454, 'Scorpions', '']
+        [67, 'Aqua'],
+        [68, 'Patti Smith'],
+        [69, 'Elvis Costello'],
+        [70, 'Kylie Minogue'],
+        [71, 'Artic Monkeys'],
+        [72, 'Scorpions']
     ],
     color: 'purple'
 }, {
@@ -45,12 +44,12 @@ var allTables = [{
         { name: 'trackLength', type: 'duration' }
     ],
     records: [
-        [460,'X63000000226', 'Turn Back Time', 180000],
-        [461,'GBXHC1810600', 'Roses are Red', 180000],
-        [462,'DKBKA9700408', 'Barbie Girl', 180000],
-        [463,'GBBKA0000502', 'Around the World', 180000],
-        [464,'USGF19822012', 'My Oh My', 180000],
-        [465,'DKBKA0000105', 'Love And Lust', 180000]
+        [460, 'X63000000226', 'Turn Back Time', 180000],
+        [461, 'GBXHC1810600', 'Roses are Red', 180000],
+        [462, 'DKBKA9700408', 'Barbie Girl', 180000],
+        [463, 'GBBKA0000502', 'Around the World', 180000],
+        [464, 'USGF19822012', 'My Oh My', 180000],
+        [465, 'DKBKA0000105', 'Love And Lust', 180000]
     ],
     color: 'pink'
 }, {
@@ -112,13 +111,13 @@ var allTables = [{
     color: 'purple'
 }];
 
-let loadedTables = allTables.map((data,index) => {
+let loadedTables = allTables.map((data, index) => {
     return {
-        'id' : index,
-        'name' : data.name,
-        'columns' : data.columns.map((col,i) => i == 1?({...col, isLookup : true}):({...col, isLookup : false})),
-        'records' : data.records,
-        'type' : data.type,
+        'id': index,
+        'name': data.name,
+        'columns': data.columns.map((col, i) => i == 1 ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false })),
+        'records': data.records,
+        'type': data.type,
     }
 }
 );

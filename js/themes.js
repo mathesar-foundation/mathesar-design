@@ -2,6 +2,7 @@ var themes = {
     darkTheme: {
         backgroundColor: 'bg-gray-900',
         mediumBackgroundColor: 'bg-gray-700',
+        darkBackgroundColor: 'bg-gray-800',
         accentBackgroundColor: 'bg-gray-700',
         lightBackgroundColor: 'bg-gray-200',
         darkBorderColor: 'border-gray-800',
@@ -23,6 +24,7 @@ var themes = {
     lightTheme: {
         backgroundColor: 'bg-white',
         mediumBackgroundColor: 'bg-gray-200',
+        darkBackgroundColor: 'bg-gray-50',
         accentBackgroundColor: 'bg-white',
         lightBackgroundColor: 'bg-gray-50',
         darkBorderColor: 'border-gray-600',
@@ -43,6 +45,7 @@ var themes = {
     },pinkTheme: {
         backgroundColor: 'bg-pink-50',
         mediumBackgroundColor: 'bg-pink-100',
+        darkBackgroundColor: 'bg-pink-100',
         accentBackgroundColor: 'bg-white',
         lightBackgroundColor: 'bg-gray-50',
         darkBorderColor: 'border-gray-600',
