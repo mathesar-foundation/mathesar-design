@@ -27,14 +27,19 @@ var components = {
         return formGroup;
     }, createCheckInput : function(options) {
         let formGroup = document.createElement('div');
-        formGroup.classList.add('space-x-2')
+        formGroup.classList.add('space-x-3')
         let input = document.createElement('input');
         input.setAttribute('type','checkbox');
         input.setAttribute('value',options.value);
         input.setAttribute('name',options.name);
         let label = document.createElement('label');
         label.innerHTML = options.label;
-        formGroup.append(input,label);
+
+        if(options.position == 'right') {
+            formGroup.append(label,input);
+        } else {
+            formGroup.append(input,label);
+        }
         
 
         return formGroup;

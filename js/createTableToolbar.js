@@ -1,11 +1,9 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { activeTable, savedTables, selectTableById, createTitle, selectTableByName } from './main';
+import { activeTable, savedTables, createTitle, selectTableByName } from './main';
 import { createModal } from './createModal.js';
-import { createTable } from './createTable';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { setTableConstraints } from './setTableConstraints';
-
 
 
 export function createTableToolbar(obj) {
@@ -69,21 +67,18 @@ export function createTableToolbar(obj) {
     // EVENTS
     saveAsViewBtn.addEventListener('click', function () {
         let newTable = JSON.parse(JSON.stringify(obj));
-
         let tableId = savedTables.map(table => table.id);
         let maxId = Math.max(...tableId);
         newTable.id = maxId + 1;
         newTable.type = 'view';
         newTable.columns.forEach(col => col.referencedTable = newTable.name);
         newTable.name = `View of ${newTable.name}`;
-
         savedTables.push(newTable);
-
         sessionStorage.setItem('tables', JSON.stringify(savedTables));
         location.reload();
     });
 
-    
+    document.querySelector('body').append(createModal(linkTableWizard(obj)));
 
     manageRelationshipsBtn.addEventListener('click', function () {
         document.querySelector('body').append(createModal(linkTableWizard(obj)));
@@ -93,12 +88,7 @@ export function createTableToolbar(obj) {
 }
 
 
-
-
-
 function linkTableWizard(obj) {
-
-
     let form = document.createElement('div');
     form.classList.add('space-y-4')
 
@@ -107,34 +97,35 @@ function linkTableWizard(obj) {
         'Set relationships between tables'
     ));
 
+    let actionsWrapper = document.createElement('div');
+    actionsWrapper.classList.add('space-x-2', 'flex', 'justify-end');
 
-    let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Table to Link to' });
+    let cancelBtn = components.createButton('Cancel', { style: 'secondary' });
+    let applyBtn = components.createButton('Apply', { style: 'primary' });
 
+    actionsWrapper.append(cancelBtn, applyBtn)
+
+    //CHANGE QUESTIONS
+    let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Select Table to Link to' });
 
     let questionsWrapper = document.createElement('div');
-
-
-    let applyBtn = components.createButton('Apply', { style: 'primary' });
+    questionsWrapper.classList.add('space-y-2')
 
 
     referencedTable.addEventListener('change', function () {
-        questionsWrapper.innerHTML = '';
+
+        questionsWrapper.innerHTML = ''; // CLEAR QUESTIONS
         let _table = referencedTable.childNodes[1].value;
 
         let questionsList = [
-            `Can ${obj.name} have more than one ${_table}?`,
-            `Can ${_table} have more than one ${obj.name}?`
+            `Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${_table}</span> record?`,
+            `Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${obj.name}</span> record?`
         ];
 
         let createQuestions = (question) => {
-            let item = components.createCheckInput({ name: 'fkSetup', label: question });
-            item.addEventListener('click', function () {
-                if (item.querySelector('input').checked === false) {
-                    item.querySelector('input').checked == true;
-                } else {
-                    item.querySelector('input').checked == false;
-                }
-            });
+            let item = components.createCheckInput({ name: 'fkSetup', label: question, position: 'right' });
+            item.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'flex', 'justify-between', 'items-center');
+
             return item;
         };
 
@@ -142,86 +133,68 @@ function linkTableWizard(obj) {
             questionsWrapper.append(createQuestions(question));
         });
 
-        questionsWrapper.addEventListener('change',function(){
+        questionsWrapper.addEventListener('change', function () {
             let answers = [...questionsWrapper.querySelectorAll('input')].map(input => input.checked);
-            if (answers.every(answer => answer === true)){
-                console.log('add to new mapping table');                
-                applyBtn.addEventListener('click', function () {
-                    let newMapTable = {
-                        id: 20,
-                        name: `${_table}_${obj.name}`,
-                        type: 'table',
-                        
-                        columns: [
-                            {
-                                name:`Id`,
-                                readOnly: true,
-                                type: 'number'
-                            },
-                            {
-                                name:`${_table}Id`,
-                                type: 'fk',
-                                lookupField: `${selectTableByName(_table).columns[0].name}`,
-                                lookupTable: `${_table}`
-                            },
-                            {
-                                name:`${obj.name}Id`,
-                                type: 'fk',
-                                lookupField: `${obj.columns[0].name}`,
-                                lookupTable: `${obj.name}`
-                            }
-                        ],
-                        records: [
-                            ['','','']
-                        ]
-                    };
-                    savedTables.push(newMapTable);
-                    //sessionStorage.setItem('tables', JSON.stringify(savedTables));
+            if (answers.every(answer => answer === true)) {
+                let newMapTable = createMapTable(selectTableByName(_table),obj);
+                ///
+                savedTables.push(newMapTable);
+                sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                applyBtn.addEventListener('click',function(){
                     setTableConstraints(newMapTable);
+                    
                 });
-
+                
             } else {
                 if (answers[0] == true) {
-                    console.log('map other table');
-                    applyBtn.addEventListener('click', function () {
-                        selectTableByName(_table).columns.push({
-                            name: `${obj.name}Id`,
-                            type: 'fk',
-                            lookupTable: `${obj.name}`,
-                            lookupField: `${obj.columns[0].name}`
-                            
-                        });
-                        selectTableByName(_table).records.forEach(record => {record.push('')});
-                
+                    let newColumn = createReferenceColumn(obj)
+                    ///
+                    selectTableByName(_table).columns.push(newColumn);
+                    selectTableByName(_table).records.forEach(record => { record.push('') });
+                    sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                    
+                    applyBtn.addEventListener('click',function(){
                         setTableConstraints(selectTableByName(_table));
-                    });
-                    
-                    
-                } else {
-                    console.log('map this table');
-                    applyBtn.addEventListener('click', function () {
                         
-                        obj.columns.push({
-                            name: `${_table}Id`,
-                            type: 'fk',
-                            lookupTable: `${selectTableByName(_table).name}`,
-                            lookupField: `${selectTableByName(_table).columns[0].name}`
-                        });
-                        obj.records.forEach(record => {record.push('')});
-                
+                    });
+
+                } else {
+                    let newColumn = createReferenceColumn(selectTableByName(_table))
+                    ///
+                    obj.columns.push(newColumn);
+                    obj.records.forEach(record => { record.push('') });
+                    sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                    applyBtn.addEventListener('click',function(){
                         setTableConstraints(obj);
+                        
                     });
                     
                 }
-                
             }
+            
         });
 
         
 
     });
 
-    form.append(referencedTable, questionsWrapper, applyBtn);
+    
+
+
+    
+
+    let test = document.createElement('div');
+    test.innerHTML = 'We will create new table and fk';
+
+    let test2 = document.createElement('div');
+    test2.innerHTML = 'We will create fk column in selected table';
+
+    let test3 = document.createElement('div');
+    test3.innerHTML = 'We will create fk column on this table';
+
+    
+
+    form.append(referencedTable, questionsWrapper, actionsWrapper);
 
     return form;
 }
@@ -258,3 +231,47 @@ function createTableOptionsMenu(table) {
 }
 
 
+
+function createMapTable(tableA,tableB){
+    let maxId = Math.max(...savedTables.map(table => table.id));
+
+    let newTable = {
+        id: maxId+1,
+        name: `${tableA.name}_${tableB.name}`,
+        type: 'table',
+
+        columns: [
+            {
+                name: `Id`,
+                readOnly: true,
+                type: 'number'
+            },
+            {
+                name: `${tableA.name}Id`,
+                type: 'fk',
+                lookupField: `${tableA.columns[0].name}`,
+                lookupTable: `${tableA}`
+            },
+            {
+                name: `${tableB.name}Id`,
+                type: 'fk',
+                lookupField: `${tableB.columns[0].name}`,
+                lookupTable: `${tableB.name}`
+            }
+        ],
+        records: [
+            ['', '', '']
+        ]
+    };
+    return newTable;
+}
+
+function createReferenceColumn(table) {
+    let newColumn = {
+        name: `${table.name}Id`,
+        type: 'fk',
+        lookupTable: `${table.name}`,
+        lookupField: `${table.columns[0].name}`
+    };
+    return newColumn;
+}

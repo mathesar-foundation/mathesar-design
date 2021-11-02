@@ -202,7 +202,6 @@ function createNote(content) {
         modalToggle.addEventListener('click', function () {
             openInfoModal(modalToggle.getAttribute('data-modal'));
         });
-
     });
     return note;
 }
