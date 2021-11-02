@@ -7,7 +7,7 @@ import { setTableConstraints } from './setTableConstraints';
 
 
 export function createTableToolbar(obj) {
-
+    console.log(savedTables)
     const type = obj.type;
 
     let toolbar = document.createElement('div');
@@ -78,7 +78,6 @@ export function createTableToolbar(obj) {
         location.reload();
     });
 
-    document.querySelector('body').append(createModal(linkTableWizard(obj)));
 
     manageRelationshipsBtn.addEventListener('click', function () {
         document.querySelector('body').append(createModal(linkTableWizard(obj)));
@@ -136,52 +135,56 @@ function linkTableWizard(obj) {
         questionsWrapper.addEventListener('change', function () {
             let answers = [...questionsWrapper.querySelectorAll('input')].map(input => input.checked);
             if (answers.every(answer => answer === true)) {
-                let newMapTable = createMapTable(selectTableByName(_table),obj);
-                ///
-                savedTables.push(newMapTable);
-                sessionStorage.setItem('tables', JSON.stringify(savedTables));
-                applyBtn.addEventListener('click',function(){
-                    setTableConstraints(newMapTable);
-                    
+
+                applyBtn.addEventListener('click', function () {
+                    let newMapTable = createMapTable(selectTableByName(_table), obj);
+                    ///
+                    savedTables.push(newMapTable);
+                    sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                    location.reload();
+                    //setTableConstraints(newMapTable);    
                 });
-                
+
             } else {
                 if (answers[0] == true) {
-                    let newColumn = createReferenceColumn(obj)
-                    ///
-                    selectTableByName(_table).columns.push(newColumn);
-                    selectTableByName(_table).records.forEach(record => { record.push('') });
-                    sessionStorage.setItem('tables', JSON.stringify(savedTables));
-                    
-                    applyBtn.addEventListener('click',function(){
-                        setTableConstraints(selectTableByName(_table));
-                        
+
+
+                    applyBtn.addEventListener('click', function () {
+
+                        let newColumn = createReferenceColumn(obj)
+                        selectTableByName(_table).columns.push(newColumn);
+                        selectTableByName(_table).records.forEach(record => { record.push('') });
+                        sessionStorage.setItem('tables', JSON.stringify(savedTables));
+
+                        location.reload();
+                        //setTableConstraints(selectTableByName(_table));  
                     });
 
                 } else {
-                    let newColumn = createReferenceColumn(selectTableByName(_table))
-                    ///
-                    obj.columns.push(newColumn);
-                    obj.records.forEach(record => { record.push('') });
-                    sessionStorage.setItem('tables', JSON.stringify(savedTables));
-                    applyBtn.addEventListener('click',function(){
-                        setTableConstraints(obj);
-                        
+
+                    applyBtn.addEventListener('click', function () {
+                        let newColumn = createReferenceColumn(selectTableByName(_table))
+                        ///
+                        obj.columns.push(newColumn);
+                        obj.records.forEach(record => { record.push('') });
+                        sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                        location.reload();
+                        //setTableConstraints(obj);    
                     });
-                    
+
                 }
             }
-            
+
         });
 
-        
+
 
     });
 
-    
 
 
-    
+
+
 
     let test = document.createElement('div');
     test.innerHTML = 'We will create new table and fk';
@@ -192,7 +195,7 @@ function linkTableWizard(obj) {
     let test3 = document.createElement('div');
     test3.innerHTML = 'We will create fk column on this table';
 
-    
+
 
     form.append(referencedTable, questionsWrapper, actionsWrapper);
 
@@ -232,17 +235,17 @@ function createTableOptionsMenu(table) {
 
 
 
-function createMapTable(tableA,tableB){
+function createMapTable(tableA, tableB) {
     let maxId = Math.max(...savedTables.map(table => table.id));
 
     let newTable = {
-        id: maxId+1,
         name: `${tableA.name}_${tableB.name}`,
         type: 'table',
+        id: maxId + 1,
 
         columns: [
             {
-                name: `Id`,
+                name: `id`,
                 readOnly: true,
                 type: 'number'
             },
@@ -250,7 +253,7 @@ function createMapTable(tableA,tableB){
                 name: `${tableA.name}Id`,
                 type: 'fk',
                 lookupField: `${tableA.columns[0].name}`,
-                lookupTable: `${tableA}`
+                lookupTable: `${tableA.name}`
             },
             {
                 name: `${tableB.name}Id`,
