@@ -93,7 +93,7 @@ function linkTableWizard(obj) {
 
     form.prepend(createTitle(
         'Link to Table',
-        'Set relationships between tables'
+        'Link data from other table using a foreign key'
     ));
 
     let actionsWrapper = document.createElement('div');
@@ -108,7 +108,12 @@ function linkTableWizard(obj) {
     let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Select Table to Link to' });
 
     let questionsWrapper = document.createElement('div');
-    questionsWrapper.classList.add('space-y-2')
+    questionsWrapper.classList.add('space-y-2');
+
+    let summary = document.createElement('div');
+    summary.classList.add('px-2', theme.primaryBorderColor, 'border-l');
+    summary.style.borderLeftWidth = `2px`
+
 
 
     referencedTable.addEventListener('change', function () {
@@ -144,37 +149,62 @@ function linkTableWizard(obj) {
         });
 
 
-        
+        questionsWrapper.addEventListener('change', function () {
+            let answers = [...questionsWrapper.querySelectorAll('input:checked')].map(input => input.value);
+
+            if (answers.length > 1) {
+
+                if (answers.every(answer => answer == 'yes')) {
+                    summary.innerHTML = `
+                    <h4>Create a many-to-many relationship</h4>
+                    <p class="text-sm">Applying this would create a new mapping table <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}_mapping_${obj.name}</span> which will map records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>, forming a many-to-many relationship.</p>
+                    <p class="text-sm">If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>.</p>
+                    `;
+                } else {
+                    if (answers[0] == 'yes') {
+                        summary.innerHTML = `
+                    <h4>Create a one-to-many relationship</h4>
+                    <p class="text-sm">Applying this would automatically create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span>.</p>
+                    <p class="text-sm">If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>.</p>
+                    `;
+                    } else {
+                        summary.innerHTML = `
+                    <h4>Create a one-to-many relationship</h4>
+                    <p class="text-sm">Applying this would automatically create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
+                    <p class="text-sm">If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>.</p>
+                    `;
+                    }
+                }
+            }
+        });
+
+        questionsWrapper.append(summary);
+
 
         applyBtn.addEventListener('click', function () {
 
             let answers = [...questionsWrapper.querySelectorAll('input:checked')].map(input => input.value);
             console.log(answers);
             if (answers.every(answer => answer == 'yes')) {
-
-            
                 let newMapTable = createMapTable(selectTableByName(_table), obj);
                 ///
                 savedTables.push(newMapTable);
                 sessionStorage.setItem('tables', JSON.stringify(savedTables));
                 location.reload();
                 //setTableConstraints(newMapTable);    
-       
-
-        } else {
-            if (answers[0] == 'yes') {
 
 
+            } else {
+                if (answers[0] == 'yes') {
                     let newColumn = createReferenceColumn(obj)
                     selectTableByName(_table).columns.push(newColumn);
                     selectTableByName(_table).records.forEach(record => { record.push('') });
                     sessionStorage.setItem('tables', JSON.stringify(savedTables));
-
                     location.reload();
                     //setTableConstraints(selectTableByName(_table));  
-           
 
-            } else {
+
+                } else {
 
                     let newColumn = createReferenceColumn(selectTableByName(_table))
                     obj.columns.push(newColumn);
@@ -182,14 +212,14 @@ function linkTableWizard(obj) {
                     sessionStorage.setItem('tables', JSON.stringify(savedTables));
                     location.reload();
                     //setTableConstraints(obj);    
-              
 
+
+                }
             }
-        }
-        
+
         })
 
-        
+
 
 
     });

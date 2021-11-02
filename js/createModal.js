@@ -4,7 +4,7 @@ export function createModal(content, footer) {
     let overlay = document.createElement('div');
     let modal = document.createElement('div');
     modal.style.position = 'relative';
-    modal.style.minWidth = '800px';
+    modal.style.width = '800px';
     let modalClasses = [theme.backgroundColor, theme.textColor, 'border', 'mx-auto', theme.mediumBorderColor];
     modal.classList.add(...modalClasses);
     overlay.classList.add('bg-gray-900', 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
