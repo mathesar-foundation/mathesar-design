@@ -78,7 +78,7 @@ export function createTableToolbar(obj) {
         location.reload();
     });
 
-
+    //document.querySelector('body').append(createModal(linkTableWizard(obj)));
     manageRelationshipsBtn.addEventListener('click', function () {
         document.querySelector('body').append(createModal(linkTableWizard(obj)));
     });
@@ -117,66 +117,79 @@ function linkTableWizard(obj) {
         let _table = referencedTable.childNodes[1].value;
 
         let questionsList = [
-            `Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${_table}</span> record?`,
-            `Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${obj.name}</span> record?`
+            `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${_table}</span> record?</div>`,
+            `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${obj.name}</span> record?</div>`
         ];
 
-        let createQuestions = (question) => {
-            let item = components.createCheckInput({ name: 'fkSetup', label: question, position: 'right' });
+        let createQuestions = (question, i) => {
+            let item = document.createElement('div');
+            item.innerHTML = question;
             item.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'flex', 'justify-between', 'items-center');
+
+            let optionsWrapper = document.createElement('div');
+            optionsWrapper.classList.add('flex', 'items-center', 'space-x-4')
+
+            let options = ['yes', 'no'];
+
+            options.forEach(option => optionsWrapper.append(components.createRadioInput({ name: `fkSetup${i}`, value: option, label: option })))
+
+
+            item.append(optionsWrapper)
 
             return item;
         };
 
-        questionsList.forEach(question => {
-            questionsWrapper.append(createQuestions(question));
+        questionsList.forEach((question, i) => {
+            questionsWrapper.append(createQuestions(question, i));
         });
 
-        questionsWrapper.addEventListener('change', function () {
-            let answers = [...questionsWrapper.querySelectorAll('input')].map(input => input.checked);
-            if (answers.every(answer => answer === true)) {
 
-                applyBtn.addEventListener('click', function () {
-                    let newMapTable = createMapTable(selectTableByName(_table), obj);
-                    ///
-                    savedTables.push(newMapTable);
+        
+
+        applyBtn.addEventListener('click', function () {
+
+            let answers = [...questionsWrapper.querySelectorAll('input:checked')].map(input => input.value);
+            console.log(answers);
+            if (answers.every(answer => answer == 'yes')) {
+
+            
+                let newMapTable = createMapTable(selectTableByName(_table), obj);
+                ///
+                savedTables.push(newMapTable);
+                sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                location.reload();
+                //setTableConstraints(newMapTable);    
+       
+
+        } else {
+            if (answers[0] == 'yes') {
+
+
+                    let newColumn = createReferenceColumn(obj)
+                    selectTableByName(_table).columns.push(newColumn);
+                    selectTableByName(_table).records.forEach(record => { record.push('') });
                     sessionStorage.setItem('tables', JSON.stringify(savedTables));
+
                     location.reload();
-                    //setTableConstraints(newMapTable);    
-                });
+                    //setTableConstraints(selectTableByName(_table));  
+           
 
             } else {
-                if (answers[0] == true) {
 
+                    let newColumn = createReferenceColumn(selectTableByName(_table))
+                    obj.columns.push(newColumn);
+                    obj.records.forEach(record => { record.push('') });
+                    sessionStorage.setItem('tables', JSON.stringify(savedTables));
+                    location.reload();
+                    //setTableConstraints(obj);    
+              
 
-                    applyBtn.addEventListener('click', function () {
-
-                        let newColumn = createReferenceColumn(obj)
-                        selectTableByName(_table).columns.push(newColumn);
-                        selectTableByName(_table).records.forEach(record => { record.push('') });
-                        sessionStorage.setItem('tables', JSON.stringify(savedTables));
-
-                        location.reload();
-                        //setTableConstraints(selectTableByName(_table));  
-                    });
-
-                } else {
-
-                    applyBtn.addEventListener('click', function () {
-                        let newColumn = createReferenceColumn(selectTableByName(_table))
-                        ///
-                        obj.columns.push(newColumn);
-                        obj.records.forEach(record => { record.push('') });
-                        sessionStorage.setItem('tables', JSON.stringify(savedTables));
-                        location.reload();
-                        //setTableConstraints(obj);    
-                    });
-
-                }
             }
+        }
+        
+        })
 
-        });
-
+        
 
 
     });

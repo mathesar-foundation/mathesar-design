@@ -17,12 +17,20 @@ var components = {
         let formGroup = document.createElement('div');
         formGroup.classList.add('space-x-2')
         let input = document.createElement('input');
-        input.setAttribute('type','radio');
+        input.type = 'radio';
         input.setAttribute('value',options.value);
         input.setAttribute('name',options.name);
         let label = document.createElement('label');
         label.innerHTML = options.label;
         formGroup.append(input,label);
+
+        label.addEventListener('click',function(){
+            if (input.checked) {
+                input.checked = false;
+            } else {
+                input.checked = true;
+            }
+        });
     
         return formGroup;
     }, createCheckInput : function(options) {
@@ -40,6 +48,14 @@ var components = {
         } else {
             formGroup.append(input,label);
         }
+
+        label.addEventListener('click',function(){
+            if (input.checked) {
+                input.checked = false;
+            } else {
+                input.checked = true;
+            }
+        });
         
 
         return formGroup;
