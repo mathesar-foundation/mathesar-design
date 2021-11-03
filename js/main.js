@@ -206,7 +206,7 @@ function createNote(content) {
     return note;
 }
 
-function createColumnSelector(table, fn, options) {
+export function createColumnSelector(table, fn, options) {
 
     let selector = document.createElement('div');
     let searchInput = components.createInput({ placeholder: `Search columns in '${table.name}'` });
@@ -364,53 +364,6 @@ export function linkToTable(col) {
     return linkTablegridContainer;
 }
 
-//setLookupColumn(selectTableById(2))
-
-function setLookupColumn(table) {
-    let gridContainer = document.createElement('div');
-    let actions = document.createElement('div');
-    gridContainer.classList.add('space-y-2');
-    let modal = createModal(gridContainer, actions);
-    document.querySelector('body').appendChild(modal);
-
-    gridContainer.appendChild(createTitle(
-        'Set Lookup Column',
-        'Lookup columns are used to identify records with a more user-friendly value when retrieving them from another table'
-    ));
-
-    let columnSelector = document.createElement('div');
-    gridContainer.appendChild(columnSelector);
-
-    let selectorHeader = document.createElement('h4');
-    selectorHeader.classList.add('my-2');
-    selectorHeader.innerHTML = `<h4>Select a Column</h4>`
-    columnSelector.appendChild(selectorHeader);
-
-    let setLookup = function (columnName, tableName) {
-        let newTable = JSON.parse(JSON.stringify(selectTableByName(tableName)));
-        let newColumns = newTable.columns.map((col, i) => col.name == columnName ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false }));
-        newTable.columns = newColumns;
-        //console.log(newTable);
-        let index = savedTables.indexOf(selectTableByName(tableName));
-        savedTables[index] = { ...newTable };
-        sessionStorage.setItem('tables', JSON.stringify(savedTables));
-    }
-
-    columnSelector.appendChild(createColumnSelector(table, setLookup, { selected: 1 }));
-
-    let confirmBtn = components.createButton(`Set Lookup Column`, { style: 'primary' });
-
-    confirmBtn.addEventListener('click', function () {
-        modal.remove();
-        location.reload();
-    });
-
-    actions.appendChild(components.createButton('Cancel', { style: 'secondary' }));
-    actions.appendChild(confirmBtn);
-
-}
-
-
 export function linkToMultiple(table) {
     let gridContainer = document.createElement('div');
     gridContainer.innerHTML = `
@@ -479,7 +432,7 @@ export function linkToMultiple(table) {
 
 }
 
-function createIcon(type) {
+export function createIcon(type) {
     let icon = document.createElement('i');
     icon.classList.add('ri-' + typeIcon(type), 'align-bottom', 'border', theme.lightBorderColor, 'rounded', 'mr-1');
     return icon;
@@ -644,112 +597,6 @@ export function createRecordListMenu(input, table, field, cell) {
 
     return menu;
 }
-
-export function createLookupMenu(input, table, field, value) {
-    let menu = document.createElement('div');
-    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1', 'border', theme.tableBorderColor);
-    menu.style.position = 'absolute';
-    menu.style.minWidth = '280px';
-    let menuHeader = document.createElement('h4');
-    menuHeader.classList.add(theme.textColor);
-    menuHeader.innerHTML = `Lookup records in <span class="${theme.mediumBackgroundColor} px-1 rounded"><i class="ri-table-fill text-xs"></i> ${table}</span>`;
-    let menuLookupField = document.createElement('div');
-    menuLookupField.classList.add(theme.mutedTextColor, 'text-sm')
-
-    const isLookup = (column) => column.isLookup;
-    let columnPosition = selectTableByName(table).columns.findIndex(isLookup);
-
-    let summaryRecords = selectTableByName(table).records.map(record => record[columnPosition]);
-    let summaryIds = selectTableByName(table).records.map(record => record[0]);
-    let columnType = selectTableByName(table).columns.map((col, i) => col.name == field ? col.type : '').join('');
-
-    menuLookupField.innerHTML = `Lookup field: `;
-    menuLookupField.appendChild(createIcon(columnType));
-    let lookupLabel = document.createElement('span');
-    lookupLabel.innerText = selectTableByName(table).columns.filter(col => col.isLookup).map(col => col.name);
-    menuLookupField.appendChild(lookupLabel);
-    menu.appendChild(menuHeader);
-    menu.appendChild(menuLookupField);
-
-    let recordsList = document.createElement('div');
-    menu.append(recordsList);
-
-
-    let setSelection = function (record) {
-        input.value = record;
-        recordsList.innerHTML = '';
-    }
-
-    let createRecords = function (records, callback) {
-        let list = document.createElement('div');
-        list.classList.add('space-y-1')
-        records.forEach((record, i) => {
-            let item = document.createElement('a');
-            item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'py-1', 'px-2', theme.primaryColor, 'bg-opacity-50', 'block', 'rounded', 'text-sm');
-            item.innerHTML = `<span class="mr-1">${record}</span> <span class="text-xs font-light">id: ${summaryIds[i]}</span>`;
-            if (record == input.value) {
-                item.classList.replace('bg-opacity-50', 'bg-opacity-80');
-                //item.prepend(components.createIcon('check'));
-            }
-            item.addEventListener('click', function () {
-                callback(record);
-            });
-            list.appendChild(item);
-        });
-        return list;
-    }
-
-
-    recordsList.appendChild(createRecords(summaryRecords, setSelection));
-
-
-
-
-    let allowMultiple = components.createButton('Add Multiple', { icon: 'add' });
-    //menu.appendChild(allowMultiple);
-
-    allowMultiple.addEventListener('click', function () {
-        let warning = document.createElement('div');
-        warning.innerHTML = `<div class="mb-2">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
-        let warningActions = document.createElement('div');
-        warning.appendChild(warningActions);
-        warningActions.classList.add('space-x-2');
-        warningActions.appendChild(components.createButton('Cancel'));
-        warningActions.appendChild(components.createButton('Create Table'));
-
-        document.querySelector('body').appendChild(createModal(warning));
-    });
-
-
-
-    input.addEventListener('keyup', function () {
-
-        recordsList.innerHTML = '';
-        let filteredRecords = summaryRecords.filter(record => record.match(input.value.trim()));
-        recordsList.appendChild(createRecords(filteredRecords, setSelection))
-
-        if (filteredRecords.length == 0) {
-            recordsList.appendChild(components.createButton('Add Record', { icon: 'add' }))
-        }
-        if (filteredRecords.length == 1) {
-            //input.value = filteredRecords[0];
-        }
-
-    })
-
-    addDropdownOutsideClickHandler(menu, function () {
-        let selectedTable = selectTableById(activeTable);
-        let editedRecord = selectedTable.records.find(record => record.includes(value));
-        let recordIndex = editedRecord.indexOf(value);
-        editedRecord[recordIndex] = input.value;
-        document.querySelector('.table-wrapper').innerHTML = '';
-        saveTable(selectedTable);
-    });
-
-    return menu;
-}
-
 
 var doubleClickEvent = document.createEvent('MouseEvents');
 doubleClickEvent.initEvent('dblclick', true, true);

@@ -72,14 +72,14 @@ var allTables = [{
     type: 'table',
     columns: [
         { name: 'id', type: 'number', readOnly: true },
-        { name: 'releaseId', type: 'fk', lookupField: 'releaseName', lookupTable: 'release' },
-        { name: 'trackId', type: 'fk', lookupField: 'trackName', lookupTable: 'track' }
+        { name: 'releaseId', type: 'fk', lookupField: 'id', lookupTable: 'release' },
+        { name: 'trackId', type: 'fk', lookupField: 'id', lookupTable: 'track' }
     ],
     records: [
-        ['60', 'Aquarius', 'Roses are Red'],
-        ['61', 'Aquarius', 'Around the World'],
-        ['62', 'Aquarius', 'Barbie Girl'],
-        ['63', 'Aquarius', 'Good Morning Sunshine']
+        ['60', 21, 461],
+        ['61', 21, 462],
+        ['62', 21, 463],
+        ['63', 21, 464]
     ],
     color: 'pink'
 }, {
@@ -115,7 +115,7 @@ let loadedTables = allTables.map((data, index) => {
     return {
         'id': index,
         'name': data.name,
-        'columns': data.columns.map((col, i) => i == 1 ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false })),
+        'columns': data.columns.map((col, i) => i == 0 ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false })),
         'records': data.records,
         'type': data.type,
     }

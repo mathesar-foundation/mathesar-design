@@ -1,6 +1,7 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { typeIcon, getColumnType, saveTable, linkToTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu, createLookupMenu } from './main';
+import { typeIcon, getColumnType, saveTable, linkToTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
+import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 let selectedColumn = [];
@@ -238,8 +239,9 @@ export function createTable(obj) {
         };
 
         if (cellType == 'fk') {
-            let renderedValue = getRecordByValue(getColumnByPosition(i).lookupTable, cell);
-            renderedCell.appendChild(createRecordLink(cell));
+            renderedCell.innerHTML = cell;
+            //let renderedValue = getRecordByValue(getColumnByPosition(i).lookupTable, cell);
+            //renderedCell.appendChild(createRecordLink(cell));
         } else if (cellType == 'summary') {
             cell.split(',').forEach(c => renderedCell.appendChild(createRecordLink(c)));
         }

@@ -4,6 +4,7 @@ import { activeTable, savedTables, createTitle, selectTableByName } from './main
 import { createModal } from './createModal.js';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { setTableConstraints } from './setTableConstraints';
+import * as d3 from "d3";
 
 
 export function createTableToolbar(obj) {
@@ -100,7 +101,7 @@ function linkTableWizard(obj) {
     linkToConstraints.classList.add('text-sm')
     linkToConstraints.innerHTML = `If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>`
 
-    
+
 
     let actionsWrapper = document.createElement('div');
     actionsWrapper.classList.add('space-x-2', 'flex', 'justify-end');
@@ -114,45 +115,49 @@ function linkTableWizard(obj) {
     let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Select Table to Link to' });
 
     let questionsWrapper = document.createElement('div');
-    questionsWrapper.classList.add('space-y-2');
+    questionsWrapper.classList.add('flex', 'space-x-2');
 
     let summary = document.createElement('div');
     summary.classList.add('px-2', theme.primaryBorderColor, 'border-l');
     summary.style.borderLeftWidth = `2px`
 
-
+        
 
     referencedTable.addEventListener('change', function () {
 
         questionsWrapper.innerHTML = ''; // CLEAR QUESTIONS
         let _table = referencedTable.childNodes[1].value;
 
+        let diagram = createDiagram(1,1);
+        questionsWrapper.append(diagram);
+
+        let questions = document.createElement('div');
+        questions.classList.add('space-y-2')
+        questionsWrapper.append(questions);
+
         let questionsList = [
             `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${_table}</span> record?</div>`,
             `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${obj.name}</span> record?</div>`
         ];
 
+        // createQuestions
         let createQuestions = (question, i) => {
             let item = document.createElement('div');
             item.innerHTML = question;
-            item.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'flex', 'justify-between', 'items-center');
-
+            item.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'flex', 'justify-between', 'items-center','space-x-4');
             let optionsWrapper = document.createElement('div');
-            optionsWrapper.classList.add('flex', 'items-center', 'space-x-4')
-
+            optionsWrapper.classList.add('flex', 'items-center', 'space-x-4','whitespace-nowrap')
             let options = ['yes', 'no'];
-
             options.forEach(option => optionsWrapper.append(components.createRadioInput({ name: `fkSetup${i}`, value: option, label: option })))
-
             item.append(optionsWrapper)
-
             return item;
         };
 
         questionsList.forEach((question, i) => {
-            questionsWrapper.append(createQuestions(question, i));
+            questions.append(createQuestions(question, i));
         });
 
+        //////
 
         questionsWrapper.addEventListener('change', function () {
             let answers = [...questionsWrapper.querySelectorAll('input:checked')].map(input => input.value);
@@ -160,40 +165,56 @@ function linkTableWizard(obj) {
             if (answers.length > 1) {
 
                 if (answers.every(answer => answer == 'yes')) {
+
+                    diagram.innerHTML = createDiagram(3,3).outerHTML;
+
                     summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new mapping table <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}_mapping_${obj.name}</span> which will map records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>, forming a many-to-many relationship.
+                    <p class="text-sm">We will create a new table <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}_mapping_${obj.name}</span> to map records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.
                     </p>
                     `;
                 } else {
                     if (answers[0] == 'yes') {
+
+                        diagram.innerHTML = createDiagram(1,3).outerHTML;
+                        
+
                         let existingColumns = selectTableByName(_table).columns.filter(col => col.lookupTable == obj.name);
 
                         //if (existingColumns.length > 0) {
-                           // summary.innerHTML = `Column(s) ${existingColumns.map(col => col.name)} already exists in ${_table}.`
+                        // summary.innerHTML = `Column(s) ${existingColumns.map(col => col.name)} already exists in ${_table}.`
                         //} else {
-                            summary.innerHTML = `
+                        summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table, which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span>.
-                   </p>
+                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table, which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span>.</p>
                     `;
-                       // }
-                    } else {
+                        // }
+                    } else if (answers[1] == 'yes') {
+
+                        diagram.innerHTML = createDiagram(3,1).outerHTML;
+
                         let existingColumns = obj.columns.filter(col => col.lookupTable == _table);
                         //if (existingColumns.length > 0) {
                         //    summary.innerHTML = `Column(s) ${existingColumns.map(col => col.name)} already exists in ${obj.name}.`
                         //} else {
-                            summary.innerHTML = `
+                        summary.innerHTML = `
                     <h4>Under the hood</h4>
                     <p class="text-sm">We will create a new column on this table named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
                     `;
-                       // }
+                        // }
+                    } else {
+                        diagram.innerHTML = createDiagram(1,1).outerHTML;
+                        summary.innerHTML = `
+                    <h4>Under the hood</h4>
+                    <p class="text-sm">We will create a new column on this table named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
+                    `;
+
                     }
                 }
             }
         });
 
-        questionsWrapper.append(summary);
+        
 
 
         applyBtn.addEventListener('click', function () {
@@ -246,11 +267,107 @@ function linkTableWizard(obj) {
 
 
 
- 
 
-    form.append(linkToConstraints, referencedTable, questionsWrapper, actionsWrapper);
+
+    form.append(linkToConstraints, referencedTable, questionsWrapper,summary, actionsWrapper);
 
     return form;
+}
+
+function createDiagram(top,bottom) {
+    console.log(top,bottom)
+    let diagram = document.createElement('div');
+    var width = 140;
+    var height = 140;
+    var svg = d3.select(diagram)
+        .append("svg").attr("width", width).attr("height", height);
+    svg.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", width)
+        .attr("height", height)
+        .attr("fill", 'none')
+        .style("stroke", 'rgb(165,180,252)')
+        .style("stroke-width", 1);
+    
+    if (top == 1) {
+    svg.append("rect")
+        .attr("x", 60)
+        .attr("y", 40)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("fill", 'rgb(165,180,252)');
+    }
+    
+    if (bottom == 1) {
+    svg.append("rect")
+        .attr("x", 60)
+        .attr("y", 80)
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("fill", '#FFF');
+    }
+
+    if (bottom > 1) {
+        
+        svg.append("rect")
+            .attr("x", 60)
+            .attr("y", 80)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", '#FFF');
+            svg.append("rect")
+            .attr("x", 20)
+            .attr("y", 80)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", '#FFF');
+            svg.append("rect")
+            .attr("x", 100)
+            .attr("y", 80)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", '#FFF');
+    }
+
+    if (top > 1) {
+        
+        svg.append("rect")
+            .attr("x", 60)
+            .attr("y", 40)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", 'rgb(165,180,252)');
+            svg.append("rect")
+            .attr("x", 20)
+            .attr("y", 40)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", 'rgb(165,180,252)');
+            svg.append("rect")
+            .attr("x", 100)
+            .attr("y", 40)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("fill", 'rgb(165,180,252)');
+    }
+
+
+    //svg.append("rect")
+    //    .attr("x", 100)
+    //    .attr("y", 40)
+    //    .attr("width", 20)
+    //    .attr("height", 20)
+    //    .attr("fill", 'rgb(165,180,252)');
+    //svg.append("rect")
+    //    .attr("x", 20)
+    //    .attr("y", 40)
+    //    .attr("width", 20)
+    //    .attr("height", 20)
+    //    .attr("fill", 'rgb(165,180,252)');
+
+    return diagram;
+
 }
 
 
@@ -283,7 +400,6 @@ function createTableOptionsMenu(table) {
 
     return menu;
 }
-
 
 
 function createMapTable(tableA, tableB) {

@@ -18,11 +18,12 @@ function removeDropdownOutsideClickHandler(menu) {
     }
 }
 
-export function addDropdownOutsideClickHandler(menu, callback) {
+export function addDropdownOutsideClickHandler(menu, fn) {
     function handler(event) {
-        var isClickInsideElement = isNodeChildOf(event.target, menu);
+        console.log(event.target.tagName);
+        var isClickInsideElement = isNodeChildOf(event.target, menu) || event.target.tagName === 'INPUT';
         if (!isClickInsideElement) {
-            callback(menu);
+            fn(menu);
             menu.remove();
             document.removeEventListener('click', handler);
             menu.outsideClickHandler = null;
