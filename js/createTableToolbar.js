@@ -91,10 +91,16 @@ function linkTableWizard(obj) {
     let form = document.createElement('div');
     form.classList.add('space-y-4')
 
-    form.prepend(createTitle(
-        'Link to Table',
-        'Link data from other table using a foreign key'
+    form.append(createTitle(
+        'Link Table',
+        'Link data from another table using a foreign key.'
     ));
+
+    let linkToConstraints = document.createElement('div');
+    linkToConstraints.classList.add('text-sm')
+    linkToConstraints.innerHTML = `If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>`
+
+    
 
     let actionsWrapper = document.createElement('div');
     actionsWrapper.classList.add('space-x-2', 'flex', 'justify-end');
@@ -138,7 +144,6 @@ function linkTableWizard(obj) {
 
             options.forEach(option => optionsWrapper.append(components.createRadioInput({ name: `fkSetup${i}`, value: option, label: option })))
 
-
             item.append(optionsWrapper)
 
             return item;
@@ -156,23 +161,33 @@ function linkTableWizard(obj) {
 
                 if (answers.every(answer => answer == 'yes')) {
                     summary.innerHTML = `
-                    <h4>Create a many-to-many relationship</h4>
-                    <p class="text-sm">Applying this would create a new mapping table <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}_mapping_${obj.name}</span> which will map records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>, forming a many-to-many relationship.</p>
-                    <p class="text-sm">If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>.</p>
+                    <h4>Under the hood</h4>
+                    <p class="text-sm">We will create a new mapping table <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}_mapping_${obj.name}</span> which will map records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>, forming a many-to-many relationship.
+                    </p>
                     `;
                 } else {
                     if (answers[0] == 'yes') {
-                        summary.innerHTML = `
-                    <h4>Create a one-to-many relationship</h4>
-                    <p class="text-sm">Applying this would automatically create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span>.</p>
-                    <p class="text-sm">If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>.</p>
+                        let existingColumns = selectTableByName(_table).columns.filter(col => col.lookupTable == obj.name);
+
+                        //if (existingColumns.length > 0) {
+                           // summary.innerHTML = `Column(s) ${existingColumns.map(col => col.name)} already exists in ${_table}.`
+                        //} else {
+                            summary.innerHTML = `
+                    <h4>Under the hood</h4>
+                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table, which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span>.
+                   </p>
                     `;
+                       // }
                     } else {
-                        summary.innerHTML = `
-                    <h4>Create a one-to-many relationship</h4>
-                    <p class="text-sm">Applying this would automatically create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
-                    <p class="text-sm">If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>.</p>
+                        let existingColumns = obj.columns.filter(col => col.lookupTable == _table);
+                        //if (existingColumns.length > 0) {
+                        //    summary.innerHTML = `Column(s) ${existingColumns.map(col => col.name)} already exists in ${obj.name}.`
+                        //} else {
+                            summary.innerHTML = `
+                    <h4>Under the hood</h4>
+                    <p class="text-sm">We will create a new column on this table named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
                     `;
+                       // }
                     }
                 }
             }
@@ -196,7 +211,9 @@ function linkTableWizard(obj) {
 
             } else {
                 if (answers[0] == 'yes') {
-                    let newColumn = createReferenceColumn(obj)
+                    let newColumn = createReferenceColumn(obj);
+
+
                     selectTableByName(_table).columns.push(newColumn);
                     selectTableByName(_table).records.forEach(record => { record.push('') });
                     sessionStorage.setItem('tables', JSON.stringify(savedTables));
@@ -204,9 +221,12 @@ function linkTableWizard(obj) {
                     //setTableConstraints(selectTableByName(_table));  
 
 
+
                 } else {
 
-                    let newColumn = createReferenceColumn(selectTableByName(_table))
+                    let newColumn = createReferenceColumn(selectTableByName(_table));
+
+
                     obj.columns.push(newColumn);
                     obj.records.forEach(record => { record.push('') });
                     sessionStorage.setItem('tables', JSON.stringify(savedTables));
@@ -226,21 +246,9 @@ function linkTableWizard(obj) {
 
 
 
+ 
 
-
-
-    let test = document.createElement('div');
-    test.innerHTML = 'We will create new table and fk';
-
-    let test2 = document.createElement('div');
-    test2.innerHTML = 'We will create fk column in selected table';
-
-    let test3 = document.createElement('div');
-    test3.innerHTML = 'We will create fk column on this table';
-
-
-
-    form.append(referencedTable, questionsWrapper, actionsWrapper);
+    form.append(linkToConstraints, referencedTable, questionsWrapper, actionsWrapper);
 
     return form;
 }
@@ -321,3 +329,4 @@ function createReferenceColumn(table) {
     };
     return newColumn;
 }
+
