@@ -12,18 +12,18 @@ export function createDropdownMenu(content) {
     return menu;
 }
 
-function removeDropdownOutsideClickHandler(menu) {
+export function removeDropdownOutsideClickHandler(menu) {
     if (menu.outsideClickHandler) {
         document.removeEventListener('click', menu.outsideClickHandler);
     }
 }
 
 export function addDropdownOutsideClickHandler(menu, fn) {
+    console.log(menu)
     function handler(event) {
-        console.log(event.target.tagName);
-        var isClickInsideElement = isNodeChildOf(event.target, menu) || event.target.tagName === 'INPUT';
+        var isClickInsideElement = isNodeChildOf(event.target, menu); //|| event.target.tagName === 'INPUT';
         if (!isClickInsideElement) {
-            fn(menu);
+            //fn(menu);
             menu.remove();
             document.removeEventListener('click', handler);
             menu.outsideClickHandler = null;

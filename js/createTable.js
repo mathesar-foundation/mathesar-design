@@ -1,6 +1,6 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { typeIcon, getColumnType, saveTable, linkToTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
+import { typeIcon, getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
 import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 
@@ -86,8 +86,6 @@ export function createTable(obj) {
         headerMenuToggle.classList.add('ml-auto');
         header.appendChild(headerMenuToggle);
         headerMenuToggle.addEventListener('click', openColumnMenu);
-
-
 
         let createMenuItem = function (label, callback, options) {
             let menuItem = document.createElement('a');
@@ -195,8 +193,8 @@ export function createTable(obj) {
         function openDataTypeMenu(e) {
         }
 
-        header.addEventListener('click',function(){
-            
+        header.addEventListener('click', function () {
+
             selectedColumn.push(col);
         });
 
@@ -204,111 +202,137 @@ export function createTable(obj) {
         return header;
     };
 
-    let getColumnByPosition = function (int) {
-        return obj.columns[int];
-    };
+    let getColumnByPosition = (position) =>
+        //console.log(position)
+        obj.columns[position];
 
-    let getRecordByValue = function (tableName, value) {
+    let getRecordByValue = (tableName, value) => {
         let lookupTable = selectTableByName(tableName);
         let columns = selectTableByName(tableName).columns;
+
         const isLookup = (column) => column.isLookup;
         let columnPosition = columns.findIndex(isLookup);
         let records = lookupTable.records.find(r => r.includes(value));
+        //console.log(records)
         if (records !== undefined) {
-            return records[columnPosition];
+            return records[0];
         } else {
             return '';
         }
         //console.log(lookupTable.records.map(record => record[columnPosition]));
     };
 
-    let createCell = function (cell, i) {
+    let createCell = (cell) => {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
         cellElement.style.width = '240px';
-        let cellType = getColumnByPosition(i).type;
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
+
         renderedCell.style.cursor = 'pointer';
 
-        let createRecordLink = function (cell) {
+        let createRecordLink = function (_value) {
             let link = document.createElement('div');
             link.classList.add(theme.primaryColor, 'rounded', 'px-1', 'inline-block', 'bg-opacity-50', 'mr-1');
-            link.innerHTML = cell;
+            link.innerHTML = _value;
             return link;
         };
 
-        if (cellType == 'fk') {
-            renderedCell.innerHTML = cell;
-            //let renderedValue = getRecordByValue(getColumnByPosition(i).lookupTable, cell);
-            //renderedCell.appendChild(createRecordLink(cell));
-        } else if (cellType == 'summary') {
-            cell.split(',').forEach(c => renderedCell.appendChild(createRecordLink(c)));
-        }
-        else {
-            renderedCell.innerHTML = cell;
-        }
-
-        let cellInput = components.createInput({ value: cell });
+        let cellInput = components.createInput({ value: cell.value });
         cellInput.classList.add('p-2', 'w-full', 'hidden');
         cellInput.classList.remove('border');
 
-
-        if (summaryOf[i] && recordTable[i]) {
-            renderedCell.addEventListener('dblclick', function () {
-                cellInput.classList.remove('hidden');
-                cellInput.focus();
-                renderedCell.classList.add('hidden');
-                cellElement.appendChild(createRecordListMenu(cellInput, recordTable[i], summaryOf[i], cell));
-            });
-        } else if (recordTable[i]) {
-            renderedCell.addEventListener('dblclick', function () {
-                cellInput.classList.remove('hidden');
-                cellInput.focus();
-                renderedCell.classList.add('hidden');
-                cellElement.appendChild(createEditRecordMenu(cellInput, recordTable[i], cell));
-            });
-        } else if (lookupTable[i]) {
-            renderedCell.addEventListener('dblclick', function () {
-                cellInput.classList.remove('hidden');
-                cellInput.focus();
-                renderedCell.classList.add('hidden');
-                cellElement.appendChild(createLookupMenu(cellInput, lookupTable[i], lookupField[i], cell));
-            });
+        if (cell.type == 'fk') {
+            if (cell.value == '') {
+                renderedCell.innerHTML = `<i class="ri-search-line text-xs ${theme.mediumBackgroundColor} p-1 rounded"></i>`;
+            } else {
+                let renderedValue = getRecordByValue(cell.lookupTable, cell.value);
+                renderedCell.appendChild(createRecordLink(renderedValue));
+            }
+            //renderedCell.appendChild(createRecordLink(cell));
         } else {
-            renderedCell.addEventListener('dblclick', function () {
-                cellInput.classList.remove('hidden');
-                cellInput.focus();
-                renderedCell.classList.add('hidden');
-                cellInput.addEventListener('blur', function () {
-                    renderedCell.innerHTML = cellInput.value;
-                    cellInput.classList.add('hidden');
-                    renderedCell.classList.remove('hidden');
-                    let editedRecord = obj.records.find(record => record.includes(cell));
-                    let recordIndex = editedRecord.indexOf(cell);
-                    editedRecord[recordIndex] = cellInput.value;
-                    document.querySelector('.table-wrapper').innerHTML = '';
-                    saveTable(obj);
-                });
-            });
+            renderedCell.innerHTML = cell.value;
         }
 
-        cellElement.appendChild(cellInput);
-        cellElement.appendChild(renderedCell);
+        renderedCell.addEventListener('click', function () {
+            if (cell.type == 'fk') {
+                cellElement.appendChild(createLookupMenu(cellInput,cell));
+            }
+        });
 
+
+        //if (summaryOf[i] && recordTable[i]) {
+        //    renderedCell.addEventListener('dblclick', function () {
+        //        cellInput.classList.remove('hidden');
+        //        cellInput.focus();
+        //        renderedCell.classList.add('hidden');
+        //        cellElement.appendChild(createRecordListMenu(cellInput, recordTable[i], summaryOf[i], cell));
+        //    });
+        //} else if (recordTable[i]) {
+        //    renderedCell.addEventListener('dblclick', function () {
+        //        cellInput.classList.remove('hidden');
+        //        cellInput.focus();
+        //        renderedCell.classList.add('hidden');
+        //        cellElement.appendChild(createEditRecordMenu(cellInput, recordTable[i], cell));
+        //    });
+        //} else if (lookupTable[i]) {
+        //    renderedCell.addEventListener('click', function () {
+        //        //cellInput.classList.remove('hidden');
+        //        //cellInput.focus();
+        //        
+        //        //renderedCell.style.borderColor = 'red';
+        //        //renderedCell.classList.replace('border-opacity-0',theme.primaryBorderColor);
+        //        cellElement.appendChild(createLookupMenu(cellInput, lookupTable[i], lookupField[i], cell));
+        //    });
+        //    //renderedCell.addEventListener('dblclick', function () {
+        //    //    cellInput.classList.remove('hidden');
+        //    //    cellInput.focus();
+        //    //    renderedCell.classList.add('hidden');
+        //    //    cellElement.appendChild(createLookupMenu(cellInput, lookupTable[i], lookupField[i], cell));
+        //    //});
+        //} else {
+        //    renderedCell.addEventListener('dblclick', function () {
+        //        cellInput.classList.remove('hidden');
+        //        cellInput.focus();
+        //        renderedCell.classList.add('hidden');
+        //        cellInput.addEventListener('blur', function () {
+        //            renderedCell.innerHTML = cellInput.value;
+        //            cellInput.classList.add('hidden');
+        //            renderedCell.classList.remove('hidden');
+        //            let editedRecord = obj.records.find(record => record.includes(cell));
+        //            let recordIndex = editedRecord.indexOf(cell);
+        //            editedRecord[recordIndex] = cellInput.value;
+        //            document.querySelector('.table-wrapper').innerHTML = '';
+        //            saveTable(obj);
+        //        });
+        //    });
+        //}
+        //
+        cellElement.append(cellInput, renderedCell);
+        //
         return cellElement;
     };
 
-    let createRow = function (record, i) {
-        let rowCount = i + 1;
+    let createRow = (record, index) => {
+        let rowCount = index + 1;
         let row = document.createElement('div');
         row.classList.add(...rowClasses);
         let rowNumber = document.createElement('div');
         rowNumber.classList.add(...rowHeaderClasses);
         rowNumber.style.width = '40px';
         rowNumber.innerHTML = `${rowCount}`;
-        record.forEach((cell, i) => row.appendChild(rowNumber));
-        record.forEach((cell, i) => row.appendChild(createCell(cell, i)));
+        row.appendChild(rowNumber);
+        record.forEach((cell, i) => {
+            row.appendChild(createCell({
+                value: cell, 
+                column: getColumnByPosition(i).name, 
+                lookupTable: getColumnByPosition(i).lookupTable, 
+                row: index, 
+                type: getColumnByPosition(i).type,
+                table: obj.name,
+                position: i
+            }))
+        });
         return row;
     };
 
@@ -415,7 +439,7 @@ export function createTable(obj) {
     //tableWrapper.appendChild(newColumnMenu);
     addColumnBtn.addEventListener('click', function () {
         tableWrapper.innerHTML = '';
-        obj.columns.push({name:'Column',type:'text'});
+        obj.columns.push({ name: 'Column', type: 'text' });
         obj.records.forEach(record => record.push(''));
         saveTable(obj);
     });
@@ -425,7 +449,7 @@ export function createTable(obj) {
 };
 
 
-export {selectedColumn};
+export { selectedColumn };
 
 
 

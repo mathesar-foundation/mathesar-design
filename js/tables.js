@@ -9,12 +9,12 @@ var allTables = [{
         { name: 'artistName', type: 'text' }
     ],
     records: [
-        [67, 'Aqua'],
-        [68, 'Patti Smith'],
-        [69, 'Elvis Costello'],
-        [70, 'Kylie Minogue'],
-        [71, 'Artic Monkeys'],
-        [72, 'Scorpions']
+        ['67', 'Aqua'],
+        ['68', 'Patti Smith'],
+        ['69', 'Elvis Costello'],
+        ['70', 'Kylie Minogue'],
+        ['71', 'Artic Monkeys'],
+        ['72', 'Scorpions']
     ],
     color: 'purple'
 }, {
@@ -26,12 +26,12 @@ var allTables = [{
         { name: 'releaseGenre', type: 'text' }
     ],
     records: [
-        [20, 'Aquarius', 'Pop'],
-        [21, 'Aquarium', 'Pop'],
-        [22, 'Spike', 'Rock'],
-        [23, 'Golden', 'Pop'],
-        [24, 'AM', 'Pop'],
-        [25, 'Animal Magnetism', 'Rock']
+        ['20', 'Aquarius', 'Pop'],
+        ['21', 'Aquarium', 'Pop'],
+        ['22', 'Spike', 'Rock'],
+        ['23', 'Golden', 'Pop'],
+        ['24', 'AM', 'Pop'],
+        ['25', 'Animal Magnetism', 'Rock']
     ],
     color: 'green'
 }, {
@@ -44,12 +44,12 @@ var allTables = [{
         { name: 'trackLength', type: 'duration' }
     ],
     records: [
-        [460, 'X63000000226', 'Turn Back Time', 180000],
-        [461, 'GBXHC1810600', 'Roses are Red', 180000],
-        [462, 'DKBKA9700408', 'Barbie Girl', 180000],
-        [463, 'GBBKA0000502', 'Around the World', 180000],
-        [464, 'USGF19822012', 'My Oh My', 180000],
-        [465, 'DKBKA0000105', 'Love And Lust', 180000]
+        ['460', 'X63000000226', 'Turn Back Time', 180000],
+        ['461', 'GBXHC1810600', 'Roses are Red', 180000],
+        ['462', 'DKBKA9700408', 'Barbie Girl', 180000],
+        ['463', 'GBBKA0000502', 'Around the World', 180000],
+        ['464', 'USGF19822012', 'My Oh My', 180000],
+        ['465', 'DKBKA0000105', 'Love And Lust', 180000]
     ],
     color: 'pink'
 }, {
@@ -61,10 +61,10 @@ var allTables = [{
         { name: 'artistId', type: 'fk', lookupField: 'artistName', lookupTable: 'artist' },
     ],
     records: [
-        [500, 460, ''],
-        [501, 461, ''],
-        [502, 462, ''],
-        [503, 463, '']
+        ['500', '460', ''],
+        ['501', '461', ''],
+        ['502', '462', ''],
+        ['503', '463', '']
     ],
     color: 'pink'
 }, {
@@ -76,10 +76,10 @@ var allTables = [{
         { name: 'trackId', type: 'fk', lookupField: 'id', lookupTable: 'track' }
     ],
     records: [
-        ['60', 21, 461],
-        ['61', 21, 462],
-        ['62', 21, 463],
-        ['63', 21, 464]
+        ['60', '21', '461'],
+        ['61', '21', '462'],
+        ['62', '21', '463'],
+        ['63', '21', '464']
     ],
     color: 'pink'
 }, {

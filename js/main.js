@@ -143,7 +143,7 @@ export function typeIcon(type) {
 }
 
 export function getColumnType(table, column) {
-    console.log(table,column)
+    //console.log(table,column)
     let columnType = selectTableByName(table).columns.find(col => col.name == column).type;
     return columnType;
 }
@@ -601,7 +601,7 @@ export function createRecordListMenu(input, table, field, cell) {
 var doubleClickEvent = document.createEvent('MouseEvents');
 doubleClickEvent.initEvent('dblclick', true, true);
 
-//document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
+//document.querySelectorAll('.rendered-cell')[10].click();
 
 
 

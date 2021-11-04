@@ -5,11 +5,13 @@ var components = {
         let input = document.createElement('input');
         input.classList.add('p-1',theme.inputBackgroundColor,theme.textColor,'bg-opacity-20');
         input.setAttribute('type','text');
-        if (options.placeholder) {
-            input.setAttribute('placeholder', options.placeholder);
-        }
-        if (options.value) {
-            input.setAttribute('value', options.value);
+        if (options) {
+            if (options.placeholder) {
+                input.setAttribute('placeholder', options.placeholder);
+            }
+            if (options.value) {
+                input.setAttribute('value', options.value);
+            }
         }
         return input;
     },
