@@ -63,9 +63,6 @@ export function createTable(obj) {
             headerLabel.append(lookupIcon);
         }
 
-
-
-
         //RENAME HEADER
         headerLabel.addEventListener('click', function () {
             headerLabel.innerHTML = '';
@@ -87,14 +84,14 @@ export function createTable(obj) {
         header.appendChild(headerMenuToggle);
         headerMenuToggle.addEventListener('click', openColumnMenu);
 
-        let createMenuItem = function (label, callback, options) {
+        let createMenuItem = function (label, fn, options) {
             let menuItem = document.createElement('a');
             menuItem.classList.add('block', 'm-1', 'py-1', 'px-2');
             menuItem.setAttribute('href', 'javascript:void(0)');
             menuItem.innerText = label;
             let hoverClasses = [theme.primaryColor, 'bg-opacity-30', 'rounded'];
             menuItem.addEventListener('click', function () {
-                callback(col);
+                fn(col);
             }, false);
             menuItem.addEventListener('mouseover', function () {
                 menuItem.classList.add(...hoverClasses);
@@ -178,7 +175,6 @@ export function createTable(obj) {
 
         function menuAction(menu) {
             return function () {
-                //console.log("Clicked on createHeaderMenu -> menuAction item");
                 menu.parentElement.removeChild(menu);
                 removeDropdownOutsideClickHandler(menu);
             };
@@ -256,7 +252,7 @@ export function createTable(obj) {
 
         renderedCell.addEventListener('click', function () {
             if (cell.type == 'fk') {
-                cellElement.appendChild(createLookupMenu(cellInput,cell));
+                cellElement.appendChild(createLookupMenu(cell));
             }
         });
 
