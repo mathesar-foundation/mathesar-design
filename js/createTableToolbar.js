@@ -1,6 +1,6 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { activeTable, savedTables, createTitle, selectTableByName } from './main';
+import { activeTable, savedTables, createTitle, selectTableByName, selectTableById } from './main';
 import { createModal } from './createModal.js';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { setTableConstraints } from './setTableConstraints';
@@ -79,7 +79,7 @@ export function createTableToolbar(obj) {
         location.reload();
     });
 
-    //document.querySelector('body').append(createModal(linkTableWizard(obj)));
+
     manageRelationshipsBtn.addEventListener('click', function () {
         document.querySelector('body').append(createModal(linkTableWizard(obj)));
     });
@@ -88,13 +88,14 @@ export function createTableToolbar(obj) {
 }
 
 
+
 function linkTableWizard(obj) {
     let form = document.createElement('div');
     form.classList.add('space-y-4')
 
     form.append(createTitle(
         'Link Table',
-        'Link data from another table using a foreign key.'
+        'Link data from another table by setting up foreign key constraints'
     ));
 
     let linkToConstraints = document.createElement('div');
@@ -107,7 +108,7 @@ function linkTableWizard(obj) {
     actionsWrapper.classList.add('space-x-2', 'flex', 'justify-end');
 
     let cancelBtn = components.createButton('Cancel', { style: 'secondary' });
-    let applyBtn = components.createButton('Apply', { style: 'primary' });
+    let applyBtn = components.createButton('Create Link', { style: 'primary' });
 
     actionsWrapper.append(cancelBtn, applyBtn)
 
@@ -121,19 +122,19 @@ function linkTableWizard(obj) {
     summary.classList.add('px-2', theme.primaryBorderColor, 'border-l');
     summary.style.borderLeftWidth = `2px`
 
-        
-
     referencedTable.addEventListener('change', function () {
 
         questionsWrapper.innerHTML = ''; // CLEAR QUESTIONS
         let _table = referencedTable.childNodes[1].value;
 
-        let diagram = createDiagram(1,1);
-        questionsWrapper.append(diagram);
+        
 
         let questions = document.createElement('div');
         questions.classList.add('space-y-2')
         questionsWrapper.append(questions);
+
+        let diagram = createDiagram(1,1);
+        questionsWrapper.append(diagram);
 
         let questionsList = [
             `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${_table}</span> record?</div>`,
@@ -186,7 +187,8 @@ function linkTableWizard(obj) {
                         //} else {
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table, which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span>.</p>
+                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table.</p>
+
                     `;
                         // }
                     } else if (answers[1] == 'yes') {
@@ -199,14 +201,14 @@ function linkTableWizard(obj) {
                         //} else {
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column on this table named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
+                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
                     `;
                         // }
                     } else {
                         diagram.innerHTML = createDiagram(1,1).outerHTML;
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column on this table named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}id</span> which would be a foreign key of <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.</p>
+                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table.</p>
                     `;
 
                     }

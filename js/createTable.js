@@ -4,7 +4,6 @@ import { typeIcon, getColumnType, saveTable, removeDropdownOutsideClickHandler, 
 import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 
-let selectedColumn = [];
 //CREATE TABLE
 export function createTable(obj) {
 
@@ -443,9 +442,6 @@ export function createTable(obj) {
 
     return tableWrapper;
 };
-
-
-export { selectedColumn };
 
 
 
