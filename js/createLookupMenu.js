@@ -41,14 +41,15 @@ export function createLookupMenu(cell) {
 
     let createRecords = function (records, fn) {
         let list = document.createElement('div');
-        list.style.height = '200px';
+        list.classList.add('space-y-1','p-1')
+        list.style.maxHeight = '200px';
         list.style.overflowY = 'scroll';
         
         records.forEach((record) => {
             let columns = selectTableByName(cell.lookupTable).columns.map(col => col.name);
             let item = document.createElement('a');
             item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'block', 'text-sm', 'border-b', theme.darkBorderColor);
+            item.classList.add(theme.textColor, 'block', 'text-sm','space-y-1','p-2',theme.darkBackgroundColor);
 
             function zipRecords(record) {
                 return record.map((r,i)=> [r,i]);
@@ -65,10 +66,10 @@ export function createLookupMenu(cell) {
              
 
             let recordLabel = matchingCols
-                .map(([r, i]) => `<div class="border-b ${theme.lightBorderColor} flex space-x-2 p-1"><div>${columns[i]}</div><div>${r}</div></div>`).join('');
+                .map(([r, i]) => `<div class="flex space-x-2"><div class="${theme.mutedTextColor}">${columns[i]}</div><div>${r}</div></div>`).join('');
             
             
-            item.innerHTML = `<div class="border">${recordLabel}</div>`;
+            item.innerHTML = recordLabel;
             //item.innerHTML = `<span class="mr-1">${record.slice(0, 2).join('-')}</span>`;
 
             if (record[0] == searchRecords.value || records.length == 1) {
