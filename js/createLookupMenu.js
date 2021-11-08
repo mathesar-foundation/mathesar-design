@@ -68,7 +68,6 @@ export function createLookupMenu(cell) {
                 .map(([r, i]) => `<div class="border-b ${theme.lightBorderColor} flex space-x-2 p-1"><div>${columns[i]}</div><div>${r}</div></div>`).join('');
             
             
-
             item.innerHTML = `<div class="border">${recordLabel}</div>`;
             //item.innerHTML = `<span class="mr-1">${record.slice(0, 2).join('-')}</span>`;
 
