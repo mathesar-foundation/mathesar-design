@@ -1,8 +1,10 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { typeIcon, getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
+import { columnByName, getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
 import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
+import { icon } from './iconMap.js';
+
 
 //CREATE TABLE
 export function createTable(obj) {
@@ -32,50 +34,69 @@ export function createTable(obj) {
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
     let createHeader = (col) => {
+        console.log(col)
         let header = document.createElement('div');
         header.style.width = '240px';
         header.style.position = 'relative';
         header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
-        let headerLabel = document.createElement('div');
-        let headerIcon = document.createElement('i');
-        headerIcon.classList.add('ri-' + typeIcon(col.type), 'align-bottom', 'rounded', 'mr-2', theme.primaryColor, 'bg-opacity-60');
-        headerIcon.style.padding = '2px';
+        
+        let headerIcon = components.createIcon(icon[col.type], { style: 'type' });
 
-
-        let headerColumnName = document.createElement('span');
-        headerColumnName.innerHTML = col.name;
-        header.append(headerLabel);
-        headerLabel.append(headerIcon);
-        headerLabel.appendChild(headerColumnName);
+        header.innerHTML = `
+        <div>
+            <div>${headerIcon.outerHTML} ${col.name}</div>
+        </div>
+        `;
 
         if (col.type == 'fk') {
             let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
-            headerIcon.classList.add('ri-' + typeIcon(linkedColumnType));
-            let foreignKeyIcon = document.createElement('i');
-            foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
-            headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
+            headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' })
+            header.innerHTML = `
+            <div>
+                <div>${headerIcon.outerHTML} ${col.name}</div>
+                <div class="text-xs ${theme.mutedTextColor}"><i class="ri-key-fill align-bottom"></i> from ${col.lookupTable}.${col.lookupTable}Id</div>
+            </div>
+            `;
+        
         }
 
-        if (col.isLookup) {
-            let lookupIcon = components.createIcon('search');
-            lookupIcon.classList.add('ml-2', 'text-sm');
-            headerLabel.append(lookupIcon);
-        }
-
-        //RENAME HEADER
-        headerLabel.addEventListener('click', function () {
-            headerLabel.innerHTML = '';
-            let renameInput = components.createInput({ value: col.name });
-            renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
-            renameInput.classList.remove('p-1');
-            headerLabel.append(renameInput);
-            renameInput.focus();
-            renameInput.addEventListener('blur', function () {
-                col.name = renameInput.value;
-                tableWrapper.remove();
-                saveTable(obj);
-            });
-        });
+        //let headerLabel = document.createElement('div');
+        //let headerIcon = components.createIcon(icon[col.type], { style: 'type' });
+        //if (col.type == 'fk') {
+        //    let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
+        //    headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' });
+        //}
+        //let headerColumnName = document.createElement('span');
+        //headerColumnName.innerHTML = col.name;
+        //header.append(headerLabel);
+        //headerLabel.append(headerIcon,headerColumnName);
+//
+//        //if (col.type == 'fk') {
+//        //    let foreignKeyIcon = document.createElement('i');
+//        //    foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
+//        //    headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
+//        //}
+//
+//        //if (col.isLookup) {
+//        //    let lookupIcon = components.createIcon('search');
+//        //    lookupIcon.classList.add('ml-2', 'text-sm');
+//        //    headerLabel.append(lookupIcon);
+//        //}
+//
+//        ////RENAME HEADER
+//        //headerLabel.addEventListener('click', function () {
+//        //    headerLabel.innerHTML = '';
+//        //    let renameInput = components.createInput({ value: col.name });
+//        //    renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
+//        //    renameInput.classList.remove('p-1');
+//        //    headerLabel.append(renameInput);
+//        //    renameInput.focus();
+//        //    renameInput.addEventListener('blur', function () {
+        //        col.name = renameInput.value;
+        //        tableWrapper.remove();
+        //        saveTable(obj);
+        //    });
+        //});
 
         let headerMenuToggle = document.createElement('button');
         headerMenuToggle.innerHTML = `<i class="ri-arrow-down-s-line align-bottom"></i>`;
@@ -120,7 +141,7 @@ export function createTable(obj) {
 
             let menu = document.createElement('div');
             menu.classList.add(theme.backgroundColor, theme.mediumBorderColor, 'border', 'w-full', 'shadow-md', 'text-sm', 'column-menu');
-            menu.style.top = '40px';
+            menu.style.top = '56px';
             menu.style.left = '0';
             menu.style.position = 'absolute';
 
@@ -132,14 +153,14 @@ export function createTable(obj) {
             dataTypeLabel.classList.add('text-base');
             dataTypeOption.appendChild(dataTypeLabel);
             let dataTypeIcon = document.createElement('i');
-            dataTypeIcon.classList.add('ri-' + typeIcon(col.type), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
+            dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
             dataTypeLabel.innerHTML = col.type;
 
-            dataTypeOption.addEventListener('click', openDataTypeMenu);
+            //dataTypeOption.addEventListener('click', openDataTypeMenu);
 
             if (col.type == 'fk') {
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
-                dataTypeIcon.classList.add('ri-' + typeIcon(linkedColumnType), 'border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
+                dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
                 dataTypeLabel.innerHTML = linkedColumnType;
             }
 
@@ -184,14 +205,6 @@ export function createTable(obj) {
             header.appendChild(menu);
             addDropdownOutsideClickHandler(menu, () => console.log("Clicked outside when openColumnMenu was open"));
         }
-
-        function openDataTypeMenu(e) {
-        }
-
-        header.addEventListener('click', function () {
-
-            selectedColumn.push(col);
-        });
 
 
         return header;

@@ -601,7 +601,7 @@ export function createRecordListMenu(input, table, field, cell) {
 var doubleClickEvent = document.createEvent('MouseEvents');
 doubleClickEvent.initEvent('dblclick', true, true);
 
-//document.querySelectorAll('.rendered-cell')[10].click();
+document.querySelectorAll('.rendered-cell')[8].click();
 
 
 

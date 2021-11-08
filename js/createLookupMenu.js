@@ -2,18 +2,19 @@ import { theme } from './themes.js';
 import { components } from './components.js';
 import { createModal } from './createModal';
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
-import { selectTableByName, saveTable } from './main';
+import { selectTableByName, saveTable, columnByName } from './main';
 
 export function createLookupMenu(cell) {
-
-    let editedRow = selectTableByName(cell.table).records.find((_record, i) => i == cell.row);
+    console.log(cell);
 
     let menu = document.createElement('div');
     menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1', 'border', theme.tableBorderColor);
     menu.style.position = 'absolute';
     menu.style.minWidth = '280px';
 
+
     let summaryRecords = selectTableByName(cell.lookupTable).records.map(record => record);
+
 
     let lookupLabel = document.createElement('span');
     lookupLabel.innerText = selectTableByName(cell.lookupTable).columns.filter(col => col.isLookup).map(col => col.name);
@@ -27,6 +28,7 @@ export function createLookupMenu(cell) {
     menu.append(recordsList);
 
     let setSelection = (record) => {
+        let editedRow = selectTableByName(cell.table).records.find((_record, i) => i == cell.row);
         editedRow.splice(cell.position, 1, record);
 
         document.querySelector('.table-wrapper').innerHTML = '';
@@ -35,14 +37,40 @@ export function createLookupMenu(cell) {
     };
 
 
+
+
     let createRecords = function (records, fn) {
         let list = document.createElement('div');
+        list.style.height = '200px';
+        list.style.overflowY = 'scroll';
+        
         records.forEach((record) => {
+            let columns = selectTableByName(cell.lookupTable).columns.map(col => col.name);
             let item = document.createElement('a');
             item.setAttribute('href', 'javascript:void(0)');
-            item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'text-sm', 'border-b', theme.darkBorderColor);
+            item.classList.add(theme.textColor, 'block', 'text-sm', 'border-b', theme.darkBorderColor);
 
-            item.innerHTML = `<span class="mr-1">${record.slice(0, 2).join('-')}</span>`;
+            function zipRecords(record) {
+                return record.map((r,i)=> [r,i]);
+            }
+
+            let colMatches = function(col,match){
+                return String(col).toLowerCase().indexOf(match.toLowerCase())>=0;
+             };
+
+            let searchTerm = searchRecords.value.trim();
+
+            let matchingCols = zipRecords(record)
+            .filter(([r,i]) => i==0 || colMatches(r,searchTerm));
+             
+
+            let recordLabel = matchingCols
+                .map(([r, i]) => `<div class="border-b ${theme.lightBorderColor} flex space-x-2 p-1"><div>${columns[i]}</div><div>${r}</div></div>`).join('');
+            
+            
+
+            item.innerHTML = `<div class="border">${recordLabel}</div>`;
+            //item.innerHTML = `<span class="mr-1">${record.slice(0, 2).join('-')}</span>`;
 
             if (record[0] == searchRecords.value || records.length == 1) {
                 item.classList.add(theme.primaryColor, 'bg-opacity-20');
@@ -50,7 +78,10 @@ export function createLookupMenu(cell) {
             item.addEventListener('click', function () {
                 fn(record[0]);
             });
-            list.appendChild(item);
+
+            if (matchingCols.length > 1 || colMatches(record[0],searchTerm)) {
+                list.appendChild(item);
+            } 
         });
         return list;
     };
@@ -79,9 +110,8 @@ export function createLookupMenu(cell) {
 
     searchRecords.addEventListener('keyup', function () {
         recordsList.innerHTML = '';
-        input.value = searchRecords.value;
 
-        let filteredRecords = summaryRecords.filter(record => record.toString().match(input.value.trim()));
+        let filteredRecords = summaryRecords.filter(record => record.toString().match(searchRecords.value.trim()));
         recordsList.appendChild(createRecords(filteredRecords, setSelection));
 
         if (filteredRecords.length == 0) {

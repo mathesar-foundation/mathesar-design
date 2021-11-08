@@ -6,15 +6,19 @@ var allTables = [{
     ],
     columns: [
         { name: 'id', type: 'number', readOnly: true },
-        { name: 'artistName', type: 'text' }
+        { name: 'artistName', type: 'text' },
+        { name: 'IPICode', type: 'number' },
+        { name: 'ISNICode', type: 'number' },
+        { name: 'leadSinger', type: 'number' },
+        { name: 'type', type: 'text' }
     ],
     records: [
-        ['67', 'Aqua'],
-        ['68', 'Patti Smith'],
-        ['69', 'Elvis Costello'],
-        ['70', 'Kylie Minogue'],
-        ['71', 'Artic Monkeys'],
-        ['72', 'Scorpions']
+        ['67', 'Aqua','677447438706','','Lene Nystrøm','Group'],
+        ['68', 'Patti Smith','960892312462','','Patti Smith','Person'],
+        ['69', 'Elvis Costello','897519219900','','Elvis Costello','Person'],
+        ['70', 'Kylie Minogue','454790589633','','Kylie Minogue','Person'],
+        ['71', 'Artic Monkeys','975890775212','','Alex Turner','Group'],
+        ['72', 'Scorpions','225410006708','','Rudolf Schenker','Group']
     ],
     color: 'purple'
 }, {
