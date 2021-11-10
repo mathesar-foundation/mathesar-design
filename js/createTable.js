@@ -1,9 +1,10 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { columnByName, getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
+import { getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
 import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { icon } from './iconMap.js';
+import { setTableConstraints } from './setTableConstraints.js';
 
 
 //CREATE TABLE
@@ -34,7 +35,7 @@ export function createTable(obj) {
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
     let createHeader = (col) => {
-        console.log(col)
+        //console.log(col)
         let header = document.createElement('div');
         header.style.width = '240px';
         header.style.position = 'relative';
@@ -58,12 +59,40 @@ export function createTable(obj) {
             </div>`;
 
             let referenceColor = selectTableByName(col.lookupTable).color;
-            console.log(referenceColor)
+            //console.log(referenceColor)
 
-            let foreignKeyReference = document.createElement('div');
-            foreignKeyReference.classList.add('text-sm',theme.mutedTextColor)
-            foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> from ${col.lookupTable}.${col.lookupField}`
+            let foreignKeyReference = document.createElement('a');
+            foreignKeyReference.href = 'javascript:void(0)'
+            foreignKeyReference.classList.add('text-sm',theme.mutedTextColor,'block');
+            foreignKeyReference.style.position = 'relative';
+            foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> ${col.lookupTable}.${col.lookupField}`;
             header.childNodes[1].append(foreignKeyReference);
+
+            let info = document.createElement('div');
+            info.classList.add('border','p-2',theme.tableBorderColor,theme.darkBackgroundColor,'whitespace-nowrap');
+            info.style.position = 'absolute';
+            info.innerHTML = `
+            <h5>Referenced Table</h5>
+            <div><span class="${theme.textColor}">${col.lookupTable}</span> <a href="#" class="${theme.primaryTextColor}">Open</a></div>
+            <h5>Referenced Column(s)</h5>
+            <div><a href="#" class="${theme.textColor}">${col.lookupField}</a></div>
+            `;
+            
+
+
+            foreignKeyReference.addEventListener('click',function(){
+                setTableConstraints(obj);
+            });
+
+            foreignKeyReference.addEventListener('mouseenter',function(){
+                foreignKeyReference.append(info);
+                console.log('test')
+            });
+
+            foreignKeyReference.addEventListener('mouseleave',function(){
+                foreignKeyReference.removeChild(info);
+                console.log('test')
+            });
         }
 
         //let headerLabel = document.createElement('div');
@@ -219,23 +248,23 @@ export function createTable(obj) {
     let getColumnByPosition = (position) => obj.columns[position];
 
     let getRecordByValue = (table, column, value) => {
-        console.log(table,column,value);
+        //console.log(table,column,value);
         let lookupTable = selectTableByName(table);
         let columns = selectTableByName(table).columns;
 
         const isColumn = (col) => col.name == column;
         
         let columnPosition = columns.findIndex(isColumn);
-        console.log(columnPosition)
+        //console.log(columnPosition)
         let records = lookupTable.records.find(r => r.includes(value));
         
-        console.log(records)
+        //console.log(records)
         if (records !== undefined) {
             return records[columnPosition];
         } else {
             return '';
         }
-        //console.log(lookupTable.records.map(record => record[columnPosition]));
+        ////console.log(lookupTable.records.map(record => record[columnPosition]));
     };
 
     let createCell = (cell) => {

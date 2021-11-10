@@ -33,7 +33,8 @@ function createConstraintItem(column, type, fn) {
         item.innerHTML = `New Constraint`;
     } else {
         constraintName = `${type.match(/[A-Z]+/g).join("")}_${column.name}`;
-        itemLabel.innerHTML = `${constraintName} <span class="text-sm">(${type})</span>`;
+        itemLabel.innerHTML = constraintName;
+        //itemLabel.innerHTML = `${constraintName} <span class="text-sm">(${type})</span>`;
         if (column.lookupField) {
             itemReferences.innerHTML = `${typeIcon(column.lookupField).outerHTML} ${column.name} <i class="ri-arrow-right-line align-bottom"></i> ${column.lookupTable} ${typeIcon(column.lookupField).outerHTML} <span class=""> ${column.lookupField}</span>`;
         } else {
@@ -163,7 +164,6 @@ export function setTableConstraints(table) {
 
             referenceColumns.querySelectorAll('input').forEach(input => {
                 input.addEventListener('change', function () {
-                    console.log(input.checked);
                     if (input.checked == true) {
                         _form.referenceColumns.push(input.value);
                     } else {
@@ -237,6 +237,7 @@ export function setTableConstraints(table) {
     
 
     let buildList = (obj) => {
+        console.log(obj);
         for (const prop in obj) {
             obj[prop].columns.forEach(item => list.append(createConstraintItem(item, obj[prop].type, showForm)));
         }
@@ -247,8 +248,6 @@ export function setTableConstraints(table) {
                 this.classList.add(theme.darkPrimaryColor, 'bg-opacity-40');
             });
         }
-
-    
 
         navList[(navList.length)-1].click();
 
