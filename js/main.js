@@ -7,6 +7,7 @@ import { components } from './components.js';
 import { createModal } from './createModal';
 import { createTableToolbar } from './createTableToolbar';
 import { createTable } from './createTable';
+import { setTableConstraints } from './setTableConstraints.js';
 import { createDropdownMenu,addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 const urlParams = new URLSearchParams(window.location.search);

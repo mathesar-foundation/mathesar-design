@@ -79,7 +79,7 @@ export function createTableToolbar(obj) {
         location.reload();
     });
 
-
+    //document.querySelector('body').append(createModal(linkTableWizard(obj)));
     manageRelationshipsBtn.addEventListener('click', function () {
         document.querySelector('body').append(createModal(linkTableWizard(obj)));
     });
@@ -160,6 +160,8 @@ function linkTableWizard(obj) {
 
         //////
 
+        
+
         questionsWrapper.addEventListener('change', function () {
             let answers = [...questionsWrapper.querySelectorAll('input:checked')].map(input => input.value);
 
@@ -171,9 +173,13 @@ function linkTableWizard(obj) {
 
                     summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new table <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}_mapping_${obj.name}</span> to map records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span>.
-                    </p>
-                    `;
+                    <p class="${theme.mutedTextColor}">We will create a new table to map records from <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${_table}</span></p>
+                    <div class="my-1">
+                    <label class="block">New Table Name</label>
+                    <input type="text" class="${theme.inputBackgroundColor} bg-opacity-20 ${theme.tableBorderColor} border p-1" value="${_table}_mapping_${obj.name}">
+                    </div>`;
+
+                   
                 } else {
                     if (answers[0] == 'yes') {
 
@@ -187,8 +193,11 @@ function linkTableWizard(obj) {
                         //} else {
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table.</p>
-
+                    <p class="${theme.mutedTextColor}">We will create a new column in the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${_table}</span> table.</p>
+                    <div class="my-1">
+                    <label class="block">New Column Name</label>
+                    <input type="text" class="${theme.inputBackgroundColor} bg-opacity-20 ${theme.tableBorderColor} border p-1" value="${obj.name}Id">
+                    </div>
                     `;
                         // }
                     } else if (answers[1] == 'yes') {
@@ -201,7 +210,11 @@ function linkTableWizard(obj) {
                         //} else {
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
+                    <p class="${theme.mutedTextColor}">We will create a new column in the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
+                    <div class="my-1">
+                    <label class="block">New Column Name</label>
+                    <input type="text" class="${theme.inputBackgroundColor} bg-opacity-20 ${theme.tableBorderColor} border p-1" value="${_table}Id">
+                    </div>
                     `;
                         // }
                     } else {
@@ -268,10 +281,11 @@ function linkTableWizard(obj) {
     });
 
 
-
+    
 
 
     form.append(linkToConstraints, referencedTable, questionsWrapper,summary, actionsWrapper);
+  
 
     return form;
 }

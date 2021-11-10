@@ -27,15 +27,18 @@ var allTables = [{
     columns: [
         { name: 'id', type: 'number', readOnly: true },
         { name: 'releaseName', type: 'text' },
-        { name: 'releaseGenre', type: 'text' }
+        { name: 'releaseGenre', type: 'text' },
+        { name: 'recordLabelName', type: 'fk', lookupField: 'name', lookupTable: 'recordLabel' },
+        { name: 'recordLabelCountry', type: 'fk', lookupField: 'country', lookupTable: 'recordLabel' },
+        { name: 'artistId', type: 'fk', lookupField: 'id', lookupTable: 'artist' }
     ],
     records: [
-        ['20', 'Aquarius', 'Pop'],
-        ['21', 'Aquarium', 'Pop'],
-        ['22', 'Spike', 'Rock'],
-        ['23', 'Golden', 'Pop'],
-        ['24', 'AM', 'Pop'],
-        ['25', 'Animal Magnetism', 'Rock']
+        ['20', 'Aquarius', 'Pop','56','56',''],
+        ['21', 'Aquarium', 'Pop','56','56',''],
+        ['22', 'Spike', 'Rock','57','57',''],
+        ['23', 'Golden', 'Pop','57','57',''],
+        ['24', 'AM', 'Pop','56','56',''],
+        ['25', 'Animal Magnetism', 'Rock','56','56','']
     ],
     color: 'green'
 }, {
@@ -86,7 +89,20 @@ var allTables = [{
         ['63', '21', '464']
     ],
     color: 'pink'
-}, {
+},{
+    name: 'recordLabel',
+    type: 'table',
+    columns: [
+        { name: 'id', type: 'number', readOnly: true },
+        { name: 'name', type: 'text' },
+        { name: 'country', type: 'text' }
+    ],
+    records: [
+        ['56', 'RCA Records', 'UK'],
+        ['57', 'RCA Records', 'US']
+    ],
+    color: 'green'
+},{
     name: 'Releases by Artist',
     type: 'view',
     columns: [
@@ -122,6 +138,7 @@ let loadedTables = allTables.map((data, index) => {
         'columns': data.columns.map((col, i) => i == 0 ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false })),
         'records': data.records,
         'type': data.type,
+        'color' : data.color
     }
 }
 );

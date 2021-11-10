@@ -54,10 +54,16 @@ export function createTable(obj) {
             header.innerHTML = `
             <div>
                 <div>${headerIcon.outerHTML} ${col.name}</div>
-                <div class="text-xs ${theme.mutedTextColor}"><i class="ri-key-fill align-bottom"></i> from ${col.lookupTable}.${col.lookupTable}Id</div>
-            </div>
-            `;
-        
+                <div class="text-xs ${theme.mutedTextColor}"></div>
+            </div>`;
+
+            let referenceColor = selectTableByName(col.lookupTable).color;
+            console.log(referenceColor)
+
+            let foreignKeyReference = document.createElement('div');
+            foreignKeyReference.classList.add('text-sm',theme.mutedTextColor)
+            foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> from ${col.lookupTable}.${col.lookupField}`
+            header.childNodes[1].append(foreignKeyReference);
         }
 
         //let headerLabel = document.createElement('div');
@@ -210,20 +216,22 @@ export function createTable(obj) {
         return header;
     };
 
-    let getColumnByPosition = (position) =>
-        //console.log(position)
-        obj.columns[position];
+    let getColumnByPosition = (position) => obj.columns[position];
 
-    let getRecordByValue = (tableName, value) => {
-        let lookupTable = selectTableByName(tableName);
-        let columns = selectTableByName(tableName).columns;
+    let getRecordByValue = (table, column, value) => {
+        console.log(table,column,value);
+        let lookupTable = selectTableByName(table);
+        let columns = selectTableByName(table).columns;
 
-        const isLookup = (column) => column.isLookup;
-        let columnPosition = columns.findIndex(isLookup);
+        const isColumn = (col) => col.name == column;
+        
+        let columnPosition = columns.findIndex(isColumn);
+        console.log(columnPosition)
         let records = lookupTable.records.find(r => r.includes(value));
-        //console.log(records)
+        
+        console.log(records)
         if (records !== undefined) {
-            return records[0];
+            return records[columnPosition];
         } else {
             return '';
         }
@@ -254,7 +262,7 @@ export function createTable(obj) {
             if (cell.value == '') {
                 renderedCell.innerHTML = `<i class="ri-search-line text-xs ${theme.mediumBackgroundColor} p-1 rounded"></i>`;
             } else {
-                let renderedValue = getRecordByValue(cell.lookupTable, cell.value);
+                let renderedValue = getRecordByValue(cell.lookupTable, cell.lookupField, cell.value);
                 renderedCell.appendChild(createRecordLink(renderedValue));
             }
             //renderedCell.appendChild(createRecordLink(cell));
@@ -334,7 +342,8 @@ export function createTable(obj) {
             row.appendChild(createCell({
                 value: cell, 
                 column: getColumnByPosition(i).name, 
-                lookupTable: getColumnByPosition(i).lookupTable, 
+                lookupTable: getColumnByPosition(i).lookupTable,
+                lookupField: getColumnByPosition(i).lookupField, 
                 row: index, 
                 type: getColumnByPosition(i).type,
                 table: obj.name,
