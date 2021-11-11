@@ -14,47 +14,6 @@ function typeIcon(column) {
     }
 }
 
-function createConstraintItem(column, type, fn) {
-    let item = document.createElement('a');
-    item.href = 'javascript:void(0)';
-    item.classList.add('border-b', theme.tableBorderColor, 'p-2', 'flex', 'items-center', 'space-x-1');
-
-    let labelWrapper = document.createElement('div');
-    labelWrapper.classList.add('mr-auto', 'space-y-1');
-    let itemLabel = document.createElement('div');
-    itemLabel.classList.add('mr-2');
-
-    let itemReferences = document.createElement('div');
-    itemReferences.classList.add('text-sm');
-
-    let constraintName = '';
-
-    if (!column) {
-        item.innerHTML = `New Constraint`;
-    } else {
-        constraintName = `${type.match(/[A-Z]+/g).join("")}_${column.name}`;
-        itemLabel.innerHTML = constraintName;
-        //itemLabel.innerHTML = `${constraintName} <span class="text-sm">(${type})</span>`;
-        if (column.lookupField) {
-            itemReferences.innerHTML = `${typeIcon(column.lookupField).outerHTML} ${column.name} <i class="ri-arrow-right-line align-bottom"></i> ${column.lookupTable} ${typeIcon(column.lookupField).outerHTML} <span class=""> ${column.lookupField}</span>`;
-        } else {
-            itemReferences.innerHTML = `${typeIcon(column.name).outerHTML} <span class=""> ${column.name}</span>`;
-        }
-    }
-
-    let itemForm = { name: constraintName, type: type, reference: column.lookupTable, columns: [column.name], referenceColumns: [column.lookupField] }
-
-
-    item.addEventListener('click', function () {
-        fn(itemForm);
-    });
-
-    labelWrapper.append(itemLabel);
-    //labelWrapper.append(itemLabel, itemReferences);
-    item.append(labelWrapper);
-
-    return item;
-}
 
 function columnSelector(columns, selected) {
     let selector = document.createElement('div');
@@ -76,20 +35,11 @@ function columnSelector(columns, selected) {
     return selector;
 }
 
-
-
 export function setTableConstraints(table) {
 
-    let constraintList = {
-        pkConstraints: {
-            type: 'Primary Key',
-            columns: table.columns.filter(column => column.readOnly)
-        },
-        fkConstraints: {
-            type: 'Foreign Key',
-            columns: table.columns.filter(column => column.type == 'fk')
-        }
-    };
+    let constraintList = table.constraints;
+
+    constraintList.forEach(constraint => constraint.table = table.name);
 
     let actions = document.createElement('div');
     let applyBtn = components.createButton('Apply', { style: 'primary' });
@@ -121,126 +71,67 @@ export function setTableConstraints(table) {
     form.style.height = '380px';
     form.style.overflowY = 'scroll';
     form.classList.add('col-span-4', 'border', theme.tableBorderColor, theme.darkBackgroundColor, 'p-2', 'space-y-2');
-
-    let constraints = ['Unique', 'Primary Key', 'Foreign Key', 'Not Null'];
-
-
-    function showForm(_form) {
-
-        form.innerHTML = '';
-        let constraintType = components.createSelectInput(constraints, { label: 'Constraint Type', selected: _form.type });
-        let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table' });
-        let columns = columnSelector(table.columns, _form.columns);
-
-
-        if (!_form.name) {
-            _form.name = 'FK_';
-        }
-
-        // REMOVE THIS FIX
-        if (_form.columns.includes(undefined)) {
-            _form.columns = [];
-        }
-
-
-        form.append(
-            components.createFormGroup(components.createInput({ value: _form.name }), 'Constraint Name'),
-            constraintType,
-            columns
-        );
-
-        if (_form.type == 'Foreign Key' && !_form.reference) {
-            form.append(
-                referencedTable
-            );
-        }
-
-        if (_form.reference) {
-            var referenceColumns = columnSelector(selectTableByName(_form.reference).columns, _form.referenceColumns);
-            form.append(
-                referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table', selected: _form.reference }),
-                referenceColumns
-            );
-
-            referenceColumns.querySelectorAll('input').forEach(input => {
-                input.addEventListener('change', function () {
-                    if (input.checked == true) {
-                        _form.referenceColumns.push(input.value);
-                    } else {
-                        const index = _form.referenceColumns.indexOf(input.value);
-                        if (index > -1) { _form.referenceColumns.splice(index, 1); }
-                    }
-                    showForm(_form);
-                });
-            });
-
-
-        }
-
-
-        columns.querySelectorAll('input').forEach(input => {
-            input.addEventListener('change', function () {
-                console.log(input.checked);
-                if (input.checked == true) {
-                    _form.columns.push(input.value);
-                } else {
-                    const index = _form.columns.indexOf(input.value);
-                    if (index > -1) { _form.columns.splice(index, 1); }
-                }
-                showForm(_form);
-            });
-        });
-
-
-
-        constraintType.addEventListener('change', function () {
-            let setType = constraintType.childNodes[1].value;
-            _form.type = setType;
-            if (setType == 'Foreign Key') {
-                _form.name = 'FK_';
-                showForm(_form);
-            } else if (setType == 'Primary Key') {
-                _form.name = 'PK_';
-            } else if (setType == 'Not Null') {
-                _form.name = 'NOTNULL_';
-            } else {
-                _form.name = 'UNIQUE_';
-            }
-            showForm(_form);
-        });
-
-        referencedTable.addEventListener('change', function () {
-            _form.reference = referencedTable.childNodes[1].value;
-            _form.referenceColumns = [];
-            showForm(_form);
-        });
-
-
-        applyBtn.addEventListener('click', function () {
-
-            let _column = table.columns.find(column => _form.columns.includes(column.name));
-            //console.log(_column);
-            if (_form.reference) {
-                _column.type = 'fk';
-                _column.lookupTable = _form.reference;
-                _column.lookupField = _form.referenceColumns[0];
-            }
-
-            document.querySelector('.table-wrapper').innerHTML = '';
-            saveTable(table);
-            sessionStorage.setItem('tables', JSON.stringify(savedTables));
-            modal.remove();
-            location.reload();
-        });
-    }
-
     
 
-    let buildList = (obj) => {
-        console.log(obj);
-        for (const prop in obj) {
-            obj[prop].columns.forEach(item => list.append(createConstraintItem(item, obj[prop].type, showForm)));
+    function createConstraintItem(constraint) {
+
+        let item = document.createElement('a');
+        item.href = 'javascript:void(0)';
+        item.classList.add('border-b', theme.tableBorderColor, 'p-2', 'flex', 'items-center', 'space-x-1');
+    
+        let labelWrapper = document.createElement('div');
+        labelWrapper.classList.add('mr-auto', 'space-y-1');
+        let itemLabel = document.createElement('div');
+        itemLabel.classList.add('mr-2');
+    
+        let itemReferences = document.createElement('div');
+        itemReferences.classList.add('text-sm');
+    
+        let constraintName = `${constraint.type.match(/[A-Z]+/g).join("")}_${constraint.columns.join('_')}`;
+        itemLabel.innerHTML = constraintName;
+    
+        //if (!column) {
+        //    item.innerHTML = `New Constraint`;
+        //} else {
+        //    constraintName = `${type.match(/[A-Z]+/g).join("")}_${column.name}`;
+        //    itemLabel.innerHTML = constraintName;
+        //    //itemLabel.innerHTML = `${constraintName} <span class="text-sm">(${type})</span>`;
+        //    if (column.lookupField) {
+        //        itemReferences.innerHTML = `${typeIcon(column.lookupField).outerHTML} ${column.name} <i class="ri-arrow-right-line align-bottom"></i> ${column.lookupTable} ${typeIcon(column.lookupField).outerHTML} <span class=""> ${column.lookupField}</span>`;
+        //    } else {
+        //        itemReferences.innerHTML = `${typeIcon(column.name).outerHTML} <span class=""> ${column.name}</span>`;
+        //    }
+        //}
+    //
+        let itemForm = { 
+            name: constraintName, 
+            table: constraint.table,
+            type: constraint.type, 
+            reference: constraint.referenceTable, 
+            columns: constraint.columns, 
+            referenceColumns: constraint.referenceColumns
         }
+    //
+    //
+        item.addEventListener('click', function () {
+            form.innerHTML = '';
+            form.append(showForm(itemForm,table));
+        });
+    
+        labelWrapper.append(itemLabel);
+        //labelWrapper.append(itemLabel, itemReferences);
+        item.append(labelWrapper);
+    
+        return item;
+    }
+    
+
+    let buildList = (constraints) => {
+        
+        constraints.forEach(constraint => {
+            list.append(createConstraintItem(constraint))
+        })
+
         const navList = list.querySelectorAll('a');
         for (let item of navList) {
             item.addEventListener("click", function () {
@@ -264,10 +155,121 @@ export function setTableConstraints(table) {
         });
     }
 
-    
-
     buildList(constraintList);
 
     gridContainer.append(list, form);
 }
 
+function showForm(_form) {
+    let table = selectTableByName(_form.table);
+    let form = document.createElement('div');
+
+    let constraints = ['Unique', 'Primary Key', 'Foreign Key', 'Not Null'];
+
+    let constraintType = components.createSelectInput(constraints, { label: 'Constraint Type', selected: _form.type });
+    let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table' });
+    let columns = columnSelector(table.columns, _form.columns);
+
+
+    if (!_form.name) {
+        _form.name = 'FK_';
+    }
+
+    // REMOVE THIS FIX
+    if (_form.columns.includes(undefined)) {
+        _form.columns = [];
+    }
+
+
+    form.append(
+        components.createFormGroup(components.createInput({ value: _form.name }), 'Constraint Name'),
+        constraintType,
+        columns
+    );
+
+    if (_form.type == 'Foreign Key' && !_form.reference) {
+        form.append(
+            referencedTable
+        );
+    }
+
+    if (_form.reference) {
+        var referenceColumns = columnSelector(selectTableByName(_form.reference).columns, _form.referenceColumns);
+        form.append(
+            referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table', selected: _form.reference }),
+            referenceColumns
+        );
+
+        referenceColumns.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', function () {
+                if (input.checked == true) {
+                    _form.referenceColumns.push(input.value);
+                } else {
+                    const index = _form.referenceColumns.indexOf(input.value);
+                    if (index > -1) { _form.referenceColumns.splice(index, 1); }
+                }
+                showForm(_form);
+            });
+        });
+
+
+    }
+
+
+    columns.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', function () {
+            console.log(input.checked);
+            if (input.checked == true) {
+                _form.columns.push(input.value);
+            } else {
+                const index = _form.columns.indexOf(input.value);
+                if (index > -1) { _form.columns.splice(index, 1); }
+            }
+            showForm(_form);
+        });
+    });
+
+
+
+    constraintType.addEventListener('change', function () {
+        let setType = constraintType.childNodes[1].value;
+        _form.type = setType;
+        if (setType == 'Foreign Key') {
+            _form.name = 'FK_';
+            showForm(_form);
+        } else if (setType == 'Primary Key') {
+            _form.name = 'PK_';
+        } else if (setType == 'Not Null') {
+            _form.name = 'NOTNULL_';
+        } else {
+            _form.name = 'UNIQUE_';
+        }
+        showForm(_form);
+    });
+
+    referencedTable.addEventListener('change', function () {
+        _form.reference = referencedTable.childNodes[1].value;
+        _form.referenceColumns = [];
+        showForm(_form);
+    });
+
+
+    //applyBtn.addEventListener('click', function () {
+//
+    //    let _column = table.columns.find(column => _form.columns.includes(column.name));
+    //    //console.log(_column);
+    //    if (_form.reference) {
+    //        _column.type = 'fk';
+    //        _column.lookupTable = _form.reference;
+    //        _column.lookupField = _form.referenceColumns[0];
+    //    }
+//
+    //    document.querySelector('.table-wrapper').innerHTML = '';
+    //    saveTable(table);
+    //    sessionStorage.setItem('tables', JSON.stringify(savedTables));
+    //    modal.remove();
+    //    location.reload();
+    //});
+
+    return form;
+}

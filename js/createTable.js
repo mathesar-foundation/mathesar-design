@@ -7,28 +7,9 @@ import { icon } from './iconMap.js';
 import { setTableConstraints } from './setTableConstraints.js';
 
 
+
 //CREATE TABLE
 export function createTable(obj) {
-
-    let recordTable = obj.columns.reduce(function (a, b) {
-        a.push(b.referencedTable);
-        return a;
-    }, []);
-
-    let summaryOf = obj.columns.reduce(function (a, b) {
-        a.push(b.summaryOf);
-        return a;
-    }, []);
-
-    let lookupField = obj.columns.reduce(function (a, b) {
-        a.push(b.lookupField);
-        return a;
-    }, []);
-
-    let lookupTable = obj.columns.reduce(function (a, b) {
-        a.push(b.lookupTable);
-        return a;
-    }, []);
 
     let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs'];
@@ -40,7 +21,7 @@ export function createTable(obj) {
         header.style.width = '240px';
         header.style.position = 'relative';
         header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
-        
+
         let headerIcon = components.createIcon(icon[col.type], { style: 'type' });
 
         header.innerHTML = `
@@ -49,7 +30,10 @@ export function createTable(obj) {
         </div>
         `;
 
-        if (col.type == 'fk') {
+        let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
+
+        if (columnConstraints !== undefined && columnConstraints.type == 'Foreign Key') {
+
             let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
             headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' })
             header.innerHTML = `
@@ -63,33 +47,32 @@ export function createTable(obj) {
 
             let foreignKeyReference = document.createElement('a');
             foreignKeyReference.href = 'javascript:void(0)'
-            foreignKeyReference.classList.add('text-sm',theme.mutedTextColor,'block');
+            foreignKeyReference.classList.add('text-sm', theme.mutedTextColor, 'block');
             foreignKeyReference.style.position = 'relative';
             foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> ${col.lookupTable}.${col.lookupField}`;
             header.childNodes[1].append(foreignKeyReference);
 
             let info = document.createElement('div');
-            info.classList.add('border','p-2',theme.tableBorderColor,theme.darkBackgroundColor,'whitespace-nowrap');
+            info.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'whitespace-nowrap');
             info.style.position = 'absolute';
             info.innerHTML = `
             <h5>Referenced Table</h5>
             <div><span class="${theme.textColor}">${col.lookupTable}</span> <a href="#" class="${theme.primaryTextColor}">Open</a></div>
             <h5>Referenced Column(s)</h5>
-            <div><a href="#" class="${theme.textColor}">${col.lookupField}</a></div>
-            `;
             
+            <div><a href="javascript:void(0)" class="${theme.textColor}">${columnConstraints.columns.join(',')}</a></div>
+            `;
 
-
-            foreignKeyReference.addEventListener('click',function(){
+            foreignKeyReference.addEventListener('click', function () {
                 setTableConstraints(obj);
             });
 
-            foreignKeyReference.addEventListener('mouseenter',function(){
+            foreignKeyReference.addEventListener('mouseenter', function () {
                 foreignKeyReference.append(info);
                 console.log('test')
             });
 
-            foreignKeyReference.addEventListener('mouseleave',function(){
+            foreignKeyReference.addEventListener('mouseleave', function () {
                 foreignKeyReference.removeChild(info);
                 console.log('test')
             });
@@ -105,28 +88,28 @@ export function createTable(obj) {
         //headerColumnName.innerHTML = col.name;
         //header.append(headerLabel);
         //headerLabel.append(headerIcon,headerColumnName);
-//
-//        //if (col.type == 'fk') {
-//        //    let foreignKeyIcon = document.createElement('i');
-//        //    foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
-//        //    headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
-//        //}
-//
-//        //if (col.isLookup) {
-//        //    let lookupIcon = components.createIcon('search');
-//        //    lookupIcon.classList.add('ml-2', 'text-sm');
-//        //    headerLabel.append(lookupIcon);
-//        //}
-//
-//        ////RENAME HEADER
-//        //headerLabel.addEventListener('click', function () {
-//        //    headerLabel.innerHTML = '';
-//        //    let renameInput = components.createInput({ value: col.name });
-//        //    renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
-//        //    renameInput.classList.remove('p-1');
-//        //    headerLabel.append(renameInput);
-//        //    renameInput.focus();
-//        //    renameInput.addEventListener('blur', function () {
+        //
+        //        //if (col.type == 'fk') {
+        //        //    let foreignKeyIcon = document.createElement('i');
+        //        //    foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
+        //        //    headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
+        //        //}
+        //
+        //        //if (col.isLookup) {
+        //        //    let lookupIcon = components.createIcon('search');
+        //        //    lookupIcon.classList.add('ml-2', 'text-sm');
+        //        //    headerLabel.append(lookupIcon);
+        //        //}
+        //
+        //        ////RENAME HEADER
+        //        //headerLabel.addEventListener('click', function () {
+        //        //    headerLabel.innerHTML = '';
+        //        //    let renameInput = components.createInput({ value: col.name });
+        //        //    renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
+        //        //    renameInput.classList.remove('p-1');
+        //        //    headerLabel.append(renameInput);
+        //        //    renameInput.focus();
+        //        //    renameInput.addEventListener('blur', function () {
         //        col.name = renameInput.value;
         //        tableWrapper.remove();
         //        saveTable(obj);
@@ -253,11 +236,11 @@ export function createTable(obj) {
         let columns = selectTableByName(table).columns;
 
         const isColumn = (col) => col.name == column;
-        
+
         let columnPosition = columns.findIndex(isColumn);
         //console.log(columnPosition)
         let records = lookupTable.records.find(r => r.includes(value));
-        
+
         //console.log(records)
         if (records !== undefined) {
             return records[columnPosition];
@@ -276,9 +259,13 @@ export function createTable(obj) {
 
         renderedCell.style.cursor = 'pointer';
 
-        let createRecordLink = function (_value) {
+
+
+        let createRecordLink = (_value) => {
+
             let link = document.createElement('div');
-            link.classList.add(theme.primaryColor, 'rounded', 'px-1', 'inline-block', 'bg-opacity-50', 'mr-1');
+            link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'px-1', 'inline-block', 'bg-opacity-50', 'mr-1');
+
             link.innerHTML = _value;
             return link;
         };
@@ -369,11 +356,11 @@ export function createTable(obj) {
         row.appendChild(rowNumber);
         record.forEach((cell, i) => {
             row.appendChild(createCell({
-                value: cell, 
-                column: getColumnByPosition(i).name, 
+                value: cell,
+                column: getColumnByPosition(i).name,
                 lookupTable: getColumnByPosition(i).lookupTable,
-                lookupField: getColumnByPosition(i).lookupField, 
-                row: index, 
+                lookupField: getColumnByPosition(i).lookupField,
+                row: index,
                 type: getColumnByPosition(i).type,
                 table: obj.name,
                 position: i
@@ -418,9 +405,7 @@ export function createTable(obj) {
                     row.newRowCreated = true;
                     newRowWrapper.prepend(repositionWarning);
                     newRowWrapper.appendChild(createNewRow(obj.columns));
-                    if (recordTable[i]) {
-                        cellInput.parentNode.appendChild(createEditRecordMenu(cellInput, recordTable[i], ''));
-                    }
+
                 }
             });
         });

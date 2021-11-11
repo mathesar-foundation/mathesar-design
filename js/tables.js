@@ -2,10 +2,10 @@ var allTables = [{
     name: 'artist',
     type: 'table',
     constraints: [
-        { column: 'releaseId', type: 'foreignKey' }
+        {type:'Primary Key', columns:['id']}
     ],
     columns: [
-        { name: 'id', type: 'number', readOnly: true },
+        { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
         { name: 'artistName', type: 'text' },
         { name: 'IPICode', type: 'number' },
         { name: 'ISNICode', type: 'number' },
@@ -24,12 +24,17 @@ var allTables = [{
 }, {
     name: 'release',
     type: 'table',
+    constraints: [
+        {type:'Primary Key', columns:['id']},
+        {type:'Foreign Key', columns:['rcrdLblName','rcrdLblCountry'], referenceTable:'recordLabel', referenceColumns:['name','country']},
+        {type:'Foreign Key', columns:['artistId'], referenceTable:'artist', referenceColumns:['id']}
+    ],
     columns: [
-        { name: 'id', type: 'number', readOnly: true },
+        { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
         { name: 'releaseName', type: 'text' },
         { name: 'releaseGenre', type: 'text' },
-        { name: 'recordLabelName', type: 'fk', lookupField: 'name', lookupTable: 'recordLabel' },
-        { name: 'recordLabelCountry', type: 'fk', lookupField: 'country', lookupTable: 'recordLabel' },
+        { name: 'rcrdLblName', type: 'fk', lookupField: 'name', lookupTable: 'recordLabel' },
+        { name: 'rcrdLblCountry', type: 'fk', lookupField: 'country', lookupTable: 'recordLabel' },
         { name: 'artistId', type: 'fk', lookupField: 'id', lookupTable: 'artist' }
     ],
     records: [
@@ -44,8 +49,11 @@ var allTables = [{
 }, {
     name: 'track',
     type: 'table',
+    constraints: [
+        {type:'Primary Key', columns:['id']}
+    ],
     columns: [
-        { name: 'id', type: 'number', readOnly: true },
+        { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
         { name: 'ISRC', type: 'text' },
         { name: 'trackName', type: 'text' },
         { name: 'trackLength', type: 'duration' }
@@ -62,10 +70,15 @@ var allTables = [{
 }, {
     name: 'track_artist',
     type: 'table',
+    constraints: [
+        {type:'Primary Key', columns:['id']},
+        {type:'Foreign Key', columns:['trackId'], referenceTable:'track', referenceColumns:['id']},
+        {type:'Foreign Key', columns:['artistId'], referenceTable:'artist', referenceColumns:['id']}
+    ],
     columns: [
-        { name: 'id', type: 'number', readOnly: true },
-        { name: 'trackId', type: 'fk', lookupField: 'trackName', lookupTable: 'track' },
-        { name: 'artistId', type: 'fk', lookupField: 'artistName', lookupTable: 'artist' },
+        { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
+        { name: 'trackId', type: 'fk', lookupField: 'id', lookupTable: 'track' },
+        { name: 'artistId', type: 'fk', lookupField: 'id', lookupTable: 'artist' },
     ],
     records: [
         ['500', '460', ''],
@@ -77,8 +90,13 @@ var allTables = [{
 }, {
     name: 'release_track',
     type: 'table',
+    constraints: [
+        {type:'Primary Key', columns:['id']},
+        {type:'Foreign Key', columns:['releaseId'], referenceTable:'release', referenceColumns:['id']},
+        {type:'Foreign Key', columns:['trackId'], referenceTable:'track', referenceColumns:['id']}
+    ],
     columns: [
-        { name: 'id', type: 'number', readOnly: true },
+        { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
         { name: 'releaseId', type: 'fk', lookupField: 'id', lookupTable: 'release' },
         { name: 'trackId', type: 'fk', lookupField: 'id', lookupTable: 'track' }
     ],
@@ -92,16 +110,20 @@ var allTables = [{
 },{
     name: 'recordLabel',
     type: 'table',
+    constraints: [
+        {type:'Primary Key', columns:['name','country']},
+        {type:'Foreign Key', columns:['name'], referenceTable:'release',referenceColumns:['id']}
+    ],
     columns: [
         { name: 'id', type: 'number', readOnly: true },
-        { name: 'name', type: 'text' },
-        { name: 'country', type: 'text' }
+        { name: 'name', type: 'text', isPrimaryKey: true },
+        { name: 'country', type: 'text', isPrimaryKey: true }
     ],
     records: [
         ['56', 'RCA Records', 'UK'],
         ['57', 'RCA Records', 'US']
     ],
-    color: 'green'
+    color: 'blue'
 },{
     name: 'Releases by Artist',
     type: 'view',
@@ -135,6 +157,7 @@ let loadedTables = allTables.map((data, index) => {
     return {
         'id': index,
         'name': data.name,
+        'constraints' : data.constraints,
         'columns': data.columns.map((col, i) => i == 0 ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false })),
         'records': data.records,
         'type': data.type,
