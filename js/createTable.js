@@ -1,12 +1,15 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu } from './main';
+import { getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTableByName, createRecordListMenu, createEditRecordMenu, selectTableById, activeTable, columnByName } from './main';
 import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { icon } from './iconMap.js';
 import { setTableConstraints } from './setTableConstraints.js';
 
 
+if (sessionStorage.getItem('recordPreview') === null) {
+    sessionStorage.setItem('recordPreview', false);
+}
 
 //CREATE TABLE
 export function createTable(obj) {
@@ -15,8 +18,9 @@ export function createTable(obj) {
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs'];
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
-    let createHeader = (col) => {
-        //console.log(col)
+    let createHeader = (col,i) => {
+        console.log(col);
+        col.table = obj.name;
         let header = document.createElement('div');
         header.style.width = '240px';
         header.style.position = 'relative';
@@ -196,11 +200,13 @@ export function createTable(obj) {
                 createMenuItem('Sort Column'),
                 createMenuItem('Group Column'),
                 createMenuDivider(),
+                createMenuItem('Show Record Preview', setRecordPreview),
+                createMenuDivider(),
                 createMenuItem('Delete Column', menuAction, { icon: 'delete-bin' })
             ];
 
-            if (col.type == 'fk') {
-                //menuItems.splice(2, 3, createMenuItem(`Remove '${col.lookupTable}' Link`, removeLink, { icon: 'close' }));
+            if (col.showPreview) {
+                menuItems.splice(9, 1, createMenuItem(`Hide Record Preview`, setRecordPreview));
             }
 
             menuItems.forEach(item => menu.appendChild(item));
@@ -209,7 +215,6 @@ export function createTable(obj) {
 
         let removeLink = function () {
         };
-
 
         function menuAction(menu) {
             return function () {
@@ -230,26 +235,6 @@ export function createTable(obj) {
 
     let getColumnByPosition = (position) => obj.columns[position];
 
-    let getRecordByValue = (table, column, value) => {
-        //console.log(table,column,value);
-        let lookupTable = selectTableByName(table);
-        let columns = selectTableByName(table).columns;
-
-        const isColumn = (col) => col.name == column;
-
-        let columnPosition = columns.findIndex(isColumn);
-        //console.log(columnPosition)
-        let records = lookupTable.records.find(r => r.includes(value));
-
-        //console.log(records)
-        if (records !== undefined) {
-            return records[columnPosition];
-        } else {
-            return '';
-        }
-        ////console.log(lookupTable.records.map(record => record[columnPosition]));
-    };
-
     let createCell = (cell) => {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
@@ -259,29 +244,24 @@ export function createTable(obj) {
 
         renderedCell.style.cursor = 'pointer';
 
-
-
-        let createRecordLink = (_value) => {
-
-            let link = document.createElement('div');
-            link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'px-1', 'inline-block', 'bg-opacity-50', 'mr-1');
-
-            link.innerHTML = _value;
-            return link;
-        };
+        
 
         let cellInput = components.createInput({ value: cell.value });
         cellInput.classList.add('p-2', 'w-full', 'hidden');
         cellInput.classList.remove('border');
 
+        
+
         if (cell.type == 'fk') {
             if (cell.value == '') {
                 renderedCell.innerHTML = `<i class="ri-search-line text-xs ${theme.mediumBackgroundColor} p-1 rounded"></i>`;
             } else {
-                let renderedValue = getRecordByValue(cell.lookupTable, cell.lookupField, cell.value);
-                renderedCell.appendChild(createRecordLink(renderedValue));
+                if (columnByName(cell.column).showPreview) {
+                    renderedCell.appendChild(createRecordSummary(cell));
+                } else {
+                    renderedCell.appendChild(createRecordLink(cell));
+                }  
             }
-            //renderedCell.appendChild(createRecordLink(cell));
         } else {
             renderedCell.innerHTML = cell.value;
         }
@@ -429,8 +409,8 @@ export function createTable(obj) {
     headerWrapper.appendChild(headerRow);
     headerWrapper.classList.add('t-head', 'row-wrapper');
 
-    obj.columns.forEach(col => headerRow.appendChild(createHeader(col)));
-    obj.records.forEach((record, index) => rowWrapper.appendChild(createRow(record, index)));
+    obj.columns.forEach((col,i) => headerRow.appendChild(createHeader(col,i)));
+    obj.records.forEach((record, i) => rowWrapper.appendChild(createRow(record, i)));
     table.appendChild(headerWrapper);
     table.appendChild(rowWrapper);
 
@@ -479,7 +459,53 @@ export function createTable(obj) {
     return tableWrapper;
 };
 
+function getRecordByValue(table, column, value) {
+    //console.log(table,column,value);
+    let lookupTable = selectTableByName(table);
+    let columns = selectTableByName(table).columns;
 
+    const isColumn = (col) => col.name == column;
 
+    let columnPosition = columns.findIndex(isColumn);
+    //console.log(columnPosition)
+    let records = lookupTable.records.find(r => r.includes(value));
 
+    //console.log(records)
+    if (records !== undefined) {
+        return records[columnPosition];
+    } else {
+        return '';
+    }
+    ////console.log(lookupTable.records.map(record => record[columnPosition]));
+}
 
+function createRecordLink(cell) {
+    let renderedValue = getRecordByValue(cell.lookupTable, cell.lookupField, cell.value);
+    let link = document.createElement('div');
+    link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'px-1', 'inline-block', 'bg-opacity-50', 'mr-1');
+    link.innerHTML = renderedValue;
+    return link;
+}
+
+function createRecordSummary(cell) {
+    let referencedTable = selectTableByName(cell.lookupTable);
+    let summary = referencedTable.columns.map(col => `<span class="${theme.mutedTextColor}">${col.name}:</span> ${getRecordByValue(cell.lookupTable, col.name, cell.value)}`).slice(0,5).join(' ');
+    let link = document.createElement('div');
+    link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'p-1', 'bg-opacity-20', 'mr-1','text-sm');
+    link.innerHTML = summary;
+    return link;
+}
+
+function setRecordPreview(column){
+    if (column.showPreview) {
+        selectTableByName(column.table).columns.find(col => col == column).showPreview = false;
+    } else {
+        selectTableByName(column.table).columns.find(col => col == column).showPreview = true;
+    }
+    document.querySelector('.table-wrapper').innerHTML = '';
+    saveTable(selectTableByName(column.table));
+    //sessionStorage.setItem('recordPreview', true);
+    //.filter(col => col == column).recordPreview = true;
+    //console.log(selectTableByName(column.table))
+    //saveTable(selectTableByName(column.table));
+}

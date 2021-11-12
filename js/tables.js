@@ -38,7 +38,7 @@ var allTables = [{
         { name: 'artistId', type: 'fk', lookupField: 'id', lookupTable: 'artist' }
     ],
     records: [
-        ['20', 'Aquarius', 'Pop','56','56',''],
+        ['20', 'Aquarius', 'Pop','56','56','67'],
         ['21', 'Aquarium', 'Pop','56','56',''],
         ['22', 'Spike', 'Rock','57','57',''],
         ['23', 'Golden', 'Pop','57','57',''],
