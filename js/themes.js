@@ -4,7 +4,7 @@ var themes = {
         mediumBackgroundColor: 'bg-gray-700',
         darkBackgroundColor: 'bg-gray-800',
         accentBackgroundColor: 'bg-gray-700',
-        lightBackgroundColor: 'bg-gray-200',
+        lightBackgroundColor: 'bg-gray-600',
         darkBorderColor: 'border-gray-800',
         mediumBorderColor: 'border-gray-500',
         lightBorderColor: 'border-gray-500',

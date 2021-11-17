@@ -124,8 +124,9 @@ export function createLookupMenu(cell) {
     });
 
     addDropdownOutsideClickHandler(menu, function () {
-        document.querySelector('.table-wrapper').innerHTML = '';
-        saveTable(selectTableByName(cell.table));
+        
+        //document.querySelector('.table-wrapper').innerHTML = '';
+        //saveTable(selectTableByName(cell.table));
     });
     return menu;
 }

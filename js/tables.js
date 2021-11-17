@@ -1,4 +1,5 @@
-var allTables = [{
+var allTables = [
+{
     name: 'artist',
     type: 'table',
     constraints: [
@@ -122,6 +123,22 @@ var allTables = [{
     records: [
         ['56', 'RCA Records', 'UK'],
         ['57', 'RCA Records', 'US']
+    ],
+    color: 'blue'
+},{
+    name: 'award',
+    type: 'table',
+    constraints: [
+        {type:'Primary Key', columns:['id']}
+    ],
+    columns: [
+        { name: 'id', type: 'number', readOnly: true },
+        { name: 'name', type: 'text' },
+        { name: 'date', type: 'date' }
+    ],
+    records: [
+        ['879', 'Grammy', '2020-08-20'],
+        ['880', 'Grammy', '2020-08-20']
     ],
     color: 'blue'
 },{

@@ -238,7 +238,7 @@ function linkTableWizard(obj) {
             console.log(answers);
             if (answers.every(answer => answer == 'yes')) {
                 let newMapTable = createMapTable(selectTableByName(_table), obj);
-                ///
+                
                 savedTables.push(newMapTable);
                 sessionStorage.setItem('tables', JSON.stringify(savedTables));
                 location.reload();
@@ -248,7 +248,13 @@ function linkTableWizard(obj) {
             } else {
                 if (answers[0] == 'yes') {
                     let newColumn = createReferenceColumn(obj);
-
+                    
+                    obj.constraints.push({
+                        type:'Foreign Key',
+                        columns:[newColumn.name],
+                        referenceTable:newColumn.lookupTable,
+                        referenceColumns:[newColumn.lookupField]
+                    });
 
                     selectTableByName(_table).columns.push(newColumn);
                     selectTableByName(_table).records.forEach(record => { record.push('') });
@@ -262,6 +268,12 @@ function linkTableWizard(obj) {
 
                     let newColumn = createReferenceColumn(selectTableByName(_table));
 
+                    obj.constraints.push({
+                        type:'Foreign Key',
+                        columns:[newColumn.name],
+                        referenceTable:newColumn.lookupTable,
+                        referenceColumns:[newColumn.lookupField]
+                    });
 
                     obj.columns.push(newColumn);
                     obj.records.forEach(record => { record.push('') });
@@ -425,6 +437,12 @@ function createMapTable(tableA, tableB) {
         name: `${tableA.name}_${tableB.name}`,
         type: 'table',
         id: maxId + 1,
+
+        constraints : [
+            {type:'Primary Key', columns:['id']},
+            {type:'Foreign Key', columns:[`${tableA.name}Id`], referenceTable:`${tableA.name}`, referenceColumns:[`${tableA.columns[0].name}`]},
+            {type:'Foreign Key', columns:[`${tableB.name}Id`], referenceTable:`${tableB.name}`, referenceColumns:[`${tableB.columns[0].name}`]},
+        ],
 
         columns: [
             {

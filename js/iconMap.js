@@ -3,7 +3,8 @@ var icon = {
     'Foreign Key' : 'ri-key-line',
     'number' : 'ri-hashtag',
     'text' : 'ri-text',
-    'duration' : 'ri-timer-2-line'
+    'duration' : 'ri-timer-2-line',
+    'date' : 'ri-calendar-line'
 }
 
 export {icon}

@@ -5,6 +5,7 @@ import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { icon } from './iconMap.js';
 import { setTableConstraints } from './setTableConstraints.js';
+import { active } from 'd3-transition';
 
 
 if (sessionStorage.getItem('recordPreview') === null) {
@@ -18,7 +19,7 @@ export function createTable(obj) {
     let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs'];
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
-    let createHeader = (col,i) => {
+    let createHeader = (col, i) => {
         console.log(col);
         col.table = obj.name;
         let header = document.createElement('div');
@@ -174,8 +175,8 @@ export function createTable(obj) {
             let dataTypeLabel = document.createElement('div');
             dataTypeLabel.classList.add('text-base');
             dataTypeOption.appendChild(dataTypeLabel);
-            let dataTypeIcon = document.createElement('i');
-            dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
+            //let dataTypeIcon = document.createElement('i');
+            //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
             dataTypeLabel.innerHTML = col.type;
 
             //dataTypeOption.addEventListener('click', openDataTypeMenu);
@@ -186,7 +187,7 @@ export function createTable(obj) {
                 dataTypeLabel.innerHTML = linkedColumnType;
             }
 
-            dataTypeLabel.prepend(dataTypeIcon);
+            //dataTypeLabel.prepend(dataTypeIcon);
 
             //ADD MENU ITEMS
             let menuItems = [
@@ -229,7 +230,6 @@ export function createTable(obj) {
             addDropdownOutsideClickHandler(menu, () => console.log("Clicked outside when openColumnMenu was open"));
         }
 
-
         return header;
     };
 
@@ -241,16 +241,13 @@ export function createTable(obj) {
         cellElement.style.width = '240px';
         let renderedCell = document.createElement('div');
         renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
-
         renderedCell.style.cursor = 'pointer';
-
-        
+        renderedCell.tabIndex = 0;
 
         let cellInput = components.createInput({ value: cell.value });
-        cellInput.classList.add('p-2', 'w-full', 'hidden');
+        cellInput.classList.add('p-2', 'w-full');
         cellInput.classList.remove('border');
-
-        
+        cellInput.autocomplete = 'off';
 
         if (cell.type == 'fk') {
             if (cell.value == '') {
@@ -260,17 +257,60 @@ export function createTable(obj) {
                     renderedCell.appendChild(createRecordSummary(cell));
                 } else {
                     renderedCell.appendChild(createRecordLink(cell));
-                }  
+                }
             }
         } else {
             renderedCell.innerHTML = cell.value;
         }
 
+        // EMPTY VALUES
+        if (cell.value == '') {
+            renderedCell.innerHTML = 'NULL'
+            renderedCell.classList.replace(theme.textColor, theme.mutedTextColor);
+            renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
+        }
+
         renderedCell.addEventListener('click', function () {
             if (cell.type == 'fk') {
                 cellElement.appendChild(createLookupMenu(cell));
+            } else {
+                
+                renderedCell.addEventListener('keydown',deleteCell);
+
+                addCellOutsideClickHandler(renderedCell, function () {
+                    console.log('test');
+                });
+
+                //cellSelection(cell);
+                //cellElement.classList.add('cell-selected');
+                renderedCell.classList.add(theme.primaryBorderColor);
+                renderedCell.classList.replace('border-opacity-0', 'border-opacity-100');
+                renderedCell.setAttribute('selected',true);
             }
         });
+
+        renderedCell.addEventListener('dblclick', function () {
+            if (cell.type !== 'fk') {
+                renderedCell.remove();
+                cellElement.append(cellInput);
+                cellInput.focus();
+            }
+        });
+
+        cellInput.addEventListener('blur', function () {
+            document.querySelector('.table-wrapper').innerHTML = '';
+            obj.records[cell.row].splice(cell.position, 1, cellInput.value);
+            saveTable(obj);
+        });
+
+        function deleteCell(event){
+            console.log(event.target);
+            if (event.key === "Backspace" && event.target.getAttribute('selected')) {
+                document.querySelector('.table-wrapper').innerHTML = '';
+                obj.records[cell.row].splice(cell.position, 1, '');
+                saveTable(obj);
+            }   
+        }
 
 
         //if (summaryOf[i] && recordTable[i]) {
@@ -320,7 +360,7 @@ export function createTable(obj) {
         //    });
         //}
         //
-        cellElement.append(cellInput, renderedCell);
+        cellElement.append(renderedCell);
         //
         return cellElement;
     };
@@ -409,7 +449,7 @@ export function createTable(obj) {
     headerWrapper.appendChild(headerRow);
     headerWrapper.classList.add('t-head', 'row-wrapper');
 
-    obj.columns.forEach((col,i) => headerRow.appendChild(createHeader(col,i)));
+    obj.columns.forEach((col, i) => headerRow.appendChild(createHeader(col, i)));
     obj.records.forEach((record, i) => rowWrapper.appendChild(createRow(record, i)));
     table.appendChild(headerWrapper);
     table.appendChild(rowWrapper);
@@ -456,6 +496,10 @@ export function createTable(obj) {
     });
 
 
+    
+
+
+
     return tableWrapper;
 };
 
@@ -489,14 +533,14 @@ function createRecordLink(cell) {
 
 function createRecordSummary(cell) {
     let referencedTable = selectTableByName(cell.lookupTable);
-    let summary = referencedTable.columns.map(col => `<span class="${theme.mutedTextColor}">${col.name}:</span> ${getRecordByValue(cell.lookupTable, col.name, cell.value)}`).slice(0,5).join(' ');
+    let summary = referencedTable.columns.map(col => `<span class="${theme.mutedTextColor}">${col.name}:</span> ${getRecordByValue(cell.lookupTable, col.name, cell.value)}`).slice(0, 5).join(' ');
     let link = document.createElement('div');
-    link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'p-1', 'bg-opacity-20', 'mr-1','text-sm');
+    link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'p-1', 'bg-opacity-20', 'mr-1', 'text-sm');
     link.innerHTML = summary;
     return link;
 }
 
-function setRecordPreview(column){
+function setRecordPreview(column) {
     if (column.showPreview) {
         selectTableByName(column.table).columns.find(col => col == column).showPreview = false;
     } else {
@@ -509,3 +553,61 @@ function setRecordPreview(column){
     //console.log(selectTableByName(column.table))
     //saveTable(selectTableByName(column.table));
 }
+
+function cellSelection(cell){
+    console.log(cell);
+    //const navList = document.querySelectorAll('.rendered-cell');
+//
+    //for (let item of navList) {
+    //    item.addEventListener("click", function () {
+    //        for (let item of navList) { item.classList.remove(theme.darkPrimaryColor, 'bg-opacity-40','cell-selected'); }
+    //        this.classList.add(theme.darkPrimaryColor, 'bg-opacity-40', 'cell-selected');
+    //    });
+    //}
+//
+    //document.addEventListener('keydown',function(){
+    //    console.log(cell);
+    //    document.querySelector('.cell-selected').innerHTML = 'TEST'
+    //});
+}
+
+
+
+function removeCellOutsideClickHandler(menu) {
+    if (menu.outsideClickHandler) {
+        document.removeEventListener('click', menu.outsideClickHandler);
+    }
+}
+
+function addCellOutsideClickHandler(menu, fn) {
+
+    function handler(event) {
+        var isClickInsideElement = isNodeChildOf(event.target, menu); //|| event.target.tagName === 'INPUT';
+        if (!isClickInsideElement) {
+            fn();
+            document.removeEventListener('click', handler);
+            menu.outsideClickHandler = null;
+            menu.classList.replace('border-opacity-100','border-opacity-0');
+            menu.setAttribute('selected',false);
+        }
+    }
+
+    removeCellOutsideClickHandler(menu);
+
+    setTimeout(function () {
+        document.addEventListener('click', handler);
+        menu.outsideClickHandler = handler;
+    }, 0);
+}
+
+function isNodeChildOf(obj, parentObj) {
+    while (obj != undefined && obj != null && obj.tagName.toLowerCase() != 'body') {
+        if (obj == parentObj) {
+            return true;
+        }
+        obj = obj.parentNode;
+    }
+    return false;
+}
+
+
