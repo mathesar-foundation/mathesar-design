@@ -309,8 +309,6 @@ export function createTable(obj) {
 
         let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
 
-        
-
         function deleteCell(event){
             console.log(event.target);
             if (event.key === "Backspace" && event.target.getAttribute('selected')) {

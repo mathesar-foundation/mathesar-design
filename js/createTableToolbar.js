@@ -102,8 +102,6 @@ function linkTableWizard(obj) {
     linkToConstraints.classList.add('text-sm')
     linkToConstraints.innerHTML = `If you prefer to configure this manually go to <a href="#" class="${theme.primaryTextColor}">constraints settings</a>`
 
-
-
     let actionsWrapper = document.createElement('div');
     actionsWrapper.classList.add('space-x-2', 'flex', 'justify-end');
 
@@ -127,13 +125,15 @@ function linkTableWizard(obj) {
         questionsWrapper.innerHTML = ''; // CLEAR QUESTIONS
         let _table = referencedTable.childNodes[1].value;
 
-        
 
         let questions = document.createElement('div');
         questions.classList.add('space-y-2')
         questionsWrapper.append(questions);
 
-        let diagram = createDiagram(1,1);
+        let diagram = document.createElement('div');
+        diagram.classList.add('border',theme.tableBorderColor,theme.darkBackgroundColor);
+        diagram.style.width = '140px';
+        diagram.style.height = '140px';
         questionsWrapper.append(diagram);
 
         let questionsList = [
