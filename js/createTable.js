@@ -260,7 +260,7 @@ export function createTable(obj) {
                     renderedCell.appendChild(createRecordLink(cell));
                 }
             }
-        } if (cell.type == 'date') {
+        } else if (cell.type == 'date') {
             cellInput.placeholder = 'YYYY-MM-DD';
             renderedCell.innerHTML = cell.value;
         } else {
