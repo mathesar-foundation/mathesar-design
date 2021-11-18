@@ -6,6 +6,7 @@ import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { icon } from './iconMap.js';
 import { setTableConstraints } from './setTableConstraints.js';
 import { active } from 'd3-transition';
+import { createModal } from './createModal.js';
 
 
 if (sessionStorage.getItem('recordPreview') === null) {
@@ -20,7 +21,7 @@ export function createTable(obj) {
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
     let createHeader = (col, i) => {
-        console.log(col);
+
         col.table = obj.name;
         let header = document.createElement('div');
         header.style.width = '240px';
@@ -259,6 +260,9 @@ export function createTable(obj) {
                     renderedCell.appendChild(createRecordLink(cell));
                 }
             }
+        } if (cell.type == 'date') {
+            cellInput.placeholder = 'YYYY-MM-DD';
+            renderedCell.innerHTML = cell.value;
         } else {
             renderedCell.innerHTML = cell.value;
         }
@@ -303,15 +307,34 @@ export function createTable(obj) {
             saveTable(obj);
         });
 
+        let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
+
+        
+
         function deleteCell(event){
             console.log(event.target);
             if (event.key === "Backspace" && event.target.getAttribute('selected')) {
-                document.querySelector('.table-wrapper').innerHTML = '';
-                obj.records[cell.row].splice(cell.position, 1, '');
-                saveTable(obj);
+        
+                if (cellConstraints && cellConstraints.type == 'Not Null') {
+                    let warningContent = document.createElement('div');
+                    warningContent.innerHTML = `
+                    <h3 class="text-lg">This column does not accept NULL values</h3>
+                    <p>This column has a NOT NULL constraint applied to it. To insert NULL values, remove the constraint first.</p>
+                    `
+                    document.querySelector('body').append(createModal(warningContent))
+                    console.log(cellConstraints.type,cell.position);
+                } else {
+                    document.querySelector('.table-wrapper').innerHTML = '';
+                    obj.records[cell.row].splice(cell.position, 1, '');
+                    saveTable(obj);
+                }
+                
             }   
         }
 
+        
+
+        
 
         //if (summaryOf[i] && recordTable[i]) {
         //    renderedCell.addEventListener('dblclick', function () {

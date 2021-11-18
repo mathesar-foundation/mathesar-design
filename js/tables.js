@@ -3,7 +3,9 @@ var allTables = [
     name: 'artist',
     type: 'table',
     constraints: [
-        {type:'Primary Key', columns:['id']}
+        {type:'Primary Key', columns:['id']},
+        {type:'Unique', columns:['IPICode']},
+        {type:'Not Null', columns:['artistName']}
     ],
     columns: [
         { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
