@@ -221,7 +221,7 @@ function linkTableWizard(obj) {
                         diagram.innerHTML = createDiagram(1,1).outerHTML;
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> table.</p>
+                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a unique and foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
                     `;
 
                     }
