@@ -120,9 +120,9 @@ export function createTable(obj) {
             // CREATE MENU ITEMS
             let dataTypeOption = document.createElement('a');
             dataTypeOption.setAttribute('href', 'javascript:void(0)');
-            dataTypeOption.classList.add('m-1', 'py-1', 'px-2', 'flex', 'items-center', 'block');
+            dataTypeOption.classList.add('m-1', 'items-center', 'block');
             let dataTypeLabel = document.createElement('div');
-            dataTypeLabel.classList.add('text-base');
+            dataTypeLabel.classList.add('text-base','p-1');
             dataTypeOption.appendChild(dataTypeLabel);
 
             let columnTypeIcon = components.createIcon(icon[col.type], { style: 'type' });
@@ -136,8 +136,16 @@ export function createTable(obj) {
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
                 let columnTypeIcon = components.createIcon(icon[linkedColumnType], { style: 'type' });
                 //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
-                dataTypeLabel.innerHTML = `${columnTypeIcon.outerHTML} ${linkedColumnType}`;
+                dataTypeLabel.innerHTML = `
+                <div class="p-1">${columnTypeIcon.outerHTML} ${linkedColumnType}</div>
                 
+                `;
+                //<div class="border-b ${theme.tableBorderColor} mx-2 my-1"></div>
+             //
+                //<div class="p-1 text-sm">
+                //<h5>Foreign Key Constraint (1)</h5>
+                //<a href="javascript:void(0)" class="${theme.primaryTextColor}">FK_${col.name}</a>
+                //</div>
             }
 
             
