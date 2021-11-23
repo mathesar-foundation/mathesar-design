@@ -26,6 +26,7 @@ export function createTable(obj) {
         let header = document.createElement('div');
         header.style.width = '240px';
         header.style.position = 'relative';
+        header.style.cursor = 'pointer';
         header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
 
         let headerIcon = components.createIcon(icon[col.type], { style: 'type' });
@@ -49,10 +50,8 @@ export function createTable(obj) {
             </div>`;
 
             let referenceColor = selectTableByName(col.lookupTable).color;
-            //console.log(referenceColor)
 
-            let foreignKeyReference = document.createElement('a');
-            foreignKeyReference.href = 'javascript:void(0)'
+            let foreignKeyReference = document.createElement('span');
             foreignKeyReference.classList.add('text-sm', theme.mutedTextColor, 'block');
             foreignKeyReference.style.position = 'relative';
             foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> ${col.lookupTable}.${col.lookupField}`;
@@ -68,65 +67,14 @@ export function createTable(obj) {
             
             <div><a href="javascript:void(0)" class="${theme.textColor}">${columnConstraints.columns.join(',')}</a></div>
             `;
-
-            foreignKeyReference.addEventListener('click', function () {
-                setTableConstraints(obj);
-            });
-
-            foreignKeyReference.addEventListener('mouseenter', function () {
-                foreignKeyReference.append(info);
-                console.log('test')
-            });
-
-            foreignKeyReference.addEventListener('mouseleave', function () {
-                foreignKeyReference.removeChild(info);
-                console.log('test')
-            });
         }
-
-        //let headerLabel = document.createElement('div');
-        //let headerIcon = components.createIcon(icon[col.type], { style: 'type' });
-        //if (col.type == 'fk') {
-        //    let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
-        //    headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' });
-        //}
-        //let headerColumnName = document.createElement('span');
-        //headerColumnName.innerHTML = col.name;
-        //header.append(headerLabel);
-        //headerLabel.append(headerIcon,headerColumnName);
-        //
-        //        //if (col.type == 'fk') {
-        //        //    let foreignKeyIcon = document.createElement('i');
-        //        //    foreignKeyIcon.classList.add('ri-key-fill', 'mr-1', 'text-xs');
-        //        //    headerLabel.insertBefore(foreignKeyIcon, headerColumnName);
-        //        //}
-        //
-        //        //if (col.isLookup) {
-        //        //    let lookupIcon = components.createIcon('search');
-        //        //    lookupIcon.classList.add('ml-2', 'text-sm');
-        //        //    headerLabel.append(lookupIcon);
-        //        //}
-        //
-        //        ////RENAME HEADER
-        //        //headerLabel.addEventListener('click', function () {
-        //        //    headerLabel.innerHTML = '';
-        //        //    let renameInput = components.createInput({ value: col.name });
-        //        //    renameInput.classList.add(theme.inputBackgroundColor, 'px-1');
-        //        //    renameInput.classList.remove('p-1');
-        //        //    headerLabel.append(renameInput);
-        //        //    renameInput.focus();
-        //        //    renameInput.addEventListener('blur', function () {
-        //        col.name = renameInput.value;
-        //        tableWrapper.remove();
-        //        saveTable(obj);
-        //    });
-        //});
 
         let headerMenuToggle = document.createElement('button');
         headerMenuToggle.innerHTML = `<i class="ri-arrow-down-s-line align-bottom"></i>`;
         headerMenuToggle.classList.add('ml-auto');
         header.appendChild(headerMenuToggle);
-        headerMenuToggle.addEventListener('click', openColumnMenu);
+
+        header.addEventListener('click', openColumnMenu);
 
         let createMenuItem = function (label, fn, options) {
             let menuItem = document.createElement('a');
@@ -176,19 +124,23 @@ export function createTable(obj) {
             let dataTypeLabel = document.createElement('div');
             dataTypeLabel.classList.add('text-base');
             dataTypeOption.appendChild(dataTypeLabel);
-            //let dataTypeIcon = document.createElement('i');
-            //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
-            dataTypeLabel.innerHTML = col.type;
+
+            let columnTypeIcon = components.createIcon(icon[col.type], { style: 'type' });
+            dataTypeLabel.innerHTML = `${columnTypeIcon.outerHTML} ${col.type}`;
 
             //dataTypeOption.addEventListener('click', openDataTypeMenu);
 
+            console.log(columnConstraints);
+
             if (col.type == 'fk') {
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
-                dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
-                dataTypeLabel.innerHTML = linkedColumnType;
+                let columnTypeIcon = components.createIcon(icon[linkedColumnType], { style: 'type' });
+                //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
+                dataTypeLabel.innerHTML = `${columnTypeIcon.outerHTML} ${linkedColumnType}`;
+                
             }
 
-            //dataTypeLabel.prepend(dataTypeIcon);
+            
 
             //ADD MENU ITEMS
             let menuItems = [
@@ -583,19 +535,6 @@ function setRecordPreview(column) {
 
 function cellSelection(cell){
     console.log(cell);
-    //const navList = document.querySelectorAll('.rendered-cell');
-//
-    //for (let item of navList) {
-    //    item.addEventListener("click", function () {
-    //        for (let item of navList) { item.classList.remove(theme.darkPrimaryColor, 'bg-opacity-40','cell-selected'); }
-    //        this.classList.add(theme.darkPrimaryColor, 'bg-opacity-40', 'cell-selected');
-    //    });
-    //}
-//
-    //document.addEventListener('keydown',function(){
-    //    console.log(cell);
-    //    document.querySelector('.cell-selected').innerHTML = 'TEST'
-    //});
 }
 
 
