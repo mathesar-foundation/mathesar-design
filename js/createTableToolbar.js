@@ -1,9 +1,10 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { activeTable, savedTables, createTitle, selectTableByName, selectTableById } from './main';
+import { savedTables, createTitle, selectTableByName, selectTableById } from './main';
 import { createModal } from './createModal.js';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { setTableConstraints } from './setTableConstraints';
+import { setTablePreferences } from './setTablePreferences';
 import * as d3 from "d3";
 
 
@@ -416,7 +417,7 @@ function createTableOptionsMenu(table) {
 
     let menuItems = [
         createMenuItem('Table Constraints', setTableConstraints),
-        createMenuItem('Set Lookup Column'),
+        createMenuItem('Table Preferences', setTablePreferences),
         createMenuItem('Delete Table')
     ];
 

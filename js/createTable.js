@@ -293,6 +293,12 @@ export function createTable(obj) {
             }
         });
 
+        renderedCell.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+            cellElement.appendChild(createCellMenu(cell));
+            return false;
+        },false);
+
         renderedCell.addEventListener('dblclick', function () {
             if (cell.type !== 'fk') {
                 renderedCell.remove();
@@ -631,4 +637,44 @@ function isNodeChildOf(obj, parentObj) {
     return false;
 }
 
+function createCellMenu(cell) {
+    let menu = document.createElement('div');
+    menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1', 'border', theme.lightBorderColor);
+    menu.style.position = 'absolute';
+    menu.style.minWidth = '280px';
 
+    let createItem = function(option){
+        let item = document.createElement('a');
+        item.href = 'javascript:void(0)';
+        item.classList.add('p-1',theme.textColor,'block')
+        item.innerHTML = `<i class="${option.icon} ${theme.mutedTextColor} mr-1 align-bottom"></i> ${option.label}`;
+        return item;
+
+    }
+
+    let options = [{
+        label: 'Clear Value',
+        icon: 'ri-eraser-line'
+    },{
+        label: 'Set Value as NULL',
+        icon: 'ri-forbid-line'
+    },{
+        label: 'Cut',
+        icon: 'ri-scissors-cut-line'
+    },{
+        label: 'Copy',
+        icon: 'ri-clipboard-line'
+    },{
+        label: 'Paste'
+    }];
+
+    options.forEach(option => {
+        menu.append(createItem(option));
+    });
+
+    addDropdownOutsideClickHandler(menu, function () {
+
+    });
+
+    return menu;
+}

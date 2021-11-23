@@ -8,6 +8,7 @@ import { createModal } from './createModal';
 import { createTableToolbar } from './createTableToolbar';
 import { createTable } from './createTable';
 import { setTableConstraints } from './setTableConstraints.js';
+import { setTablePreferences } from './setTablePreferences';
 import { createDropdownMenu,addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -607,3 +608,4 @@ doubleClickEvent.initEvent('dblclick', true, true);
 
 
 //setTableConstraints(selectTableById(3));
+//setTablePreferences(selectTableById(3));

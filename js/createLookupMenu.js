@@ -5,7 +5,6 @@ import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { selectTableByName, saveTable, columnByName } from './main';
 
 export function createLookupMenu(cell) {
-    console.log(cell);
 
     let menu = document.createElement('div');
     menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-1', 'border', theme.tableBorderColor);

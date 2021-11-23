@@ -51,7 +51,6 @@ export function setTableConstraints(table) {
     let content = document.createElement('div');
 
     let gridContainer = document.createElement('div');
-
     gridContainer.classList.add('grid', 'gap-2', 'grid-cols-6');
 
     let modal = createModal(content, actions);
