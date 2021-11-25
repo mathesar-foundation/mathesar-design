@@ -254,6 +254,8 @@ export function createTable(obj) {
             }
 
             renderedCell.append(createCheckbox(cell.value))
+
+            
             
         }
 
@@ -308,15 +310,19 @@ export function createTable(obj) {
         let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
 
         function deleteCell(event){
-            console.log(event.target);
             if (event.key === "Backspace" && event.target.getAttribute('selected')) {
         
                 if (cellConstraints && cellConstraints.type == 'Not Null') {
                     let warningContent = document.createElement('div');
                     warningContent.innerHTML = `
-                    <h3 class="text-lg">This column does not accept NULL values</h3>
-                    <p>This column has a NOT NULL constraint applied to it. To insert NULL values, remove the constraint first.</p>
+                    <h3 class="text-lg">Can't Delete Value</h3>
+                    <p>Cannot insert the value NULL into column <span>${cell.column}</span>. The column does not allow nulls.</p>
+                    <div class="mt-2 text-right">
+                    ${components.createButton('Ok',{style:'primary'}).outerHTML}
+                    </div>
                     `
+                   
+
                     document.querySelector('body').append(createModal(warningContent))
                     console.log(cellConstraints.type,cell.position);
                 } else {
@@ -329,56 +335,6 @@ export function createTable(obj) {
         }
 
         
-
-        
-
-        //if (summaryOf[i] && recordTable[i]) {
-        //    renderedCell.addEventListener('dblclick', function () {
-        //        cellInput.classList.remove('hidden');
-        //        cellInput.focus();
-        //        renderedCell.classList.add('hidden');
-        //        cellElement.appendChild(createRecordListMenu(cellInput, recordTable[i], summaryOf[i], cell));
-        //    });
-        //} else if (recordTable[i]) {
-        //    renderedCell.addEventListener('dblclick', function () {
-        //        cellInput.classList.remove('hidden');
-        //        cellInput.focus();
-        //        renderedCell.classList.add('hidden');
-        //        cellElement.appendChild(createEditRecordMenu(cellInput, recordTable[i], cell));
-        //    });
-        //} else if (lookupTable[i]) {
-        //    renderedCell.addEventListener('click', function () {
-        //        //cellInput.classList.remove('hidden');
-        //        //cellInput.focus();
-        //        
-        //        //renderedCell.style.borderColor = 'red';
-        //        //renderedCell.classList.replace('border-opacity-0',theme.primaryBorderColor);
-        //        cellElement.appendChild(createLookupMenu(cellInput, lookupTable[i], lookupField[i], cell));
-        //    });
-        //    //renderedCell.addEventListener('dblclick', function () {
-        //    //    cellInput.classList.remove('hidden');
-        //    //    cellInput.focus();
-        //    //    renderedCell.classList.add('hidden');
-        //    //    cellElement.appendChild(createLookupMenu(cellInput, lookupTable[i], lookupField[i], cell));
-        //    //});
-        //} else {
-        //    renderedCell.addEventListener('dblclick', function () {
-        //        cellInput.classList.remove('hidden');
-        //        cellInput.focus();
-        //        renderedCell.classList.add('hidden');
-        //        cellInput.addEventListener('blur', function () {
-        //            renderedCell.innerHTML = cellInput.value;
-        //            cellInput.classList.add('hidden');
-        //            renderedCell.classList.remove('hidden');
-        //            let editedRecord = obj.records.find(record => record.includes(cell));
-        //            let recordIndex = editedRecord.indexOf(cell);
-        //            editedRecord[recordIndex] = cellInput.value;
-        //            document.querySelector('.table-wrapper').innerHTML = '';
-        //            saveTable(obj);
-        //        });
-        //    });
-        //}
-        //
         cellElement.append(renderedCell);
         //
         return cellElement;
@@ -513,10 +469,6 @@ export function createTable(obj) {
         obj.records.forEach(record => record.push(''));
         saveTable(obj);
     });
-
-
-    
-
 
 
     return tableWrapper;
