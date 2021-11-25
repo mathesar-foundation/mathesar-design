@@ -585,10 +585,8 @@ function createCellMenu(cell) {
 
     }
 
-    let options = [{
-        label: 'Clear Value',
-        icon: 'ri-eraser-line'
-    }, {
+    let options = [
+    {
         label: 'Set Value as NULL',
         icon: 'ri-forbid-line'
     }, {
