@@ -36,8 +36,6 @@ export function createLookupMenu(cell) {
     };
 
 
-
-
     let createRecords = function (records, fn) {
         let list = document.createElement('div');
         list.classList.add('space-y-1','p-1')
@@ -65,7 +63,16 @@ export function createLookupMenu(cell) {
              
 
             let recordLabel = matchingCols
-                .map(([r, i]) => `<div class="flex space-x-2"><div class="${theme.mutedTextColor}">${columns[i]}</div><div>${r}</div></div>`).join('');
+                .map(([r, i]) => {
+                    console.log(r);
+                    if (r.length > 0) {
+                        return `<div class="flex space-x-2"><div class="${theme.mutedTextColor}">${columns[i]}:</div><div>${r}</div></div>`
+                    } else {
+                        return `<div class="flex space-x-2"><div class="${theme.mutedTextColor}">${columns[i]}:</div><div class="italic ${theme.mutedTextColor}">NULL</div></div>`
+                    }
+            
+                }).join('');
+            
             
             
             item.innerHTML = recordLabel;

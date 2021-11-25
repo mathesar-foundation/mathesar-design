@@ -122,7 +122,7 @@ export function createTable(obj) {
             dataTypeOption.setAttribute('href', 'javascript:void(0)');
             dataTypeOption.classList.add('m-1', 'items-center', 'block');
             let dataTypeLabel = document.createElement('div');
-            dataTypeLabel.classList.add('text-base','p-1');
+            dataTypeLabel.classList.add('text-base', 'p-1');
             dataTypeOption.appendChild(dataTypeLabel);
 
             let columnTypeIcon = components.createIcon(icon[col.type], { style: 'type' });
@@ -141,14 +141,14 @@ export function createTable(obj) {
                 
                 `;
                 //<div class="border-b ${theme.tableBorderColor} mx-2 my-1"></div>
-             //
+                //
                 //<div class="p-1 text-sm">
                 //<h5>Foreign Key Constraint (1)</h5>
                 //<a href="javascript:void(0)" class="${theme.primaryTextColor}">FK_${col.name}</a>
                 //</div>
             }
 
-            
+
 
             //ADD MENU ITEMS
             let menuItems = [
@@ -225,18 +225,18 @@ export function createTable(obj) {
                 }
             }
         }
-        
+
         if (cell.type == 'date') {
             cellInput.placeholder = 'YYYY-MM-DD';
             renderedCell.innerHTML = cell.value;
         }
 
-        
+
 
         if (cell.type == 'boolean') {
             renderedCell.innerHTML = '';
 
-            let createCheckbox = function(value) {
+            let createCheckbox = function (value) {
                 let booleanInput = document.createElement('input');
                 booleanInput.type = 'checkbox';
 
@@ -248,15 +248,17 @@ export function createTable(obj) {
                     return booleanInput
                 } else {
                     booleanInput.indeterminate = true;
-                    renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
+                    renderedCell.classList.add(theme.lightBackgroundColor, 'bg-opacity-20');
                     return booleanInput
                 }
             }
 
             renderedCell.append(createCheckbox(cell.value))
 
-            
-            
+            renderedCell.querySelector('input').addEventListener('change',function(event){
+                renderedCell.classList.remove(theme.lightBackgroundColor, 'bg-opacity-20');
+            });
+
         }
 
         // EMPTY VALUES
@@ -266,14 +268,14 @@ export function createTable(obj) {
             renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
         }
 
-        
+
 
         renderedCell.addEventListener('click', function () {
             if (cell.type == 'fk') {
                 cellElement.appendChild(createLookupMenu(cell));
             } else {
-                
-                renderedCell.addEventListener('keydown',deleteCell);
+
+                renderedCell.addEventListener('keydown', deleteCell);
 
                 addCellOutsideClickHandler(renderedCell, function () {
                     console.log('test');
@@ -283,7 +285,7 @@ export function createTable(obj) {
                 //cellElement.classList.add('cell-selected');
                 renderedCell.classList.add(theme.primaryBorderColor);
                 renderedCell.classList.replace('border-opacity-0', 'border-opacity-100');
-                renderedCell.setAttribute('selected',true);
+                renderedCell.setAttribute('selected', true);
             }
         });
 
@@ -291,7 +293,7 @@ export function createTable(obj) {
             event.preventDefault();
             cellElement.appendChild(createCellMenu(cell));
             return false;
-        },false);
+        }, false);
 
         renderedCell.addEventListener('dblclick', function () {
             if (cell.type !== 'fk') {
@@ -309,32 +311,32 @@ export function createTable(obj) {
 
         let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
 
-        function deleteCell(event){
+        function deleteCell(event) {
             if (event.key === "Backspace" && event.target.getAttribute('selected')) {
-        
+
                 if (cellConstraints && cellConstraints.type == 'Not Null') {
                     let warningContent = document.createElement('div');
                     warningContent.innerHTML = `
                     <h3 class="text-lg">Can't Delete Value</h3>
                     <p>Cannot insert the value NULL into column <span>${cell.column}</span>. The column does not allow nulls.</p>
                     <div class="mt-2 text-right">
-                    ${components.createButton('Ok',{style:'primary'}).outerHTML}
+                    ${components.createButton('Ok', { style: 'primary' }).outerHTML}
                     </div>
                     `
-                   
+
 
                     document.querySelector('body').append(createModal(warningContent))
-                    console.log(cellConstraints.type,cell.position);
+                    console.log(cellConstraints.type, cell.position);
                 } else {
                     document.querySelector('.table-wrapper').innerHTML = '';
                     obj.records[cell.row].splice(cell.position, 1, '');
                     saveTable(obj);
                 }
-                
-            }   
+
+            }
         }
 
-        
+
         cellElement.append(renderedCell);
         //
         return cellElement;
@@ -525,7 +527,7 @@ function setRecordPreview(column) {
     //saveTable(selectTableByName(column.table));
 }
 
-function cellSelection(cell){
+function cellSelection(cell) {
     console.log(cell);
 }
 
@@ -545,8 +547,8 @@ function addCellOutsideClickHandler(menu, fn) {
             fn();
             document.removeEventListener('click', handler);
             menu.outsideClickHandler = null;
-            menu.classList.replace('border-opacity-100','border-opacity-0');
-            menu.setAttribute('selected',false);
+            menu.classList.replace('border-opacity-100', 'border-opacity-0');
+            menu.setAttribute('selected', false);
         }
     }
 
@@ -574,10 +576,10 @@ function createCellMenu(cell) {
     menu.style.position = 'absolute';
     menu.style.minWidth = '280px';
 
-    let createItem = function(option){
+    let createItem = function (option) {
         let item = document.createElement('a');
         item.href = 'javascript:void(0)';
-        item.classList.add('p-1',theme.textColor,'block')
+        item.classList.add('p-1', theme.textColor, 'block')
         item.innerHTML = `<i class="${option.icon} ${theme.mutedTextColor} mr-1 align-bottom"></i> ${option.label}`;
         return item;
 
@@ -586,16 +588,16 @@ function createCellMenu(cell) {
     let options = [{
         label: 'Clear Value',
         icon: 'ri-eraser-line'
-    },{
+    }, {
         label: 'Set Value as NULL',
         icon: 'ri-forbid-line'
-    },{
+    }, {
         label: 'Cut',
         icon: 'ri-scissors-cut-line'
-    },{
+    }, {
         label: 'Copy',
         icon: 'ri-clipboard-line'
-    },{
+    }, {
         label: 'Paste'
     }];
 
