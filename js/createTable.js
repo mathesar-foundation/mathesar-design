@@ -210,29 +210,61 @@ export function createTable(obj) {
         cellInput.classList.remove('border');
         cellInput.autocomplete = 'off';
 
+        renderedCell.innerHTML = cell.value;
+
         if (cell.type == 'fk') {
             if (cell.value == '') {
                 renderedCell.innerHTML = `<i class="ri-search-line text-xs ${theme.mediumBackgroundColor} p-1 rounded"></i>`;
             } else {
                 if (columnByName(cell.column).showPreview) {
+                    renderedCell.innerHTML = '';
                     renderedCell.appendChild(createRecordSummary(cell));
                 } else {
+                    renderedCell.innerHTML = '';
                     renderedCell.appendChild(createRecordLink(cell));
                 }
             }
-        } else if (cell.type == 'date') {
+        }
+        
+        if (cell.type == 'date') {
             cellInput.placeholder = 'YYYY-MM-DD';
-            renderedCell.innerHTML = cell.value;
-        } else {
             renderedCell.innerHTML = cell.value;
         }
 
+        
+
+        if (cell.type == 'boolean') {
+            renderedCell.innerHTML = '';
+
+            let createCheckbox = function(value) {
+                let booleanInput = document.createElement('input');
+                booleanInput.type = 'checkbox';
+
+                if (value === true) {
+                    booleanInput.checked = true;
+                    return booleanInput
+                } else if (value === false) {
+                    booleanInput.checked = false;
+                    return booleanInput
+                } else {
+                    booleanInput.indeterminate = true;
+                    renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
+                    return booleanInput
+                }
+            }
+
+            renderedCell.append(createCheckbox(cell.value))
+            
+        }
+
         // EMPTY VALUES
-        if (cell.value == '') {
+        if (cell.value === '') {
             renderedCell.innerHTML = 'NULL'
             renderedCell.classList.replace(theme.textColor, theme.mutedTextColor);
             renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
         }
+
+        
 
         renderedCell.addEventListener('click', function () {
             if (cell.type == 'fk') {

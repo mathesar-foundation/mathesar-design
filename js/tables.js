@@ -59,15 +59,16 @@ var allTables = [
         { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
         { name: 'ISRC', type: 'text' },
         { name: 'trackName', type: 'text' },
-        { name: 'trackLength', type: 'duration' }
+        { name: 'trackLength', type: 'duration' },
+        { name: 'hasRating', type: 'boolean' }
     ],
     records: [
-        ['460', 'X63000000226', 'Turn Back Time', 180000],
-        ['461', 'GBXHC1810600', 'Roses are Red', 180000],
-        ['462', 'DKBKA9700408', 'Barbie Girl', 180000],
-        ['463', 'GBBKA0000502', 'Around the World', 180000],
-        ['464', 'USGF19822012', 'My Oh My', 180000],
-        ['465', 'DKBKA0000105', 'Love And Lust', 180000]
+        ['460', 'X63000000226', 'Turn Back Time', 180000, true],
+        ['461', 'GBXHC1810600', 'Roses are Red', 180000, true],
+        ['462', 'DKBKA9700408', 'Barbie Girl', 180000, false],
+        ['463', 'GBBKA0000502', 'Around the World', 180000, null],
+        ['464', 'USGF19822012', 'My Oh My', 180000, true],
+        ['465', 'DKBKA0000105', 'Love And Lust', 180000, true]
     ],
     color: 'pink'
 }, {
