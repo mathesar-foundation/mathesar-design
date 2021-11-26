@@ -3,7 +3,7 @@ import { theme } from './themes.js';
 var components = {
     createInput : function(options) {
         let input = document.createElement('input');
-        input.classList.add('p-1',theme.inputBackgroundColor,theme.textColor,'bg-opacity-20');
+        input.classList.add('p-1',theme.inputBackgroundColor,theme.textColor,'bg-opacity-20','border',theme.tableBorderColor);
         input.setAttribute('type','text');
         if (options) {
             if (options.placeholder) {

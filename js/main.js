@@ -28,7 +28,6 @@ let appWrapper = document.querySelector('body');
 appWrapper.prepend(topNav(schema));
 appWrapper.classList.add(theme.backgroundColor);
 
-
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
@@ -52,7 +51,6 @@ document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
 document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
 
-
 // STATUS FOR TABS
 setTableStatus(selectTableById(activeTable), 'active');
 setTableStatus(selectTableById(4), 'open');
@@ -68,7 +66,6 @@ function setTableStatus(table, status) {
 
 // TABS
 
-
 let openTables = [];
 openTables.push(selectTableById(activeTable))
 openTables.push(selectTableById(5))
@@ -82,7 +79,6 @@ function createTabs(openTables) {
         let tab = document.createElement('div');
         tab.classList.add('py-2', 'px-3', theme.textColor, 'border-r', theme.tableBorderColor, 'text-sm', 'space-x-2');
         tab.innerHTML = `<i class="ri-table-fill align-bottom"></i> ${table.name}`;
-
 
         let closeTabBtn = document.createElement('button');
         closeTabBtn.append(components.createIcon('close'));
@@ -145,7 +141,6 @@ export function typeIcon(type) {
 }
 
 export function getColumnType(table, column) {
-    //console.log(table,column)
     let columnType = selectTableByName(table).columns.find(col => col.name == column).type;
     return columnType;
 }
@@ -160,7 +155,6 @@ function addColumn(table) {
     saveTable(table);
 }
 
-
 //openInfoModal('tableRelationships')
 function openInfoModal(name) {
     let modalContent = document.createElement('div');
@@ -171,7 +165,6 @@ function openInfoModal(name) {
     let modal = createModal(modalContent);
     document.querySelector('body').appendChild(modal);
 }
-
 
 export function createTitle(title, subtitle, options) {
     let titleWrapper = document.createElement('div');
@@ -604,8 +597,6 @@ var doubleClickEvent = document.createEvent('MouseEvents');
 doubleClickEvent.initEvent('dblclick', true, true);
 
 //document.querySelectorAll('.rendered-cell')[8].click();
-
-
 
 //setTableConstraints(selectTableById(3));
 //setTablePreferences(selectTableById(3));
