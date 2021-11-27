@@ -19,10 +19,10 @@ function columnSelector(obj) {
 
     selectorWrapper.innerHTML = `<h4>${obj.title}</h4>`
     let selector = document.createElement('div');
-    selector.classList.add('border', theme.tableBorderColor);
+    selector.classList.add('border', theme.tableBorderColor, 'space-y-2','p-2');
     obj.columns.forEach(col => {
         let inputGroup = components.createCheckInput({ value: col.name, label: col.name, name: 'colSelector' });
-        inputGroup.classList.add('p-1');
+        inputGroup.classList.add('p-1',theme.mediumBackgroundColor);
 
         if (col.lookupField) {
             inputGroup.querySelector('label').prepend(typeIcon(col.lookupField));
@@ -72,7 +72,7 @@ export function setTableConstraints(table) {
     let form = document.createElement('div');
     form.style.height = '380px';
     form.style.overflowY = 'scroll';
-    form.classList.add('col-span-4', 'border', theme.tableBorderColor, theme.darkBackgroundColor, 'p-2', 'space-y-2');
+    form.classList.add('col-span-4', 'border', theme.tableBorderColor, theme.darkBackgroundColor, 'p-3', 'space-y-2');
     
 
     function createConstraintItem(constraint) {

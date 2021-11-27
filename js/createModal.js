@@ -5,8 +5,7 @@ export function createModal(content, footer) {
     let modal = document.createElement('div');
     modal.style.position = 'relative';
     modal.style.width = '800px';
-    let modalClasses = [theme.backgroundColor, theme.textColor, 'border', 'mx-auto', theme.mediumBorderColor];
-    modal.classList.add(...modalClasses);
+    modal.classList.add(theme.backgroundColor, theme.textColor, 'border', 'mx-auto', theme.mediumBorderColor);
     overlay.classList.add('bg-gray-900', 'w-full', 'h-full', 'flex', 'items-center', 'bg-opacity-70');
     overlay.style.position = 'absolute';
     overlay.style.top = '0';
@@ -21,7 +20,7 @@ export function createModal(content, footer) {
     closeModalBtn.classList.add('px-2');
     closeModalBtn.style.position = 'absolute';
     closeModalBtn.style.right = '0',
-        closeModalBtn.innerHTML = `<i class="ri-close-line"></i>`;
+    closeModalBtn.innerHTML = `<i class="ri-close-line"></i>`;
     closeModalBtn.addEventListener('click', function () {
         overlay.remove();
     });

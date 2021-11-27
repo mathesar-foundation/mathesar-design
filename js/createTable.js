@@ -138,14 +138,12 @@ export function createTable(obj) {
                 //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
                 dataTypeLabel.innerHTML = `
                 <div class="p-1">${columnTypeIcon.outerHTML} ${linkedColumnType}</div>
-                
-                `;
-                //<div class="border-b ${theme.tableBorderColor} mx-2 my-1"></div>
-                //
-                //<div class="p-1 text-sm">
-                //<h5>Foreign Key Constraint (1)</h5>
+                <div class="text-sm">
+                <div class="mx-1 ${theme.mutedTextColor}">Linked to <i class="ri ri-table-line align-bottom"></i> ${columnConstraints.referenceTable}</div>
+                </div>`;
                 //<a href="javascript:void(0)" class="${theme.primaryTextColor}">FK_${col.name}</a>
-                //</div>
+                //<div><i class="ri-layout-column-line align-bottom"></i> ${columnConstraints.referenceColumns.map(col => col).join('-')}</div>
+
             }
 
 
@@ -169,6 +167,10 @@ export function createTable(obj) {
 
             if (col.showPreview) {
                 menuItems.splice(9, 1, createMenuItem(`Hide Record Preview`, setRecordPreview));
+            }
+
+            if (col.type == 'fk') {
+                menuItems.splice(1, 0, createMenuItem(`Edit Constraint`, setRecordPreview));
             }
 
             menuItems.forEach(item => menu.appendChild(item));
@@ -255,7 +257,7 @@ export function createTable(obj) {
 
             renderedCell.append(createCheckbox(cell.value))
 
-            renderedCell.querySelector('input').addEventListener('change',function(event){
+            renderedCell.querySelector('input').addEventListener('change', function (event) {
                 renderedCell.classList.remove(theme.lightBackgroundColor, 'bg-opacity-20');
             });
 
@@ -586,18 +588,18 @@ function createCellMenu(cell) {
     }
 
     let options = [
-    {
-        label: 'Set Value as NULL',
-        icon: 'ri-forbid-line'
-    }, {
-        label: 'Cut',
-        icon: 'ri-scissors-cut-line'
-    }, {
-        label: 'Copy',
-        icon: 'ri-clipboard-line'
-    }, {
-        label: 'Paste'
-    }];
+        {
+            label: 'Set Value as NULL',
+            icon: 'ri-forbid-line'
+        }, {
+            label: 'Cut',
+            icon: 'ri-scissors-cut-line'
+        }, {
+            label: 'Copy',
+            icon: 'ri-clipboard-line'
+        }, {
+            label: 'Paste'
+        }];
 
     options.forEach(option => {
         menu.append(createItem(option));
