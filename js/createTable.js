@@ -170,7 +170,7 @@ export function createTable(obj) {
             }
 
             if (col.type == 'fk') {
-                menuItems.splice(1, 0, createMenuItem(`Drop Foreign Key Constraint`, function(){
+                menuItems.splice(1, 0, createMenuItem(`Edit Foreign Key Constraint`, function(){
                     setTableConstraints(obj)
                 }));
             }
