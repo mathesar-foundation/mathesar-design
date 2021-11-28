@@ -65,7 +65,7 @@ var components = {
     createSelectInput: function (list, options) {
         let formGroup = document.createElement('div');
         let input = document.createElement('select');
-        input.classList.add('p-1', theme.inputBackgroundColor, theme.textColor, 'bg-opacity-20', 'border', theme.tableBorderColor);
+        input.classList.add('p-1', theme.inputBackgroundColor, theme.textColor, 'bg-opacity-20', 'border', theme.tableBorderColor, 'w-full');
 
         let blankOption = document.createElement('option');
         blankOption.innerText = `Select`;

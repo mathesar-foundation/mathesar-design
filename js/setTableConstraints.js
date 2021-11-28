@@ -19,10 +19,10 @@ function columnSelector(obj) {
 
     selectorWrapper.innerHTML = `<h4>${obj.title}</h4>`
     let selector = document.createElement('div');
-    selector.classList.add('border', theme.tableBorderColor, 'space-y-2','p-2');
+    selector.classList.add('border', theme.tableBorderColor, 'space-y-2', 'p-2');
     obj.columns.forEach(col => {
         let inputGroup = components.createCheckInput({ value: col.name, label: col.name, name: 'colSelector' });
-        inputGroup.classList.add('p-1',theme.mediumBackgroundColor);
+        inputGroup.classList.add('p-1', theme.mediumBackgroundColor);
 
         if (col.lookupField) {
             inputGroup.querySelector('label').prepend(typeIcon(col.lookupField));
@@ -34,7 +34,7 @@ function columnSelector(obj) {
         }
         selector.append(inputGroup);
     });
-    selectorWrapper.append(selector);    
+    selectorWrapper.append(selector);
     return selectorWrapper;
 }
 
@@ -56,9 +56,9 @@ export function setTableConstraints(table) {
     let modal = createModal(content, actions);
     document.querySelector('body').appendChild(modal);
 
-    content.prepend(createTitle(
-        'Table Constraints',
-        'Constraints limit the type of data that can go into this table'
+    content.prepend(components.createTitle(
+        `Table Constraints for '${table.name}'`,
+        `Constraints limit the type of data that can go into this table`
     ));
 
     content.append(gridContainer);
@@ -73,25 +73,25 @@ export function setTableConstraints(table) {
     form.style.height = '380px';
     form.style.overflowY = 'scroll';
     form.classList.add('col-span-4', 'border', theme.tableBorderColor, theme.darkBackgroundColor, 'p-3', 'space-y-2');
-    
+
 
     function createConstraintItem(constraint) {
 
         let item = document.createElement('a');
         item.href = 'javascript:void(0)';
         item.classList.add('border-b', theme.tableBorderColor, 'p-2', 'flex', 'items-center', 'space-x-1');
-    
+
         let labelWrapper = document.createElement('div');
         labelWrapper.classList.add('mr-auto', 'space-y-1');
         let itemLabel = document.createElement('div');
         itemLabel.classList.add('mr-2');
-    
+
         let itemReferences = document.createElement('div');
         itemReferences.classList.add('text-sm');
-    
+
         let constraintName = `${constraint.type.match(/[A-Z]+/g).join("")}_${constraint.columns.join('_')}`;
-        itemLabel.innerHTML = constraintName;
-    
+        itemLabel.innerHTML = `<i class="ri ri-table-line align-bottom mr-1"></i>${constraintName}`;
+
 
         constraint.name = constraintName;
 
@@ -100,21 +100,21 @@ export function setTableConstraints(table) {
             form.append(showForm(constraint));
         });
 
-        form.addEventListener('change', function(){
+        form.addEventListener('change', function () {
             form.innerHTML = '';
             form.append(showForm(constraint));
         });
-    
+
         labelWrapper.append(itemLabel);
         //labelWrapper.append(itemLabel, itemReferences);
         item.append(labelWrapper);
-    
+
         return item;
     }
-    
+
 
     let buildList = (constraints) => {
-        
+
         constraints.forEach(constraint => {
             list.append(createConstraintItem(constraint))
         })
@@ -128,7 +128,7 @@ export function setTableConstraints(table) {
             });
         }
 
-        navList[(navList.length)-1].click();
+        navList[(navList.length) - 1].click();
 
         let formActions = document.createElement('div');
         formActions.classList.add('p-1', 'space-x-1', 'flex', 'mt-auto', theme.mediumBackgroundColor);
@@ -139,10 +139,10 @@ export function setTableConstraints(table) {
             list.innerHTML = '';
             console.log(constraintList);
             constraintList.push({
-                columns : [],
+                columns: [],
                 type: 'Foreign Key',
                 table: table.name,
-                referenceColumns : []
+                referenceColumns: []
             })
             buildList(constraintList);
         });
@@ -158,18 +158,17 @@ function showForm(constraint) {
     let table = selectTableByName(constraint.table);
 
     let form = document.createElement('div');
-    form.classList.add('space-y-2')
+    form.classList.add('space-y-2');
     let constraints = ['Unique', 'Primary Key', 'Foreign Key', 'Not Null'];
+    //form.innerHTML = `<h3 class="text-lg">Edit Constraint</h3>`
 
     let constraintType = components.createSelectInput(constraints, { label: 'Constraint Type', selected: constraint.type });
     let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table' });
     let columns = columnSelector({
-        title : 'Select Columns',
+        title: 'Select Columns',
         columns: table.columns,
-        selected : constraint.columns
+        selected: constraint.columns
     });
-
-    console.log(columns, table.columns, constraint.columns)
 
     form.append(
         components.createFormGroup(components.createInput({ value: constraint.name }), 'Constraint Name'),
@@ -184,14 +183,14 @@ function showForm(constraint) {
     if (constraint.referenceTable) {
         let _columns = columnSelector({
             title: 'Select Reference Columns',
-            columns: selectTableByName(constraint.referenceTable).columns, 
+            columns: selectTableByName(constraint.referenceTable).columns,
             selected: constraint.referenceColumns
         });
         referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table', selected: constraint.referenceTable });
-        form.append(referencedTable,_columns);
+        form.append(referencedTable, _columns);
 
         _columns.querySelectorAll('input').forEach(input => {
-            
+
             input.addEventListener('change', function () {
                 if (input.checked == true) {
                     constraint.referenceColumns.push(input.value);
@@ -206,7 +205,6 @@ function showForm(constraint) {
 
     columns.querySelectorAll('input').forEach(input => {
         input.addEventListener('change', function () {
-
             if (input.checked == true) {
                 constraint.columns.push(input.value);
             } else {
@@ -234,14 +232,25 @@ function showForm(constraint) {
     });
 
     referencedTable.addEventListener('change', function () {
-        console.log('YES')
         constraint.referenceTable = referencedTable.childNodes[1].value;
         showForm(constraint);
     });
 
+    let updateOptions = [
+        'No Action',
+        'Cascade',
+        'Set Null',
+        'Set Default'
+    ];
+
+    form.append(
+        components.createSelectInput(updateOptions.map(opt => opt), { label: 'On Update', selected:'No Action' }),
+        components.createSelectInput(updateOptions.map(opt => opt), { label: 'On Delete', selected:'No Action' })
+    )
+
     return form;
     //applyBtn.addEventListener('click', function () {
-//
+    //
     //    let _column = table.columns.find(column => constraint.columns.includes(column.name));
     //    //console.log(_column);
     //    if (constraint.reference) {
@@ -249,7 +258,7 @@ function showForm(constraint) {
     //        _column.lookupTable = constraint.reference;
     //        _column.lookupField = constraint.referenceColumns[0];
     //    }
-//
+    //
     //    document.querySelector('.table-wrapper').innerHTML = '';
     //    saveTable(table);
     //    sessionStorage.setItem('tables', JSON.stringify(savedTables));
@@ -257,5 +266,4 @@ function showForm(constraint) {
     //    location.reload();
     //});
 
-    
 }
