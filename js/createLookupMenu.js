@@ -10,7 +10,7 @@ export function createLookupMenu(cell) {
     let menu = document.createElement('div');
     menu.classList.add('edit-dropdown', 'shadow-md', theme.backgroundColor, 'p-2', 'space-y-2', 'border', theme.tableBorderColor);
     menu.style.position = 'absolute';
-    menu.style.minWidth = '280px';
+    menu.style.width = '280px';
 
     //menu.innerHTML = `<div class="${theme.textColor} text-lg">Search Records</div>`
 
@@ -43,7 +43,7 @@ export function createLookupMenu(cell) {
     let createRecords = function (records, fn) {
         console.log(records.length);
         let list = document.createElement('div');
-        list.classList.add('space-y-1', 'p-1', theme.darkBackgroundColor,'bg-opacity-50')
+        list.classList.add('space-y-1','p-1', theme.darkBackgroundColor,'bg-opacity-50')
         list.style.maxHeight = '200px';
         list.style.overflowY = 'scroll';
 
@@ -63,8 +63,6 @@ export function createLookupMenu(cell) {
             let item = document.createElement('a');
             item.setAttribute('href', 'javascript:void(0)');
             item.classList.add(theme.textColor, 'block', 'text-sm', 'space-y-1', 'p-2', theme.mediumBackgroundColor, 'border', theme.lightBorderColor, 'bg-opacity-50');
-
-            
 
             function zipRecords(record) {
                 return record.map((r, i) => [r, i]);
@@ -137,8 +135,17 @@ export function createLookupMenu(cell) {
         recordsList.appendChild(createRecords(filteredRecords, setSelection));
 
         if (filteredRecords.length == 0) {
-            recordsList.innerHTML = filteredRecords.length;
-            recordsList.appendChild(components.createButton('Add Record', { icon: 'add' }));
+            //recordsList.innerHTML = filteredRecords.length;
+            recordsList.childNodes[1].innerHTML += `
+            <div class="p-1 ${theme.textColor}">
+            <h4>No results found for '${searchRecords.value}'.</h4>
+            <div class="text-sm ${theme.mutedTextColor}">Try changing the search columns for the '${cell.lookupTable}' table or add a new record for '${searchRecords.value}'.</div>
+            </div>
+            `;
+            recordsList.childNodes[1].append(
+                
+                components.createButton('Add Record', { icon: 'add', style: 'secondary' }),
+            );
         }
 
     });

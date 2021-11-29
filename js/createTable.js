@@ -108,7 +108,6 @@ export function createTable(obj) {
             return divider;
         };
 
-
         let createHeaderMenu = function (col) {
 
             let menu = document.createElement('div');
@@ -143,7 +142,6 @@ export function createTable(obj) {
                 </div>`;
                 //<a href="javascript:void(0)" class="${theme.primaryTextColor}">FK_${col.name}</a>
                 //<div><i class="ri-layout-column-line align-bottom"></i> ${columnConstraints.referenceColumns.map(col => col).join('-')}</div>
-
             }
 
 

@@ -33,9 +33,10 @@ export function setTablePreferences(table) {
 
     let searchFieldsForm = document.createElement('div');
     searchFieldsForm.classList.add('space-y-2')
-    let columns = table.columns.map(col => {
-        return `<div class="border flex p-1 ${theme.mediumBackgroundColor} ${theme.tableBorderColor}">
-        <i class="ri-align-justify align-bottom mr-1"></i> ${col.name} <i class="ri-delete-bin-line align-bottom ml-auto"></i>
+    let selectedColumns = table.columns.map(col => {
+        return `<div class="border flex py-1 px-2 ${theme.mediumBackgroundColor} ${theme.tableBorderColor}">
+        
+        <i class="ri-align-justify align-bottom mr-1 ${theme.mutedTextColor}"></i> ${col.name} <i class="ri-delete-bin-line align-bottom ml-auto"></i>
         </div>`
     }).slice(0,5).join('');
 
@@ -63,7 +64,7 @@ export function setTablePreferences(table) {
                     <i class="ri ri-add-line align-bottom"></i>
                 </button>
             </div>
-            ${columns}
+            ${selectedColumns}
         </div>
     `;
 
