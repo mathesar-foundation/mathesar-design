@@ -593,10 +593,10 @@ export function createRecordListMenu(input, table, field, cell) {
     return menu;
 }
 
-var doubleClickEvent = document.createEvent('MouseEvents');
-doubleClickEvent.initEvent('dblclick', true, true);
+//var doubleClickEvent = document.createEvent('MouseEvents');
+//doubleClickEvent.initEvent('dblclick', true, true);
 
 //document.querySelectorAll('.t-cell')[1].click();
 
-//setTableConstraints(selectTableById(3));
+//setTableConstraints(selectTableById(1));
 //setTablePreferences(selectTableById(3));

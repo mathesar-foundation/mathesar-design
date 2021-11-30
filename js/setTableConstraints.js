@@ -67,7 +67,9 @@ export function setTableConstraints(table) {
     list.classList.add('col-span-2', 'border', theme.tableBorderColor, 'flex', 'flex-col');
 
     let addBtn = components.createButton('Add', { style: 'secondary', icon: 'add' });
+    addBtn.classList.add('w-full');
     let deleteBtn = components.createButton('Delete', { style: 'secondary', icon: 'delete-bin' });
+    deleteBtn.classList.add('w-full');
 
     let form = document.createElement('div');
     form.style.height = '380px';
@@ -90,20 +92,30 @@ export function setTableConstraints(table) {
         itemReferences.classList.add('text-sm');
 
         let constraintName = `${constraint.type.match(/[A-Z]+/g).join("")}_${constraint.columns.join('_')}`;
-        itemLabel.innerHTML = `<i class="ri ri-table-line align-bottom mr-1"></i>${constraintName}`;
+        itemLabel.innerHTML = `${constraintName}`;
 
 
         constraint.name = constraintName;
 
         item.addEventListener('click', function () {
             form.innerHTML = '';
-            form.append(showForm(constraint));
+            if (constraint.status == 'new') {
+                form.append(newConstraint(constraint));
+            } else {
+                form.append(showForm(constraint));
+            }
         });
 
         form.addEventListener('change', function () {
             form.innerHTML = '';
-            form.append(showForm(constraint));
+            if (constraint.status == 'new') {
+                form.append(newConstraint(constraint));
+            } else {
+                form.append(showForm(constraint));
+            }
         });
+
+    
 
         labelWrapper.append(itemLabel);
         //labelWrapper.append(itemLabel, itemReferences);
@@ -137,13 +149,13 @@ export function setTableConstraints(table) {
 
         addBtn.addEventListener('click', function () {
             list.innerHTML = '';
-            console.log(constraintList);
             constraintList.push({
                 columns: [],
                 type: 'Foreign Key',
                 table: table.name,
-                referenceColumns: []
-            })
+                referenceColumns: [],
+                status: 'new'
+            });
             buildList(constraintList);
         });
     }
@@ -155,13 +167,55 @@ export function setTableConstraints(table) {
 
 function showForm(constraint) {
 
-    let table = selectTableByName(constraint.table);
+    let form = document.createElement('div');
+    form.classList.add('space-y-2')
 
+    form.innerHTML = `
+        <div>
+            <h5 class="text-sm ${theme.mutedTextColor}">Constraint Name</h5>
+            ${constraint.name}
+        </div>
+        <div>
+            <h5 class="text-sm ${theme.mutedTextColor}">Constraint Type</h5>
+            ${constraint.type}
+        </div>
+        <div>
+            <h5 class="text-sm ${theme.mutedTextColor}">Columns</h5>
+            ${constraint.columns.map(col => col).join('')}
+        </div>
+        
+    `;
+
+    if (constraint.type == 'Foreign Key') {
+        form.innerHTML += `
+        <div>
+            <h5 class="text-sm ${theme.mutedTextColor}">Referenced Table</h5>
+            ${constraint.referenceTable}
+        </div>
+        <div>
+            <h5 class="text-sm ${theme.mutedTextColor}">On Update</h5>
+            <div>No Action</div>
+        </div>
+        <div>
+            <h5 class="text-sm ${theme.mutedTextColor}">On Delete</h5>
+            <div>No Action</div>
+        </div>
+        `
+    }
+
+    return form;
+
+}
+
+function newConstraint(constraint) {
+
+    let table = selectTableByName(constraint.table);
+    
     let form = document.createElement('div');
     form.classList.add('space-y-2');
     let constraints = ['Unique', 'Primary Key', 'Foreign Key', 'Not Null'];
     //form.innerHTML = `<h3 class="text-lg">Edit Constraint</h3>`
-
+    
     let constraintType = components.createSelectInput(constraints, { label: 'Constraint Type', selected: constraint.type });
     let referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table' });
     let columns = columnSelector({
@@ -169,17 +223,17 @@ function showForm(constraint) {
         columns: table.columns,
         selected: constraint.columns
     });
-
+    
     form.append(
         components.createFormGroup(components.createInput({ value: constraint.name }), 'Constraint Name'),
         constraintType,
         columns
     );
-
+    
     if (constraint.type == 'Foreign Key' && !constraint.referenceTable) {
         form.append(referencedTable);
     }
-
+    
     if (constraint.referenceTable) {
         let _columns = columnSelector({
             title: 'Select Reference Columns',
@@ -188,9 +242,9 @@ function showForm(constraint) {
         });
         referencedTable = components.createSelectInput(savedTables.map(table => table.name), { label: 'Referenced Table', selected: constraint.referenceTable });
         form.append(referencedTable, _columns);
-
+    
         _columns.querySelectorAll('input').forEach(input => {
-
+    
             input.addEventListener('change', function () {
                 if (input.checked == true) {
                     constraint.referenceColumns.push(input.value);
@@ -198,11 +252,11 @@ function showForm(constraint) {
                     const index = constraint.referenceColumns.indexOf(input.value);
                     if (index > -1) { constraint.referenceColumns.splice(index, 1); }
                 }
-                showForm(constraint);
+                newConstraint(constraint);
             });
         });
     }
-
+    
     columns.querySelectorAll('input').forEach(input => {
         input.addEventListener('change', function () {
             if (input.checked == true) {
@@ -211,16 +265,16 @@ function showForm(constraint) {
                 const index = constraint.columns.indexOf(input.value);
                 if (index > -1) { constraint.columns.splice(index, 1); }
             }
-            showForm(constraint);
+            newConstraint(constraint);
         });
     });
-
+    
     constraintType.addEventListener('change', function () {
         let setType = constraintType.childNodes[1].value;
         constraint.type = setType;
         if (setType == 'Foreign Key') {
             constraint.name = 'FK_';
-            showForm(constraint);
+            newConstraint(constraint);
         } else if (setType == 'Primary Key') {
             constraint.name = 'PK_';
         } else if (setType == 'Not Null') {
@@ -228,42 +282,25 @@ function showForm(constraint) {
         } else {
             constraint.name = 'UNIQUE_';
         }
-        showForm(constraint);
+        newConstraint(constraint);
     });
-
+    
     referencedTable.addEventListener('change', function () {
         constraint.referenceTable = referencedTable.childNodes[1].value;
-        showForm(constraint);
+        newConstraint(constraint);
     });
-
+    
     let updateOptions = [
         'No Action',
         'Cascade',
         'Set Null',
         'Set Default'
     ];
-
+    
     form.append(
-        components.createSelectInput(updateOptions.map(opt => opt), { label: 'On Update', selected:'No Action' }),
-        components.createSelectInput(updateOptions.map(opt => opt), { label: 'On Delete', selected:'No Action' })
+        components.createSelectInput(updateOptions.map(opt => opt), { label: 'On Update', selected: 'No Action' }),
+        components.createSelectInput(updateOptions.map(opt => opt), { label: 'On Delete', selected: 'No Action' })
     )
-
+    
     return form;
-    //applyBtn.addEventListener('click', function () {
-    //
-    //    let _column = table.columns.find(column => constraint.columns.includes(column.name));
-    //    //console.log(_column);
-    //    if (constraint.reference) {
-    //        _column.type = 'fk';
-    //        _column.lookupTable = constraint.reference;
-    //        _column.lookupField = constraint.referenceColumns[0];
-    //    }
-    //
-    //    document.querySelector('.table-wrapper').innerHTML = '';
-    //    saveTable(table);
-    //    sessionStorage.setItem('tables', JSON.stringify(savedTables));
-    //    modal.remove();
-    //    location.reload();
-    //});
-
-}
+};
