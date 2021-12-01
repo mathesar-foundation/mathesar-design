@@ -181,6 +181,10 @@ export function createTable(obj) {
                     )
                 }));
 
+                menuItems.splice(2, 0, createMenuItem(`Remove Table Link`, function(){
+                    
+                }));
+
                 
             }
 

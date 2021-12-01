@@ -52,7 +52,7 @@ export function createLookupMenu(cell) {
         recordsList.innerHTML =
             `<div class="${theme.textColor} py-1 px-2 border-b flex align-center ${theme.tableBorderColor}">
                 <div>${records.length} Records</div>
-                <a href="javascript:void(0)" id="selectColumns" class="ml-auto"><i class="ri-settings-4-line align-bottom"></i></a> 
+                <a href="javascript:void(0)" id="selectColumns" class="ml-auto text-sm ${theme.primaryTextColor}"><i class="ri-settings-4-line align-bottom"></i> Preferences</a> 
             </div>`;
         
         recordsList.querySelector('#selectColumns').addEventListener('click',function(){
@@ -141,7 +141,7 @@ export function createLookupMenu(cell) {
             recordsList.childNodes[1].innerHTML += `
             <div class="p-1 ${theme.textColor}">
             <h4>No results found for '${searchRecords.value}'.</h4>
-            <div class="text-sm ${theme.mutedTextColor}">Try changing the search columns for the '${cell.lookupTable}' table or add a new record for '${searchRecords.value}'.</div>
+            <div class="text-sm ${theme.mutedTextColor}">Try changing the table link preferences for this column or add a new record for '${searchRecords.value}'.</div>
             </div>
             `;
             recordsList.childNodes[1].append(
