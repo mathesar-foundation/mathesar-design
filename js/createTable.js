@@ -7,6 +7,7 @@ import { icon } from './iconMap.js';
 import { setTableConstraints } from './setTableConstraints.js';
 import { active } from 'd3-transition';
 import { createModal } from './createModal.js';
+import { setColumnPreferences } from './setColumnPreferences.js';
 
 
 if (sessionStorage.getItem('recordPreview') === null) {
@@ -168,9 +169,19 @@ export function createTable(obj) {
             }
 
             if (col.type == 'fk') {
-                menuItems.splice(1, 0, createMenuItem(`Drop Foreign Key Constraint`, function(){
-                    setTableConstraints(obj)
+                menuItems.splice(1, 0, createMenuItem(`Table Link Preferences`, function(){
+                    setColumnPreferences(
+                        {
+                            column: getColumnByPosition(i).name,
+                            lookupTable: getColumnByPosition(i).lookupTable,
+                            lookupField: getColumnByPosition(i).lookupField,
+                            type: getColumnByPosition(i).type,
+                            table: obj.name,
+                        }
+                    )
                 }));
+
+                
             }
 
             menuItems.forEach(item => menu.appendChild(item));

@@ -4,6 +4,7 @@ import { createModal } from './createModal';
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { selectTableByName, saveTable, columnByName } from './main';
 import { setTablePreferences } from './setTablePreferences';
+import { setColumnPreferences } from './setColumnPreferences';
 
 export function createLookupMenu(cell) {
 
@@ -49,13 +50,14 @@ export function createLookupMenu(cell) {
 
 
         recordsList.innerHTML =
-            `<div class="${theme.textColor} text-sm py-1 px-2 border-b flex align-center ${theme.tableBorderColor}">
+            `<div class="${theme.textColor} py-1 px-2 border-b flex align-center ${theme.tableBorderColor}">
                 <div>${records.length} Records</div>
-                <a href="javascript:void(0)" id="selectColumns" class="ml-auto ${theme.primaryTextColor}">Search Columns</a> 
+                <a href="javascript:void(0)" id="selectColumns" class="ml-auto"><i class="ri-settings-4-line align-bottom"></i></a> 
             </div>`;
         
         recordsList.querySelector('#selectColumns').addEventListener('click',function(){
-            setTablePreferences(selectTableByName(cell.lookupTable));
+            //recordsList.innerHTML = `SELECT`;
+            setColumnPreferences(cell);
         });
 
         records.forEach((record) => {

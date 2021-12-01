@@ -9,6 +9,7 @@ import { createTableToolbar } from './createTableToolbar';
 import { createTable } from './createTable';
 import { setTableConstraints } from './setTableConstraints.js';
 import { setTablePreferences } from './setTablePreferences';
+import { setColumnPreferences } from './setColumnPreferences';
 import { createDropdownMenu,addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -596,7 +597,16 @@ export function createRecordListMenu(input, table, field, cell) {
 //var doubleClickEvent = document.createEvent('MouseEvents');
 //doubleClickEvent.initEvent('dblclick', true, true);
 
-//document.querySelectorAll('.t-cell')[1].click();
+//document.querySelectorAll('.rendered-cell')[2].click();
 
 //setTableConstraints(selectTableById(1));
-//setTablePreferences(selectTableById(3));
+//setColumnPreferences({
+//    column: "artistId",
+//    lookupField: "id",
+//    lookupTable: "artist",
+//    position: 2,
+//    row: 0,
+//    table: "track_artist",
+//    type: "fk",
+//    value: ""
+//});
