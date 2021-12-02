@@ -217,15 +217,19 @@ export function createTable(obj) {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
         cellElement.style.width = '240px';
+        
         let renderedCell = document.createElement('div');
         renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
         renderedCell.style.cursor = 'pointer';
         renderedCell.tabIndex = 0;
 
+        
+
         let cellInput = components.createInput({ value: cell.value });
         cellInput.classList.add('p-2', 'w-full');
         cellInput.classList.remove('border');
         cellInput.autocomplete = 'off';
+        cellInput.style.borderWidth = '2px';
 
         renderedCell.innerHTML = cell.value;
 
@@ -246,6 +250,11 @@ export function createTable(obj) {
         if (cell.type == 'date') {
             cellInput.placeholder = 'YYYY-MM-DD';
             renderedCell.innerHTML = cell.value;
+        }
+
+        if (cell.value == '') {
+            cellInput.placeholder = 'NULL';
+            
         }
 
 
@@ -314,10 +323,22 @@ export function createTable(obj) {
 
         renderedCell.addEventListener('dblclick', function () {
             if (cell.type !== 'fk') {
+                
                 renderedCell.remove();
+                
                 cellElement.append(cellInput);
                 cellInput.focus();
+
+            
             }
+        });
+
+        cellInput.addEventListener('focus',function(){
+            cellInput.classList.add('border',theme.primaryBorderColor);
+            cellInput.style.boxShadow = '2px 2px 2px rgba(0,0,0,0.5)';
+            cellInput.style.outline = 'none';
+            cellInput.style.margin = '-2px';
+            cellInput.selectionStart = cellInput.selectionEnd = cellInput.value.length;
         });
 
         cellInput.addEventListener('blur', function () {

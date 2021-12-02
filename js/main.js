@@ -594,10 +594,10 @@ export function createRecordListMenu(input, table, field, cell) {
     return menu;
 }
 
-//var doubleClickEvent = document.createEvent('MouseEvents');
-//doubleClickEvent.initEvent('dblclick', true, true);
+var doubleClickEvent = document.createEvent('MouseEvents');
+doubleClickEvent.initEvent('dblclick', true, true);
 
-//document.querySelectorAll('.rendered-cell')[2].click();
+//document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
 
 //setTableConstraints(selectTableById(1));
 //setColumnPreferences({
