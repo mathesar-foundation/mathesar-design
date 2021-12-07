@@ -171,6 +171,150 @@ var allTables = [
         ['Aquarium', '']
     ],
     color: 'purple'
+}, {
+    name: 'Release with Track',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Best Tracks',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Favorite Playlist 2020',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Artists by Total Tracks',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Top Releases from Last Year',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'View of Track',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Release with Track',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Unnamed View',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Award winning artists',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Tracks by Rating',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'New Tracks',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
+}, {
+    name: 'Unnamed View (2)',
+    type: 'view',
+    columns: [
+        { name: 'releaseName', type: 'text', referencedTable: 'release' },
+        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
+    ],
+    records: [
+        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
+        ['Aquarium', '']
+    ],
+    color: 'purple'
 }];
 
 let loadedTables = allTables.map((data, index) => {

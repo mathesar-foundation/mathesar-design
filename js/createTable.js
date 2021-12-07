@@ -38,36 +38,40 @@ export function createTable(obj) {
         </div>
         `;
 
-        let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
+        if (obj.type == 'table') {
+            let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
 
-        if (columnConstraints !== undefined && columnConstraints.type == 'Foreign Key') {
 
-            let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
-            headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' })
-            header.innerHTML = `
+            if (columnConstraints !== undefined && columnConstraints.type == 'Foreign Key') {
+
+                let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
+                headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' })
+                header.innerHTML = `
             <div>
                 <div>${headerIcon.outerHTML} ${col.name}</div>
                 <div class="text-xs ${theme.mutedTextColor}"></div>
             </div>`;
 
-            let referenceColor = selectTableByName(col.lookupTable).color;
+                let referenceColor = selectTableByName(col.lookupTable).color;
 
-            let foreignKeyReference = document.createElement('span');
-            foreignKeyReference.classList.add('text-sm', theme.mutedTextColor, 'block');
-            foreignKeyReference.style.position = 'relative';
-            foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> ${col.lookupTable}.${col.lookupField}`;
-            header.childNodes[1].append(foreignKeyReference);
+                let foreignKeyReference = document.createElement('span');
+                foreignKeyReference.classList.add('text-sm', theme.mutedTextColor, 'block');
+                foreignKeyReference.style.position = 'relative';
+                foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> ${col.lookupTable}.${col.lookupField}`;
+                header.childNodes[1].append(foreignKeyReference);
 
-            let info = document.createElement('div');
-            info.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'whitespace-nowrap');
-            info.style.position = 'absolute';
-            info.innerHTML = `
+                let info = document.createElement('div');
+                info.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'whitespace-nowrap');
+                info.style.position = 'absolute';
+                info.innerHTML = `
             <h5>Referenced Table</h5>
             <div><span class="${theme.textColor}">${col.lookupTable}</span> <a href="#" class="${theme.primaryTextColor}">Open</a></div>
             <h5>Referenced Column(s)</h5>
             
             <div><a href="javascript:void(0)" class="${theme.textColor}">${columnConstraints.columns.join(',')}</a></div>
             `;
+            }
+
         }
 
         let headerMenuToggle = document.createElement('button');
@@ -130,7 +134,7 @@ export function createTable(obj) {
 
             //dataTypeOption.addEventListener('click', openDataTypeMenu);
 
-            console.log(columnConstraints);
+ 
 
             if (col.type == 'fk') {
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
@@ -169,7 +173,7 @@ export function createTable(obj) {
             }
 
             if (col.type == 'fk') {
-                menuItems.splice(1, 0, createMenuItem(`Table Link Preferences`, function(){
+                menuItems.splice(1, 0, createMenuItem(`Table Link Preferences`, function () {
                     setColumnPreferences(
                         {
                             column: getColumnByPosition(i).name,
@@ -181,11 +185,11 @@ export function createTable(obj) {
                     )
                 }));
 
-                menuItems.splice(2, 0, createMenuItem(`Remove Table Link`, function(){
-                    
+                menuItems.splice(2, 0, createMenuItem(`Remove Table Link`, function () {
+
                 }));
 
-                
+
             }
 
             menuItems.forEach(item => menu.appendChild(item));
@@ -217,13 +221,13 @@ export function createTable(obj) {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
         cellElement.style.width = '240px';
-        
+
         let renderedCell = document.createElement('div');
         renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
         renderedCell.style.cursor = 'pointer';
         renderedCell.tabIndex = 0;
 
-        
+
 
         let cellInput = components.createInput({ value: cell.value });
         cellInput.classList.add('p-2', 'w-full');
@@ -254,7 +258,7 @@ export function createTable(obj) {
 
         if (cell.value == '') {
             cellInput.placeholder = 'NULL';
-            
+
         }
 
 
@@ -274,8 +278,14 @@ export function createTable(obj) {
                     return booleanInput
                 } else {
                     booleanInput.indeterminate = true;
+                    booleanInput.title = 'NULL';
                     renderedCell.classList.add(theme.lightBackgroundColor, 'bg-opacity-20');
-                    return booleanInput
+
+                    cellElement.append(components.createTooltip(cellElement, 'NULL'));
+
+
+
+                    return booleanInput;
                 }
             }
 
@@ -323,22 +333,26 @@ export function createTable(obj) {
 
         renderedCell.addEventListener('dblclick', function () {
             if (cell.type !== 'fk') {
-                
+
                 renderedCell.remove();
-                
+
                 cellElement.append(cellInput);
                 cellInput.focus();
 
-            
+
             }
         });
 
-        cellInput.addEventListener('focus',function(){
-            cellInput.classList.add('border',theme.primaryBorderColor);
+        cellInput.addEventListener('focus', function () {
+            cellInput.classList.add('border', theme.primaryBorderColor);
             cellInput.style.boxShadow = '2px 2px 2px rgba(0,0,0,0.5)';
             cellInput.style.outline = 'none';
             cellInput.style.margin = '-2px';
             cellInput.selectionStart = cellInput.selectionEnd = cellInput.value.length;
+        });
+
+        cellInput.addEventListener('keydown', function () {
+            cellInput.placeholder = '';
         });
 
         cellInput.addEventListener('blur', function () {
@@ -347,14 +361,18 @@ export function createTable(obj) {
             saveTable(obj);
         });
 
-        let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
+        if (obj.type == 'table') {
+            let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
 
-        function deleteCell(event) {
-            if (event.key === "Backspace" && event.target.getAttribute('selected')) {
+            function deleteCell(event) {
 
-                if (cellConstraints && cellConstraints.type == 'Not Null') {
-                    let warningContent = document.createElement('div');
-                    warningContent.innerHTML = `
+
+
+                if (event.key === "Backspace" && event.target.getAttribute('selected')) {
+
+                    if (cellConstraints && cellConstraints.type == 'Not Null') {
+                        let warningContent = document.createElement('div');
+                        warningContent.innerHTML = `
                     <h3 class="text-lg">Can't Delete Value</h3>
                     <p>Cannot insert the value NULL into column <span>${cell.column}</span>. The column does not allow nulls.</p>
                     <div class="mt-2 text-right">
@@ -363,14 +381,14 @@ export function createTable(obj) {
                     `
 
 
-                    document.querySelector('body').append(createModal(warningContent))
-                    console.log(cellConstraints.type, cell.position);
-                } else {
-                    document.querySelector('.table-wrapper').innerHTML = '';
-                    obj.records[cell.row].splice(cell.position, 1, '');
-                    saveTable(obj);
-                }
+                        document.querySelector('body').append(createModal(warningContent))
+                    } else {
+                        document.querySelector('.table-wrapper').innerHTML = '';
+                        obj.records[cell.row].splice(cell.position, 1, '');
+                        saveTable(obj);
+                    }
 
+                }
             }
         }
 

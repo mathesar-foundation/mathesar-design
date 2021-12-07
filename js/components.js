@@ -163,6 +163,28 @@ var components = {
         }
 
         return titleWrapper;
+    },
+    createTooltip: function(element,content) {
+        element.style.position = 'relative';
+
+        let tooltipWrapper = document.createElement('div');
+        tooltipWrapper.classList.add('p-2', theme.textColor, 'text-xs', theme.backgroundColor, 'bg-opacity-80', 'border', theme.mediumBorderColor)
+        tooltipWrapper.innerHTML = content;
+        tooltipWrapper.style.position = 'absolute';
+        tooltipWrapper.style.left = '0';
+        tooltipWrapper.style.top = '-24px';
+
+        tooltipWrapper.style.display = 'none';
+
+        element.addEventListener('mouseenter',function(){
+            tooltipWrapper.style.display = 'block';      
+        });
+
+        element.addEventListener('mouseleave',function(){
+            tooltipWrapper.style.display = 'none';      
+        });
+
+        return tooltipWrapper;
     }
 }
 
