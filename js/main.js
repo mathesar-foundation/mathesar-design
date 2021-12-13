@@ -37,6 +37,22 @@ export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
 
+
+if (activeTable == undefined) {
+    let schemaOverview = document.createElement('div');
+    schemaOverview.classList.add(theme.textColor,'p-4',theme.darkBackgroundColor,'h-full');
+
+    let viewList = savedTables.map(table=> `<div>${table.name}</div>`).join('');
+
+    schemaOverview.innerHTML = `
+    <div>
+    All Views
+    ${viewList}
+    </div>
+    `
+    //document.querySelector('.table-wrapper').append(schemaOverview);
+}
+
 // SELECT TABLE BY ID
 export function selectTableById(id) {
     return savedTables.find(table => table.id == id);

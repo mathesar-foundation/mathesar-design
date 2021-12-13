@@ -134,9 +134,10 @@ export function createTable(obj) {
 
             //dataTypeOption.addEventListener('click', openDataTypeMenu);
 
- 
+
 
             if (col.type == 'fk') {
+                let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
                 let columnTypeIcon = components.createIcon(icon[linkedColumnType], { style: 'type' });
                 //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
@@ -497,7 +498,8 @@ export function createTable(obj) {
     repositionWarning.innerHTML = `New records will be repositioned on refresh`;
 
     let tableWrapper = document.createElement('div');
-    tableWrapper.classList.add('flex', 'items-start');
+    tableWrapper.classList.add('flex', 'items-start','flex-grow');
+    tableWrapper.style.overflowX = 'scroll';
     tableWrapper.appendChild(table);
 
     let addColumnBtn = document.createElement('button');
@@ -528,6 +530,10 @@ export function createTable(obj) {
         saveTable(obj);
     });
 
+    let tableFooter = document.createElement('div');
+    tableFooter.classList.add('mt-auto','p-2',theme.textColor,theme.darkBackgroundColor,'w-full')
+    tableFooter.innerHTML = `${obj.records.length} Records`;
+    document.querySelector('.table-wrapper').append(tableFooter);
 
     return tableWrapper;
 };
@@ -586,8 +592,6 @@ function setRecordPreview(column) {
 function cellSelection(cell) {
     console.log(cell);
 }
-
-
 
 function removeCellOutsideClickHandler(menu) {
     if (menu.outsideClickHandler) {
