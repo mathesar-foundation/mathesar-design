@@ -615,6 +615,8 @@ doubleClickEvent.initEvent('dblclick', true, true);
 
 //document.querySelectorAll('.rendered-cell')[1].dispatchEvent(doubleClickEvent);
 
+//document.querySelectorAll('.rendered-cell')[1].click();
+
 //setTableConstraints(selectTableById(1));
 //setColumnPreferences({
 //    column: "artistId",

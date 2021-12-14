@@ -225,7 +225,7 @@ export function createTable(obj) {
 
         let renderedCell = document.createElement('div');
         renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
-        renderedCell.style.cursor = 'pointer';
+
         renderedCell.tabIndex = 0;
 
 
@@ -238,10 +238,18 @@ export function createTable(obj) {
 
         renderedCell.innerHTML = cell.value;
 
+        let dropdownToggle = document.createElement('div');
+        dropdownToggle.classList.add('ml-auto','dropdown-toggle','rounded',theme.mediumBackgroundColor);
+        dropdownToggle.innerHTML = `<i class="ri-arrow-down-s-fill block" style="line-height:16px"></i>`;
+
+        
+
         if (cell.type == 'fk') {
+            renderedCell.classList.add('flex','items-start');
             if (cell.value == '') {
                 renderedCell.innerHTML = `<i class="ri-search-line text-xs ${theme.mediumBackgroundColor} p-1 rounded"></i>`;
             } else {
+                
                 if (columnByName(cell.column).showPreview) {
                     renderedCell.innerHTML = '';
                     renderedCell.appendChild(createRecordSummary(cell));
@@ -249,6 +257,9 @@ export function createTable(obj) {
                     renderedCell.innerHTML = '';
                     renderedCell.appendChild(createRecordLink(cell));
                 }
+
+                //renderedCell.append(dropdownToggle);
+                
             }
         }
 
@@ -308,11 +319,8 @@ export function createTable(obj) {
 
 
         renderedCell.addEventListener('click', function () {
-            if (cell.type == 'fk') {
-                cellElement.appendChild(createLookupMenu(cell));
-            } else {
 
-                renderedCell.addEventListener('keydown', deleteCell);
+            
 
                 addCellOutsideClickHandler(renderedCell, function () {
                     console.log('test');
@@ -323,7 +331,23 @@ export function createTable(obj) {
                 renderedCell.classList.add(theme.primaryBorderColor);
                 renderedCell.classList.replace('border-opacity-0', 'border-opacity-100');
                 renderedCell.setAttribute('selected', true);
-            }
+
+                if (cell.type == 'fk') {
+                    renderedCell.append(dropdownToggle);
+
+                    dropdownToggle.addEventListener('mouseenter',function(){
+                        dropdownToggle.classList.replace(theme.mediumBackgroundColor,theme.primaryColor);
+                    });
+
+                    dropdownToggle.addEventListener('mouseleave',function(){
+                        dropdownToggle.classList.replace(theme.primaryColor,theme.mediumBackgroundColor);
+                    });
+
+                    dropdownToggle.addEventListener('click',function(){
+                        cellElement.appendChild(createLookupMenu(cell));
+                    });
+                }
+            
         });
 
         renderedCell.addEventListener('contextmenu', function (event) {
@@ -333,14 +357,16 @@ export function createTable(obj) {
         }, false);
 
         renderedCell.addEventListener('dblclick', function () {
-            if (cell.type !== 'fk') {
+            if (cell.type == 'fk') {
+                cellElement.appendChild(createLookupMenu(cell));
+                
 
+
+            } else {
                 renderedCell.remove();
 
                 cellElement.append(cellInput);
                 cellInput.focus();
-
-
             }
         });
 
@@ -364,6 +390,8 @@ export function createTable(obj) {
 
         if (obj.type == 'table') {
             let cellConstraints = obj.constraints.find(constraint => constraint.columns.includes(cell.column));
+
+            renderedCell.addEventListener('keydown', deleteCell);
 
             function deleteCell(event) {
 
@@ -609,6 +637,13 @@ function addCellOutsideClickHandler(menu, fn) {
             menu.outsideClickHandler = null;
             menu.classList.replace('border-opacity-100', 'border-opacity-0');
             menu.setAttribute('selected', false);
+            
+      
+
+            var toggle =  menu.querySelector('.dropdown-toggle');
+            if (toggle) {
+            toggle.parentNode.removeChild(toggle);
+            }
         }
     }
 
