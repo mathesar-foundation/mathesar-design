@@ -10,7 +10,7 @@ import { createTable } from './createTable';
 import { setTableConstraints } from './setTableConstraints.js';
 import { setTablePreferences } from './setTablePreferences';
 import { setColumnPreferences } from './setColumnPreferences';
-import { createDropdownMenu,addDropdownOutsideClickHandler } from './createDropdownMenu';
+import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 const urlParams = new URLSearchParams(window.location.search);
 for (const property in theme) { applyTheme(property, theme[property]); }
@@ -40,10 +40,10 @@ export var activeTable = urlParams.get('activeTable');
 
 export function schemaOverview() {
     appWrapper.innerHTML = '';
-    
+
 
     let schemaList = document.createElement('div');
-    schemaList.innerHTML = `
+    schemaList.innerHTML = /*HTML*/`
     <div class="${theme.textColor} p-4 border-b ${theme.tableBorderColor}">
         <div class="container mx-auto">
             <div class="flex items-center space-x-4">
@@ -64,26 +64,29 @@ export function schemaOverview() {
                 </div>
                 <div class="list-wrapper">
                 </div>
+                <div class="${theme.textColor} flex items-center space-x-1 justify-center">
+                    <a href="#" class="border py-1 px-2 text-xs ${theme.primaryColor} ${theme.primaryBorderColor}">1</a>
+                    <a href="#" class="border py-1 px-2 text-xs ${theme.mediumBorderColor}">2</a>
+                    <a href="#" class="border py-1 px-2 text-xs ${theme.mediumBorderColor}">3</a>
+                </div>
             </div>
         </div>
-    </div>
-    `;
-
-    let sections = loadedTables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
-
+    </div>`;
 
     let createNavItem = function (table) {
         let item = document.createElement('a');
-        item.setAttribute('href', 'javascript:void(0)');
-        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded');
-        let itemIcon = function(type){
+        item.href = 'javascript:void(0)';
+        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'flex', 'items-center');
+
+        let itemIcon = function (type) {
             if (type == 'table') {
                 return `<i class="ri-table-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
-            } else { 
+            } else {
                 return `<i class="ri-layout-grid-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
             }
         };
-        item.innerHTML = `${itemIcon(table.type)} ${table.name}`;
+
+        item.innerHTML = `<div>${itemIcon(table.type)} ${table.name}</div> <div class="text-sm ml-auto ${theme.mutedTextColor}">Last Updated ${table.lastUpdated}</div>`;
 
         item.addEventListener('click', function () {
             let url = `${window.location.pathname}?activeTable=${table.id}`;
@@ -93,27 +96,27 @@ export function schemaOverview() {
         return item;
     };
 
-    let createSection = function (section) {
-        let items = loadedTables.filter(table => table.type == section);
+    let createSection = function () {
+        let items = savedTables.sort(function (a, b) {
+            return new Date(b.lastUpdated) - new Date(a.lastUpdated);
+        });
         let sectionWrapper = document.createElement('div');
-        let sectionHeader = document.createElement('div');
-        sectionHeader.classList.add('px-2','py-1',theme.mutedTextColor,theme.darkBackgroundColor)
-        sectionHeader.innerHTML = `<span class="uppercase text-sm mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded px-1">${items.length}</span>`;
-        
+
+
         let addBtn = document.createElement('button');
-        addBtn.classList.add('ml-auto',theme.darkPrimaryColor,'py-1','px-2');
+        addBtn.classList.add('ml-auto', theme.darkPrimaryColor, 'py-1', 'px-2');
         addBtn.innerHTML = `<i class="ri-add-line"></i>`;
-        
+
         //schemaList.append(sectionHeader);
 
         items.forEach(table => sectionWrapper.appendChild(createNavItem(table)));
 
         sectionWrapper.querySelectorAll('a').forEach(item => {
-            item.addEventListener('mouseenter',function(){
-                item.classList.add(theme.mediumBackgroundColor,'bg-opacity-80')
+            item.addEventListener('mouseenter', function () {
+                item.classList.add(theme.mediumBackgroundColor, 'bg-opacity-80')
             });
-            item.addEventListener('mouseleave',function(){
-                item.classList.remove(theme.mediumBackgroundColor,'bg-opacity-80')
+            item.addEventListener('mouseleave', function () {
+                item.classList.remove(theme.mediumBackgroundColor, 'bg-opacity-80')
             });
         })
 
@@ -121,11 +124,11 @@ export function schemaOverview() {
         return sectionWrapper;
     };
 
-    sections.reverse().forEach(section => {
-        schemaList.querySelector('.list-wrapper').appendChild(createSection(section));
-    });
-    
-    appWrapper.append(topNav(schema),schemaList);
+
+    schemaList.querySelector('.list-wrapper').appendChild(createSection());
+
+
+    appWrapper.append(topNav(schema), schemaList);
 }
 
 if (activeTable == undefined) {

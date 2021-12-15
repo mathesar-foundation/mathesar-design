@@ -318,6 +318,11 @@ var allTables = [
 }];
 
 let loadedTables = allTables.map((data, index) => {
+    function randomDate(start, end) {return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));}
+    const lastUpdate = randomDate(new Date(2020, 0, 1), new Date());
+
+    console.log(lastUpdate.toString().slice(0,10))
+
     return {
         'id': index,
         'name': data.name,
@@ -325,9 +330,13 @@ let loadedTables = allTables.map((data, index) => {
         'columns': data.columns.map((col, i) => i == 0 ? ({ ...col, isLookup: true }) : ({ ...col, isLookup: false })),
         'records': data.records,
         'type': data.type,
-        'color' : data.color
+        'color' : data.color,
+        'lastUpdated' : lastUpdate.toString().slice(0,15)
     }
 }
 );
+
+
+
 
 module.exports = { loadedTables };
