@@ -38,19 +38,106 @@ export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 export var activeTable = urlParams.get('activeTable');
 
 
-if (activeTable == undefined) {
-    let schemaOverview = document.createElement('div');
-    schemaOverview.classList.add(theme.textColor,'p-4',theme.darkBackgroundColor,'h-full');
+export function schemaOverview() {
+    appWrapper.innerHTML = '';
+    
 
-    let viewList = savedTables.map(table=> `<div>${table.name}</div>`).join('');
-
-    schemaOverview.innerHTML = `
-    <div>
-    All Views
-    ${viewList}
+    let schemaList = document.createElement('div');
+    schemaList.innerHTML = `
+    <div class="${theme.textColor} p-4 border-b ${theme.tableBorderColor}">
+        <div class="container mx-auto">
+            <div class="flex items-center space-x-4">
+                <div class="${theme.primaryColor} rounded p-2 text-2xl text-center" style="width:48px;height:48px">M</div>
+                <div>
+                    <h2 class="text-2xl">${schema.name}</h2>
+                    <p class="text-sm">${savedTables.length} Tables and Views</p>
+                </div>
+            </div>
+        </div>
     </div>
-    `
-    //document.querySelector('.table-wrapper').append(schemaOverview);
+    <div>
+        <div class="container mx-auto">
+            <div class="py-4 space-y-4">
+                <h3 class="${theme.textColor}">Tables and Views</h3>
+                <div>
+                    <input type="text" class="${theme.inputBackgroundColor} p-2 bg-opacity-60 w-full" placeholder="Search Tables and Views">
+                </div>
+                <div class="list-wrapper">
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+
+    let sections = loadedTables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
+
+
+    let createNavItem = function (table) {
+        let item = document.createElement('a');
+        item.setAttribute('href', 'javascript:void(0)');
+        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded');
+        let itemIcon = function(type){
+            if (type == 'table') {
+                return `<i class="ri-table-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
+            } else { 
+                return `<i class="ri-layout-grid-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
+            }
+        };
+        item.innerHTML = `${itemIcon(table.type)} ${table.name}`;
+
+        item.addEventListener('click', function () {
+            let url = `${window.location.pathname}?activeTable=${table.id}`;
+            location.assign(url);
+        });
+
+        return item;
+    };
+
+    let createSection = function (section) {
+        let items = loadedTables.filter(table => table.type == section);
+        let sectionWrapper = document.createElement('div');
+        let sectionHeader = document.createElement('div');
+        sectionHeader.classList.add('px-2','py-1',theme.mutedTextColor,theme.darkBackgroundColor)
+        sectionHeader.innerHTML = `<span class="uppercase text-sm mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded px-1">${items.length}</span>`;
+        
+        let addBtn = document.createElement('button');
+        addBtn.classList.add('ml-auto',theme.darkPrimaryColor,'py-1','px-2');
+        addBtn.innerHTML = `<i class="ri-add-line"></i>`;
+        
+        //schemaList.append(sectionHeader);
+
+        items.forEach(table => sectionWrapper.appendChild(createNavItem(table)));
+
+        sectionWrapper.querySelectorAll('a').forEach(item => {
+            item.addEventListener('mouseenter',function(){
+                item.classList.add(theme.mediumBackgroundColor,'bg-opacity-80')
+            });
+            item.addEventListener('mouseleave',function(){
+                item.classList.remove(theme.mediumBackgroundColor,'bg-opacity-80')
+            });
+        })
+
+
+        return sectionWrapper;
+    };
+
+    sections.reverse().forEach(section => {
+        schemaList.querySelector('.list-wrapper').appendChild(createSection(section));
+    });
+    
+    appWrapper.append(topNav(schema),schemaList);
+}
+
+if (activeTable == undefined) {
+    schemaOverview()
+
+
+
+
+} else {
+    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
+    document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
+    document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
 }
 
 // SELECT TABLE BY ID
@@ -64,29 +151,32 @@ export function selectTableByName(name) {
 
 //console.log(loadedTables);
 
-document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
-document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
-document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
+
 
 // STATUS FOR TABS
-setTableStatus(selectTableById(activeTable), 'active');
-setTableStatus(selectTableById(4), 'open');
-setTableStatus(selectTableById(2), 'open');
+
+
+//setTableStatus(selectTableById(activeTable), 'active');
+//setTableStatus(selectTableById(4), 'open');
+//setTableStatus(selectTableById(2), 'open');
 //
-function setTableStatus(table, status) {
-    if (table.id == activeTable) {
-        table.status = 'active';
-    } else {
-        table.status = status;
-    }
-}
+//function setTableStatus(table, status) {
+//    if (table.id == activeTable) {
+//        table.status = 'active';
+//    } else {
+//        table.status = status;
+//    }
+//}
+
+//
+
 
 // TABS
 
-let openTables = [];
-openTables.push(selectTableById(activeTable))
-openTables.push(selectTableById(5))
-document.querySelector('.table-wrapper').parentNode.prepend(createTabs(openTables));
+//let openTables = [];
+//openTables.push(selectTableById(activeTable))
+//openTables.push(selectTableById(5))
+//document.querySelector('.table-wrapper').parentNode.prepend(createTabs(openTables));
 
 function createTabs(openTables) {
     let tabs = document.createElement('div');
@@ -628,3 +718,7 @@ doubleClickEvent.initEvent('dblclick', true, true);
 //    type: "fk",
 //    value: ""
 //});
+
+
+
+

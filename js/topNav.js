@@ -1,14 +1,18 @@
-import { theme, themes, setNextTheme } from './themes.js';
+import { theme, setNextTheme } from './themes.js';
 import { components } from './components.js';
- 
+import { schemaOverview } from './main.js'; 
+
 export function topNav(schema) {
     let topNav = document.createElement('div');
     topNav.classList.add('py-1','px-2','border-b',theme.tableBorderColor,'flex','space-x-2','items-center');
-    let schemaName = document.createElement('div');
+    let schemaName = document.createElement('a');
+    schemaName.href = 'javascript:void(0)';
     schemaName.innerHTML = `<div class="flex space-x-2 items-center mr-2">
     <div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded">M</div>
     <div class="${theme.textColor}">${schema.name}</div>
     </div>`
+
+    
 
     let searchBar = document.createElement('div');
     searchBar.classList.add('flex-grow');
@@ -23,10 +27,19 @@ export function topNav(schema) {
     let changeThemeBtn = components.createButton('Change Theme');
 
     changeThemeBtn.addEventListener('click',function(){
+        
         setNextTheme();
         
     });  
 
     topNav.append(schemaName,searchBar,changeThemeBtn,accountSelector);
+
+
+    schemaName.addEventListener('click',function(){
+        let url = `${window.location.pathname}`;
+        location.assign(url);
+        schemaOverview();
+    });
+
     return topNav;
 }
