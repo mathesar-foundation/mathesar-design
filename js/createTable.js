@@ -239,17 +239,27 @@ export function createTable(obj) {
         renderedCell.innerHTML = cell.value;
 
         let dropdownToggle = document.createElement('div');
-        dropdownToggle.classList.add('ml-auto','dropdown-toggle','rounded',theme.mediumBackgroundColor);
+        dropdownToggle.classList.add('ml-auto', 'dropdown-toggle', 'rounded', theme.mediumBackgroundColor);
         dropdownToggle.innerHTML = `<i class="ri-arrow-down-s-fill block" style="line-height:16px"></i>`;
+
+        dropdownToggle.addEventListener('mouseenter', function () {
+            dropdownToggle.classList.replace(theme.mediumBackgroundColor, theme.primaryColor);
+        });
+
+        dropdownToggle.addEventListener('mouseleave', function () {
+            dropdownToggle.classList.replace(theme.primaryColor, theme.mediumBackgroundColor);
+        });
+
+        dropdownToggle.addEventListener('click', function () {
+            cellElement.appendChild(createLookupMenu(cell));
+        });
 
         
 
         if (cell.type == 'fk') {
-            renderedCell.classList.add('flex','items-start');
-            if (cell.value == '') {
-                renderedCell.innerHTML = `<i class="ri-search-line text-xs ${theme.mediumBackgroundColor} p-1 rounded"></i>`;
-            } else {
-                
+            renderedCell.classList.add('flex', 'items-center');
+
+        
                 if (columnByName(cell.column).showPreview) {
                     renderedCell.innerHTML = '';
                     renderedCell.appendChild(createRecordSummary(cell));
@@ -258,9 +268,9 @@ export function createTable(obj) {
                     renderedCell.appendChild(createRecordLink(cell));
                 }
 
-                //renderedCell.append(dropdownToggle);
-                
-            }
+                renderedCell.append(dropdownToggle);     
+
+            
         }
 
         if (cell.type == 'date') {
@@ -270,7 +280,6 @@ export function createTable(obj) {
 
         if (cell.value == '') {
             cellInput.placeholder = 'NULL';
-
         }
 
 
@@ -311,43 +320,36 @@ export function createTable(obj) {
 
         // EMPTY VALUES
         if (cell.value === '') {
-            renderedCell.innerHTML = 'NULL'
+            renderedCell.innerHTML = 'NULL';
+            
             renderedCell.classList.replace(theme.textColor, theme.mutedTextColor);
             renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
+
+            if (cell.type == 'fk') {
+                renderedCell.append(dropdownToggle);
+            }
         }
 
 
 
         renderedCell.addEventListener('click', function () {
 
-            
 
-                addCellOutsideClickHandler(renderedCell, function () {
-                    console.log('test');
-                });
 
-                //cellSelection(cell);
-                //cellElement.classList.add('cell-selected');
-                renderedCell.classList.add(theme.primaryBorderColor);
-                renderedCell.classList.replace('border-opacity-0', 'border-opacity-100');
-                renderedCell.setAttribute('selected', true);
+            addCellOutsideClickHandler(renderedCell, function () {
+                console.log('test');
+            });
 
-                if (cell.type == 'fk') {
-                    renderedCell.append(dropdownToggle);
+            //cellSelection(cell);
+            //cellElement.classList.add('cell-selected');
+            renderedCell.classList.add(theme.primaryBorderColor);
+            renderedCell.classList.replace('border-opacity-0', 'border-opacity-100');
+            renderedCell.setAttribute('selected', true);
 
-                    dropdownToggle.addEventListener('mouseenter',function(){
-                        dropdownToggle.classList.replace(theme.mediumBackgroundColor,theme.primaryColor);
-                    });
+            if (cell.type == 'fk') {
+                
+            }
 
-                    dropdownToggle.addEventListener('mouseleave',function(){
-                        dropdownToggle.classList.replace(theme.primaryColor,theme.mediumBackgroundColor);
-                    });
-
-                    dropdownToggle.addEventListener('click',function(){
-                        cellElement.appendChild(createLookupMenu(cell));
-                    });
-                }
-            
         });
 
         renderedCell.addEventListener('contextmenu', function (event) {
@@ -359,7 +361,7 @@ export function createTable(obj) {
         renderedCell.addEventListener('dblclick', function () {
             if (cell.type == 'fk') {
                 cellElement.appendChild(createLookupMenu(cell));
-                
+
 
 
             } else {
@@ -526,7 +528,7 @@ export function createTable(obj) {
     repositionWarning.innerHTML = `New records will be repositioned on refresh`;
 
     let tableWrapper = document.createElement('div');
-    tableWrapper.classList.add('flex', 'items-start','flex-grow');
+    tableWrapper.classList.add('flex', 'items-start', 'flex-grow');
     tableWrapper.style.overflowX = 'scroll';
     tableWrapper.appendChild(table);
 
@@ -559,7 +561,7 @@ export function createTable(obj) {
     });
 
     let tableFooter = document.createElement('div');
-    tableFooter.classList.add('mt-auto','p-2',theme.textColor,theme.darkBackgroundColor,'w-full')
+    tableFooter.classList.add('mt-auto', 'p-2', theme.textColor, theme.darkBackgroundColor, 'w-full')
     tableFooter.innerHTML = `${obj.records.length} Records`;
     document.querySelector('.table-wrapper').append(tableFooter);
 
@@ -637,12 +639,10 @@ function addCellOutsideClickHandler(menu, fn) {
             menu.outsideClickHandler = null;
             menu.classList.replace('border-opacity-100', 'border-opacity-0');
             menu.setAttribute('selected', false);
-            
-      
 
-            var toggle =  menu.querySelector('.dropdown-toggle');
+            var toggle = menu.querySelector('.dropdown-toggle');
             if (toggle) {
-            toggle.parentNode.removeChild(toggle);
+                //toggle.parentNode.removeChild(toggle);
             }
         }
     }
