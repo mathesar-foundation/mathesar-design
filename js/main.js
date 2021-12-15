@@ -58,7 +58,7 @@ export function schemaOverview() {
     <div>
         <div class="container mx-auto">
             <div class="py-4 space-y-4">
-                <h3 class="${theme.textColor}">Tables and Views</h3>
+                
                 <div>
                     <input type="text" class="${theme.inputBackgroundColor} p-2 bg-opacity-60 w-full" placeholder="Search Tables and Views">
                 </div>
