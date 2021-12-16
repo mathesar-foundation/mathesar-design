@@ -5,7 +5,8 @@ var icon = {
     'text' : 'ri-text',
     'duration' : 'ri-timer-2-line',
     'date' : 'ri-calendar-line',
-    'boolean' : 'ri-checkbox-line'
+    'boolean' : 'ri-checkbox-line',
+    'summary' : 'ri-align-justify',
 }
 
 export {icon}

@@ -38,6 +38,69 @@ export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 export var activeTable = urlParams.get('activeTable');
 
 
+let tabsWrapper = document.createElement('div');
+tabsWrapper.style.overflowX = 'hidden';
+tabsWrapper.classList.add('flex');
+
+addActiveTable(activeTable);
+buildActiveTables();
+
+
+function addActiveTable(tableId) {
+    let activeTables = getActiveTables();
+    if (activeTables.indexOf(tableId) < 0 && tableId !== null) {
+        activeTables.push(tableId);
+        sessionStorage.setItem('activeTables', JSON.stringify(activeTables));
+    }
+};
+
+function closeActiveTable(tableId) {
+    let activeTables = getActiveTables();
+    let idx = activeTables.indexOf(tableId);
+    if (idx >= 0) {
+        activeTables.splice(idx, 1);
+        sessionStorage.setItem('activeTables', JSON.stringify(activeTables));
+    };
+};
+
+function getActiveTables() {
+    let activeTables = sessionStorage.getItem('activeTables') || '[]';
+    return JSON.parse(activeTables);
+}
+
+function buildActiveTables() {
+    let activeTables = getActiveTables();
+
+    activeTables.forEach(tab => {
+        tabsWrapper.append(createTab(tab));
+    });
+}
+
+function createTab(tab) {
+    console.log(tab)
+    let item = document.createElement('div');
+    item.style.cursor = 'pointer';
+    item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap');
+
+    let tabLabel = loadedTables.find(table => table.id == tab).name;
+
+
+    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label">${tabLabel}</div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor}"><i class="ri-close-line align-text-top"></i></button>`;
+
+    item.querySelector('.close-tab').addEventListener('click', function () {
+        closeActiveTable(tab);
+        location.reload();
+    });
+
+    item.querySelector('.tab-label').addEventListener('click', function (e) {
+        let url = `${window.location.pathname}?activeTable=${tab}`;
+        location.assign(url);
+    });
+
+    return item;
+}
+
+
 export function schemaOverview() {
     appWrapper.innerHTML = '';
 
@@ -132,15 +195,12 @@ export function schemaOverview() {
 }
 
 if (activeTable == undefined) {
-    schemaOverview()
-
-
-
-
+    schemaOverview();
 } else {
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
     document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
     document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
+    document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
 }
 
 // SELECT TABLE BY ID
@@ -180,6 +240,8 @@ export function selectTableByName(name) {
 //openTables.push(selectTableById(activeTable))
 //openTables.push(selectTableById(5))
 //document.querySelector('.table-wrapper').parentNode.prepend(createTabs(openTables));
+
+
 
 function createTabs(openTables) {
     let tabs = document.createElement('div');
@@ -232,6 +294,8 @@ function saveAsView(e) {
 }
 
 //console.log(savedTables.tables);
+
+
 
 // SET ICONS
 export function typeIcon(type) {
