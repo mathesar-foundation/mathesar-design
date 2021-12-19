@@ -565,6 +565,7 @@ export function createTable(obj) {
     tableFooter.innerHTML = `${obj.records.length} Records`;
     document.querySelector('.table-wrapper').append(tableFooter);
 
+
     return tableWrapper;
 };
 

@@ -9,7 +9,7 @@ import * as d3 from "d3";
 
 
 export function createTableToolbar(obj) {
-    console.log(savedTables)
+
     const type = obj.type;
 
     let toolbar = document.createElement('div');

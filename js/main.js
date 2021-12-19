@@ -11,6 +11,7 @@ import { setTableConstraints } from './setTableConstraints.js';
 import { setTablePreferences } from './setTablePreferences';
 import { setColumnPreferences } from './setColumnPreferences';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
+import { schemaOverview } from './schemaOverview';
 
 const urlParams = new URLSearchParams(window.location.search);
 for (const property in theme) { applyTheme(property, theme[property]); }
@@ -21,11 +22,11 @@ function applyTheme(property, color) {
     });
 };
 
-let schema = {
+export let schema = {
     name: 'album_collection'
 }
 
-let appWrapper = document.querySelector('body');
+export let appWrapper = document.querySelector('body');
 appWrapper.prepend(topNav(schema));
 appWrapper.classList.add(theme.backgroundColor);
 
@@ -44,6 +45,17 @@ tabsWrapper.classList.add('flex');
 
 addActiveTable(activeTable);
 buildActiveTables();
+
+
+function createError(){
+    let error = document.createElement('div');
+    //error.style.position = 'absolute';
+    //error.style.top = '0';
+    //error.style.left = '0';
+    error.classList.add(theme.textColor,theme.darkBackgroundColor,'p-5','border',theme.lightBorderColor)
+    error.innerHTML = `There was a problem opening this view`
+    return error;
+}
 
 
 function addActiveTable(tableId) {
@@ -76,14 +88,17 @@ function buildActiveTables() {
     });
 }
 
+
+
 function createTab(tab) {
-    console.log(tab)
+
     let item = document.createElement('div');
     item.style.cursor = 'pointer';
     item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap');
 
-    let tabLabel = loadedTables.find(table => table.id == tab).name;
+    console.log(selectTableById(tab));
 
+    let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : 'Error';
 
     item.innerHTML = /*HTML*/`<div class="p-2 block tab-label">${tabLabel}</div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor}"><i class="ri-close-line align-text-top"></i></button>`;
 
@@ -100,107 +115,22 @@ function createTab(tab) {
     return item;
 }
 
-
-export function schemaOverview() {
-    appWrapper.innerHTML = '';
-
-
-    let schemaList = document.createElement('div');
-    schemaList.innerHTML = /*HTML*/`
-    <div class="${theme.textColor} p-4 border-b ${theme.tableBorderColor}">
-        <div class="container mx-auto">
-            <div class="flex items-center space-x-4">
-                <div class="${theme.primaryColor} rounded p-2 text-2xl text-center" style="width:48px;height:48px">M</div>
-                <div>
-                    <h2 class="text-2xl">${schema.name}</h2>
-                    <p class="text-sm">${savedTables.length} Tables and Views</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <div class="container mx-auto">
-            <div class="py-4 space-y-4">
-                
-                <div>
-                    <input type="text" class="${theme.inputBackgroundColor} p-2 bg-opacity-60 w-full" placeholder="Search Tables and Views">
-                </div>
-                <div class="list-wrapper">
-                </div>
-                <div class="${theme.textColor} flex items-center space-x-1 justify-center">
-                    <a href="#" class="border py-1 px-2 text-xs ${theme.primaryColor} ${theme.primaryBorderColor}">1</a>
-                    <a href="#" class="border py-1 px-2 text-xs ${theme.mediumBorderColor}">2</a>
-                    <a href="#" class="border py-1 px-2 text-xs ${theme.mediumBorderColor}">3</a>
-                </div>
-            </div>
-        </div>
-    </div>`;
-
-    let createNavItem = function (table) {
-        let item = document.createElement('a');
-        item.href = 'javascript:void(0)';
-        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'flex', 'items-center');
-
-        let itemIcon = function (type) {
-            if (type == 'table') {
-                return `<i class="ri-table-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
-            } else {
-                return `<i class="ri-layout-grid-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
-            }
-        };
-
-        item.innerHTML = `<div>${itemIcon(table.type)} ${table.name}</div> <div class="text-sm ml-auto ${theme.mutedTextColor}">Last Updated ${table.lastUpdated}</div>`;
-
-        item.addEventListener('click', function () {
-            let url = `${window.location.pathname}?activeTable=${table.id}`;
-            location.assign(url);
-        });
-
-        return item;
-    };
-
-    let createSection = function () {
-        let items = savedTables.sort(function (a, b) {
-            return new Date(b.lastUpdated) - new Date(a.lastUpdated);
-        });
-        let sectionWrapper = document.createElement('div');
-
-
-        let addBtn = document.createElement('button');
-        addBtn.classList.add('ml-auto', theme.darkPrimaryColor, 'py-1', 'px-2');
-        addBtn.innerHTML = `<i class="ri-add-line"></i>`;
-
-        //schemaList.append(sectionHeader);
-
-        items.forEach(table => sectionWrapper.appendChild(createNavItem(table)));
-
-        sectionWrapper.querySelectorAll('a').forEach(item => {
-            item.addEventListener('mouseenter', function () {
-                item.classList.add(theme.mediumBackgroundColor, 'bg-opacity-80')
-            });
-            item.addEventListener('mouseleave', function () {
-                item.classList.remove(theme.mediumBackgroundColor, 'bg-opacity-80')
-            });
-        })
-
-
-        return sectionWrapper;
-    };
-
-
-    schemaList.querySelector('.list-wrapper').appendChild(createSection());
-
-
-    appWrapper.append(topNav(schema), schemaList);
+if (activeTable == null) {
+    schemaOverview();
 }
 
-if (activeTable == undefined) {
-    schemaOverview();
-} else {
+let tableExists = loadedTables.find(table => table.id == activeTable);
+
+if (activeTable !== null && tableExists) {
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
     document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
     document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
     document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
+}
+
+if (!tableExists) {
+    document.querySelector('.table-wrapper').append(createError());
+    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 }
 
 // SELECT TABLE BY ID
@@ -213,35 +143,6 @@ export function selectTableByName(name) {
 }
 
 //console.log(loadedTables);
-
-
-
-// STATUS FOR TABS
-
-
-//setTableStatus(selectTableById(activeTable), 'active');
-//setTableStatus(selectTableById(4), 'open');
-//setTableStatus(selectTableById(2), 'open');
-//
-//function setTableStatus(table, status) {
-//    if (table.id == activeTable) {
-//        table.status = 'active';
-//    } else {
-//        table.status = status;
-//    }
-//}
-
-//
-
-
-// TABS
-
-//let openTables = [];
-//openTables.push(selectTableById(activeTable))
-//openTables.push(selectTableById(5))
-//document.querySelector('.table-wrapper').parentNode.prepend(createTabs(openTables));
-
-
 
 function createTabs(openTables) {
     let tabs = document.createElement('div');

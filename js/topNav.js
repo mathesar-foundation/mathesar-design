@@ -1,6 +1,6 @@
 import { theme, setNextTheme } from './themes.js';
 import { components } from './components.js';
-import { schemaOverview } from './main.js'; 
+import { schemaOverview } from "./schemaOverview";
 
 export function topNav(schema) {
     let topNav = document.createElement('div');

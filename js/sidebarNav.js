@@ -1,110 +1,158 @@
 import { activeTable } from './main';
 import { theme } from './themes.js';
 import { components } from './components.js';
-
+import { icon } from './iconMap';
+import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 // CREATE SIDEBAR
 export function sidebarNav(tables) {
 
+    //tables.splice(3,0,{name: 'ErrorTable', type:'view', id:'error'})
+
     let sidebar = document.createElement('div');
-    sidebar.classList.add('flex','flex-col');
+    sidebar.classList.add('flex', 'flex-col');
     sidebar.style.height = 'calc(100vh - 43px)';
     sidebar.style.overflowY = 'hidden';
 
-    let sections = tables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
-
     let searchBar = document.createElement('div');
-    searchBar.classList.add('flex','p-1');
-    let searchInput = components.createInput({placeholder: 'Type to search'});
+    searchBar.classList.add('flex', 'p-2');
+    let searchInput = components.createInput({ placeholder: 'Type to search' });
     searchInput.classList.add('w-full');
-    
+
     let moreMenu = document.createElement('div');
-    moreMenu.classList.add('py-1','px-2')
+    moreMenu.classList.add('py-1', 'px-2')
     moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
-    searchBar.append(searchInput,moreMenu);
+    searchBar.append(searchInput, moreMenu);
     sidebar.append(searchBar);
+
+    let sidebarNav = document.createElement('div');
+    sidebarNav.classList.add('flex','items-center','px-2','space-x-2',theme.textColor)
+    sidebarNav.innerHTML = /*HTML*/`
+        <button class="border rounded show-history flex-grow ${theme.primaryBorderColor} border-opacity-60">All</button>
+        <button class="border rounded show-tables flex-grow ${theme.tableBorderColor} border-opacity-60">Tables</button>
+        <button class="border rounded show-views flex-grow ${theme.tableBorderColor} border-opacity-60">Views</button>
+    `;
+
+    sidebar.append(sidebarNav);
+
+    let sidebarContent = document.createElement('div');
+    
+    sidebar.append(sidebarContent);
+
+    
+
+    //sidebar.innerHTML += `history schema`
 
 
     let createNavItem = function (table) {
-        let item = document.createElement('a');
-        item.setAttribute('href', 'javascript:void(0)');
-        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'm-1');
-        let itemIcon = function(type){
-            if (type == 'table') {
-                return `<i class="ri-table-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
-            } else { 
-                return `<i class="ri-layout-grid-fill align-bottom mr-1 ${theme.primaryTextColor}"></i>`;
-            }
-        };
-        item.innerHTML = `${itemIcon(table.type)} ${table.name}`;
+        let tableURL = `${window.location.pathname}?activeTable=${table.id}`;
+        let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${theme.primaryTextColor}"></i>`
+        let activeClasses= `${table.id == activeTable?`${theme.primaryColor} bg-opacity-40`:``}`
+        return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">${tableIcon}${table.name}</a>`;
+    };
+    
 
-        let hoverClasses = [theme.primaryColor, 'bg-opacity-40'];
-
-        if (table.id == activeTable) {
-            item.classList.add(...hoverClasses);
+    searchInput.addEventListener('keyup', function (e) {
+        
+        if (e.target.value.length == 0) {
+            sidebarNav.style.display = 'flex';
+        } else {
+            sidebarNav.style.display = 'none';
         }
 
-        item.addEventListener('click', function () {
-            let url = `${window.location.pathname}?activeTable=${table.id}`;
-            location.assign(url);
-        });
+        let filteredTables = tables.filter(table => table.name.toLowerCase().includes(e.target.value.toLowerCase()));
 
-        item.addEventListener('mouseover', function () {
-            //item.classList.add(...hoverClasses)
-        });
-
-        item.addEventListener('mouseleave', function () {
-            //item.classList.remove(...hoverClasses)
-        });
-
-        return item;
-    };
-
-    let createSection = function (section) {
-        let items = tables.filter(table => table.type == section);
-        let sectionWrapper = document.createElement('div');
-        sectionWrapper.classList.add('flex-grow','h-50',theme.backgroundColor);
-        sectionWrapper.style.overflowY = 'scroll';
-        let sectionHeader = document.createElement('div');
-        //sectionHeader.classList.add('border-b','border-t','pl-2', theme.tableBorderColor, theme.textColor,'flex','items-center');
-        sectionHeader.classList.add('px-2','py-1',theme.mutedTextColor,theme.darkBackgroundColor)
-        sectionHeader.innerHTML = `<span class="uppercase text-sm mr-2">${section}s</span> <span class="${theme.mediumBackgroundColor} rounded px-1">${items.length}</span>`;
-        
-        let addBtn = document.createElement('button');
-        addBtn.classList.add('ml-auto',theme.darkPrimaryColor,'py-1','px-2');
-        addBtn.innerHTML = `<i class="ri-add-line"></i>`;
-        //sectionHeader.append(addBtn);
-
-        addBtn.addEventListener('click',function(){
-            //allTables.push(addNew(section))
-            //sessionStorage.setItem('tables', JSON.stringify(tables));
-            //location.reload();
-        });
-        
-        sidebar.append(sectionHeader);
-
-        items.forEach(table => sectionWrapper.appendChild(createNavItem(table)));
-
-
-        sectionWrapper.querySelectorAll('a').forEach(item => {
-            item.addEventListener('mouseenter',function(){
-                item.classList.add(theme.mediumBackgroundColor,'bg-opacity-80')
-            });
-            item.addEventListener('mouseleave',function(){
-                item.classList.remove(theme.mediumBackgroundColor,'bg-opacity-80')
-            });
-        })
-
-
-        return sectionWrapper;
-    };
-
-    sections.reverse().forEach(section => {
-        sidebar.appendChild(createSection(section));
+        loadNavItems(filteredTables);
     });
 
+    let loadNavItems = function(tablesList){
 
+        sidebarContent.innerHTML = `<div><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
+
+        if (tablesList.length > 0) {
+            sidebarContent.innerHTML += tablesList.map(item => createNavItem(item)).join('');
+        } else {
+            sidebarContent.innerHTML += `<div class="${theme.mutedTextColor} p-2">No Results</div>`;
+        }
+
+        sidebarContent.querySelectorAll('a').forEach(item => {
+            item.addEventListener('mouseenter', function () {
+                item.classList.add(theme.mediumBackgroundColor, 'bg-opacity-80')
+            });
+            item.addEventListener('mouseleave', function () {
+                item.classList.remove(theme.mediumBackgroundColor, 'bg-opacity-80')
+            });
+        });
+
+        sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
+            e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
+        });
+    }
+
+    
+
+    loadNavItems(tables);
+
+    sidebarNav.querySelector('.show-history').addEventListener('click',function(){
+        loadNavItems(tables);
+    });
+    
+    
+    sidebarNav.querySelector('.show-tables').addEventListener('click',function(){
+        loadNavItems(tables.filter(table => table.type == 'table'));
+    });
+
+    sidebarNav.querySelector('.show-views').addEventListener('click',function(){
+        loadNavItems(tables.filter(table => table.type == 'view'));
+    });
+
+    const navList = sidebarNav.querySelectorAll('button');
+
+    for (let item of navList) {
+        item.addEventListener("click", function () {
+            for (let item of navList) {
+                item.classList.remove(theme.primaryBorderColor);
+                item.classList.add(theme.tableBorderColor);
+            }
+            this.classList.add(theme.primaryBorderColor);
+        });
+    }
+
+
+    
 
     return sidebar;
 };
+
+
+function createTableOptionsMenu(table) {
+    let content = document.createElement('div');
+    let menu = createDropdownMenu(content);
+
+    let createMenuItem = (label, callback) => {
+        let menuItem = document.createElement('a');
+        menuItem.classList.add('block', 'text-sm', 'p-2',theme.textColor);
+        menuItem.setAttribute('href', 'javascript:void(0)');
+        menuItem.innerText = label;
+        menuItem.addEventListener('click', function () {
+            callback(table);
+        }, false);
+        return menuItem;
+    }
+
+    let menuItems = [
+        //createMenuItem('Table Constraints', setTableConstraints),
+        //createMenuItem('Table Preferences', setTablePreferences),
+        createMenuItem('Recently Accesssed'),
+        createMenuItem('A to Z')
+    ];
+
+    menuItems.forEach(item => content.appendChild(item));
+
+    addDropdownOutsideClickHandler(menu, function () {
+
+    });
+
+    return menu;
+}
 

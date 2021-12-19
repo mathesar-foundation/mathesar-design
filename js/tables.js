@@ -306,14 +306,8 @@ var allTables = [
 }, {
     name: 'Unnamed View (2)',
     type: 'view',
-    columns: [
-        { name: 'releaseName', type: 'text', referencedTable: 'release' },
-        { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
-    ],
-    records: [
-        ['Aquarius', 'Roses are Red,Around the World,Good Morning Sunshine'],
-        ['Aquarium', '']
-    ],
+    columns: [],
+    records: [],
     color: 'purple'
 }];
 

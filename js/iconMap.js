@@ -7,6 +7,8 @@ var icon = {
     'date' : 'ri-calendar-line',
     'boolean' : 'ri-checkbox-line',
     'summary' : 'ri-align-justify',
+    'table' : 'ri-table-fill',
+    'view' : 'ri-layout-grid-fill'
 }
 
 export {icon}
