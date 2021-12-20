@@ -26,7 +26,7 @@ export function schemaOverview() {
 
             <div class="py-4 space-y-4">
                 <div>
-                    <input type="text" class="${theme.inputBackgroundColor} p-2 bg-opacity-60 w-full" placeholder="Search Tables and Views">
+                    <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} px-2 py-1 bg-opacity-20 border ${theme.tableBorderColor} w-full search-schema" placeholder="Search Tables and Views">
                 </div>
                 <div class="list-wrapper">
 
@@ -63,12 +63,15 @@ export function schemaOverview() {
         return item;
     };
 
-   
 
-    loadedTables.forEach(table =>{
+    loadedTables.forEach(table => {
         schemaList.querySelector('.list-wrapper').appendChild(createNavItem(table));
-    })
-    
+    });
+
+    schemaList.querySelector('.search-schema').addEventListener('keyup', function (e) {
+        console.log('test');
+    });
+
 
     if (errorStatus) {
         schemaList.querySelector('.list-wrapper').innerHTML = `

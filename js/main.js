@@ -92,8 +92,6 @@ function buildActiveTables() {
     });
 }
 
-
-
 function createTab(tab) {
 
     let item = document.createElement('div');
@@ -139,7 +137,7 @@ if (activeTable !== null && tableExists) {
     document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
 }
 
-if (!tableExists) {
+if (activeTable !== null && !tableExists) {
     document.querySelector('.table-wrapper').append(createError());
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
     document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
