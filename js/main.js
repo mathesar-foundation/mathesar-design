@@ -98,7 +98,7 @@ function createTab(tab) {
     item.style.cursor = 'pointer';
     item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap');
 
-    let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : 'Error';
+    let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : 'ErrorTable';
 
     let iconClass = (tab !== activeTable) ? theme.mutedTextColor : theme.primaryTextColor
 
