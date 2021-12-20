@@ -29,8 +29,8 @@ export function schemaOverview() {
                     <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} px-2 py-1 bg-opacity-20 border ${theme.tableBorderColor} w-full search-schema" placeholder="Search Tables and Views">
                 </div>
                 
-                <div class="list-wrapper">
-                <div class="grid grid-cols-3 gap-1 text-sm p-2 ${theme.mutedTextColor}">
+                <div class="list-wrapper space-y-1">
+                <div class="grid grid-cols-3 gap-1 text-sm mb-2 border-b py-1 ${theme.tableBorderColor} ${theme.mutedTextColor}">
                     <div>Name</div>
                     <div>Type</div>
                     <div class="text-right">Last Access</div>
@@ -49,7 +49,7 @@ export function schemaOverview() {
     let createNavItem = function (table) {
         let item = document.createElement('a');
         item.href = 'javascript:void(0)';
-        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'grid','grid-cols-3','gap-1', 'items-center');
+        item.classList.add(theme.textColor, 'block', 'rounded', 'grid','grid-cols-3','gap-1', 'items-center');
 
         let itemIcon = function (type) {
             if (type == 'table') {
