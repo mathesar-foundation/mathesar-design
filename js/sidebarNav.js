@@ -55,26 +55,33 @@ export function sidebarNav(tables) {
 
     searchInput.addEventListener('keyup', function (e) {
         
-        if (e.target.value.length == 0) {
-            sidebarNav.style.display = 'flex';
-        } else {
-            sidebarNav.style.display = 'none';
-        }
+       
 
         let filteredTables = tables.filter(table => table.name.toLowerCase().includes(e.target.value.toLowerCase()));
 
-        loadNavItems(filteredTables);
+        loadNavItems(filteredTables,e.target.value);
     });
 
-    let loadNavItems = function(tablesList){
+    let loadNavItems = function(tablesList,query){
+        console.log(query)
+        
 
-        sidebarContent.innerHTML = `<div><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
+        sidebarContent.innerHTML = `<div class="sort-dropdown"><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
 
+            
         if (tablesList.length > 0) {
+            sidebarNav.style.display = 'flex';
             sidebarContent.innerHTML += tablesList.map(item => createNavItem(item)).join('');
         } else {
-            sidebarContent.innerHTML += `<div class="${theme.mutedTextColor} p-2">No Results</div>`;
+            sidebarNav.style.display = 'none';
+            sidebarContent.querySelector('.sort-dropdown').style.display = 'none';
+            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">No Results for '${query}' <a href="#" class="whitespace-nowrap ${theme.primaryTextColor}">Clear Search</a></div> `;
         }
+
+        
+        sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
+            e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
+        });
 
         sidebarContent.querySelectorAll('a').forEach(item => {
             item.addEventListener('mouseenter', function () {
@@ -85,9 +92,7 @@ export function sidebarNav(tables) {
             });
         });
 
-        sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
-            e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
-        });
+        
     }
 
     
@@ -132,7 +137,7 @@ function createTableOptionsMenu(table) {
 
     let createMenuItem = (label, callback) => {
         let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'text-sm', 'p-2',theme.textColor,'rounded');
+        menuItem.classList.add('block', 'p-2',theme.textColor,'rounded','w-100');
         menuItem.setAttribute('href', 'javascript:void(0)');
         menuItem.innerText = label;
         menuItem.addEventListener('click', function () {
@@ -142,8 +147,6 @@ function createTableOptionsMenu(table) {
     }
 
     let menuItems = [
-        //createMenuItem('Table Constraints', setTableConstraints),
-        //createMenuItem('Table Preferences', setTablePreferences),
         createMenuItem('Recently Accesssed'),
         createMenuItem('By Name')
     ];

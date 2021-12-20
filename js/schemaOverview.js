@@ -26,7 +26,7 @@ export function schemaOverview() {
 
             <div class="py-4 space-y-4">
                 <div>
-                    <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} px-2 py-1 bg-opacity-20 border ${theme.tableBorderColor} w-full search-schema" placeholder="Search Tables and Views">
+                    <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} px-2 py-1 bg-opacity-20 border ${theme.tableBorderColor} w-full search-schema" placeholder="Type to Search">
                 </div>
                 
                 <div class="list-wrapper space-y-1">
