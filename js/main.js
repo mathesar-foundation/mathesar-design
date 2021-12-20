@@ -41,7 +41,7 @@ export var activeTable = urlParams.get('activeTable');
 
 let tabsWrapper = document.createElement('div');
 tabsWrapper.style.overflowX = 'hidden';
-tabsWrapper.classList.add('flex');
+tabsWrapper.classList.add('flex','border-b',theme.tableBorderColor);
 
 addActiveTable(activeTable);
 buildActiveTables();
@@ -52,8 +52,12 @@ function createError(){
     //error.style.position = 'absolute';
     //error.style.top = '0';
     //error.style.left = '0';
-    error.classList.add(theme.textColor,theme.darkBackgroundColor,'p-5','border',theme.lightBorderColor)
-    error.innerHTML = `There was a problem opening this view`
+    error.classList.add(theme.textColor,'bg-red-300','p-4','m-4','bg-opacity-40','text-opacity-80')
+    error.innerHTML = `
+    
+    <h3 class="text-lg"><i class="ri-error-warning-fill align-bottom text-red-400"></i> This view might not exist or is no longer available</h3>
+    <p>The view you are trying to open might have been deleted, or you might not have permission to view it.</p>
+    `
     return error;
 }
 
@@ -131,6 +135,7 @@ if (activeTable !== null && tableExists) {
 if (!tableExists) {
     document.querySelector('.table-wrapper').append(createError());
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
+    document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
 }
 
 // SELECT TABLE BY ID

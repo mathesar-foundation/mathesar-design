@@ -7,7 +7,7 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 // CREATE SIDEBAR
 export function sidebarNav(tables) {
 
-    //tables.splice(3,0,{name: 'ErrorTable', type:'view', id:'error'})
+    tables.splice(3,0,{name: 'ErrorTable', type:'view', id:'error'})
 
     let sidebar = document.createElement('div');
     sidebar.classList.add('flex', 'flex-col');
@@ -131,7 +131,7 @@ function createTableOptionsMenu(table) {
 
     let createMenuItem = (label, callback) => {
         let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'text-sm', 'p-2',theme.textColor);
+        menuItem.classList.add('block', 'text-sm', 'p-2',theme.textColor,'border');
         menuItem.setAttribute('href', 'javascript:void(0)');
         menuItem.innerText = label;
         menuItem.addEventListener('click', function () {
@@ -144,7 +144,7 @@ function createTableOptionsMenu(table) {
         //createMenuItem('Table Constraints', setTableConstraints),
         //createMenuItem('Table Preferences', setTablePreferences),
         createMenuItem('Recently Accesssed'),
-        createMenuItem('A to Z')
+        createMenuItem('By Name')
     ];
 
     menuItems.forEach(item => content.appendChild(item));
