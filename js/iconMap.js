@@ -8,7 +8,8 @@ var icon = {
     'boolean' : 'ri-checkbox-line',
     'summary' : 'ri-align-justify',
     'table' : 'ri-table-fill',
-    'view' : 'ri-layout-grid-fill'
+    'view' : 'ri-layout-grid-fill',
+    'error' : 'ri-error-warning-line'
 }
 
 export {icon}

@@ -1,6 +1,6 @@
 import { theme } from './themes.js';
 import { topNav } from './topNav';
-import { appWrapper, schema, savedTables } from './main';
+import { appWrapper, schema, savedTables, errorStatus } from './main';
 import { loadedTables } from './tables.js';
 
 export function schemaOverview() {
@@ -63,17 +63,24 @@ export function schemaOverview() {
         return item;
     };
 
-    let sections = loadedTables.map(table => table.type).filter((v, i, a) => a.indexOf(v) === i);
-    sections.reverse().forEach(section => {
-        let sectionHeader = document.createElement('div');
-        sectionHeader.innerHTML = `${section}`
-        schemaList.append(sectionHeader);
-    });
+   
 
     loadedTables.forEach(table =>{
         schemaList.querySelector('.list-wrapper').appendChild(createNavItem(table));
     })
     
+
+    if (errorStatus) {
+        schemaList.querySelector('.list-wrapper').innerHTML = `
+        <div class="bg-red-300 p-4 ${theme.textColor} bg-opacity-40 text-opacity-80 space-y-2">
+        <div>
+        <h3 class="text-lg"><i class="ri-error-warning-fill align-bottom text-red-400"></i> Failed to load tables and views from the server.</h3>
+        <p>The server responded with a status of 500 (Internal Server Error).</p>
+        </div>
+        <a href="#" class="border ${theme.lightBorderColor} inline-block rounded py-1 px-2"><i class="ri-refresh-line align-bottom"></i> Retry</a>
+        </div>
+        `;
+    }
 
 
     appWrapper.append(topNav(schema), schemaList);

@@ -12,6 +12,7 @@ import { setTablePreferences } from './setTablePreferences';
 import { setColumnPreferences } from './setColumnPreferences';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { schemaOverview } from './schemaOverview';
+import { icon } from './iconMap';
 
 const urlParams = new URLSearchParams(window.location.search);
 for (const property in theme) { applyTheme(property, theme[property]); }
@@ -37,6 +38,8 @@ if (sessionStorage.getItem('tables') === null) {
 export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
+
+export var errorStatus = urlParams.get('error');
 
 
 let tabsWrapper = document.createElement('div');
@@ -100,11 +103,13 @@ function createTab(tab) {
     item.style.cursor = 'pointer';
     item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap');
 
-    console.log(selectTableById(tab));
-
     let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : 'Error';
 
-    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label">${tabLabel}</div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor}"><i class="ri-close-line align-text-top"></i></button>`;
+    let iconClass = (tab !== activeTable) ? theme.mutedTextColor : theme.primaryTextColor
+
+    let iconType = (selectTableById(tab) !== undefined) ? selectTableById(tab).type : 'error';;
+
+    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label"><i class="${icon[iconType]} align-bottom ${iconClass}"></i> ${tabLabel}</div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor} bg-opacity-40"><i class="ri-close-line align-text-top"></i></button>`;
 
     item.querySelector('.close-tab').addEventListener('click', function () {
         closeActiveTable(tab);
@@ -116,11 +121,16 @@ function createTab(tab) {
         location.assign(url);
     });
 
+    if (tab == activeTable) {
+        item.classList.add(theme.mediumBackgroundColor,'bg-opacity-40')
+    }
+
     return item;
 }
 
 if (activeTable == null) {
     schemaOverview();
+    
 }
 
 let tableExists = loadedTables.find(table => table.id == activeTable);
