@@ -69,7 +69,18 @@ export function schemaOverview() {
     });
 
     schemaList.querySelector('.search-schema').addEventListener('keyup', function (e) {
-        console.log('test');
+
+            
+        let filteredTables = (e.target.value.length !== 0)? loadedTables.filter(table => table.name.toLowerCase().includes(e.target.value.toLowerCase())): loadedTables;
+
+        schemaList.querySelector('.list-wrapper').innerHTML = `${e.target.value.length !== 0?`<div class="text-lg ${theme.textColor}">${filteredTables.length} Results for '${e.target.value}'</div>`:``}`;
+
+        filteredTables.forEach(table => {
+            schemaList.querySelector('.list-wrapper').appendChild(createNavItem(table));
+        });
+
+
+
     });
 
 
