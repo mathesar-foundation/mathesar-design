@@ -28,7 +28,13 @@ export function schemaOverview() {
                 <div>
                     <input type="text" class="${theme.inputBackgroundColor} ${theme.textColor} px-2 py-1 bg-opacity-20 border ${theme.tableBorderColor} w-full search-schema" placeholder="Search Tables and Views">
                 </div>
+                
                 <div class="list-wrapper">
+                <div class="grid grid-cols-3 gap-1 text-sm p-2 ${theme.mutedTextColor}">
+                    <div>Name</div>
+                    <div>Type</div>
+                    <div class="text-right">Last Access</div>
+                </div>
 
                 </div>
                 <div class="${theme.textColor} flex items-center space-x-1 justify-center">
@@ -43,7 +49,7 @@ export function schemaOverview() {
     let createNavItem = function (table) {
         let item = document.createElement('a');
         item.href = 'javascript:void(0)';
-        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'flex', 'items-center');
+        item.classList.add(theme.textColor, 'py-1', 'px-2', 'block', 'rounded', 'grid','grid-cols-3','gap-1', 'items-center');
 
         let itemIcon = function (type) {
             if (type == 'table') {
@@ -53,12 +59,16 @@ export function schemaOverview() {
             }
         };
 
-        item.innerHTML = `<div>${itemIcon(table.type)} ${table.name}</div> <div class="text-sm ml-auto ${theme.mutedTextColor}">Last Accessed ${table.lastUpdated}</div>`;
+        item.innerHTML = `<div>${itemIcon(table.type)} ${table.name}</div><div class="capitalize ${theme.mutedTextColor}">${table.type}</div> <div class="text-sm ml-auto ${theme.mutedTextColor}">${table.lastUpdated}</div>`;
 
         item.addEventListener('click', function () {
             let url = `${window.location.pathname}?activeTable=${table.id}`;
             location.assign(url);
         });
+
+        
+
+        
 
         return item;
     };
@@ -73,14 +83,13 @@ export function schemaOverview() {
             
         let filteredTables = (e.target.value.length !== 0)? loadedTables.filter(table => table.name.toLowerCase().includes(e.target.value.toLowerCase())): loadedTables;
 
-        schemaList.querySelector('.list-wrapper').innerHTML = `${e.target.value.length !== 0?`<div class="text-lg ${theme.textColor}">${filteredTables.length} Results for '${e.target.value}'</div>`:``}`;
+        schemaList.querySelector('.list-wrapper').innerHTML = `
+        ${e.target.value.length !== 0?`<div class="${theme.textColor}"><span class="text-lg">${filteredTables.length} Results for '${e.target.value}'</span>
+        <a href="#" class="${theme.primaryTextColor}">Clear Search</a></div>`:``}`;
 
         filteredTables.forEach(table => {
             schemaList.querySelector('.list-wrapper').appendChild(createNavItem(table));
         });
-
-
-
     });
 
 
