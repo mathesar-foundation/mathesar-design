@@ -537,7 +537,7 @@ function createTooltip(content) {
 
 
 export function columnByName(colName) {
-    let columns = savedTables.reduce((a, b) => {
+    let columns = loadedTables.reduce((a, b) => {
         b.columns.forEach(col => a.push(col))
         return a;
     }, []);

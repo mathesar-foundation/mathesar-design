@@ -131,7 +131,7 @@ function createTableOptionsMenu(table) {
 
     let createMenuItem = (label, callback) => {
         let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'text-sm', 'p-2',theme.textColor,'border');
+        menuItem.classList.add('block', 'text-sm', 'p-2',theme.textColor,'rounded');
         menuItem.setAttribute('href', 'javascript:void(0)');
         menuItem.innerText = label;
         menuItem.addEventListener('click', function () {
@@ -147,11 +147,23 @@ function createTableOptionsMenu(table) {
         createMenuItem('By Name')
     ];
 
+    
+
+
     menuItems.forEach(item => content.appendChild(item));
 
-    addDropdownOutsideClickHandler(menu, function () {
+    addDropdownOutsideClickHandler(menu, function () {});
 
-    });
+    let navList = content.querySelectorAll('a');
+
+    for (let item of navList) {
+        item.addEventListener("mouseenter", function () {
+            for (let item of navList) {
+                item.classList.remove(theme.primaryColor,'bg-opacity-40');
+            }
+            this.classList.add(theme.primaryColor,'bg-opacity-40');
+        });
+    }
 
     return menu;
 }
