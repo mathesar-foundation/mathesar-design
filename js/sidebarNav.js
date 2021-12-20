@@ -36,6 +36,7 @@ export function sidebarNav(tables) {
     sidebar.append(sidebarNav);
 
     let sidebarContent = document.createElement('div');
+    sidebarContent.style.overflowY = 'scroll';
     
     sidebar.append(sidebarContent);
 

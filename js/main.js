@@ -52,9 +52,6 @@ buildActiveTables();
 
 function createError(){
     let error = document.createElement('div');
-    //error.style.position = 'absolute';
-    //error.style.top = '0';
-    //error.style.left = '0';
     error.classList.add(theme.textColor,'bg-red-300','p-4','m-4','bg-opacity-40','text-opacity-80')
     error.innerHTML = `
     
