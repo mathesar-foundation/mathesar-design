@@ -497,8 +497,7 @@ export function createTable(obj) {
     };
 
     let table = document.createElement('div');
-    let tableClasses = ['t-table', theme.backgroundColor];
-    table.classList.add(...tableClasses);
+    table.classList.add(theme.backgroundColor);
     let rowWrapper = document.createElement('div');
     rowWrapper.classList.add('t-body', 'row-wrapper');
     let headerWrapper = document.createElement('div');
@@ -528,12 +527,12 @@ export function createTable(obj) {
     repositionWarning.innerHTML = `New records will be repositioned on refresh`;
 
     let tableWrapper = document.createElement('div');
-    tableWrapper.classList.add('flex', 'items-start', 'flex-grow');
+    tableWrapper.classList.add('flex','grow');
     tableWrapper.style.overflowX = 'scroll';
     tableWrapper.appendChild(table);
 
     let addColumnBtn = document.createElement('button');
-    addColumnBtn.classList.add(theme.darkPrimaryColor, theme.textColor);
+    addColumnBtn.classList.add(theme.darkPrimaryColor, theme.textColor,'flex-shrink-0');
     addColumnBtn.style.height = '40px';
     addColumnBtn.style.width = '40px';
     addColumnBtn.innerHTML = `<i class="ri-add-line align-middle text-xl"></i>`;
@@ -561,10 +560,11 @@ export function createTable(obj) {
     });
 
     let tableFooter = document.createElement('div');
-    tableFooter.classList.add('mt-auto', 'p-2', theme.textColor, theme.darkBackgroundColor, 'w-full')
+    tableFooter.classList.add('mt-auto', 'p-2', theme.textColor, 'w-full')
     tableFooter.innerHTML = `${obj.records.length} Records`;
-    document.querySelector('.table-wrapper').append(tableFooter);
 
+    document.querySelector('.table-wrapper').append(tableFooter);
+    
 
     return tableWrapper;
 };

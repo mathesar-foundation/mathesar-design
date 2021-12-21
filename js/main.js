@@ -14,6 +14,34 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 import { schemaOverview } from './schemaOverview';
 import { icon } from './iconMap';
 
+document.querySelector('body').classList.add(theme.backgroundColor)
+
+export let appWrapper = document.createElement('div');
+
+appWrapper.innerHTML = `
+ 
+<div class="grid grid-cols-12">
+
+  <div class="col-span-3">
+    <div class="h-full tableBorderColor border-r sidebar-wrapper">
+      
+      <div class="sidebar-navigation"></div>
+
+    </div>
+
+  </div>
+  <div class="col-span-9">
+
+    <div class="table-wrapper flex flex-col">
+
+    </div>
+  </div>
+</div>
+
+`
+
+document.querySelector('body').append(appWrapper);
+
 const urlParams = new URLSearchParams(window.location.search);
 for (const property in theme) { applyTheme(property, theme[property]); }
 
@@ -27,7 +55,7 @@ export let schema = {
     name: 'album_collection'
 }
 
-export let appWrapper = document.querySelector('body');
+
 appWrapper.prepend(topNav(schema));
 appWrapper.classList.add(theme.backgroundColor);
 
