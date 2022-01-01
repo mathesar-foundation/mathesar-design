@@ -7,6 +7,7 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 // CREATE SIDEBAR
 export function sidebarNav(tables) {
 
+    let selectedTab = localStorage.getItem('selectedTab') || 'all';
     //tables.splice(3,0,{name: 'ErrorTable', type:'view', id:'error', records:[],columns:[]});//ADD ERROR TABLE
 
     let sidebar = document.createElement('div');
@@ -49,9 +50,9 @@ export function sidebarNav(tables) {
 
     let loadNavItems = function(tablesList,query){
 
-        console.log(query);
+        sidebarContent.innerHTML = '';
         
-        sidebarContent.innerHTML = `<div class="sort-dropdown"><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
+        //sidebarContent.innerHTML = `<div class="sort-dropdown"><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
             
         if (tablesList.length > 0) {
             sidebarNav.style.display = 'flex';
@@ -66,14 +67,20 @@ export function sidebarNav(tables) {
             </div> `;
         }
 
+        console.log(selectedTab);
+
+        let emptyState = `<div class="${theme.mutedTextColor} text-sm ${theme.primaryBorderColor}">No ${selectedTab} available</div>`
+
+        let emptyStateAll = `<div class="${theme.mutedTextColor} text-sm ${theme.primaryBorderColor} ">No tables or views available</div>`
+
         if (tablesList.length == 0) {
-            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">No Tables or Views Exist</div>`;
+            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all'?emptyStateAll:emptyState} </div>`;
         }
 
         
-        sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
-            e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
-        });
+        //sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
+        //    e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
+        //});
 
         sidebarContent.querySelectorAll('a').forEach(item => {
             item.addEventListener('mouseenter', function () {
@@ -93,8 +100,7 @@ export function sidebarNav(tables) {
     sidebarNav.classList.add('flex','items-center','px-2','space-x-2',theme.textColor);
 
 
-    let selectedTab = localStorage.getItem('selectedTab') || 'all';
-    console.log(selectedTab);
+    
 
 
     sidebarNav.innerHTML = /*HTML*/`
@@ -103,7 +109,6 @@ export function sidebarNav(tables) {
         <button data-filter="views" class="border rounded py-1 text-sm show-views flex-grow ${selectedTab == 'views'? theme.primaryBorderColor:theme.tableBorderColor} border-opacity-60">Views (${tables.filter(t => t.type == 'view').length})</button>
     `;
 
-        
 
     if (selectedTab == 'tables') {
         loadNavItems(tables.filter(table => table.type == 'table'));
@@ -112,14 +117,12 @@ export function sidebarNav(tables) {
     } else {
         loadNavItems(tables);
     }
-    
-
 
     sidebarNav.querySelectorAll('button').forEach(button => {
         button.addEventListener('click',function(){
             let activeFilter = button.getAttribute('data-filter');
+            selectedTab = activeFilter;
             localStorage.setItem('selectedTab',activeFilter);
-
 
             if (activeFilter == 'tables') {
                 loadNavItems(tables.filter(table => table.type == 'table'));
