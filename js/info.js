@@ -10,4 +10,4 @@ var info = {
 
 };
 
-module.exports = { info };
+export default { info };

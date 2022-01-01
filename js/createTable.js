@@ -18,7 +18,7 @@ if (sessionStorage.getItem('recordPreview') === null) {
 export function createTable(obj) {
 
     let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
-    let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs'];
+    let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs',theme.primaryTextColor];
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
     let createHeader = (col, i) => {
@@ -32,11 +32,7 @@ export function createTable(obj) {
 
         let headerIcon = components.createIcon(icon[col.type], { style: 'type' });
 
-        header.innerHTML = `
-        <div>
-            <div>${headerIcon.outerHTML} ${col.name}</div>
-        </div>
-        `;
+        header.innerHTML = `<div><div>${headerIcon.outerHTML} ${col.name}</div></div>`;
 
         if (obj.type == 'table') {
             let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
@@ -227,8 +223,6 @@ export function createTable(obj) {
         renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
 
         renderedCell.tabIndex = 0;
-
-
 
         let cellInput = components.createInput({ value: cell.value });
         cellInput.classList.add('p-2', 'w-full');
@@ -497,7 +491,7 @@ export function createTable(obj) {
     };
 
     let table = document.createElement('div');
-    table.classList.add(theme.backgroundColor);
+    table.classList.add(theme.backgroundColor,'bg-opacity-60');
     let rowWrapper = document.createElement('div');
     rowWrapper.classList.add('t-body', 'row-wrapper');
     let headerWrapper = document.createElement('div');
@@ -561,9 +555,9 @@ export function createTable(obj) {
 
     let tableFooter = document.createElement('div');
     tableFooter.classList.add('mt-auto', 'p-2', theme.textColor, 'w-full')
-    tableFooter.innerHTML = `${obj.records.length} Records`;
+  
 
-    document.querySelector('.table-wrapper').append(tableFooter);
+    document.querySelector('.table-wrapper').innerHTML += `<div class="mt-auto ${theme.textColor} p-2">${obj.records.length} Records</div>`;
     
 
     return tableWrapper;

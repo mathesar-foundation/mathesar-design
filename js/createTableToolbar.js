@@ -6,6 +6,7 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 import { setTableConstraints } from './setTableConstraints';
 import { setTablePreferences } from './setTablePreferences';
 import * as d3 from "d3";
+import { icon } from './iconMap';
 
 
 export function createTableToolbar(obj) {
@@ -13,14 +14,14 @@ export function createTableToolbar(obj) {
     const type = obj.type;
 
     let toolbar = document.createElement('div');
-    toolbar.classList.add(theme.mediumBackgroundColor, 'py-1', 'px-3', 'flex', 'items-center', 'space-x-4', 'border-b', theme.tableBorderColor);
+    toolbar.classList.add(theme.backgroundColor, 'py-1', 'px-3', 'flex', 'items-center', 'space-x-4', 'border-b', theme.tableBorderColor);
     let saveAsViewBtn = components.createButton('Save as View', { icon: 'save', style: 'link' });
     let addRecordBtn = components.createButton('Add Record', { icon: 'add', style: 'link' });
     let deleteRecordBtn = components.createButton('Delete', { icon: 'delete-bin', style: 'link' });
 
     let tableTitle = document.createElement('h2');
-    tableTitle.classList.add(theme.textColor, 'text-lg', 'space-x-2');
-    tableTitle.innerHTML = `${obj.name}`;
+    tableTitle.classList.add(theme.textColor, 'text-lg', 'space-x-1');
+    tableTitle.innerHTML = `<i class="${icon[obj.type]} align-bottom"></i><span>${obj.name}</span>`;
     tableTitle.append(components.createIcon('ri-arrow-drop-down-line'));
 
 

@@ -14,30 +14,30 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 import { schemaOverview } from './schemaOverview';
 import { icon } from './iconMap';
 
-document.querySelector('body').classList.add(theme.backgroundColor)
+document.querySelector('body').classList.add(theme.backgroundColor);
 
 export let appWrapper = document.createElement('div');
+appWrapper.classList.add(theme.darkPrimaryColor,'bg-opacity-10')
 
 appWrapper.innerHTML = `
  
-<div class="grid grid-cols-12">
+<div class="flex">
 
-  <div class="col-span-3">
-    <div class="h-full tableBorderColor border-r sidebar-wrapper">
+  <div style="width:320px" class="flex-shrink-0">
+    <div class="h-full tableBorderColor sidebar-wrapper">
       
       <div class="sidebar-navigation"></div>
 
     </div>
 
   </div>
-  <div class="col-span-9">
+  <div class="flex-grow">
 
     <div class="table-wrapper flex flex-col">
 
     </div>
   </div>
 </div>
-
 `
 
 document.querySelector('body').append(appWrapper);
@@ -51,19 +51,20 @@ function applyTheme(property, color) {
     });
 };
 
-export let schema = {
-    name: 'album_collection'
-}
+export let activeSchema = window.location.pathname.replace('/','');
 
-
-appWrapper.prepend(topNav(schema));
+appWrapper.prepend(topNav(activeSchema));
 appWrapper.classList.add(theme.backgroundColor);
+
+//REMOVE WHEN FIXED
 
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
-export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
+const schemaIdx = loadedTables.findIndex(schema => schema.name === activeSchema);
+
+export let savedTables = JSON.parse(sessionStorage.getItem('tables'))[schemaIdx].tables;
 
 export var activeTable = urlParams.get('activeTable');
 
@@ -72,11 +73,10 @@ export var errorStatus = urlParams.get('error');
 
 let tabsWrapper = document.createElement('div');
 tabsWrapper.style.overflowX = 'hidden';
-tabsWrapper.classList.add('flex','border-b',theme.tableBorderColor);
+tabsWrapper.classList.add('flex',theme.tableBorderColor,theme.darkPrimaryColor,'bg-opacity-40');
 
 addActiveTable(activeTable);
 buildActiveTables();
-
 
 function createError(){
     let error = document.createElement('div');
@@ -132,7 +132,7 @@ function createTab(tab) {
 
     let iconType = (selectTableById(tab) !== undefined) ? selectTableById(tab).type : 'error';;
 
-    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label"><i class="${icon[iconType]} align-bottom ${iconClass}"></i> ${tabLabel}</div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor} bg-opacity-40"><i class="ri-close-line align-text-top"></i></button>`;
+    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label space-x-1"><i class="${icon[iconType]} align-bottom ${iconClass}"></i><span>${tabLabel}</span></div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor} bg-opacity-40"><i class="ri-close-line align-text-top"></i></button>`;
 
     item.querySelector('.close-tab').addEventListener('click', function () {
         closeActiveTable(tab);
@@ -145,7 +145,7 @@ function createTab(tab) {
     });
 
     if (tab == activeTable) {
-        item.classList.add(theme.mediumBackgroundColor,'bg-opacity-40')
+        item.classList.add(theme.backgroundColor,'font-semibold')
     }
 
     return item;
@@ -153,10 +153,10 @@ function createTab(tab) {
 
 if (activeTable == null) {
     schemaOverview();
-    
+    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
 }
 
-let tableExists = loadedTables.find(table => table.id == activeTable);
+let tableExists = savedTables.find(table => table.id == activeTable);
 
 if (activeTable !== null && tableExists) {
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
@@ -180,41 +180,6 @@ export function selectTableByName(name) {
     return savedTables.find(table => table.name == name);
 }
 
-//console.log(loadedTables);
-
-function createTabs(openTables) {
-    let tabs = document.createElement('div');
-    tabs.classList.add('flex');
-
-    let createTab = function (table) {
-        let tab = document.createElement('div');
-        tab.classList.add('py-2', 'px-3', theme.textColor, 'border-r', theme.tableBorderColor, 'text-sm', 'space-x-2');
-        tab.innerHTML = `<i class="ri-table-fill align-bottom"></i> ${table.name}`;
-
-        let closeTabBtn = document.createElement('button');
-        closeTabBtn.append(components.createIcon('close'));
-
-        tab.append(closeTabBtn);
-
-        if (table.id == activeTable) {
-            tab.classList.add(theme.mediumBackgroundColor);
-        }
-
-        return tab;
-    };
-
-    openTables.forEach(function (table) {
-        tabs.appendChild(createTab(table));
-    });
-
-    return tabs;
-}
-
-
-function getKeyByValue(object, value) {
-    return Object.keys(object).find(key => object[key] === value);
-}
-
 //sessionStorage.clear();
 
 function saveAsView(e) {
@@ -233,8 +198,6 @@ function saveAsView(e) {
 }
 
 //console.log(savedTables.tables);
-
-
 
 // SET ICONS
 export function typeIcon(type) {
@@ -259,7 +222,7 @@ export function getColumnType(table, column) {
 }
 
 export function saveTable(table) {
-    document.querySelector('.table-wrapper').appendChild(createTable(table));
+    document.querySelector('.table-wrapper').prepend(createTable(table));
 }
 
 function addColumn(table) {
@@ -567,10 +530,8 @@ function createTooltip(content) {
     return tooltip;
 }
 
-
-
 export function columnByName(colName) {
-    let columns = loadedTables.reduce((a, b) => {
+    let columns = savedTables.reduce((a, b) => {
         b.columns.forEach(col => a.push(col))
         return a;
     }, []);
