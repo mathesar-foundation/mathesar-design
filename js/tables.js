@@ -5,6 +5,7 @@ var allSchemas = [
             {
                 name: 'artist',
                 type: 'table',
+                favorite: true,
                 constraints: [
                     {type:'Primary Key', columns:['id']},
                     {type:'Unique', columns:['IPICode']},
@@ -165,6 +166,7 @@ var allSchemas = [
             }, {
                 name: 'Release with Track',
                 type: 'view',
+                favorite: true,
                 columns: [
                     { name: 'releaseName', type: 'text', referencedTable: 'release' },
                     { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
@@ -189,6 +191,7 @@ var allSchemas = [
             }, {
                 name: 'Best Tracks',
                 type: 'view',
+                favorite: true,
                 columns: [
                     { name: 'releaseName', type: 'text', referencedTable: 'release' },
                     { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
@@ -225,6 +228,7 @@ var allSchemas = [
             }, {
                 name: 'Top Releases from Last Year',
                 type: 'view',
+                favorite: true,
                 columns: [
                     { name: 'releaseName', type: 'text', referencedTable: 'release' },
                     { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }

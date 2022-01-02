@@ -1,6 +1,6 @@
 import { theme } from './themes.js';
 import { components } from './components.js';
-import { savedTables, createTitle, selectTableByName, selectTableById } from './main';
+import { savedTables, createTitle, selectTableByName} from './main';
 import { createModal } from './createModal.js';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { setTableConstraints } from './setTableConstraints';
@@ -14,7 +14,7 @@ export function createTableToolbar(obj) {
     const type = obj.type;
 
     let toolbar = document.createElement('div');
-    toolbar.classList.add(theme.backgroundColor, 'py-1', 'px-3', 'flex', 'items-center', 'space-x-4', 'border-b', theme.tableBorderColor);
+    toolbar.classList.add(theme.backgroundColor, 'p-2', 'flex', 'items-center', 'space-x-4', 'border-b', theme.tableBorderColor);
     let saveAsViewBtn = components.createButton('Save as View', { icon: 'save', style: 'link' });
     let addRecordBtn = components.createButton('Add Record', { icon: 'add', style: 'link' });
     let deleteRecordBtn = components.createButton('Delete', { icon: 'delete-bin', style: 'link' });
@@ -23,7 +23,6 @@ export function createTableToolbar(obj) {
     tableTitle.classList.add(theme.textColor, 'text-lg', 'space-x-1');
     tableTitle.innerHTML = `<i class="${icon[obj.type]} align-bottom"></i><span>${obj.name}</span>`;
     tableTitle.append(components.createIcon('ri-arrow-drop-down-line'));
-
 
     toolbar.appendChild(tableTitle);
 
@@ -66,6 +65,10 @@ export function createTableToolbar(obj) {
         toolbar.appendChild(createSection([saveAsViewBtn]));
         toolbar.appendChild(sectionDivider());
         toolbar.appendChild(createSection([manageRelationshipsBtn]));
+    }
+
+    if (type == 'view') {
+        toolbar.appendChild(createSection([filterBtn, sortBtn, groupBtn]));
     }
     // EVENTS
     saveAsViewBtn.addEventListener('click', function () {

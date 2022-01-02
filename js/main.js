@@ -7,9 +7,6 @@ import { components } from './components.js';
 import { createModal } from './createModal';
 import { createTableToolbar } from './createTableToolbar';
 import { createTable } from './createTable';
-import { setTableConstraints } from './setTableConstraints.js';
-import { setTablePreferences } from './setTablePreferences';
-import { setColumnPreferences } from './setColumnPreferences';
 import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { schemaOverview } from './schemaOverview';
 import { icon } from './iconMap';
@@ -75,6 +72,7 @@ let tabsWrapper = document.createElement('div');
 tabsWrapper.style.overflowX = 'hidden';
 tabsWrapper.classList.add('flex',theme.tableBorderColor,theme.darkPrimaryColor,'bg-opacity-40');
 
+
 addActiveTable(activeTable);
 buildActiveTables();
 
@@ -118,13 +116,15 @@ function buildActiveTables() {
     activeTables.forEach(tab => {
         tabsWrapper.append(createTab(tab));
     });
+
+    tabsWrapper.innerHTML += `<div class="border-b ${theme.tableBorderColor} w-full flex items-center px-2"><button><i class="ri-add-line"></i></button></div>`
 }
 
 function createTab(tab) {
 
     let item = document.createElement('div');
     item.style.cursor = 'pointer';
-    item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap');
+    item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap','border-b');
 
     let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : 'ErrorTable';
 
@@ -146,6 +146,7 @@ function createTab(tab) {
 
     if (tab == activeTable) {
         item.classList.add(theme.backgroundColor,'font-semibold')
+        item.classList.remove('border-b')
     }
 
     return item;

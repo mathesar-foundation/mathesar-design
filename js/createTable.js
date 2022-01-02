@@ -4,26 +4,21 @@ import { getColumnType, saveTable, removeDropdownOutsideClickHandler, selectTabl
 import { createLookupMenu } from "./createLookupMenu";
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { icon } from './iconMap.js';
-import { setTableConstraints } from './setTableConstraints.js';
-import { active } from 'd3-transition';
 import { createModal } from './createModal.js';
 import { setColumnPreferences } from './setColumnPreferences.js';
 
 
-if (sessionStorage.getItem('recordPreview') === null) {
-    sessionStorage.setItem('recordPreview', false);
-}
+if (sessionStorage.getItem('recordPreview') === null) { sessionStorage.setItem('recordPreview', false); }
 
 //CREATE TABLE
 export function createTable(obj) {
 
     let rowClasses = ['t-row', 'border-b', theme.tableBorderColor];
-    let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs',theme.primaryTextColor];
+    let rowHeaderClasses = ['t-row-header', 'p-3', theme.mutedTextColor, 'border-r', theme.tableBorderColor, 'text-xs', theme.primaryTextColor];
     let cellClasses = ['t-cell', 'border-r', theme.tableBorderColor, 'editable-cell'];
 
     let createHeader = (col, i) => {
 
-        col.table = obj.name;
         let header = document.createElement('div');
         header.style.width = '240px';
         header.style.position = 'relative';
@@ -37,16 +32,15 @@ export function createTable(obj) {
         if (obj.type == 'table') {
             let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
 
-
             if (columnConstraints !== undefined && columnConstraints.type == 'Foreign Key') {
 
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
                 headerIcon = components.createIcon(icon[linkedColumnType], { style: 'type' })
                 header.innerHTML = `
-            <div>
-                <div>${headerIcon.outerHTML} ${col.name}</div>
-                <div class="text-xs ${theme.mutedTextColor}"></div>
-            </div>`;
+                <div>
+                    <div>${headerIcon.outerHTML} ${col.name}</div>
+                    <div class="text-xs ${theme.mutedTextColor}"></div>
+                </div>`;
 
                 let referenceColor = selectTableByName(col.lookupTable).color;
 
@@ -55,17 +49,6 @@ export function createTable(obj) {
                 foreignKeyReference.style.position = 'relative';
                 foreignKeyReference.innerHTML = `<span class=""><i class="ri-key-fill align-bottom text-${referenceColor}-600"></i></span> ${col.lookupTable}.${col.lookupField}`;
                 header.childNodes[1].append(foreignKeyReference);
-
-                let info = document.createElement('div');
-                info.classList.add('border', 'p-2', theme.tableBorderColor, theme.darkBackgroundColor, 'whitespace-nowrap');
-                info.style.position = 'absolute';
-                info.innerHTML = `
-            <h5>Referenced Table</h5>
-            <div><span class="${theme.textColor}">${col.lookupTable}</span> <a href="#" class="${theme.primaryTextColor}">Open</a></div>
-            <h5>Referenced Column(s)</h5>
-            
-            <div><a href="javascript:void(0)" class="${theme.textColor}">${columnConstraints.columns.join(',')}</a></div>
-            `;
             }
 
         }
@@ -83,6 +66,7 @@ export function createTable(obj) {
             menuItem.setAttribute('href', 'javascript:void(0)');
             menuItem.innerText = label;
             let hoverClasses = [theme.primaryColor, 'bg-opacity-30', 'rounded'];
+
             menuItem.addEventListener('click', function () {
                 fn(col);
             }, false);
@@ -92,6 +76,7 @@ export function createTable(obj) {
             menuItem.addEventListener('mouseleave', function () {
                 menuItem.classList.remove(...hoverClasses);
             });
+
             if (options) {
                 if (options.icon) {
                     let icon = document.createElement('i');
@@ -128,31 +113,21 @@ export function createTable(obj) {
             let columnTypeIcon = components.createIcon(icon[col.type], { style: 'type' });
             dataTypeLabel.innerHTML = `${columnTypeIcon.outerHTML} ${col.type}`;
 
-            //dataTypeOption.addEventListener('click', openDataTypeMenu);
-
-
-
             if (col.type == 'fk') {
                 let columnConstraints = obj.constraints.find(constraint => constraint.columns.includes(col.name));
                 let linkedColumnType = getColumnType(col.lookupTable, col.lookupField);
                 let columnTypeIcon = components.createIcon(icon[linkedColumnType], { style: 'type' });
-                //dataTypeIcon.classList.add('border', 'align-bottom', 'border-gray-500', 'rounded', 'mr-2');
                 dataTypeLabel.innerHTML = `
                 <div class="p-1">${columnTypeIcon.outerHTML} ${linkedColumnType}</div>
                 <div class="text-sm">
                 <div class="mx-1 ${theme.mutedTextColor}">Linked to <i class="ri ri-table-line align-bottom"></i> ${columnConstraints.referenceTable}</div>
                 </div>`;
-                //<a href="javascript:void(0)" class="${theme.primaryTextColor}">FK_${col.name}</a>
-                //<div><i class="ri-layout-column-line align-bottom"></i> ${columnConstraints.referenceColumns.map(col => col).join('-')}</div>
             }
-
-
 
             //ADD MENU ITEMS
             let menuItems = [
                 dataTypeOption,
                 createMenuDivider(),
-                //createMenuItem('Link to Another Table', linkToTable, { icon: 'key' }),
                 createMenuItem('Insert New Column'),
                 createMenuItem('Rename Column'),
                 createMenuItem('Duplicate Column'),
@@ -193,8 +168,6 @@ export function createTable(obj) {
             return menu;
         };
 
-        let removeLink = function () {
-        };
 
         function menuAction(menu) {
             return function () {
@@ -220,12 +193,12 @@ export function createTable(obj) {
         cellElement.style.width = '240px';
 
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'h-full', 'space-y-1', 'border', 'border-opacity-0');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'space-y-1', 'border', 'border-opacity-0','flex','items-center');
 
         renderedCell.tabIndex = 0;
 
         let cellInput = components.createInput({ value: cell.value });
-        cellInput.classList.add('p-2', 'w-full');
+        cellInput.classList.add('p-2', 'w-full','h-full');
         cellInput.classList.remove('border');
         cellInput.autocomplete = 'off';
         cellInput.style.borderWidth = '2px';
@@ -248,23 +221,21 @@ export function createTable(obj) {
             cellElement.appendChild(createLookupMenu(cell));
         });
 
-        
+
 
         if (cell.type == 'fk') {
-            renderedCell.classList.add('flex', 'items-center');
 
-        
-                if (columnByName(cell.column).showPreview) {
-                    renderedCell.innerHTML = '';
-                    renderedCell.appendChild(createRecordSummary(cell));
-                } else {
-                    renderedCell.innerHTML = '';
-                    renderedCell.appendChild(createRecordLink(cell));
-                }
+            if (columnByName(cell.column).showPreview) {
+                renderedCell.innerHTML = '';
+                renderedCell.appendChild(createRecordSummary(cell));
+            } else {
+                renderedCell.innerHTML = '';
+                renderedCell.appendChild(createRecordLink(cell));
+            }
 
-                renderedCell.append(dropdownToggle);     
+            renderedCell.append(dropdownToggle);
 
-            
+
         }
 
         if (cell.type == 'date') {
@@ -315,7 +286,7 @@ export function createTable(obj) {
         // EMPTY VALUES
         if (cell.value === '') {
             renderedCell.innerHTML = 'NULL';
-            
+
             renderedCell.classList.replace(theme.textColor, theme.mutedTextColor);
             renderedCell.classList.add('italic', theme.lightBackgroundColor, 'bg-opacity-20');
 
@@ -341,7 +312,7 @@ export function createTable(obj) {
             renderedCell.setAttribute('selected', true);
 
             if (cell.type == 'fk') {
-                
+
             }
 
         });
@@ -417,8 +388,8 @@ export function createTable(obj) {
             }
         }
 
-
         cellElement.append(renderedCell);
+        //cellElement.append(cellInput);
         //
         return cellElement;
     };
@@ -474,7 +445,7 @@ export function createTable(obj) {
             cell.classList.add(...cellClasses);
             cell.style.width = '240px';
             let cellInput = components.createInput({ placeholder: placeholderValue(col) });
-            cellInput.classList.add('p-2', 'w-full');
+            cellInput.classList.add('p-2', 'w-full','h-full');
             cellInput.classList.remove('border');
             cell.appendChild(cellInput);
             row.appendChild(cell);
@@ -491,7 +462,7 @@ export function createTable(obj) {
     };
 
     let table = document.createElement('div');
-    table.classList.add(theme.backgroundColor,'bg-opacity-60');
+    table.classList.add(theme.backgroundColor, 'bg-opacity-60');
     let rowWrapper = document.createElement('div');
     rowWrapper.classList.add('t-body', 'row-wrapper');
     let headerWrapper = document.createElement('div');
@@ -521,12 +492,12 @@ export function createTable(obj) {
     repositionWarning.innerHTML = `New records will be repositioned on refresh`;
 
     let tableWrapper = document.createElement('div');
-    tableWrapper.classList.add('flex','grow');
+    tableWrapper.classList.add('flex', 'grow');
     tableWrapper.style.overflowX = 'scroll';
     tableWrapper.appendChild(table);
 
     let addColumnBtn = document.createElement('button');
-    addColumnBtn.classList.add(theme.darkPrimaryColor, theme.textColor,'flex-shrink-0');
+    addColumnBtn.classList.add(theme.darkPrimaryColor, theme.textColor, 'flex-shrink-0');
     addColumnBtn.style.height = '40px';
     addColumnBtn.style.width = '40px';
     addColumnBtn.innerHTML = `<i class="ri-add-line align-middle text-xl"></i>`;
@@ -545,7 +516,6 @@ export function createTable(obj) {
     Column from Another Table
     `;
 
-    //tableWrapper.appendChild(newColumnMenu);
     addColumnBtn.addEventListener('click', function () {
         tableWrapper.innerHTML = '';
         obj.columns.push({ name: 'Column', type: 'text' });
@@ -555,26 +525,22 @@ export function createTable(obj) {
 
     let tableFooter = document.createElement('div');
     tableFooter.classList.add('mt-auto', 'p-2', theme.textColor, 'w-full')
-  
 
     document.querySelector('.table-wrapper').innerHTML += `<div class="mt-auto ${theme.textColor} p-2">${obj.records.length} Records</div>`;
-    
 
     return tableWrapper;
 };
 
 function getRecordByValue(table, column, value) {
-    //console.log(table,column,value);
+
     let lookupTable = selectTableByName(table);
     let columns = selectTableByName(table).columns;
 
     const isColumn = (col) => col.name == column;
 
     let columnPosition = columns.findIndex(isColumn);
-    //console.log(columnPosition)
     let records = lookupTable.records.find(r => r.includes(value));
 
-    //console.log(records)
     if (records !== undefined) {
         return records[columnPosition];
     } else {
@@ -615,7 +581,6 @@ function setRecordPreview(column) {
 }
 
 function cellSelection(cell) {
-    console.log(cell);
 }
 
 function removeCellOutsideClickHandler(menu) {

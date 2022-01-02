@@ -8,10 +8,10 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 export function sidebarNav(tables) {
 
     let selectedTab = localStorage.getItem('selectedTab') || 'all';
-    //tables.splice(3,0,{name: 'ErrorTable', type:'view', id:'error', records:[],columns:[]});//ADD ERROR TABLE
+    //åtables.splice(3,0,{name: 'ErrorView', type:'view', id:'error', records:[],columns:[]});//ADD ERROR TABLE
 
     let sidebar = document.createElement('div');
-    sidebar.classList.add('flex', 'flex-col',theme.darkPrimaryColor,'bg-opacity-10');
+    sidebar.classList.add('flex', 'flex-col',theme.darkPrimaryColor,'bg-opacity-10','border-r',theme.darkBorderColor);
     sidebar.style.height = 'calc(100vh - 52px)';
     sidebar.style.overflowY = 'hidden';
 
@@ -35,10 +35,8 @@ export function sidebarNav(tables) {
     let createNavItem = function (table) {
         let tableURL = `${window.location.pathname}?activeTable=${table.id}`;
         let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table'?theme.primaryTextColor:theme.contrastTextColor}"></i>`
-    
         let activeClasses= `${table.id == activeTable?`${theme.primaryColor} bg-opacity-40 font-semibold`:''}`
         return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">${tableIcon}${table.name}</a>`;
-
         //return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div><div class="text-sm"><span>${table.records.length} Records</span> <span>${table.columns.length} Fields</span></div></a>`;
     };
     
@@ -56,24 +54,24 @@ export function sidebarNav(tables) {
             
         if (tablesList.length > 0) {
             sidebarNav.style.display = 'flex';
-            sidebarContent.innerHTML += tablesList.map(item => createNavItem(item)).join('');
-        }
+
+            const uniqueTypes = [...new Set(tablesList.map(item => item.type))].reverse();
+
+            uniqueTypes.forEach(type => {
+                sidebarContent.innerHTML += `${selectedTab == 'all'?`<div class="p-2 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>`:``}`
+                sidebarContent.innerHTML += tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('');
+            });
+        };
+
+        let emptyState = `<div class="${theme.mutedTextColor} ${theme.primaryBorderColor}">No ${selectedTab} available</div>`
+        let emptyStateAll = `<div class="${theme.mutedTextColor} ${theme.primaryBorderColor} ">No tables or views available</div>`
 
         if (tablesList.length == 0 && query !== undefined) {
             sidebarNav.style.display = 'none';
-            sidebarContent.querySelector('.sort-dropdown').style.display = 'none';
-            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">
-            No Results for '${query}' <a href="#" class="whitespace-nowrap ${theme.primaryTextColor}">Clear Search</a>
-            </div> `;
+            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">No Results for '${query}' <a href="#" class="whitespace-nowrap ${theme.primaryTextColor}">Clear Search</a></div>`;
         }
-
-        console.log(selectedTab);
-
-        let emptyState = `<div class="${theme.mutedTextColor} text-sm ${theme.primaryBorderColor}">No ${selectedTab} available</div>`
-
-        let emptyStateAll = `<div class="${theme.mutedTextColor} text-sm ${theme.primaryBorderColor} ">No tables or views available</div>`
-
-        if (tablesList.length == 0) {
+        
+        if (tablesList.length == 0 && query == undefined) {
             sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all'?emptyStateAll:emptyState} </div>`;
         }
 
@@ -97,18 +95,13 @@ export function sidebarNav(tables) {
 
 
     let sidebarNav = document.createElement('div');
-    sidebarNav.classList.add('flex','items-center','px-2','space-x-2',theme.textColor);
-
-
-    
-
+    sidebarNav.classList.add('flex','items-center','px-2','mb-2',theme.textColor);
 
     sidebarNav.innerHTML = /*HTML*/`
-        <button data-filter="all" class="border rounded py-1 text-sm show-history flex-grow ${selectedTab == 'all'? theme.primaryBorderColor:theme.tableBorderColor} border-opacity-60">All (${tables.length})</button>
-        <button data-filter="tables" class="border rounded py-1 text-sm show-tables flex-grow ${selectedTab == 'tables'? theme.primaryBorderColor:theme.tableBorderColor} border-opacity-60">Tables (${tables.filter(t => t.type == 'table').length})</button>
-        <button data-filter="views" class="border rounded py-1 text-sm show-views flex-grow ${selectedTab == 'views'? theme.primaryBorderColor:theme.tableBorderColor} border-opacity-60">Views (${tables.filter(t => t.type == 'view').length})</button>
+        <button data-filter="all" class="rounded py-1 text-sm show-history flex-grow ${selectedTab == 'all'? theme.mediumBackgroundColor:''} border-opacity-80">All (${tables.length})</button>
+        <button data-filter="tables" class="rounded py-1 text-sm show-tables flex-grow ${selectedTab == 'tables'? theme.mediumBackgroundColor:''} border-opacity-80">Tables (${tables.filter(t => t.type == 'table').length})</button>
+        <button data-filter="views" class="rounded py-1 text-sm show-views flex-grow ${selectedTab == 'views'? theme.mediumBackgroundColor:''} border-opacity-80">Views (${tables.filter(t => t.type == 'view').length})</button>
     `;
-
 
     if (selectedTab == 'tables') {
         loadNavItems(tables.filter(table => table.type == 'table'));
@@ -143,10 +136,10 @@ export function sidebarNav(tables) {
         
         item.addEventListener("click", function () {
             for (let item of navList) {
-                item.classList.remove(theme.primaryBorderColor);
-                item.classList.add(theme.tableBorderColor);
+                item.classList.remove(theme.mediumBackgroundColor);
+                item.classList.add();
             }
-            this.classList.add(theme.primaryBorderColor);
+            this.classList.add(theme.mediumBackgroundColor);
         });
     }
 

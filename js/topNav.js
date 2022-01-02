@@ -5,12 +5,12 @@ import { activeSchema } from './main';
 
 export function topNav() {
     let topNav = document.createElement('div');
-    topNav.classList.add('p-2',theme.tableBorderColor,'flex','space-x-4','items-center',theme.backgroundColor,'border-b');
+    topNav.classList.add('p-2',theme.tableBorderColor,'flex','space-x-3','items-center',theme.backgroundColor,'border-b');
 
     let brand = document.createElement('a');
     brand.href = 'javascript:void(0)';
     brand.classList.add('block',theme.mediumBackgroundColor,'text-sm',theme.textColor,'rounded','px-1','text-opacity-40','border',theme.lightBorderColor)
-    brand.innerHTML = `Mathesar Prototype`;
+    brand.innerHTML = `Prototype`;
 
     let schemaName = document.createElement('div');
     schemaName.style.cursor = 'pointer';
@@ -36,15 +36,16 @@ export function topNav() {
     accountSelector.classList.add('p-1');
     accountSelector.innerHTML = `<i class="ri-user-fill align-bottom ${theme.textColor}"></i> <i class="ri-more-2-line align-bottom ${theme.textColor}"></i>`;
 
-    let changeThemeBtn = components.createButton('Change Theme');
 
-    changeThemeBtn.addEventListener('click',function(){
-        
+    let newTableBtn = components.createButton('New Table',{style:'secondary',icon:'add'});
+
+    let changeThemeBtn = components.createButton('Change Theme',{style:'secondary',icon:'palette'});
+
+    changeThemeBtn.addEventListener('click',function(){   
         setNextTheme();
-        
     });  
 
-    topNav.append(brand,schemaName,searchBar,changeThemeBtn,accountSelector);
+    topNav.append(brand,schemaName,newTableBtn,searchBar,changeThemeBtn,accountSelector);
 
 
     schemaName.addEventListener('click',function(){
