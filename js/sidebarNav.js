@@ -8,7 +8,10 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 export function sidebarNav(tables) {
 
     let selectedTab = localStorage.getItem('selectedTab') || 'all';
-    //åtables.splice(3,0,{name: 'ErrorView', type:'view', id:'error', records:[],columns:[]});//ADD ERROR TABLE
+
+    if (activeSchema == 'album_collection'){
+        tables.splice(3,0,{name: 'ErrorView', type:'view', id:'error', records:[],columns:[]});//ADD ERROR TABLE
+    }
 
     let sidebar = document.createElement('div');
     sidebar.classList.add('flex', 'flex-col',theme.darkPrimaryColor,'bg-opacity-10','border-r',theme.darkBorderColor);
