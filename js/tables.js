@@ -320,6 +320,9 @@ var allSchemas = [
     },{
         name: 'movie_collection',
         tables : []
+    },{
+        name: 'loading_error_schema',
+        tables : []
     }
 ]
 

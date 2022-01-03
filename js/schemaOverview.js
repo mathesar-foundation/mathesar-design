@@ -1,5 +1,5 @@
 import { theme } from './themes.js';
-import { appWrapper, savedTables, activeSchema, schemaIdx } from './main';
+import { appWrapper, activeSchema } from './main';
 
 export function schemaOverview(tables) {
 
@@ -39,9 +39,6 @@ export function schemaOverview(tables) {
 </div>
     
     `;
-
-
-
     appWrapper.querySelector('.table-wrapper').append(schemaList);
 }
 

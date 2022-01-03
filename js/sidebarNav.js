@@ -9,12 +9,12 @@ export function sidebarNav(tables) {
 
     let selectedTab = localStorage.getItem('selectedTab') || 'all';
 
-    if (activeSchema == 'album_collection'){
-        tables.splice(3,0,{name: 'ErrorView', type:'view', id:'error', records:[],columns:[]});//ADD ERROR TABLE
+    if (activeSchema == 'album_collection') {
+        tables.splice(3, 0, { name: 'ErrorView', type: 'view', id: 'error', records: [], columns: [] });//ADD ERROR TABLE
     }
 
     let sidebar = document.createElement('div');
-    sidebar.classList.add('flex', 'flex-col',theme.darkPrimaryColor,'bg-opacity-10','border-r',theme.darkBorderColor);
+    sidebar.classList.add('flex', 'flex-col', theme.darkPrimaryColor, 'bg-opacity-10', 'border-r', theme.darkBorderColor);
     sidebar.style.height = 'calc(100vh - 52px)';
     sidebar.style.overflowY = 'hidden';
 
@@ -28,40 +28,40 @@ export function sidebarNav(tables) {
     moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
     searchBar.append(searchInput, moreMenu);
 
-    
+
 
     let sidebarContent = document.createElement('div');
     sidebarContent.style.overflowY = 'scroll';
-    
+
 
     //sidebar.innerHTML += `history schema`
     let createNavItem = function (table) {
         let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
-        let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table'?theme.primaryTextColor:theme.contrastTextColor}"></i>`
-        let activeClasses= `${table.id == activeTable?`${theme.primaryColor} bg-opacity-40 font-semibold`:''}`
+        let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>`
+        let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`
         return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">${tableIcon}${table.name}</a>`;
         //return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div><div class="text-sm"><span>${table.records.length} Records</span> <span>${table.columns.length} Fields</span></div></a>`;
     };
-    
+
 
     searchInput.addEventListener('keyup', function (e) {
         let filteredTables = tables.filter(table => table.name.toLowerCase().includes(e.target.value.toLowerCase()));
-        loadNavItems(filteredTables,e.target.value);
+        loadNavItems(filteredTables, e.target.value);
     });
 
-    let loadNavItems = function(tablesList,query){
+    let loadNavItems = function (tablesList, query) {
 
         sidebarContent.innerHTML = '';
-        
+
         //sidebarContent.innerHTML = `<div class="sort-dropdown"><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
-            
+
         if (tablesList.length > 0) {
             sidebarNav.style.display = 'flex';
 
             const uniqueTypes = [...new Set(tablesList.map(item => item.type))].reverse();
 
             uniqueTypes.forEach(type => {
-                sidebarContent.innerHTML += `${selectedTab == 'all'?`<div class="p-2 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>`:``}`
+                sidebarContent.innerHTML += `${selectedTab == 'all' ? `<div class="p-2 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>` : ``}`
                 sidebarContent.innerHTML += tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('');
             });
         };
@@ -73,12 +73,12 @@ export function sidebarNav(tables) {
             sidebarNav.style.display = 'none';
             sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">No Results for '${query}' <a href="#" class="whitespace-nowrap ${theme.primaryTextColor}">Clear Search</a></div>`;
         }
-        
+
         if (tablesList.length == 0 && query == undefined) {
-            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all'?emptyStateAll:emptyState} </div>`;
+            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all' ? emptyStateAll : emptyState} </div>`;
         }
 
-        
+
         //sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
         //    e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
         //});
@@ -86,24 +86,24 @@ export function sidebarNav(tables) {
         sidebarContent.querySelectorAll('a').forEach(item => {
             item.addEventListener('mouseenter', function () {
                 item.classList.add(theme.darkPrimaryColor, 'bg-opacity-30');
-                
+
             });
             item.addEventListener('mouseleave', function () {
                 item.classList.remove(theme.darkPrimaryColor, 'bg-opacity-30')
             });
         });
 
-        
+
     }
 
 
     let sidebarNav = document.createElement('div');
-    sidebarNav.classList.add('flex','items-center','px-2','mb-2',theme.textColor);
+    sidebarNav.classList.add('flex', 'items-center', 'px-2', 'mb-2', theme.textColor);
 
     sidebarNav.innerHTML = /*HTML*/`
-        <button data-filter="all" class="rounded py-1 text-sm show-history flex-grow ${selectedTab == 'all'? theme.mediumBackgroundColor:''} border-opacity-80">All (${tables.length})</button>
-        <button data-filter="tables" class="rounded py-1 text-sm show-tables flex-grow ${selectedTab == 'tables'? theme.mediumBackgroundColor:''} border-opacity-80">Tables (${tables.filter(t => t.type == 'table').length})</button>
-        <button data-filter="views" class="rounded py-1 text-sm show-views flex-grow ${selectedTab == 'views'? theme.mediumBackgroundColor:''} border-opacity-80">Views (${tables.filter(t => t.type == 'view').length})</button>
+        <button data-filter="all" class="rounded py-1 text-sm show-history flex-grow ${selectedTab == 'all' ? theme.mediumBackgroundColor : ''} border-opacity-80">All (${tables.length})</button>
+        <button data-filter="tables" class="rounded py-1 text-sm show-tables flex-grow ${selectedTab == 'tables' ? theme.mediumBackgroundColor : ''} border-opacity-80">Tables (${tables.filter(t => t.type == 'table').length})</button>
+        <button data-filter="views" class="rounded py-1 text-sm show-views flex-grow ${selectedTab == 'views' ? theme.mediumBackgroundColor : ''} border-opacity-80">Views (${tables.filter(t => t.type == 'view').length})</button>
     `;
 
     if (selectedTab == 'tables') {
@@ -115,10 +115,10 @@ export function sidebarNav(tables) {
     }
 
     sidebarNav.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click',function(){
+        button.addEventListener('click', function () {
             let activeFilter = button.getAttribute('data-filter');
             selectedTab = activeFilter;
-            localStorage.setItem('selectedTab',activeFilter);
+            localStorage.setItem('selectedTab', activeFilter);
 
             if (activeFilter == 'tables') {
                 loadNavItems(tables.filter(table => table.type == 'table'));
@@ -128,7 +128,7 @@ export function sidebarNav(tables) {
                 loadNavItems(tables);
             }
 
-            
+
         });
     })
 
@@ -136,7 +136,7 @@ export function sidebarNav(tables) {
 
     for (let item of navList) {
         console.log(item)
-        
+
         item.addEventListener("click", function () {
             for (let item of navList) {
                 item.classList.remove(theme.mediumBackgroundColor);
@@ -147,8 +147,19 @@ export function sidebarNav(tables) {
     }
 
 
-    sidebar.append(searchBar,sidebarNav,sidebarContent);
-    
+    sidebar.append(searchBar, sidebarNav, sidebarContent);
+
+    if (activeSchema == 'loading_error_schema') {
+        let error = document.createElement('div');
+        error.classList.add(theme.textColor, 'bg-red-300', 'p-4', 'm-2', 'bg-opacity-40', 'text-opacity-80')
+        error.innerHTML = `
+        <h3 class="text-lg"><i class="ri-error-warning-fill align-bottom text-red-400"></i> Failed to load</h3>
+        <p>We encountered an error while loading data for the current schema. Try refreshing this page.</p>
+        `
+        sidebarContent.innerHTML = ``
+        sidebarContent.append(error);
+    }
+
 
     return sidebar;
 };
@@ -160,7 +171,7 @@ function createTableOptionsMenu(table) {
 
     let createMenuItem = (label, callback) => {
         let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'p-2',theme.textColor,'rounded','w-100');
+        menuItem.classList.add('block', 'p-2', theme.textColor, 'rounded', 'w-100');
         menuItem.setAttribute('href', 'javascript:void(0)');
         menuItem.innerText = label;
         menuItem.addEventListener('click', function () {
@@ -176,16 +187,16 @@ function createTableOptionsMenu(table) {
 
     menuItems.forEach(item => content.appendChild(item));
 
-    addDropdownOutsideClickHandler(menu, function () {});
+    addDropdownOutsideClickHandler(menu, function () { });
 
     let navList = content.querySelectorAll('a');
 
     for (let item of navList) {
         item.addEventListener("mouseenter", function () {
             for (let item of navList) {
-                item.classList.remove(theme.primaryColor,'bg-opacity-40');
+                item.classList.remove(theme.primaryColor, 'bg-opacity-40');
             }
-            this.classList.add(theme.primaryColor,'bg-opacity-40');
+            this.classList.add(theme.primaryColor, 'bg-opacity-40');
         });
     }
 

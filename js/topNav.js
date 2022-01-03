@@ -2,6 +2,7 @@ import { theme, setNextTheme } from './themes.js';
 import { components } from './components.js';
 import { loadedTables } from './tables.js';
 import { activeSchema } from './main';
+import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 
 export function topNav() {
     let topNav = document.createElement('div');
@@ -83,15 +84,18 @@ function createSchemaDropdown() {
 
     let listSchemas = function (_schemas) {
         let item = _schemas.map(schema => {
-            return `<div class="p-2"><a href="?activeSchema=${schema.name}">${schema.name}</a></div>`
+            return `<div class="p-1 border ${theme.tableBorderColor}"><a class="${theme.primaryTextColor}" href="?activeSchema=${schema.name}">${schema.name}</a></div>`
         }).join('');
         return `${item}`
     }
 
     menu.innerHTML = `
-        <div>
+        <div class="space-y-2">
+            
             <h4>Schemas (${loadedTables.length})</h4>
             ${listSchemas(loadedTables)}
+
+            <a href="/" class="block ${theme.primaryTextColor}">All Schemas</a>
         </div>
     `;
 
@@ -103,6 +107,7 @@ function createSchemaDropdown() {
 
     })
 
+    addDropdownOutsideClickHandler(menu, () => console.log("Clicked outside when openColumnMenu was open"));
 
     return menu;
 }

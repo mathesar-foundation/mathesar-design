@@ -3,7 +3,6 @@ import { components } from './components.js';
 import { createModal } from './createModal';
 import { addDropdownOutsideClickHandler } from './createDropdownMenu';
 import { selectTableByName, saveTable, columnByName } from './main';
-import { setTablePreferences } from './setTablePreferences';
 import { setColumnPreferences } from './setColumnPreferences';
 
 export function createLookupMenu(cell) {
