@@ -1,7 +1,8 @@
 import { theme } from './themes.js';
-import { appWrapper, savedTables, activeSchema } from './main';
+import { appWrapper, savedTables, activeSchema, schemaIdx } from './main';
 
-export function schemaOverview() {
+export function schemaOverview(tables) {
+
     appWrapper.querySelector('.table-wrapper').innerHTML = '';
 
     let schemaList = document.createElement('div');
@@ -16,17 +17,17 @@ export function schemaOverview() {
            <div class="text-4xl text-center"><i class="ri-share-line align-middle"></i></div>
            <div>
                 <h2 class="text-xl font-semibold">${activeSchema}</h2>
-                <p class="text-sm">${savedTables.filter(t => t.type == 'table').length} Tables ${savedTables.filter(t => t.type == 'view').length} Views</p></div>
+                <p class="text-sm">${tables.filter(t => t.type == 'table').length} Tables ${tables.filter(t => t.type == 'view').length} Views</p></div>
        </div>
   
    <div>
         <h3 class="py-4 text-xl">Favorites</h3>
-        ${savedTables.filter(t => t.favorite).slice(0,3).map( t => {
+        ${tables.filter(t => t.favorite).slice(0,3).map( t => {
             return   `<div><a href="#" class="${theme.primaryTextColor}">${t.name}</a></div>`
         }).join('')||`<div class="${theme.mutedTextColor}">No Favorites</div>`}
 
         <h3 class="py-4 text-xl">Activity</h3>
-        ${savedTables.filter(t => t.type == 'view').slice(0,3).map( (t,i) => {
+        ${tables.filter(t => t.type == 'view').slice(0,3).map( (t,i) => {
             return   `<div>Username ${actions[i]} view <a href="#" class="${theme.primaryTextColor}">${t.name}</a></div>`
         }).join('')||`<div class="${theme.mutedTextColor}">No Activity</div>`}
 

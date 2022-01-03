@@ -59,9 +59,9 @@ if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
-const schemaIdx = loadedTables.findIndex(schema => schema.name === activeSchema);
+export const schemaIdx = loadedTables.findIndex(schema => schema.name === activeSchema);
 
-export let savedTables = JSON.parse(sessionStorage.getItem('tables'))[schemaIdx].tables;
+export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 
 export var activeTable = urlParams.get('activeTable');
 
@@ -71,7 +71,6 @@ export var errorStatus = urlParams.get('error');
 let tabsWrapper = document.createElement('div');
 tabsWrapper.style.overflowX = 'hidden';
 tabsWrapper.classList.add('flex',theme.tableBorderColor,theme.darkPrimaryColor,'bg-opacity-40');
-
 
 addActiveTable(activeTable);
 buildActiveTables();
@@ -86,7 +85,6 @@ function createError(){
     `
     return error;
 }
-
 
 function addActiveTable(tableId) {
     let activeTables = getActiveTables();
@@ -117,7 +115,7 @@ function buildActiveTables() {
         tabsWrapper.append(createTab(tab));
     });
 
-    tabsWrapper.innerHTML += `<div class="border-b ${theme.tableBorderColor} w-full flex items-center px-2"><button><i class="ri-add-line"></i></button></div>`
+    //tabsWrapper.innerHTML += `<div class="border-b ${theme.tableBorderColor} w-full flex items-center px-2"><button><i class="ri-add-line"></i></button></div>`
 }
 
 function createTab(tab) {
@@ -152,33 +150,53 @@ function createTab(tab) {
     return item;
 }
 
-if (activeTable == null) {
-    schemaOverview();
-    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
+if (activeSchema == '' && activeTable == null) {
+    let schemaList = document.createElement('div');
+    schemaList.style.height = 'calc(100vh - 51px)';
+    schemaList.innerHTML = `<div class="${theme.textColor} p-2 space-y-2">
+    <h3 class="text-lg">Schemas</h3>
+    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="/${t.name}">${t.name}</a>`).join('')}
+    
+    </div>`
+    appWrapper.append(schemaList)
 }
 
-let tableExists = savedTables.find(table => table.id == activeTable);
+if (activeSchema !== '' && activeTable == null) {
+    schemaOverview(savedTables[schemaIdx].tables);
+    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables[schemaIdx].tables));
+}
 
-if (activeTable !== null && tableExists) {
-    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
+//let tableExists = savedTables[schemaIdx].tables.find(table => table.id == activeTable);
+
+if (activeSchema && activeTable !== null) {
+    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables[schemaIdx].tables));
     document.querySelector('.table-wrapper').parentNode.prepend(createTableToolbar(selectTableById(activeTable)));
     document.querySelector('.table-wrapper').prepend(createTable(selectTableById(activeTable)));
     document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
 }
 
-if (activeTable !== null && !tableExists) {
-    document.querySelector('.table-wrapper').append(createError());
-    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables));
-    document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
-}
+//if (activeSchema && activeTable !== null && !tableExists) {
+//    document.querySelector('.table-wrapper').append(createError());
+//    document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables[schemaIdx].tables));
+//    document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
+//}
 
 // SELECT TABLE BY ID
 export function selectTableById(id) {
-    return savedTables.find(table => table.id == id);
+    if (schemaIdx !== -1) {
+        return savedTables[schemaIdx].tables.find(table => table.id == id);
+    } else {
+        return ''
+    }
 }
 // SELECT TABLE BY NAME
 export function selectTableByName(name) {
-    return savedTables.find(table => table.name == name);
+    if (schemaIdx !== -1) {
+        return savedTables[schemaIdx].tables.find(table => table.name == name);
+    } else {
+        return ''
+    }
+    
 }
 
 //sessionStorage.clear();
@@ -532,7 +550,7 @@ function createTooltip(content) {
 }
 
 export function columnByName(colName) {
-    let columns = savedTables.reduce((a, b) => {
+    let columns = savedTables[schemaIdx].tables.reduce((a, b) => {
         b.columns.forEach(col => a.push(col))
         return a;
     }, []);
