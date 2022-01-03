@@ -1,5 +1,6 @@
 import { theme } from './themes.js';
 import { appWrapper, activeSchema } from './main';
+import { icon } from './iconMap.js';
 
 export function schemaOverview(tables) {
 
@@ -21,9 +22,9 @@ export function schemaOverview(tables) {
        </div>
   
     <div>
-        <h3 class="py-4 text-xl">Favorites</h3>
+        <h3 class="py-4 text-xl">Recent</h3>
         ${tables.filter(t => t.favorite).slice(0,3).map( t => {
-            return   `<div><a href="#" class="${theme.primaryTextColor}">${t.name}</a></div>`
+            return   `<div><a href="#" class="${theme.primaryTextColor}"><i class="${icon[t.type]} align-bottom"></i> ${t.name}</a></div>`
         }).join('')||`<div class="${theme.mutedTextColor}">No Favorites</div>`}
 
         <h3 class="py-4 text-xl">Activity</h3>
