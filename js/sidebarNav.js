@@ -35,13 +35,7 @@ export function sidebarNav(tables) {
 
 
     //sidebar.innerHTML += `history schema`
-    let createNavItem = function (table) {
-        let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
-        let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>`
-        let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`
-        return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">${tableIcon}${table.name}</a>`;
-        //return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div><div class="text-sm"><span>${table.records.length} Records</span> <span>${table.columns.length} Fields</span></div></a>`;
-    };
+    
 
 
     searchInput.addEventListener('keyup', function (e) {
@@ -54,13 +48,32 @@ export function sidebarNav(tables) {
         sidebarContent.innerHTML = '';
 
         //sidebarContent.innerHTML = `<div class="sort-dropdown"><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
+        sidebarNav.style.display = 'flex';
+
+        let createNavItem = function (table) {
+            let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
+            let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>`
+            let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`
+
+            if (!query) {
+            return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div></a> `;
+            } else {
+            return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div> <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span></a>`
+            }
+            //return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div><div class="text-sm"><span>${table.records.length} Records</span> <span>${table.columns.length} Fields</span></div></a>`;
+        };
 
         if (tablesList.length > 0) {
-            sidebarNav.style.display = 'flex';
+            
 
             const uniqueTypes = [...new Set(tablesList.map(item => item.type))].reverse();
 
+            if (query){
+                sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${tablesList.length} results for '${query}'</div>`;
+            } 
+
             uniqueTypes.forEach(type => {
+                
                 sidebarContent.innerHTML += `${selectedTab == 'all' ? `<div class="p-2 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>` : ``}`
                 sidebarContent.innerHTML += tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('');
             });
@@ -77,6 +90,8 @@ export function sidebarNav(tables) {
         if (tablesList.length == 0 && query == undefined) {
             sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all' ? emptyStateAll : emptyState} </div>`;
         }
+
+    
 
 
         //sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {

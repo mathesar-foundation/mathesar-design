@@ -82,7 +82,6 @@ function createError(){
     let error = document.createElement('div');
     error.classList.add(theme.textColor,'bg-red-300','p-4','m-4','bg-opacity-40','text-opacity-80')
     error.innerHTML = `
-    
     <h3 class="text-lg"><i class="ri-error-warning-fill align-bottom text-red-400"></i> This view might not exist or is no longer available</h3>
     <p>The view you are trying to open might have been deleted, or you might not have permission to view it.</p>
     `
