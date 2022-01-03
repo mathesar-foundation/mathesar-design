@@ -1,4 +1,4 @@
-import { activeTable } from './main';
+import { activeSchema, activeTable } from './main';
 import { theme } from './themes.js';
 import { components } from './components.js';
 import { icon } from './iconMap';
@@ -33,7 +33,7 @@ export function sidebarNav(tables) {
 
     //sidebar.innerHTML += `history schema`
     let createNavItem = function (table) {
-        let tableURL = `${window.location.pathname}?activeTable=${table.id}`;
+        let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
         let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table'?theme.primaryTextColor:theme.contrastTextColor}"></i>`
         let activeClasses= `${table.id == activeTable?`${theme.primaryColor} bg-opacity-40 font-semibold`:''}`
         return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">${tableIcon}${table.name}</a>`;

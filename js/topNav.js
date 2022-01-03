@@ -17,7 +17,7 @@ export function topNav() {
     schemaName.style.position = 'relative';
     schemaName.classList.add('flex', 'items-center', 'mr-2', 'rounded');
 
-    if (activeSchema !== '') {
+    if (activeSchema !== null) {
 
         schemaName.innerHTML = /*HTML*/
             `<div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded mr-2">M</div>
@@ -57,7 +57,7 @@ export function topNav() {
         setNextTheme();
     });
 
-    if (activeSchema !== '') {
+    if (activeSchema !== null) {
         topNav.append(brand, schemaName, newTableBtn, searchBar, changeThemeBtn, accountSelector);
     } else {
         topNav.append(brand, schemaName, searchBar, changeThemeBtn, accountSelector);
@@ -83,7 +83,7 @@ function createSchemaDropdown() {
 
     let listSchemas = function (_schemas) {
         let item = _schemas.map(schema => {
-            return `<div class="p-2"><a href="/${schema.name}">${schema.name}</a></div>`
+            return `<div class="p-2"><a href="?activeSchema=${schema.name}">${schema.name}</a></div>`
         }).join('');
         return `${item}`
     }

@@ -48,7 +48,11 @@ function applyTheme(property, color) {
     });
 };
 
-export let activeSchema = window.location.pathname.replace('/','');
+//export let activeSchema = window.location.pathname.replace('/','');
+
+export var activeSchema = urlParams.get('activeSchema');
+
+console.log(activeSchema);
 
 appWrapper.prepend(topNav(activeSchema));
 appWrapper.classList.add(theme.backgroundColor);
@@ -58,6 +62,7 @@ appWrapper.classList.add(theme.backgroundColor);
 if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
+
 
 export const schemaIdx = loadedTables.findIndex(schema => schema.name === activeSchema);
 
@@ -150,18 +155,18 @@ function createTab(tab) {
     return item;
 }
 
-if (activeSchema == '' && activeTable == null) {
+if (activeSchema ==  null && activeTable == null) {
     let schemaList = document.createElement('div');
     schemaList.style.height = 'calc(100vh - 51px)';
     schemaList.innerHTML = `<div class="${theme.textColor} p-2 space-y-2">
     <h3 class="text-lg">Schemas</h3>
-    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="/${t.name}">${t.name}</a>`).join('')}
+    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="?activeSchema=${t.name}">${t.name}</a>`).join('')}
     
     </div>`
     appWrapper.append(schemaList)
 }
 
-if (activeSchema !== '' && activeTable == null) {
+if (activeSchema !== null && activeTable == null) {
     schemaOverview(savedTables[schemaIdx].tables);
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables[schemaIdx].tables));
 }
