@@ -126,7 +126,7 @@ function createTab(tab) {
     item.style.cursor = 'pointer';
     item.classList.add(theme.textColor, 'border-r', theme.tableBorderColor, 'flex','items-center','pr-2','whitespace-nowrap','border-b');
 
-    let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : 'ErrorTable';
+    let tabLabel  = (selectTableById(tab) !== undefined) ? selectTableById(tab).name : tab;
 
     let iconClass = (tab !== activeTable) ? theme.mutedTextColor : theme.primaryTextColor
 
@@ -166,6 +166,8 @@ if (activeSchema ==  null && activeTable == null) {
 if (activeSchema !== null && activeTable == null) {
     schemaOverview(savedTables[schemaIdx].tables);
     document.querySelector('.sidebar-navigation').append(sidebarNav(savedTables[schemaIdx].tables));
+    //document.querySelector('.table-wrapper').parentNode.prepend(tabsWrapper);
+    //tabsWrapper.append(createTab('Get Started'));
 }
 
 //let tableExists = savedTables[schemaIdx].tables.find(table => table.id == activeTable);
@@ -203,20 +205,6 @@ export function selectTableByName(name) {
 
 //sessionStorage.clear();
 
-function saveAsView(e) {
-    let selTable = e.target.table;
-    let table = { ...selTable };
-    let tableId = Object.values(savedTables).flat().map(table => table.id);
-    let maxId = Math.max(...tableId);
-    table.id = maxId + 1;
-    table.columns.forEach(col => col.referencedTable = table.name);
-    table.name = `View of ${table.name}`
-
-    savedTables.views.push(table);
-    sessionStorage.setItem('tables', JSON.stringify(savedTables));
-    location.reload();
-    //document.querySelector('.table-wrapper').appendChild(createTable(table));
-}
 
 //console.log(savedTables.tables);
 

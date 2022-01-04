@@ -24,17 +24,43 @@ export function schemaOverview(tables) {
     <div>
         <h3 class="py-4 text-xl">Recent</h3>
         ${tables.filter(t => t.favorite).slice(0,3).map( t => {
-            return   `<div><a href="#" class="${theme.primaryTextColor}"><i class="${icon[t.type]} align-bottom"></i> ${t.name}</a></div>`
-        }).join('')||`<div class="${theme.mutedTextColor}">No Favorites</div>`}
+            return   `<div>
+            <a href="#" class="block">
+            <i class="${icon[t.type]} ${theme.primaryTextColor} align-bottom"></i> 
+            <span>${t.name}</span>
+            </a>
+            </div>`
+        }).join('')||`<div class="${theme.mutedTextColor}">Find your most recent tables and views here.</div>`}
 
         <h3 class="py-4 text-xl">Activity</h3>
         ${tables.filter(t => t.type == 'view').slice(0,3).map( (t,i) => {
             return   `<div>Username ${actions[i]} view <a href="#" class="${theme.primaryTextColor}">${t.name}</a></div>`
-        }).join('')||`<div class="${theme.mutedTextColor}">No Activity</div>`}
+        }).join('')||`<div class="${theme.mutedTextColor}">Find your most recent activity here.</div>`}
 
         <h3 class="py-4 text-xl">Get Started</h3>
-        <div><a href="#" class="${theme.primaryTextColor}">Create a Table</a></div>
-        <div><a href="#" class="${theme.primaryTextColor}">Create a View</a></div>
+        <div class="grid grid-cols-4 gap-2">
+            <div class="${theme.darkPrimaryColor} bg-opacity-40 p-2 space-y-2">
+                <div class="${theme.primaryColor} p-1 bg-opacity-20 rounded flex items-center space-x-2">
+                    <i class="${icon['table']} text-xl ${theme.inverseTextColor}"></i>
+                    <span>Create a Table</span>
+                </div>
+                <div>
+                
+                <p class="mb-1">Use tables to store your data and create links to other tables.</p>
+                <a href="#" class="${theme.primaryTextColor}"><i class="ri-add-line align-bottom"></i> New Table</a>
+                </div>
+            </div>
+            <div class="${theme.darkPrimaryColor} bg-opacity-40 p-2 space-y-2">
+                <div class="${theme.primaryColor} p-1 bg-opacity-20 rounded flex items-center space-x-2">
+                    <i class="${icon['view']} text-xl ${theme.inverseTextColor}"></i>
+                    <span>Create a View</span>
+                </div>
+                <div>
+                <p class="mb-1">Use views to save subsets of data from one or more tables and fields.</p>
+                <a href="#" class="${theme.primaryTextColor}"><i class="ri-add-line align-bottom"></i> New View</a>
+                </div>
+            </div>
+        </div>
        
     </div>
     </div>`;
@@ -51,6 +77,7 @@ export function schemaOverview(tables) {
    
      <div>`
     }
+
 
 
     appWrapper.querySelector('.table-wrapper').append(schemaList);
