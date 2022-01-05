@@ -15,8 +15,7 @@ export function sidebarNav(tables) {
 
     let sidebar = document.createElement('div');
     sidebar.classList.add('flex', 'flex-col', theme.darkPrimaryColor, 'bg-opacity-10', 'border-r', theme.darkBorderColor);
-    sidebar.style.height = 'calc(100vh - 52px)';
-    sidebar.style.overflowY = 'hidden';
+    
 
     let searchBar = document.createElement('div');
     searchBar.classList.add('flex', 'p-2');
@@ -175,8 +174,24 @@ export function sidebarNav(tables) {
         sidebarContent.append(error);
     }
 
+    let sidebarWrapper = document.createElement('div');
+    sidebarWrapper.classList.add('flex');
+    sidebar.style.width = '320px';
+    sidebarWrapper.style.height = 'calc(100vh - 52px)';
+    sidebarWrapper.style.overflowY = 'hidden';
 
-    return sidebar;
+    sidebarWrapper.innerHTML = `
+    <div class="shrink-0 ${theme.mediumBackgroundColor} bg-opacity-40">
+        <a href="javascript:void(0)" class="${theme.textColor} block ${theme.mediumBackgroundColor} flex items-center" style="width:40px; height:40px"><i class="ri-list-unordered text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" class="${theme.textColor} block flex items-center" style="width:40px; height:40px"><i class="ri-table-line text-lg mx-auto"></i></a>
+    </div>`
+
+    
+    
+    sidebarWrapper.append(sidebar);
+
+    return sidebarWrapper;
+    //return sidebar;
 };
 
 

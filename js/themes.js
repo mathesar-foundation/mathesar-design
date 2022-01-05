@@ -9,7 +9,7 @@ var themes = {
         mediumBorderColor: 'border-gray-500',
         lightBorderColor: 'border-gray-500',
         textColor: 'text-gray-100',
-        inverseTextColor: 'text-dark',
+        inverseTextColor: 'text-gray-900',
         mutedTextColor: 'text-gray-400',
         mediumTextColor: 'text-gray-200',
         tableBorderColor: 'border-gray-700',

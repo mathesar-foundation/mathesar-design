@@ -1,6 +1,37 @@
+let largeTableSet = ["Tuesday Night Music Club", "Unforgettable Hits of the 90s", "90s Guitar Pop", "WOW Worship Aqua 2006", "AQUA ZUMBA vidéos Léa", "Best of Aqua Timez", "AQUA - LIVE Aquarius release party 2000", "aqua", "All Tracks - Aqua Velvets", "All Tracks - Aqua Bassino", "Aqua Zumba Routines", "Aqua (Germany) \"Aqua\" - Full Album - 2008 compilation", "Aqua Zumba", "Aqua Zumba 2015", "Aqua Zumba 2020", "aqua/lene", "AQUA Quartet-Apostolic Singing", "Aqua Zumba", "Aqua fit 2022 (1)", "AQUA 2020", "aqua vs rammstein", "Aqua Soundtrack~", "Aqua - Live at Tivoli full movie HD", "Aqua fit 2022 (1)", "AQUA 2020", "aqua vs rammstein", "Aqua - Live at Tivoli full movie HD", "Gli Aqua sono un gruppo musicale danese/norvegese", "Aqua Soundtrack~", "Aqua", "Millenial Radio-Aqua, Eiffel 65, Haddaway", "Aqua net set, 80s disco", "Aqua Zumba-Lea Robert", "Aqua Zumba Holiday Routines", "Aqua anos 1999-2019", "AQUA BOOGIE", "喜多郎 Aqua", "Aqua Zumba 2017", "asia aqua original us release", "'90s Hits-Aqua, Steps, Whitney Houston", "Aqua Zumba", "aqua ideas", "Easy Aqua Zumba Fitness Routines", "aqua zumba", "Aqua", "AQUA 2019", "Aqua Zumba", "Aqua zumba", "Western music Aqua,Boniem,Venga boys", "Aqua 90's 🌊", "Aqua Track", "AQUA", "2 Aqua", "Aqua DnB", "Aqua Zumba", "Aqua Fitness", "AQUA album AQUA from 1995", "Aqua", "30/10 Aqua Hervé", "AQUA", "Mango Aqua diva", "The gathering. Anneke van giersben. Aqua de annique", "Mango Aqua diva", "The gathering. Anneke van giersben. Aqua de annique", "2 Aqua", "Aqua Zumba", "Aqua", "Aqua ZUmba", "Aqua Zumba", "Aqua Bar Cool Down Chill Out", "Aqua zumba", "Jethro Tull Aqua Lung", "Play It Again [ Abba Aqua & AceOfBase  ]", "Aqua Bassino", "Aqua - Live", "Aqua", "Aqua Zumba songs/routine I teach in class", "Aqua", "Aqua drop", "Aqua 3", "Aqua", "Aqua Luna pērles 2013-2020", "Aqua", "Aqua Velvets", "aqua", "2 Aqua", "Aqua Zumba", "AQUA", "90er Partyhymnen-Aqua, Vengaboys", "Aqua", "aqua zumba 2014", "aqua dance", "Aqua Zumba", "aqua abba", "AQUA EXCLUSIVE", "Bleach ending mask aqua timez", "Aqua", "Aqua Timez", "Aqua Zumba", "aqua balance 6", "aqua abba", "AQUA EXCLUSIVE", "Aqua Timez", "Aqua Zumba", "aqua balance 6", "AQUA", "Aqua's The Rewind Tour featuring Prozzak and Whigfield", "Aqua levi", "Aqua", "Chris Spheeris - Aqua Harp", "Aqua", "Aqua mello", "Aqua-Coreos", "Aqua Gym", "Aqua 2019", "Aqua sportief", "Aqua 2", "Aqua - Güneşte Dolaşmak", "Aqlist", "Aqua", "Top Covers - Aqua", "Aqua Hervé 2", "2 Aqua", "Aqua Güneşte Dolaşmak", "AQUA NEW", "3 Aqua", "Aqua animations songs", "AQUA PLAYLIST", "Aqua fit", "AQUA BLISS: 27th February 2021", "AQUA ZUMBA", "Aqlist", "Aqua Toys", "aqua", "Aqua", "Rap... AQUA", "Aqua Zumba", "aqua", "Aqua palme", "Aqua Timez", "aqua Show", "Aqua and Toy Box", "AQUA", "DANCE 90'S-Aqua, MC Hammer", "Aqua", "Aqua 2020", "AQUA", "Top Covers - Aqua", "Aqua", "Aqua Zumba", "Aqua", "Aqua LaScala MKII", "Aqua", "Aqua zumba", "Aqua-esque", "Aqua zumba", "New and awesome aqua moves", "Aqua Seca", "aqua (nostalgia)", "Aqua Raps", "Aqua boxing", "Aqua", "Aqua playlist", "Aqua", "Aqua and Toy Box", "aqua", "Aqua Songs with lyrics and no lyrics", "Aqua Zumba 80's", "3 Aqua", "Aqua dance", "Spice Girls, Britney, NSYNC, Aqua, Vengaboys, Toy Box, Backstreet Boy, WestLife", "2 Aqua", "Aqua raps", "2 Aqua mix", "Aqua", "aqua aerobic", "Aqua Jive Sept", "All Tracks - Aqua Nebula Oscillator", "Aqua", "Anti-Aqua", "Aqua fit 2022 (1)", "Aqua Léna", "Aqua", "Cry baby/Poppy/Aqua", "Aqua & Aqua Zumba", "Aqua aerobics", "AQUA", "Aqua bisca 45", "The Aqua Barons", "aqua", "Aqua", "aqua madonna", "Aqua z", "Aqua", "aqua lene", "Aqua Zumba", "Aqua Fit", "By AQUA", "Aqua e Caramella Girls", "Aqua Zumba Routines", "Aqua 2.0", "Aqua", "Aqua Zumba", "aqua fan900", "aqua 5", "Aqua and Toy-Box Songs", "Foute Uur Qmusic-Eiffel 65, Backstreet Boys, Aqua", "Aqua", "Aqua lgg", "Aqua zumba", "Aqua", "Aqua Animation Roblox Seasons", "aqua aug", "Foute Uur Qmusic-Eiffel 65, Backstreet Boys, Aqua", "Aqua", "Aqua lgg", "Aqua zumba", "Aqua", "Aqua Animation Roblox Seasons", "aqua aug", "aqua zumba", "Aqua dance", "AQUA", "Aqua", "Christmas aqua", "Aqua", "Halloween Aqua", "aqua", "AQUA", "Aqua", "Aqua Class", "Aqua Zumba", "Aquafitkate's Holiday  Around the World AQUA Zumba Routines", "Aqua's Ree", "Aqua rose", "Aqua", "AJ’s Aqua Net 👩🏻‍🎤", "Aqua's Mini Mix NN", "Backstreet Boys & Aqua Songs", "aqua", "Aqua Zumba Routines", "aqua", "Aqua 1", "AQUA DRUNK", "Aqua Exercise", "Aqua 50 Circuit Two", "Aqua Timez", "Backyard Aqua Zumba 2020", "Aqua Zumba class", "Aqua Zumba® Choreography", "Aqua Mix! 💙💜", "AQUA ZUMBA", "Aqua", "Zumba-Aqua", "Aqua Q", "Aqua zumba", "Aqua noel", "aqua ace of base", "Winter Aqua", "Aqua Toy box", "Aqua", "Aqua Timez", "Aqlist", "Aqua celia", "Aqua net set", "Aqua Zumba Gold", "aqua ndw", "Aqua set", "Aqua Zumba", "Tamagotchi Aqua", "aqua nintendo", "Aqua", "Aqua Hamster at Keene Music Festival 2019", "Aqua Zumba", "Tamagotchi Aqua", "Aqua", "Aqua Hamster at Keene Music Festival 2019", "Aqua zumba", "Aqua Zumba Routines", "Aqua combi", "Aqua dancing", "Aqua Zumba", "DANCE 90'S-Aqua, MC Hammer", "Chillz - Aqua", "Aqua dive", "Aqua Zumba", "Aqua cooldown", "Aqua Tempore ª", "Aqua", "Aqua zumba", "S3RL, AQUA, WORLD ORDER & more", "Хиты Aqua", "Aqua play", "Aqua dive", "Aqua Zumba", "Aqua Tempore ª", "DANCE 90'S-Aqua, MC Hammer", "Aqua", "Aqua zumba", "Aqua cooldown", "S3RL, AQUA, WORLD ORDER & more", "Хиты Aqua", "Aqua play", "Aqua 🤯", "Aqua Zumba", "New Aqua 45 class", "aqua", "Aqua Force and Stoichea", "Aqua 4", "Aqua Timez", "Aqua Vibe", "Aqua Zumba", "Nashira Resort Hotel & Aqua - Spa Holidays in Turkey - Turkey  Отдых - Türkiye'deki Tatiller - არდადეგები თურქეთში ardadegebi - Urlaub in der Türkei", "aqua", "My Aqua Zumba Choreography", "Aqua", "Gaby aqua zumba Katy coffey", "Aqua Terra", "Pro-aqua", "Aqua jams", "Aqua Technician", "Videos Featuring Aqua Raps", "Aqua timez", "aqua timez jos", "Leonard Cohen, Aqua, T Pau", "NCS Aqua Sounds", "Aqua crew all videos", "Aqua Zumba Possibilities", "Aqua Tone", "Aqua man", "2 Aqua Zumba", "Aqua and more", "NCS Aqua Sounds", "Aqua crew all videos", "Aqua Zumba Possibilities", "Aqua Tone", "Aqua man", "2 Aqua Zumba", "Aqua and more", "Aqua mix 2021", "Kickass Aqua Tunes", "Produced by Aqua", "NSE AQUA RICH", "2 Aqua", "Aqua Zumba", "Aqua xmas", "Aqua's Freestyle Locker", "2 Millenial Radio-Aqua, Eiffel 65, Haddaway", "aqua Dienstag", "Aqua net set", "Aqua Net", "Aqua Teen", "Aqua Panic! OST", "Holiday Aqua Zumba", "Santana - Aqua Marine (1979): Guitar, Bass & Drum Lessons + Covers", "Aqua Zumba techniques", "dorinda chanel galleria aqua", "Dj yacht Mr Aqua 2019", "AQUA POI DANZ FITNESS", "Aqua Fische", "AQUA IDOL", "Aqua Teen Hunger Force", "Konosuba Aqua Dark Megu Hentai", "Aqua Timez Instrumental", "AQua", "'90s Hits-Aqua, Steps, Whitney Houston", "vengaboys, Aqua, Toybox", "aqua videos", "aqua", "AQUA POI DANZ FITNESS", "Aqua Fische", "AQUA IDOL", "Aqua Teen Hunger Force", "Konosuba Aqua Dark Megu Hentai", "Aqua Timez Instrumental", "AQua", "'90s Hits-Aqua, Steps, Whitney Houston", "aqua videos", "vengaboys, Aqua, Toybox", "Live Is Life – Opus-Opus, A-ha, ABBA", "Top Covers - Aqua Timez", "KOKO", "Aqua venga boys steps", "Aqua songs", "Aqua Barbie Girl", "Vengaboys ,aqua n Spice girl", "Coco Jamboo 90's-Mr. President, Opus, Baltimora", "aqua mare (1)", "Aqua CAF 2k19", "Alist", "aqua lene", "Aqua Disco", "Aqua", "aqua stream", "Aqua playlists", "Aqua from kingdom hearts birth by sleep", "All Tracks - Aqua Mundi", "Aqua 2", "Aqua 18", "Toybox/Vengaboys/Aqua/VillagePeople", "Aqua aerobic", "Aqua", "aqua", "AQUA nightcore", "Aqua", "AQUA new music", "Aqua", "Dance aqua", "Aqua Fit By No Excuses", "Aqua aerobic", "Aqua", "aqua", "Aqua 14", "AQUA nightcore", "Aqua", "AQUA new music", "Aqua", "Dance aqua", "Aqua Fit By No Excuses", "Aqua", "Vengaboys ft aqua", "Breakfaslist-Enea DJ, Jovanotti, Satellite Soul", "Duo aqua", "Future World Music - Aqua Vitae-WORLD MUSIC", "Aqua's Random Mix", "Aqua list", "AQUA **", "Barbie Girl – Aqua", "aqua", "2 Aqua Zumba", "Bleach Openings & Endings-ORANGE RANGE, UVERworld, HIGH And MIGHTY COLOR", "aqua minecraft neighbor", "favorites", "Flashback Só As Melhores -Cascada, Real McCoy, Martine", "Bleach | Openings & Endings-UVERworld, HIGH And MIGHTY COLOR, ORANGE RANGE", "musica  cool", "K-391 (Molist)", "Alan Walker (Molist)", "New", "Random", "Santana", "규", "beenzino", "Oldschool", "Fuel the Fire", "90 Dance / Europop-Basic Element", "Top Hits Of 1998-Cher, Céline Dion, Aerosmith", "90s Dance Hits (Top 100)-Darude, Gigi D'Agostino, Haddaway", "euphoria", "Songs", "Dixon's Track IDs-Fasme, Atonal, Sofia Kourtesis", "Max Valenzuela"];
+
+console.log(largeTableSet)
+
+let largeTable = {
+    name: 'large_table_collection',
+    description: 'Schema with hundreds of tables',
+    tables : [
+        
+        //{ name: 'award',type: 'table',constraints: [],columns: [{ name: 'id', type: 'number', readOnly: true },],records: [['1']],color: 'blue'}   
+    ]
+}
+
+largeTableSet.forEach((t,i) => {
+    largeTable.tables.push(
+        {
+            name: t,
+            type: 'table',
+            constraints: [
+                {type:'Primary Key', columns:['id']},
+            ],
+            columns: [{ name: 'id', type: 'number', readOnly: true, isPrimaryKey: true }],
+            records: [[i]]
+        }
+    )
+});
+
+
+
+
 var allSchemas = [
     {
         name: 'album_collection',
+        description: 'Main schema for inventory use case',
         tables: [
             {
                 name: 'artist',
@@ -319,12 +350,16 @@ var allSchemas = [
             }]
     },{
         name: 'movie_collection',
+        description: 'Schema for empty states',
         tables : []
     },{
         name: 'loading_error_schema',
+        description: 'Schema for loading errors',
         tables : []
     }
 ]
+
+allSchemas.push(largeTable);
 
 allSchemas.forEach(schema =>{
     schema.tables.forEach((data, index) => {

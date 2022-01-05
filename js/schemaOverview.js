@@ -40,8 +40,8 @@ export function schemaOverview(tables) {
         <h3 class="py-4 text-xl">Get Started</h3>
         <div class="grid grid-cols-4 gap-2">
             <div class="${theme.darkPrimaryColor} bg-opacity-40 p-2 space-y-2">
-                <div class="${theme.primaryColor} p-1 bg-opacity-20 rounded flex items-center space-x-2">
-                    <i class="${icon['table']} text-xl ${theme.inverseTextColor}"></i>
+                <div class="${theme.primaryColor} py-1 px-2 bg-opacity-20 rounded flex items-center space-x-2">
+                    <i class="${icon['table']} text-xl ${theme.textColor}"></i>
                     <span>Create a Table</span>
                 </div>
                 <div>
@@ -51,8 +51,8 @@ export function schemaOverview(tables) {
                 </div>
             </div>
             <div class="${theme.darkPrimaryColor} bg-opacity-40 p-2 space-y-2">
-                <div class="${theme.primaryColor} p-1 bg-opacity-20 rounded flex items-center space-x-2">
-                    <i class="${icon['view']} text-xl ${theme.inverseTextColor}"></i>
+                <div class="${theme.primaryColor} py-1 px-2 bg-opacity-20 rounded flex items-center space-x-2">
+                    <i class="${icon['view']} text-xl ${theme.textColor}"></i>
                     <span>Create a View</span>
                 </div>
                 <div>
@@ -77,8 +77,6 @@ export function schemaOverview(tables) {
    
      <div>`
     }
-
-
 
     appWrapper.querySelector('.table-wrapper').append(schemaList);
 }

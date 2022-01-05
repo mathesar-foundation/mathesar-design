@@ -20,7 +20,7 @@ appWrapper.innerHTML = `
  
 <div class="flex">
 
-  <div style="width:320px" class="flex-shrink-0">
+  <div class="flex-shrink-0">
     <div class="h-full tableBorderColor sidebar-wrapper">
       
       <div class="sidebar-navigation"></div>
@@ -156,8 +156,8 @@ if (activeSchema ==  null && activeTable == null) {
     let schemaList = document.createElement('div');
     schemaList.style.height = 'calc(100vh - 51px)';
     schemaList.innerHTML = `<div class="${theme.textColor} p-2 space-y-2">
-    <h3 class="text-lg">Schemas</h3>
-    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="?activeSchema=${t.name}">${t.name}</a>`).join('')}
+    <h3 class="text-lg">Schemas (${savedTables.length})</h3>
+    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="?activeSchema=${t.name}"><div>${t.name}</div> <span class="${theme.mutedTextColor} text-sm">${t.description}</span></a>`).join('')}
     
     </div>`
     appWrapper.append(schemaList)
