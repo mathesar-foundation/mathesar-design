@@ -7,6 +7,8 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 // CREATE SIDEBAR
 export function sidebarNav(tables) {
 
+    let sidebarCalcHeight = 'calc(100vh - 54px)';
+
     let selectedTab = localStorage.getItem('selectedTab') || 'all';
 
     if (activeSchema == 'album_collection') {
@@ -15,10 +17,10 @@ export function sidebarNav(tables) {
 
     let sidebar = document.createElement('div');
     sidebar.classList.add('flex', 'flex-col', theme.darkPrimaryColor, 'bg-opacity-10', 'border-r', theme.darkBorderColor);
-    
+    sidebar.style.height = sidebarCalcHeight;
 
     let searchBar = document.createElement('div');
-    searchBar.classList.add('flex', 'p-2');
+    searchBar.classList.add('flex', 'p-2','border-b','mb-2',theme.tableBorderColor,'border-opacity-60');
     let searchInput = components.createInput({ placeholder: 'Type to search' });
     searchInput.classList.add('w-full');
 
@@ -27,26 +29,17 @@ export function sidebarNav(tables) {
     moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
     searchBar.append(searchInput, moreMenu);
 
-
-
     let sidebarContent = document.createElement('div');
-    sidebarContent.style.overflowY = 'scroll';
-
-
-    //sidebar.innerHTML += `history schema`
+    sidebarContent.style.height = '200px';
+    sidebarContent.classList.add('flex-grow','flex','flex-col');
     
-
-
     searchInput.addEventListener('keyup', function (e) {
         let filteredTables = tables.filter(table => table.name.toLowerCase().includes(e.target.value.toLowerCase()));
         loadNavItems(filteredTables, e.target.value);
     });
 
     let loadNavItems = function (tablesList, query) {
-
         sidebarContent.innerHTML = '';
-
-        //sidebarContent.innerHTML = `<div class="sort-dropdown"><button class="${theme.mutedTextColor} px-2 py-2 display-options">Recently Accessed <i class="align-bottom ri-arrow-down-s-line"></i></button></div>`
         sidebarNav.style.display = 'flex';
 
         let createNavItem = function (table) {
@@ -55,16 +48,13 @@ export function sidebarNav(tables) {
             let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`
 
             if (!query) {
-            return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div></a> `;
+                return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div></a> `;
             } else {
-            return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div> <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span></a>`
+                return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div> <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span></a>`
             }
-            //return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div><div class="text-sm"><span>${table.records.length} Records</span> <span>${table.columns.length} Fields</span></div></a>`;
         };
 
         if (tablesList.length > 0) {
-            
-
             const uniqueTypes = [...new Set(tablesList.map(item => item.type))].reverse();
 
             if (query){
@@ -72,9 +62,17 @@ export function sidebarNav(tables) {
             } 
 
             uniqueTypes.forEach(type => {
-                
-                sidebarContent.innerHTML += `${selectedTab == 'all' ? `<div class="p-2 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>` : ``}`
-                sidebarContent.innerHTML += tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('');
+                if (selectedTab == 'all') {
+                    sidebarContent.innerHTML += `
+                    <div class="px-2 py-1 border-b ${theme.tableBorderColor} border-opacity-60 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>
+                    <div class="flex-grow" style="overflow-y:scroll">
+                        ${tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('')}
+                    </div>
+                    `
+                } else {
+                    sidebarContent.innerHTML += tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('');
+                }
+
             });
         };
 
@@ -90,12 +88,6 @@ export function sidebarNav(tables) {
             sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all' ? emptyStateAll : emptyState} </div>`;
         }
 
-    
-
-
-        //sidebarContent.querySelector('.display-options').addEventListener('click', function (e) {
-        //    e.target.parentElement.appendChild(createTableOptionsMenu(tablesList));
-        //});
 
         sidebarContent.querySelectorAll('a').forEach(item => {
             item.addEventListener('mouseenter', function () {
@@ -112,7 +104,7 @@ export function sidebarNav(tables) {
 
 
     let sidebarNav = document.createElement('div');
-    sidebarNav.classList.add('flex', 'items-center', 'px-2', 'mb-2', theme.textColor);
+    sidebarNav.classList.add('flex', 'items-center', 'px-2', theme.textColor,'mb-2');
 
     sidebarNav.innerHTML = /*HTML*/`
         <button data-filter="all" class="rounded py-1 text-sm show-history flex-grow ${selectedTab == 'all' ? theme.mediumBackgroundColor : ''} border-opacity-80">All (${tables.length})</button>
@@ -160,8 +152,7 @@ export function sidebarNav(tables) {
         });
     }
 
-
-    sidebar.append(searchBar, sidebarNav, sidebarContent);
+    
 
     if (activeSchema == 'loading_error_schema') {
         let error = document.createElement('div');
@@ -177,21 +168,60 @@ export function sidebarNav(tables) {
     let sidebarWrapper = document.createElement('div');
     sidebarWrapper.classList.add('flex');
     sidebar.style.width = '320px';
-    sidebarWrapper.style.height = 'calc(100vh - 52px)';
+    sidebarWrapper.style.height = sidebarCalcHeight;
     sidebarWrapper.style.overflowY = 'hidden';
 
     sidebarWrapper.innerHTML = `
     <div class="shrink-0 ${theme.mediumBackgroundColor} bg-opacity-40">
-        <a href="javascript:void(0)" class="${theme.textColor} block ${theme.mediumBackgroundColor} flex items-center" style="width:40px; height:40px"><i class="ri-list-unordered text-lg mx-auto"></i></a>
-        <a href="javascript:void(0)" class="${theme.textColor} block flex items-center" style="width:40px; height:40px"><i class="ri-table-line text-lg mx-auto"></i></a>
-    </div>`
+        <a href="javascript:void(0)" data-target="default" class="${theme.textColor} show-sidebar flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" data-target="apps" class="${theme.textColor} show-apps block flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
+    </div>`;
 
+    let appContent = document.createElement('div');
     
-    
-    sidebarWrapper.append(sidebar);
+    let apps = [
+        {'name':'Export Sheet Data','description':'Export tables as XML or JSON'},
+        {'name':'ChartExpo','description':'Turn data into visual stories'},
+        {'name':'API Connector','description':'Connect and import data from any API'}
+    ];
+
+    appContent.innerHTML = `
+        <div class="px-2 py-1 border-b ${theme.tableBorderColor} border-opacity-60 text-sm ${theme.textColor}">Plugins</div>
+        <div class="p-2 ${theme.textColor} space-y-2">
+            ${apps.map(app => {
+                return `
+                <div class="p-2 ${theme.darkPrimaryColor} bg-opacity-30 space-y-2">
+                    <h3>${app.name}</h3>
+                    <p class="text-sm">${app.description}</p>
+                    <button class="bg-green-500 text-sm px-2"><i class="ri-add-line align-bottom"></i> Add</button>
+                </div>`
+            }).join('')}          
+        </div>`
+
+    loadSidebar([searchBar, sidebarNav, sidebarContent]);
+
+    sidebarWrapper.querySelectorAll('a').forEach(navItem => {
+        navItem.addEventListener('click',function(){
+            if (this.getAttribute('data-target') == 'default'){
+                loadSidebar([searchBar, sidebarNav, sidebarContent]);
+            } else {
+                loadSidebar([searchBar, appContent]);
+            }
+        });
+    });
+
+    function loadSidebar(selected){
+        if (sidebar.contains(...selected) && !sidebarWrapper.contains(sidebar)){
+            sidebarWrapper.removeChild(sidebar);
+        } else {
+            sidebar.innerHTML = '';
+            sidebar.append(...selected);
+            sidebarWrapper.append(sidebar);
+        }
+    };    
+
 
     return sidebarWrapper;
-    //return sidebar;
 };
 
 
