@@ -6,9 +6,7 @@ import { createDropdownMenu, addDropdownOutsideClickHandler } from './createDrop
 
 // CREATE SIDEBAR
 export function sidebarNav(tables) {
-
     let sidebarCalcHeight = 'calc(100vh - 54px)';
-
     let selectedTab = localStorage.getItem('selectedTab') || 'all';
 
     if (activeSchema == 'album_collection') {
@@ -24,10 +22,10 @@ export function sidebarNav(tables) {
     let searchInput = components.createInput({ placeholder: 'Type to search' });
     searchInput.classList.add('w-full');
 
-    let moreMenu = document.createElement('div');
-    moreMenu.classList.add('py-1', 'px-2')
-    moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
-    searchBar.append(searchInput, moreMenu);
+    //let moreMenu = document.createElement('div');
+    //moreMenu.classList.add('py-1', 'px-2')
+    //moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
+    searchBar.append(searchInput);
 
     let sidebarContent = document.createElement('div');
     sidebarContent.style.height = '200px';
