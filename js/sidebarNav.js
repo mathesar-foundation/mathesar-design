@@ -11,6 +11,7 @@ export function sidebarNav(tables) {
 
     if (activeSchema == 'album_collection') {
         tables.splice(3, 0, { name: 'ErrorView', type: 'view', id: 'error', records: [], columns: [] });//ADD ERROR TABLE
+        tables.splice(3, 0, { name: 'Table with unsaved changes', type: 'table', id: 'unsaved', unsaved: true, records: [], columns: [] });//ADD ERROR TABLE
     }
 
     let sidebar = document.createElement('div');
@@ -46,7 +47,10 @@ export function sidebarNav(tables) {
             let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`
 
             if (!query) {
-                return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div></a> `;
+                return `<a class="flex items-center ${table.unsaved?'bg-orange-200 bg-opacity-20':''} ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
+                <div class="mr-auto">${tableIcon}${table.name} </div>
+                ${table.unsaved?`<i class="ri-checkbox-blank-circle-fill text-orange-200 text-xs"></i>`:''}
+                </a>`;
             } else {
                 return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div> <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span></a>`
             }
@@ -171,9 +175,10 @@ export function sidebarNav(tables) {
 
     sidebarWrapper.innerHTML = `
     <div class="shrink-0 ${theme.mediumBackgroundColor} bg-opacity-40">
-        <a href="javascript:void(0)" data-target="default" class="${theme.textColor} show-sidebar sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
-        <a href="javascript:void(0)" data-target="apps" class="${theme.textColor} show-apps block sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" data-target="default" class="${theme.textColor} ${theme.darkPrimaryColor} active bg-opacity-40 sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" data-target="apps" class="${theme.textColor} bg-opacity-20 sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
     </div>`;
+
 
     let appContent = document.createElement('div');
     
@@ -198,8 +203,25 @@ export function sidebarNav(tables) {
 
     loadSidebar([searchBar, sidebarNav, sidebarContent]);
 
+    sidebarWrapper.querySelectorAll('.sidebar-nav')[0].style.position = 'relative';
+
+    let saveIndicator = document.createElement('div');
+    saveIndicator.classList.add('bg-fuchsia-500','bg-opacity-90','text-center','text-sm','text-white');
+    saveIndicator.style.width = '16px';
+    saveIndicator.style.height = '16px';
+    saveIndicator.style.lineHeight = '16px';
+    saveIndicator.style.borderRadius = '8px';
+    saveIndicator.style.position = 'absolute';
+    saveIndicator.style.right = '4px';
+    saveIndicator.style.bottom = '4px';
+    saveIndicator.innerHTML = `1`
+    sidebarWrapper.querySelectorAll('.sidebar-nav')[0].append(saveIndicator);
+
     sidebarWrapper.querySelectorAll('.sidebar-nav').forEach(navItem => {
+    
+
         navItem.addEventListener('click',function(){
+
             if (this.getAttribute('data-target') == 'default'){
                 loadSidebar([searchBar, sidebarNav, sidebarContent]);
             } else {
@@ -207,6 +229,10 @@ export function sidebarNav(tables) {
             }
         });
     });
+
+    //sidebarWrapper.querySelector('.sidebar-nav.active').addEventListener('click',function(){
+    //    sidebarWrapper.removeChild(sidebar);
+    //});
 
     function loadSidebar(selected){
         if (sidebar.contains(...selected) && !sidebarWrapper.contains(sidebar)){
@@ -218,6 +244,18 @@ export function sidebarNav(tables) {
         }
     };    
 
+    let sidebarNavList =  sidebarWrapper.querySelectorAll('.sidebar-nav');
+
+    console.log(sidebarNavList)
+
+    for (let item of sidebarNavList) {
+        item.addEventListener("click", function () {
+            for (let item of sidebarNavList) {
+                item.classList.remove(theme.darkPrimaryColor,'active');
+            }
+            this.classList.add(theme.darkPrimaryColor,'active');
+        });
+    };
 
     return sidebarWrapper;
 };
@@ -256,7 +294,7 @@ function createTableOptionsMenu(table) {
             }
             this.classList.add(theme.primaryColor, 'bg-opacity-40');
         });
-    }
+    };
 
     return menu;
 }
