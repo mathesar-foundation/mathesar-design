@@ -171,8 +171,8 @@ export function sidebarNav(tables) {
 
     sidebarWrapper.innerHTML = `
     <div class="shrink-0 ${theme.mediumBackgroundColor} bg-opacity-40">
-        <a href="javascript:void(0)" data-target="default" class="${theme.textColor} show-sidebar flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
-        <a href="javascript:void(0)" data-target="apps" class="${theme.textColor} show-apps block flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" data-target="default" class="${theme.textColor} show-sidebar sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" data-target="apps" class="${theme.textColor} show-apps block sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
     </div>`;
 
     let appContent = document.createElement('div');
@@ -198,7 +198,7 @@ export function sidebarNav(tables) {
 
     loadSidebar([searchBar, sidebarNav, sidebarContent]);
 
-    sidebarWrapper.querySelectorAll('a').forEach(navItem => {
+    sidebarWrapper.querySelectorAll('.sidebar-nav').forEach(navItem => {
         navItem.addEventListener('click',function(){
             if (this.getAttribute('data-target') == 'default'){
                 loadSidebar([searchBar, sidebarNav, sidebarContent]);
