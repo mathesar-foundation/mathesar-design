@@ -434,11 +434,12 @@ var allSchemas = [
                 constraints: [
                     {type:'Primary Key', columns:['id']},
                     {type:'Foreign Key', columns:['month'], referenceTable:'Months', referenceColumns:['name']},
-                    {type:'Foreign Key', columns:['year'], referenceTable:'Years', referenceColumns:['year']}
+                    {type:'Foreign Key', columns:['year'], referenceTable:'Years', referenceColumns:['year']},
+                    {type:'Foreign Key', columns:['unit'], referenceTable:'Units', referenceColumns:['unit']}
                 ],
                 columns: [
                     { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
-                    { name: 'unit', type: 'text'},
+                    { name: 'unit', type: 'fk', lookupField: 'unit', lookupTable: 'Units'},
                     { name: 'year', type: 'fk', lookupField: 'year', lookupTable: 'Years'},
                     { name: 'month', type: 'fk', lookupField: 'name', lookupTable: 'Months'},
                     { name: 'level', type: 'number'},
@@ -498,6 +499,21 @@ var allSchemas = [
                     [1,1991]
                 ],
                 color: 'sky'
+            },{
+                name: 'Units',
+                type: 'table',
+                favorite: true,
+                constraints: [
+                    {type:'Primary Key', columns:['id']},
+                ],
+                columns: [
+                    { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
+                    { name: 'unit', type: 'text'}
+                ],
+                records: [
+                    ['1','ppb'],
+                ],
+                color: 'lime'
             }
         ]
     }
