@@ -49,7 +49,10 @@ export function sidebarNav(tables) {
                 ${table.unsaved?`<i class="ri-checkbox-blank-circle-fill text-orange-200 text-xs"></i>`:''}
                 </a>`;
             } else {
-                return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}"><div>${tableIcon}${table.name}</div> <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span></a>`
+                return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
+                <div class="mr-auto"><span class="mr-2">${tableIcon}</span>${table.name}</div>
+                <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span>
+                </a>`
             }
         };
 
