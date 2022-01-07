@@ -15,12 +15,12 @@ var themes = {
         tableBorderColor: 'border-gray-700',
         tableBackgroundColor: 'bg-gray-800',
         tableHeaderBackgroundColor: 'bg-gray-800',
-        primaryColor: 'bg-purple-400',
-        primaryBorderColor: 'border-purple-300',
+        primaryColor: 'bg-indigo-400',
+        primaryBorderColor: 'border-indigo-300',
         inputBackgroundColor: 'bg-gray-600',
-        darkPrimaryColor: 'bg-purple-900',
-        primaryTextColor: 'text-purple-300',
-        contrastTextColor: 'text-pink-200'
+        darkPrimaryColor: 'bg-indigo-900',
+        primaryTextColor: 'text-indigo-400',
+        contrastTextColor: 'text-emerald-400'
     },
     lightTheme: {
         backgroundColor: 'bg-white',

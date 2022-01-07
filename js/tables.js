@@ -223,6 +223,7 @@ var allSchemas = [
                 name: 'Best Tracks',
                 type: 'view',
                 favorite: true,
+                isMaterialized: true,
                 columns: [
                     { name: 'releaseName', type: 'text', referencedTable: 'release' },
                     { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
@@ -235,6 +236,7 @@ var allSchemas = [
             }, {
                 name: 'Favorite Playlist 2020',
                 type: 'view',
+                isMaterialized: true,
                 columns: [
                     { name: 'releaseName', type: 'text', referencedTable: 'release' },
                     { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }
@@ -247,6 +249,7 @@ var allSchemas = [
             }, {
                 name: 'Artists by Total Tracks',
                 type: 'view',
+                isMaterialized: true,
                 columns: [
                     { name: 'releaseName', type: 'text', referencedTable: 'release' },
                     { name: 'trackName', type: 'summary', referencedTable: 'release_track', summaryOf: 'trackId' }

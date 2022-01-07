@@ -11,25 +11,18 @@ export function schemaOverview(tables) {
     let actions = ['edited','updated','deleted']
 
     schemaList.innerHTML = /*HTML*/ `
-    
-    <div class="${theme.textColor} ${theme.tableBorderColor}">
-       
-       <div class="flex items-center space-x-4 mb-4">
-           <div class="text-4xl text-center"><i class="ri-share-line align-middle"></i></div>
-           <div>
+    <div class="${theme.textColor} ${theme.tableBorderColor}">    
+        <div class="flex items-center space-x-4 mb-4">
+            <div class="text-4xl text-center"><i class="ri-share-line align-middle"></i></div>
+        <div>
                 <h2 class="text-xl font-semibold">${activeSchema}</h2>
-                <p class="text-sm">${tables.filter(t => t.type == 'table').length} Tables ${tables.filter(t => t.type == 'view').length} Views</p></div>
-       </div>
-  
+                <p class="text-sm">${tables.filter(t => t.type == 'table').length} Tables ${tables.filter(t => t.type == 'view').length} Views</p>
+        </div>
+    </div>
     <div>
         <h3 class="py-4 text-xl">Recent</h3>
         ${tables.filter(t => t.favorite).slice(0,3).map( t => {
-            return   `<div>
-            <a href="#" class="block">
-            <i class="${icon[t.type]} ${theme.primaryTextColor} align-bottom"></i> 
-            <span>${t.name}</span>
-            </a>
-            </div>`
+            return   `<div><a href="#" class="block"><i class="${icon[t.type]} ${theme.primaryTextColor} align-bottom mr-2"></i><span>${t.name}</span></a></div>`
         }).join('')||`<div class="${theme.mutedTextColor}">Find your most recent tables and views here.</div>`}
 
         <h3 class="py-4 text-xl">Activity</h3>

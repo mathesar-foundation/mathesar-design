@@ -48,8 +48,6 @@ function applyTheme(property, color) {
     });
 };
 
-//export let activeSchema = window.location.pathname.replace('/','');
-
 export var activeSchema = urlParams.get('activeSchema');
 
 appWrapper.prepend(topNav(activeSchema));
@@ -61,7 +59,6 @@ if (sessionStorage.getItem('tables') === null) {
     sessionStorage.setItem('tables', JSON.stringify(loadedTables));
 }
 
-
 export const schemaIdx = loadedTables.findIndex(schema => schema.name === activeSchema);
 
 export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
@@ -69,7 +66,6 @@ export let savedTables = JSON.parse(sessionStorage.getItem('tables'));
 export var activeTable = urlParams.get('activeTable');
 
 export var errorStatus = urlParams.get('error');
-
 
 let tabsWrapper = document.createElement('div');
 tabsWrapper.style.overflowX = 'hidden';

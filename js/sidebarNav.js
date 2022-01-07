@@ -23,9 +23,6 @@ export function sidebarNav(tables) {
     let searchInput = components.createInput({ placeholder: 'Type to search' });
     searchInput.classList.add('w-full');
 
-    //let moreMenu = document.createElement('div');
-    //moreMenu.classList.add('py-1', 'px-2')
-    //moreMenu.innerHTML = `<i class="ri-more-2-line ${theme.textColor}"></i>`;
     searchBar.append(searchInput);
 
     let sidebarContent = document.createElement('div');
@@ -43,12 +40,12 @@ export function sidebarNav(tables) {
 
         let createNavItem = function (table) {
             let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
-            let tableIcon = `<i class="${icon[table.type]} align-bottom mr-2 ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>`
-            let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`
-
+            let tableIcon = `<i class="${icon[table.type]} align-bottom ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>${table.isMaterialized?`<span class="text-xs ml-1 align-text-bottom ${theme.mutedTextColor}">M</span>`:''}`
+            let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`;
+      
             if (!query) {
-                return `<a class="flex items-center ${table.unsaved?'bg-orange-200 bg-opacity-20':''} ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
-                <div class="mr-auto">${tableIcon}${table.name} </div>
+                return `<a class="flex items-center ${table.unsaved?'bg-orange-200 bg-opacity-20 unsaved-table':''} ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
+                <div class="mr-auto"><span class="mr-2">${tableIcon}</span>${table.name}</div>
                 ${table.unsaved?`<i class="ri-checkbox-blank-circle-fill text-orange-200 text-xs"></i>`:''}
                 </a>`;
             } else {
@@ -58,11 +55,9 @@ export function sidebarNav(tables) {
 
         if (tablesList.length > 0) {
             const uniqueTypes = [...new Set(tablesList.map(item => item.type))].reverse();
-
             if (query){
                 sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${tablesList.length} results for '${query}'</div>`;
-            } 
-
+            };
             uniqueTypes.forEach(type => {
                 if (selectedTab == 'all') {
                     sidebarContent.innerHTML += `
@@ -206,7 +201,7 @@ export function sidebarNav(tables) {
     sidebarWrapper.querySelectorAll('.sidebar-nav')[0].style.position = 'relative';
 
     let saveIndicator = document.createElement('div');
-    saveIndicator.classList.add('bg-fuchsia-500','bg-opacity-90','text-center','text-sm','text-white');
+    saveIndicator.classList.add('bg-rose-500','bg-opacity-90','text-center','text-xs','text-white');
     saveIndicator.style.width = '16px';
     saveIndicator.style.height = '16px';
     saveIndicator.style.lineHeight = '16px';
@@ -215,13 +210,13 @@ export function sidebarNav(tables) {
     saveIndicator.style.right = '4px';
     saveIndicator.style.bottom = '4px';
     saveIndicator.innerHTML = `1`
-    sidebarWrapper.querySelectorAll('.sidebar-nav')[0].append(saveIndicator);
+
+    if(!!tables.find(t => t.unsaved)) {
+        sidebarWrapper.querySelectorAll('.sidebar-nav')[0].append(saveIndicator);
+    }
 
     sidebarWrapper.querySelectorAll('.sidebar-nav').forEach(navItem => {
-    
-
         navItem.addEventListener('click',function(){
-
             if (this.getAttribute('data-target') == 'default'){
                 loadSidebar([searchBar, sidebarNav, sidebarContent]);
             } else {
@@ -229,10 +224,6 @@ export function sidebarNav(tables) {
             }
         });
     });
-
-    //sidebarWrapper.querySelector('.sidebar-nav.active').addEventListener('click',function(){
-    //    sidebarWrapper.removeChild(sidebar);
-    //});
 
     function loadSidebar(selected){
         if (sidebar.contains(...selected) && !sidebarWrapper.contains(sidebar)){
@@ -259,43 +250,3 @@ export function sidebarNav(tables) {
 
     return sidebarWrapper;
 };
-
-
-function createTableOptionsMenu(table) {
-    let content = document.createElement('div');
-    let menu = createDropdownMenu(content);
-
-    let createMenuItem = (label, callback) => {
-        let menuItem = document.createElement('a');
-        menuItem.classList.add('block', 'p-2', theme.textColor, 'rounded', 'w-100');
-        menuItem.setAttribute('href', 'javascript:void(0)');
-        menuItem.innerText = label;
-        menuItem.addEventListener('click', function () {
-            callback(table);
-        }, false);
-        return menuItem;
-    }
-
-    let menuItems = [
-        createMenuItem('Recently Accesssed'),
-        createMenuItem('By Name')
-    ];
-
-    menuItems.forEach(item => content.appendChild(item));
-
-    addDropdownOutsideClickHandler(menu, function () { });
-
-    let navList = content.querySelectorAll('a');
-
-    for (let item of navList) {
-        item.addEventListener("mouseenter", function () {
-            for (let item of navList) {
-                item.classList.remove(theme.primaryColor, 'bg-opacity-40');
-            }
-            this.classList.add(theme.primaryColor, 'bg-opacity-40');
-        });
-    };
-
-    return menu;
-}
-
