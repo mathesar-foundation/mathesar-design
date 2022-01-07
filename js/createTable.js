@@ -20,7 +20,7 @@ export function createTable(obj) {
     let createHeader = (col, i) => {
 
         let header = document.createElement('div');
-        header.style.width = '240px';
+        header.style.width = '200px';
         header.style.position = 'relative';
         header.style.cursor = 'pointer';
         header.classList.add('t-cell', 'p-2', theme.textColor, 'border-r', theme.tableBorderColor, 'flex', 'items-center');
@@ -190,7 +190,7 @@ export function createTable(obj) {
     let createCell = (cell) => {
         let cellElement = document.createElement('div');
         cellElement.classList.add(...cellClasses);
-        cellElement.style.width = '240px';
+        cellElement.style.width = '200px';
 
         let renderedCell = document.createElement('div');
         renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'space-y-1', 'border', 'border-opacity-0','flex','items-center');
@@ -444,7 +444,7 @@ export function createTable(obj) {
         columns.forEach(function (col, i) {
             let cell = document.createElement('div');
             cell.classList.add(...cellClasses);
-            cell.style.width = '240px';
+            cell.style.width = '200px';
             let cellInput = components.createInput({ placeholder: placeholderValue(col) });
             cellInput.classList.add('p-2', 'w-full','h-full');
             cellInput.classList.remove('border');
