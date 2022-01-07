@@ -218,24 +218,39 @@ export function sidebarNav(tables) {
         sidebarWrapper.querySelectorAll('.sidebar-nav')[0].append(saveIndicator);
     }
 
+    var previousTarget = 'default';
+    
     sidebarWrapper.querySelectorAll('.sidebar-nav').forEach(navItem => {
         navItem.addEventListener('click',function(){
-            if (this.getAttribute('data-target') == 'default'){
-                loadSidebar([searchBar, sidebarNav, sidebarContent]);
+            let target = this.getAttribute('data-target');
+           
+            if(target === previousTarget && sidebarWrapper.contains(sidebar)) {
+                sidebarWrapper.removeChild(sidebar);
             } else {
-                loadSidebar([searchBar, appContent]);
+                if (target == 'default'){
+                    loadSidebar([searchBar, sidebarNav, sidebarContent]);
+                } else {
+                    loadSidebar([searchBar, appContent]);
+                }
             }
+
+            previousTarget = this.getAttribute('data-target');
+            return false;
+
+            
+            
         });
     });
 
+    
+
     function loadSidebar(selected){
-        if (sidebar.contains(...selected) && !sidebarWrapper.contains(sidebar)){
-            sidebarWrapper.removeChild(sidebar);
-        } else {
+        
+
             sidebar.innerHTML = '';
             sidebar.append(...selected);
             sidebarWrapper.append(sidebar);
-        }
+        
     };    
 
     let sidebarNavList =  sidebarWrapper.querySelectorAll('.sidebar-nav');
