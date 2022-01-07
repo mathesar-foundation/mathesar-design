@@ -41,13 +41,13 @@ var themes = {
         primaryColor: 'bg-green-400',
         primaryBorderColor: 'border-green-300',
         inputBackgroundColor: 'bg-gray-400',
-        darkPrimaryColor: 'bg-green-300',
+        darkPrimaryColor: 'bg-green-400',
         primaryTextColor: 'text-green-500',
         contrastTextColor: 'text-indigo-400'
     },pinkTheme: {
-        backgroundColor: 'bg-pink-50',
-        mediumBackgroundColor: 'bg-pink-100',
-        darkBackgroundColor: 'bg-pink-100',
+        backgroundColor: 'bg-rose-50',
+        mediumBackgroundColor: 'bg-rose-100',
+        darkBackgroundColor: 'bg-rose-100',
         accentBackgroundColor: 'bg-white',
         lightBackgroundColor: 'bg-gray-50',
         darkBorderColor: 'border-opacity-0',
@@ -60,10 +60,10 @@ var themes = {
         tableBorderColor: 'border-pink-200',
         tableBackgroundColor: 'bg-white',
         tableHeaderBackgroundColor: 'bg-white',
-        primaryColor: 'bg-pink-500',
+        primaryColor: 'bg-rose-500',
         primaryBorderColor: 'border-pink-300',
-        inputBackgroundColor: 'bg-pink-400',
-        darkPrimaryColor: 'bg-pink-300',
+        inputBackgroundColor: 'bg-rose-400',
+        darkPrimaryColor: 'bg-rose-300',
         primaryTextColor: 'text-pink-500',
         contrastTextColor: 'text-yellow-900'
     },pmTheme: {
