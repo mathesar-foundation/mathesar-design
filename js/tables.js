@@ -433,12 +433,13 @@ var allSchemas = [
                 favorite: true,
                 constraints: [
                     {type:'Primary Key', columns:['id']},
-                    {type:'Foreign Key', columns:['month'], referenceTable:'Months', referenceColumns:['name']}
+                    {type:'Foreign Key', columns:['month'], referenceTable:'Months', referenceColumns:['name']},
+                    {type:'Foreign Key', columns:['year'], referenceTable:'Years', referenceColumns:['year']}
                 ],
                 columns: [
                     { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
                     { name: 'unit', type: 'text'},
-                    { name: 'year', type: 'number'},
+                    { name: 'year', type: 'fk', lookupField: 'year', lookupTable: 'Years'},
                     { name: 'month', type: 'fk', lookupField: 'name', lookupTable: 'Months'},
                     { name: 'level', type: 'number'},
                     { name: 'min', type: 'number'},
@@ -474,6 +475,29 @@ var allSchemas = [
                     [12,'December']
                 ],
                 color: 'purple'
+            },{
+                name: 'Years',
+                type: 'table',
+                favorite: true,
+                constraints: [
+                    {type:'Primary Key', columns:['id']},
+                ],
+                columns: [
+                    { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
+                    { name: 'year', type: 'number'}
+                ],
+                records: [
+                    [1,1983],
+                    [1,1984],
+                    [1,1985],
+                    [1,1986],
+                    [1,1987],
+                    [1,1988],
+                    [1,1989],
+                    [1,1990],
+                    [1,1991]
+                ],
+                color: 'sky'
             }
         ]
     }
