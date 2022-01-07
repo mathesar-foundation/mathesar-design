@@ -529,6 +529,8 @@ allSchemas.forEach(schema =>{
         data.schema = schema.name;
         data.id = index;
         data.lastUpdated = lastUpdate.toString().slice(0,15);
+
+        data.records = data.records.map(r => r.map(String));
     });
 });
 
