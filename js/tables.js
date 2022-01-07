@@ -370,22 +370,67 @@ var allSchemas = [
                 constraints: [
                     {type:'Primary Key', columns:['id']},
                     {type:'Unique', columns:['station']},
-                    {type:'Not Null', columns:['start']}
+                    {type:'Not Null', columns:['start']},
+                    {type:'Foreign Key', columns:['stationId'], referenceTable:'station', referenceColumns:['name']}
+
+
+                    //{type:'Foreign Key', columns:['artistId'], referenceTable:'artist', referenceColumns:['id']}
+                    //{ name: 'artistId', type: 'fk', lookupField: 'id', lookupTable: 'artist' }
                 ],
                 columns: [
                     { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
-                    { name: 'station', type: 'text' },
+                    { name: 'stationId', type: 'fk', lookupField: 'name', lookupTable: 'station'},
                     { name: 'start', type: 'number' },
                     { name: 'end', type: 'number' },
                     { name: 'model', type: 'boolean' },
                     { name: 'freq', type: 'number' },
                 ],
                 records: [
-                    ['450', '10637','2020-01-01','2020-01-31','true',''],
-                    ['451', '10637','2020-01-01','2020-01-31','true',''],
-                    ['452', '10637','2020-01-01','2020-01-31','true',''],
-                    ['453', '10637','2020-01-01','2020-01-31','true',''],
-                    ['454', '10637','2020-01-01','2020-01-31','true','']
+                    ['450', 'London Weather Centre','2020-01-01','2020-01-31','true',''],
+                    ['451', 'Kenley','2020-01-01','2020-01-31','true',''],
+                    ['452', 'Northolt','2020-01-01','2020-01-31','true',''],
+                    ['453', 'Abbey Wood','2020-01-01','2020-01-31','true',''],
+                    ['454', 'London Heathrow Airport','2020-01-01','2020-01-31','true','']
+                ],
+                color: 'purple'
+            },{
+                name: 'Hourly_Point_Data',
+                type: 'table',
+                favorite: true,
+                constraints: [
+                    {type:'Primary Key', columns:['id']},
+                    {type:'Unique', columns:['station']},
+                    {type:'Not Null', columns:['start']}
+                ],
+                columns: [
+                    { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
+                    { name: 'time', type: 'number' },
+                    { name: 'temp', type: 'number' },
+                    { name: 'dwpt', type: 'number' },
+                    { name: 'rhum', type: 'number' },
+                    { name: 'snow', type: 'number' },
+                ],
+                records: [
+                    [1,2,3,4,5,6]
+                ],
+                color: 'purple'
+            },{
+                name: 'station',
+                type: 'table',
+                favorite: true,
+                constraints: [
+                    {type:'Primary Key', columns:['id']},
+                ],
+                columns: [
+                    { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
+                    { name: 'name', type: 'text'}
+                ],
+                records: [
+                    ['573','Abbey Wood'],
+                    ['574','London Weather Centre'],
+                    ['575','Kenley'],
+                    ['576','Northolt'],
+                    ['590','London Heathrow Airport']
                 ],
                 color: 'purple'
             }
