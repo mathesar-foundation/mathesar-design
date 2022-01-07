@@ -21,9 +21,9 @@ export function topNav() {
     if (activeSchema !== null) {
 
         schemaName.innerHTML = /*HTML*/
-            `<div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded mr-2">M</div>
+            `<div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded mr-2">D</div>
     <div class="${theme.textColor} space-x-2">
-        <span>music_database</span>
+        <span>database</span>
         <span class="${theme.mutedTextColor}">/</span>
         <span class="font-semibold">
             <i class="ri-share-line align-bottom"></i> ${activeSchema}

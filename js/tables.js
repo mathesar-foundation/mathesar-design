@@ -362,18 +362,18 @@ var allSchemas = [
         description: 'Climate Data for Cities Worldwide',
         tables : [
             {
-                name: 'Daily_Station_Data',
+                name: 'Daily Station Data',
                 type: 'table',
                 favorite: true,
                 constraints: [
                     {type:'Primary Key', columns:['id']},
                     {type:'Unique', columns:['station']},
                     {type:'Not Null', columns:['start']},
-                    {type:'Foreign Key', columns:['stationId'], referenceTable:'station', referenceColumns:['name']}
+                    {type:'Foreign Key', columns:['stationId'], referenceTable:'Stations', referenceColumns:['name']}
                 ],
                 columns: [
                     { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
-                    { name: 'stationId', type: 'fk', lookupField: 'name', lookupTable: 'station'},
+                    { name: 'stationId', type: 'fk', lookupField: 'name', lookupTable: 'Stations'},
                     { name: 'start', type: 'number' },
                     { name: 'end', type: 'number' },
                     { name: 'model', type: 'boolean' },
@@ -388,7 +388,7 @@ var allSchemas = [
                 ],
                 color: 'purple'
             },{
-                name: 'Hourly_Point_Data',
+                name: 'Hourly Point Data',
                 type: 'table',
                 favorite: true,
                 constraints: [
@@ -409,7 +409,7 @@ var allSchemas = [
                 ],
                 color: 'purple'
             },{
-                name: 'station',
+                name: 'Stations',
                 type: 'table',
                 favorite: true,
                 constraints: [
@@ -428,7 +428,7 @@ var allSchemas = [
                 ],
                 color: 'purple'
             },{
-                name: 'ch4_levels',
+                name: 'Methane Levels',
                 type: 'table',
                 favorite: true,
                 constraints: [
