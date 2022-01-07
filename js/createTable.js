@@ -254,6 +254,7 @@ export function createTable(obj) {
 
             let createCheckbox = function (value) {
                 let booleanInput = document.createElement('input');
+           
                 booleanInput.type = 'checkbox';
 
                 if (value === true) {
@@ -265,7 +266,7 @@ export function createTable(obj) {
                 } else {
                     booleanInput.indeterminate = true;
                     booleanInput.title = 'NULL';
-                    renderedCell.classList.add(theme.lightBackgroundColor, 'bg-opacity-20');
+                    renderedCell.classList.add(theme.lightBackgroundColor, 'bg-opacity-20','h-full');
 
                     cellElement.append(components.createTooltip(cellElement, 'NULL'));
 

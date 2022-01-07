@@ -359,6 +359,37 @@ var allSchemas = [
         name: 'loading_error_schema',
         description: 'Schema for loading errors',
         tables : []
+    },{
+        name: 'climate-data',
+        description: 'Climate Data for Cities Worldwide',
+        tables : [
+            {
+                name: 'Daily_Station_Data',
+                type: 'table',
+                favorite: true,
+                constraints: [
+                    {type:'Primary Key', columns:['id']},
+                    {type:'Unique', columns:['station']},
+                    {type:'Not Null', columns:['start']}
+                ],
+                columns: [
+                    { name: 'id', type: 'number', readOnly: true, isPrimaryKey: true },
+                    { name: 'station', type: 'text' },
+                    { name: 'start', type: 'number' },
+                    { name: 'end', type: 'number' },
+                    { name: 'model', type: 'boolean' },
+                    { name: 'freq', type: 'number' },
+                ],
+                records: [
+                    ['450', '10637','2020-01-01','2020-01-31','true',''],
+                    ['451', '10637','2020-01-01','2020-01-31','true',''],
+                    ['452', '10637','2020-01-01','2020-01-31','true',''],
+                    ['453', '10637','2020-01-01','2020-01-31','true',''],
+                    ['454', '10637','2020-01-01','2020-01-31','true','']
+                ],
+                color: 'purple'
+            }
+        ]
     }
 ]
 

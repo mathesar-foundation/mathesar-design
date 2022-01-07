@@ -30,7 +30,7 @@ appWrapper.innerHTML = `
   </div>
   <div class="flex-grow">
 
-    <div class="table-wrapper flex flex-col">
+    <div class="table-wrapper flex flex-col" style="height:calc(100vh - 200px)">
 
     </div>
   </div>
