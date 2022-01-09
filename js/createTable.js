@@ -193,7 +193,7 @@ export function createTable(obj) {
         cellElement.style.width = '200px';
 
         let renderedCell = document.createElement('div');
-        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'space-y-1', 'border', 'border-opacity-0','flex','items-center');
+        renderedCell.classList.add(theme.textColor, 'p-2', 'rendered-cell', 'space-y-1', 'border','border-hidden','flex','items-center');
 
         renderedCell.tabIndex = 0;
 
@@ -309,7 +309,7 @@ export function createTable(obj) {
             //cellSelection(cell);
             //cellElement.classList.add('cell-selected');
             renderedCell.classList.add(theme.primaryBorderColor);
-            renderedCell.classList.replace('border-opacity-0', 'border-opacity-100');
+            renderedCell.classList.replace('border-hidden', 'border-opacity-100');
             renderedCell.setAttribute('selected', true);
 
             if (cell.type == 'fk') {
@@ -598,7 +598,7 @@ function addCellOutsideClickHandler(menu, fn) {
             fn();
             document.removeEventListener('click', handler);
             menu.outsideClickHandler = null;
-            menu.classList.replace('border-opacity-100', 'border-opacity-0');
+            menu.classList.replace('border-opacity-100', 'border-hidden');
             menu.setAttribute('selected', false);
 
             var toggle = menu.querySelector('.dropdown-toggle');

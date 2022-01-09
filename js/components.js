@@ -121,7 +121,6 @@ var components = {
                     btn.classList.add('border', theme.lightBorderColor);
                 }
                 if (options.style == 'link') {
-                    btn.classList.add('border', 'border-opacity-0');
                 }
             }
         }
