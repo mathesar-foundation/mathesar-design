@@ -130,7 +130,7 @@
 			</p>
 		</div>
 
-		{#if !column.source.filter.column}
+		{#if !column.source.filter?.column}
 			<button
 				on:click={() => dispatch('addFilter', column)}
 				class="p-1 {theme.lightBackgroundColor} w-full rounded"
