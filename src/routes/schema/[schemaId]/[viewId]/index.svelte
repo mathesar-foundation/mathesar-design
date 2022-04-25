@@ -463,12 +463,12 @@
 			<div />
 		</div>
 
-		<div class="w-7/12">
+		<div class="w-7/12 flex-grow p-4">
 			<div
-				class="p-4 space-y-4 flex flex-col h-full"
+				class="border overflow-hidden rounded {theme.tableBorderColor} flex flex-col h-full"
 				on:click|self={() => (inspector = { action: 'Query Details' })}
 			>
-				<div>
+				<div class="p-2">
 					<h3>Result Table</h3>
 				</div>
 
@@ -491,9 +491,7 @@
 						Add Columns
 					</div>
 				{/if}
-				<div class={theme.tableBorderColor}>
-					{selectedView.records?.length || 0} Records
-				</div>
+				
 			</div>
 		</div>
 
