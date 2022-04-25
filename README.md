@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [create-svelte](#create-svelte)
+  - [Creating a project](#creating-a-project)
+  - [Developing](#developing)
+  - [Building](#building)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
