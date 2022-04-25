@@ -1,0 +1,8 @@
+[
+    {
+        "id":0,
+        "tableId":1,
+        "column":"directorId",
+        "type":"Foreign Key"
+    }
+]

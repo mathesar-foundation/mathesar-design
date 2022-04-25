@@ -1,25 +1,38 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
+# create-svelte
 
-- [Mathesar Design Prototype](#mathesar-design-prototype)
-  - [What is it for?](#what-is-it-for)
-- [Instructions](#instructions)
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+## Creating a project
 
-# Mathesar Design Prototype
-An HTML5 Prototype used to define, test and validate design solutions and support the design process of Mathesar.
-More information about the Mathesar project and Mathesar design can be found in the [project wiki](https://wiki.mathesar.org/).
+If you're seeing this, you've probably already done this step. Congrats!
 
-## What is it for?
-The prototype can be referenced in design specs to demonstrate certain interactions that require details beyond what static wireframes can offer.
+```bash
+# create a new project in the current directory
+npm init svelte@next
 
-# Instructions
-- Clone the git repo and checkout the branch you'd like to use. 
-- Install the packages with ```npm install```
-- Start the server with ```npm start```
+# create a new project in my-app
+npm init svelte@next my-app
+```
 
---------
-This project is built with [HTML5 Boilerplate](https://html5boilerplate.com/) a professional front-end template for building fast, robust, and adaptable web apps or sites.
+> Note: the `@next` is temporary
 
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+Before creating a production version of your app, install an [adapter](https://kit.svelte.dev/docs#adapters) for your target environment. Then:
+
+```bash
+npm run build
+```
+
+> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.
