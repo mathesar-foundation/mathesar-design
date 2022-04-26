@@ -12,7 +12,7 @@
 
 <div class="overflow-y-scroll h-full flex flex-col">
 
-    <div class="drop-shadow-md flex { theme.tableBorderColor } {theme.mediumBackgroundColor} bg-opacity-30 border-b" >
+    <div class="drop-shadow-md flex { theme.tableBorderColor } {theme.mediumBackgroundColor} border-b" >
         <div class="p-3 w-10 border-r {theme.tableBorderColor}"></div>
         {#each table.columns as column }
             <Column column={ column } table={ table }/> 

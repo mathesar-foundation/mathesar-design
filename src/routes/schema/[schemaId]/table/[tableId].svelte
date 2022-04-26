@@ -78,9 +78,9 @@
 
 <TopNav {entities} />
 	<div class="w-screen flex {theme.darkPrimaryColor} bg-opacity-10">
-		<!--
+	
 		<SideBar {schema} on:openObject={(e)=> window.location = `/schema/0/${e.detail.type}/${e.detail.id}` }/>
-		-->
+	
 		<div class="flex overflow-hidden flex-col h-full flex-grow" style="height: calc(100vh - 52px);">
 			<Tabs />
 			<Toolbar on:switch={showMode} {table} on:linkTable={linkTable} on:CreateView={(e)=> openView(e.detail) } />

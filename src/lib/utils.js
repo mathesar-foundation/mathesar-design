@@ -97,7 +97,9 @@ export let conditions = {
         'includes'
     ],
     "number":[
-        'equals'
+        'equals',
+        'greater than',
+        'less than'
     ]
 }
 

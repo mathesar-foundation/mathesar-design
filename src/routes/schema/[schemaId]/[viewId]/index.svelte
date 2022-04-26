@@ -56,6 +56,9 @@
     tables = entities.schemas.find((schema) => schema.id == schemaId).tables;
     selectedView = entities.views.find((view) => view.id == viewId);
 
+
+    
+
     //inspector = { action: 'Column', column: selectedView.columns[2] };
 
     let viewCount = entities.views.filter((v) =>

@@ -1,75 +1,188 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
-	import { theme } from '$lib/themes';
-	import { icon } from '$lib/iconMap';
-	import Dropdown from '$lib/Dropdown.svelte';
-	import { newView } from '$lib/utils';
-	import _ from "lodash";
+  import { createEventDispatcher } from "svelte";
+  import { theme } from "$lib/themes";
+  import { icon } from "$lib/iconMap";
+  import Dropdown from "$lib/Dropdown.svelte";
+  import { newView } from "$lib/utils";
+  import { typeOptions, conditions } from "$lib/utils";
+  import _ from "lodash";
 
-	import Modal from '$lib/Modal.svelte';
+  import Modal from "$lib/Modal.svelte";
 
-	//import NewView from './table/NewView.svelte';
-	import Filter from './table/Filter.svelte';
 
-	export let table;
+  export let table;
 
-	const dispatch = createEventDispatcher();
 
-	let showModal = false;
-	const handleToggleModal = () => {
-		showModal = !showModal;
-	};
+  table.filter = {
+	  column: table.columns[0],
+	  condition: conditions[table.columns[0].type][0],
+	  value: ''
+  }
 
-	function linkTable() {
-		dispatch('linkTable');
-	}
+  const dispatch = createEventDispatcher();
+
+  let showModal = false;
+  const handleToggleModal = () => {
+    showModal = !showModal;
+  };
+
+  function linkTable() {
+    dispatch("linkTable");
+  }
 </script>
 
-<div class="{theme.textColor} flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  {theme.tableBorderColor}">
-	<Dropdown>
-		<button slot="toggle" class="text-lg px-2 py-3 space-x-1 {theme.backgroundColor} bg-opacity-10 hover:bg-opacity-80"
-			><i style="color:{table.color}" class="{icon[table.type]} align-bottom" />
-			<span>{table.name}</span> <i class="ri-arrow-drop-down-line align-bottom" /></button
-		>
-		<div slot="menu">
-			<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-				Rename {_.startCase(table.type)}
-			</div>
-			<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-				Duplicate {_.startCase(table.type)}
-			</div>
+<div
+  class="{theme.textColor} flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  {theme.tableBorderColor}"
+>
+  <Dropdown>
+    <button
+      slot="toggle"
+      class="text-lg px-2 py-3 space-x-1 {theme.backgroundColor} bg-opacity-10 hover:bg-opacity-80"
+      ><i style="color:{table.color}" class="{icon[table.type]} align-bottom" />
+      <span>{table.name}</span>
+      <i class="ri-arrow-drop-down-line align-bottom" /></button
+    >
+    <div slot="menu">
+      <div
+        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+      >
+        Rename {_.startCase(table.type)}
+      </div>
+      <div
+        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+      >
+        Duplicate {_.startCase(table.type)}
+      </div>
 
-			{#if table.type == "table"}
-				<div class="border-t {theme.tableBorderColor}"></div>
-				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-					Table Constraints
-				</div>
-				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-					Table Preferences
-				</div>
-				<div on:click={() => dispatch('CreateView', newView(table))} class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-					Open in Data Explorer
-				</div>
-			{/if}
+      {#if table.type == "table"}
+        <div class="border-t {theme.tableBorderColor}" />
+        <div
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        >
+          Table Constraints
+        </div>
+        <div
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        >
+          Table Preferences
+        </div>
+        <div
+          on:click={() => dispatch("CreateView", newView(table))}
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        >
+          Open in Data Explorer
+        </div>
+      {/if}
 
-			{#if table.type == "view"}
-				<div class="border-t {theme.tableBorderColor}"></div>
-				<div on:click={()=> dispatch('openView',table)} class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-					Edit in Data Explorer
-				</div>
-				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-					Edit Query
-				</div>
-				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
-					View SQL Query
-				</div>
-			{/if}
-			<div class="border-t {theme.tableBorderColor}"></div>
-			<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 space-x-1 {theme.mediumBackgroundColor} cursor-pointer">
-				<i class="ri-delete-bin-line align-bottom"></i> <span>Delete {_.startCase(table.type)}</span>	
-			</div>
-		</div>
-	</Dropdown>
+      {#if table.type == "view"}
+        <div class="border-t {theme.tableBorderColor}" />
+        <div
+          on:click={() => dispatch("openView", table)}
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        >
+          Edit in Data Explorer
+        </div>
+        <div
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        >
+          Edit Query
+        </div>
+        <div
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        >
+          View SQL Query
+        </div>
+      {/if}
+      <div class="border-t {theme.tableBorderColor}" />
+      <div
+        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 space-x-1 {theme.mediumBackgroundColor} cursor-pointer"
+      >
+        <i class="ri-delete-bin-line align-bottom" />
+        <span>Delete {_.startCase(table.type)}</span>
+      </div>
+    </div>
+  </Dropdown>
+
+  <Dropdown>
+    <button slot="toggle" class="border {theme.mediumBorderColor} p-1 rounded"
+      ><i class="ri-filter-fill align-bottom" />
+      Filter <i class="ri-arrow-drop-down-line align-bottom" /></button
+    >
+    <div slot="menu" class="p-2 space-y-2">
+      <button
+        on:click={() => dispatch("addFilter", table)}
+        class="p-1 {theme.lightBackgroundColor} w-full rounded"
+        ><i class="ri-add-line align-bottom" /> Add Filter</button
+      >
+
+      <div class="rounded p-2 text-sm space-y-2">
+        <div class="flex items-center">
+          <div class="font-semibold flex-grow">Column</div>
+          <button on:click={() => dispatch("deleteFilter", table)}>
+            <i class="ri-delete-bin-line align-bottom" />
+          </button>
+        </div>
+        <Dropdown>
+          <div
+            slot="toggle"
+            class="cursor-pointer {theme.inputBackgroundColor}  border {theme.lightBorderColor} p-2 rounded flex items-center"
+          >
+            <div class="flex-grow space-x-1">
+              <i
+                class="align-bottom border text-center {icon[
+                  table.filter.column.type
+                ]} rounded"
+              />
+              <span>{table.filter.column.name}</span>
+            </div>
+            <i class="ri-arrow-drop-down-line align-bottom" />
+          </div>
+          <div slot="menu">
+            {#each table.columns as _column}
+              <div
+                class="hover:bg-opacity-80 bg-opacity-0 cursor-pointer {theme.lightBackgroundColor} space-x-1 p-2"
+                on:click={() => (table.filter.column = _column)}
+              >
+                <i class="{icon[_column.type]} align-bottom border rounded" />
+                <span>{_column.name}</span>
+              </div>
+            {/each}
+          </div>
+        </Dropdown>
+
+        <div class="flex items-center space-x-2">
+          {#if table.filter.condition}
+            <Dropdown>
+              <div
+                slot="toggle"
+                class="cursor-pointer border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 flex items-center whitespace-nowrap rounded"
+              >
+                <span>{table.filter.condition}</span>
+                <i class="ri-arrow-drop-down-line align-bottom" />
+              </div>
+              <div slot="menu">
+                {#each conditions[table.filter.column.type] as condition}
+                  <div
+                    class="hover:bg-opacity-80 bg-opacity-0 cursor-pointer {theme.lightBackgroundColor} space-x-1 p-2"
+                    on:click={() => (table.filter.condition = condition)}
+                  >
+                    <span>{condition}</span>
+                  </div>
+                {/each}
+              </div>
+            </Dropdown>
+          {/if}
+          {#if table.filter.value !== undefined}
+            <input
+              class="{theme.inputBackgroundColor} border {theme.lightBorderColor} p-2 rounded w-full"
+              type="text"
+              bind:value={table.filter.value}
+            />
+          {/if}
+        </div>
+      </div>
+    </div>
+  </Dropdown>
 </div>
 
 <!--

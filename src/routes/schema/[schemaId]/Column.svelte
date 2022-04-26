@@ -7,7 +7,7 @@
 </script>
 
 <div
-	class="border-r hover:{theme.darkBackgroundColor} flex items-center p-2 {theme.tableBorderColor} {theme.textColor} w-80"
+	class="border-r bg-opacity-0 hover:bg-opacity-40 {theme.darkBackgroundColor} flex items-center p-2 {theme.tableBorderColor} {theme.textColor} w-80"
 >
 	<Dropdown full={true}>
 		<div class="space-y-1 cursor-pointer" slot="toggle">

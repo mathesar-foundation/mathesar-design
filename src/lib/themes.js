@@ -68,10 +68,10 @@ export let themes = {
         contrastTextColor: 'text-yellow-900'
     },pmTheme: {
         backgroundColor: 'bg-white',
-        mediumBackgroundColor: 'bg-zinc-200',
+        mediumBackgroundColor: 'bg-zinc-300',
         darkBackgroundColor: 'bg-zinc-50',
         accentBackgroundColor: 'bg-white',
-        lightBackgroundColor: 'bg-zinc-50',
+        lightBackgroundColor: 'bg-zinc-200',
         darkBorderColor: 'border-zinc-200',
         mediumBorderColor: 'border-zinc-300',
         lightBorderColor: 'border-zinc-300',
@@ -84,7 +84,7 @@ export let themes = {
         tableHeaderBackgroundColor: 'bg-white',
         primaryColor: 'bg-orange-500',
         primaryBorderColor: 'border-zinc-800',
-        inputBackgroundColor: 'bg-zinc-300',
+        inputBackgroundColor: 'bg-zinc-50',
         darkPrimaryColor: 'bg-zinc-100',
         primaryTextColor: 'text-orange-600',
         contrastTextColor: 'text-orange-900'

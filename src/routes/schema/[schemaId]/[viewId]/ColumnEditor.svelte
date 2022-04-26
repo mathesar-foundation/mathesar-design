@@ -89,6 +89,8 @@
 			</p>
 		</div>
 
+		
+
 		{#if !column.source.filter?.column}
 			<button
 				on:click={() => dispatch('addFilter', column)}
