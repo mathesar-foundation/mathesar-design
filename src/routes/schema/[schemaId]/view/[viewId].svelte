@@ -39,7 +39,9 @@
 	});
 
 	function openDataExplorer(view){
-		console.log(view,"TEST")
+		setTimeout(function () {
+			window.location = `/schema/${ view.schema.id }/${ view.id }`
+    	}, 200);
 	}
 </script>
 
@@ -56,7 +58,7 @@
             
                 <Tabs/>
 
-                <Toolbar on:CreateView={(e)=>openDataExplorer(e.detail) } table={ view }/>
+                <Toolbar on:openView={(e)=>openDataExplorer(e.detail) } table={ view }/>
          
                 <Table table={ view }/>
                 

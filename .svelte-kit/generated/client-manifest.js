@@ -32,6 +32,7 @@ export const components = [
 	() => import("../../src/routes/schema/[schemaId]/[viewId]/ColumnEditor.svelte"),
 	() => import("../../src/routes/schema/[schemaId]/[viewId]/TablePreview.svelte"),
 	() => import("../../src/routes/schema/[schemaId]/[viewId]/Column.svelte"),
+	() => import("../../src/routes/schema/[schemaId]/[viewId]/Source.svelte"),
 	() => import("../../src/routes/schema/[schemaId]/[viewId]/Step.svelte")
 ];
 
@@ -65,5 +66,6 @@ export const dictionary = {
 	"schema/[schemaId]/[viewId]/ColumnEditor": [[0, 28], [1]],
 	"schema/[schemaId]/[viewId]/TablePreview": [[0, 29], [1]],
 	"schema/[schemaId]/[viewId]/Column": [[0, 30], [1]],
-	"schema/[schemaId]/[viewId]/Step": [[0, 31], [1]]
+	"schema/[schemaId]/[viewId]/Source": [[0, 31], [1]],
+	"schema/[schemaId]/[viewId]/Step": [[0, 32], [1]]
 };

@@ -54,6 +54,9 @@
 
 			{#if table.type == "view"}
 				<div class="border-t {theme.tableBorderColor}"></div>
+				<div on:click={()=> dispatch('openView',table)} class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+					Edit in Data Explorer
+				</div>
 				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
 					Edit Query
 				</div>
