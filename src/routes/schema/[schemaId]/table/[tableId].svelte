@@ -58,9 +58,14 @@
 	function openView(view) {
 		entities.views.push(view);
 		entities = entities;
+		saveEntities(entities);
 
+
+		setTimeout(function () {
+			window.location = `/schema/${ table.schema.id }/${ view.id }`
+    	}, 200);
 		
-		//window.location = `/schema/${ table.schema.id }/${ view.id }`
+		
 
 		
 	}

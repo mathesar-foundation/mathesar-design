@@ -37,6 +37,10 @@
 	beforeUpdate(() => {
 		saveEntities(entities);
 	});
+
+	function openDataExplorer(view){
+		console.log(view,"TEST")
+	}
 </script>
 
 {#await loadData()}
@@ -52,7 +56,7 @@
             
                 <Tabs/>
 
-                <Toolbar table={ view }/>
+                <Toolbar on:CreateView={(e)=>openDataExplorer(e.detail) } table={ view }/>
          
                 <Table table={ view }/>
                 

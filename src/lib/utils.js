@@ -110,7 +110,8 @@ export let summarizations = {
         'value'
     ],
     "number":[
-        'value'
+        'value',
+        'range'
     ]
 }
 

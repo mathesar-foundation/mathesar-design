@@ -51,14 +51,15 @@
 		<div class="font-semibold">Column</div>
 		<Dropdown>
 			
-			<div slot="toggle" class="cursor-pointer border {theme.lightBorderColor} space-x-1 p-2 rounded">
-				<i class="{icon[selectedView.steps[step].column.type]} align-bottom border rounded" />
-				<span>{selectedView.steps[step].column.alias}</span>
+			<div slot="toggle" class="cursor-pointer flex items-center border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 rounded">
+				
+				<span class="flex-grow"><i class="{icon[selectedView.steps[step].column.type]} align-bottom border rounded" /> {selectedView.steps[step].column.alias}</span>
+				<i class="ri-arrow-drop-down-line align-bottom" />
 			</div>
 			<div slot="menu">
 				{#each selectedView.columns as column}
 					<div
-						class="hover:{theme.lightBackgroundColor} space-x-1 p-2"
+						class="hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor} space-x-1 p-2"
 						on:click={() => (selectedView.steps[step].column = column)}
 					>
 						<i class="{icon[column.type]} align-bottom border rounded" /> <span>{column.alias}</span>
@@ -73,17 +74,18 @@
 			<Dropdown>
 				<div
 					slot="toggle"
-					class="cursor-pointer border {theme.lightBorderColor} space-x-1 p-2 rounded"
+					class="cursor-pointer flex items-center border {theme.lightBorderColor} space-x-1 p-2 rounded"
 				>
-					<span>Value</span>
+					<span class="flex-grow">{_.startCase(selectedView.steps[step].summaryCondition||summarizations[selectedView.steps[step].column.type][0])}</span>
+					<i class="ri-arrow-drop-down-line align-bottom" />
 				</div>
 				<div slot="menu">
 					{#each summarizations[selectedView.steps[step].column.type] as condition}
 						<div
-							class="hover:{theme.lightBackgroundColor} space-x-1 p-2"
-							on:click={() => (selectedView.steps[step].condition = condition)}
+							class="hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor} space-x-1 p-2"
+							on:click={() => (selectedView.steps[step].summaryCondition = condition)}
 						>
-							<span>{condition}</span>
+							<span>{_.startCase(condition)}</span>
 						</div>
 					{/each}
 				</div>

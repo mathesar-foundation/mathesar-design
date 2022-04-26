@@ -1,7 +1,7 @@
 export let themes = {
     darkTheme: {
         backgroundColor: 'bg-gray-900',
-        mediumBackgroundColor: 'bg-gray-600',
+        mediumBackgroundColor: 'bg-gray-700',
         darkBackgroundColor: 'bg-gray-800',
         accentBackgroundColor: 'bg-gray-700',
         lightBackgroundColor: 'bg-gray-600',

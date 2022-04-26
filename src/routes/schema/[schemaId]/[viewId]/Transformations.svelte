@@ -55,7 +55,7 @@
 				slot="toggle"
 				class="cursor-pointer w-full {theme.mediumBackgroundColor} py-1 px-2 text-sm flex items-center rounded"
 			>
-				<div>Select Step</div>
+				<div class="flex-grow">Select Step</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
 			</button>
 			<div slot="menu">
@@ -100,7 +100,7 @@
 	{:else}
 		<button
 			disabled
-			class="opacity-40 cursor-pointer w-full {theme.mediumBackgroundColor} p-2 flex items-center rounded"
+			class="opacity-40 cursor-pointer w-full {theme.mediumBackgroundColor} py-1 px-2 text-sm flex items-center rounded"
 		>
 			<div class="flex-grow">Select Step</div>
 			<i class="ri-arrow-drop-down-line align-bottom" />

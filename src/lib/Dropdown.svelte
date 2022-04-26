@@ -1,4 +1,5 @@
 <script>
+	import { theme } from '$lib/themes';
 	import { onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
 
@@ -45,7 +46,7 @@
 				out:scale={{ duration: 75, start: 0.95 }}
 				class="origin-top-left absolute left-0 min-w-fit {width
 					? width
-					: 'w-52'} z-40 mt-1 bg-gray-800 rounded shadow-md border border-gray-700 shadow-md"
+					: 'w-52'} z-40 mt-1 {theme.darkBackgroundColor} rounded shadow-md border {theme.tableBorderColor} shadow-md"
 			>
 				<slot name="menu" />
 			</div>

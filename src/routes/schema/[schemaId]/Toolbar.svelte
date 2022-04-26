@@ -4,6 +4,7 @@
 	import { icon } from '$lib/iconMap';
 	import Dropdown from '$lib/Dropdown.svelte';
 	import { newView } from '$lib/utils';
+	import _ from "lodash";
 
 	import Modal from '$lib/Modal.svelte';
 
@@ -24,14 +25,51 @@
 	}
 </script>
 
-<Modal title="New View From Table" open={showModal} on:close={() => handleToggleModal()}>
-	<div slot="body">
-		<!--
-    <NewView table={ table }/>
-    -->
-	</div>
-</Modal>
+<div class="{theme.textColor} flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  {theme.tableBorderColor}">
+	<Dropdown>
+		<button slot="toggle" class="text-lg px-2 py-3 space-x-1 {theme.backgroundColor} bg-opacity-10 hover:bg-opacity-80"
+			><i style="color:{table.color}" class="ri-table-fill align-bottom" />
+			<span>{table.name}</span> <i class="ri-arrow-drop-down-line align-bottom" /></button
+		>
+		<div slot="menu">
+			<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+				Rename {_.startCase(table.type)}
+			</div>
+			<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+				Duplicate {_.startCase(table.type)}
+			</div>
 
+			{#if table.type == "table"}
+				<div class="border-t {theme.tableBorderColor}"></div>
+				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+					Table Constraints
+				</div>
+				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+					Table Preferences
+				</div>
+				<div on:click={() => dispatch('CreateView', newView(table))} class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+					Open in Data Explorer
+				</div>
+			{/if}
+
+			{#if table.type == "view"}
+				<div class="border-t {theme.tableBorderColor}"></div>
+				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+					Edit Query
+				</div>
+				<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer">
+					View SQL Query
+				</div>
+			{/if}
+			<div class="border-t {theme.tableBorderColor}"></div>
+			<div class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 space-x-1 {theme.mediumBackgroundColor} cursor-pointer">
+				<i class="ri-delete-bin-line align-bottom"></i> <span>Delete {_.startCase(table.type)}</span>	
+			</div>
+		</div>
+	</Dropdown>
+</div>
+
+<!--
 <div class="{theme.textColor} flex items-center space-x-3 px-2 border-b {theme.tableBorderColor}">
 	<div class="flex-grow flex items-center space-x-3">
 		<Dropdown>
@@ -73,9 +111,7 @@
 				href="/schema/{table.schema.id}/{table.id}">View SQL</a
 			>
 		</div>
-		<!--
-    <button on:click={()=>{switchMode('edit')}} class="border rounded py-1 px-2 p-1 {theme.tableBorderColor}">Edit View</button>
-    -->
+		
 	{/if}
 
 	{#if table.type == 'table'}
@@ -116,7 +152,7 @@
 		>
 	{/if}
 </div>
-
+-->
 <!--
 
 <button

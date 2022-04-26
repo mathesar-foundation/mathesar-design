@@ -13,8 +13,8 @@
 		<div class="space-y-1 cursor-pointer" slot="toggle">
 			<div>
 				<i
-					class="rounded align-bottom {icon[column.type]}"
-					style="background-color: {column.color};"
+					class="rounded align-bottom {icon[column.type]} {column.source?.table.color||theme.lightBackgroundColor}"
+					
 				/>
 				<span>{column.name}</span>
 			</div>
