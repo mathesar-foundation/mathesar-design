@@ -29,8 +29,9 @@ on:click|self={() => (inspector = { action: "Query Details" })}
             class="{column.source.table
               .color} leading-4 px-1 inline-block text-center rounded text-xs"
           >
-            <i class={icon[column.aggregation]} />
+            
             <i class={icon[column.type]} />
+            <i class={icon[column.aggregation]} />
           </span>
 
           <span>{column.alias}</span>

@@ -23,15 +23,19 @@
 			<div>
 				{#each selectedView.columns as column}
 					<div
+						
 						on:click={() => (inspector = { action: 'Column', column: column })}
 						class="{inspector.column == column
 							? theme.lightBackgroundColor
-							: ''} cursor-pointer space-x-1 border-b text-sm {theme.tableBorderColor} hover:{theme.lightBackgroundColor}  p-2 w-full shrink-0"
+							: ''} cursor-pointer flex items-center space-x-2 border-b text-sm {theme.tableBorderColor} hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor}  p-2 w-full shrink-0"
 					>
-						<i
-							class="{icon[column.type]} p-1 align-bottom rounded {column.source.table
-								.color} bg-opacity-80"
-						/> <span>{column.alias}</span>
+						<span class="rounded text-xs {column.source.table.color} bg-opacity-80 align-bottom px-1">
+							
+							<i class="{icon[column.type]}"/>
+							<i class={icon[column.aggregation]} />
+						</span>
+						<span class="flex-grow">{column.alias}</span>
+						<i class="ri-delete-bin-line {theme.mutedTextColor}"></i>
 					</div>
 				{/each}
 			</div>
