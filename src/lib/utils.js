@@ -59,7 +59,7 @@ export function getColumnIndex(table, column) {
 export async function loadEntities(){
     function addExtraReferences(entities) {
         entities.tables.forEach(table => {
-            table.color = bgColor500[colors[_.random(0, colors.length)]];
+            table.color = bgColor500[colors[_.random(0, colors.length-1)]];
             table.columns.forEach(col => {
                 col.id = uuidv4();
             });

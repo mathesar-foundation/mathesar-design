@@ -33,7 +33,6 @@
 		column = column;
 	}
 
-	console.log(column);
 </script>
 
 <div class="p-4 space-y-2 flex flex-col h-full">

@@ -13,6 +13,7 @@
 </script>
 
 <div
+on:click|self={() => (inspector = { action: "Query Details" })}
   class="overflow-scroll border-t flex-grow {theme.darkBackgroundColor} bg-opacity-10 {theme.tableBorderColor}"
 >
   <div class="flex w-max items-stretch">
@@ -41,6 +42,7 @@
   <div class="flex w-max items-stretch">
     <div>
       {#each records as record, j}
+
         <div class="flex border-b {theme.tableBorderColor}">
           {#each record as cell, i}
             <div
@@ -53,6 +55,7 @@
             >
               {#if selectedView.columns[i].aggregation == "List"}
                 {#if Array.isArray(cell)}
+                
                   {#each cell as item}
                     <div
                       class="inline-block mr-1 px-2 rounded-xl {selectedView
