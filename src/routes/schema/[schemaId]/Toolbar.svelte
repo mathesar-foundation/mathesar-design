@@ -28,7 +28,7 @@
 <div class="{theme.textColor} flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  {theme.tableBorderColor}">
 	<Dropdown>
 		<button slot="toggle" class="text-lg px-2 py-3 space-x-1 {theme.backgroundColor} bg-opacity-10 hover:bg-opacity-80"
-			><i style="color:{table.color}" class="ri-table-fill align-bottom" />
+			><i style="color:{table.color}" class="{icon[table.type]} align-bottom" />
 			<span>{table.name}</span> <i class="ri-arrow-drop-down-line align-bottom" /></button
 		>
 		<div slot="menu">

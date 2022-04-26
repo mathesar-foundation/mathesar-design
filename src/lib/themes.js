@@ -69,7 +69,7 @@ export let themes = {
     },pmTheme: {
         backgroundColor: 'bg-white',
         mediumBackgroundColor: 'bg-zinc-200',
-        darkBackgroundColor: 'bg-zinc-400',
+        darkBackgroundColor: 'bg-zinc-50',
         accentBackgroundColor: 'bg-white',
         lightBackgroundColor: 'bg-zinc-50',
         darkBorderColor: 'border-zinc-200',
@@ -91,7 +91,7 @@ export let themes = {
     }
 };
 
-export let theme = themes.darkTheme;
+export let theme = themes.pmTheme;
 
 //
 //export var activeTheme = window.sessionStorage.getItem('activeTheme');

@@ -279,8 +279,7 @@
   }
 
   function setSummarization(column, step, records) {
-
-	//console.log(column, step, records,"SUMMARIZE")
+    //console.log(column, step, records,"SUMMARIZE")
 
     let columnIdx = selectedView.columns.indexOf(column);
 
@@ -288,13 +287,9 @@
       return n[columnIdx];
     });
 
-	
-
     let aggregatedRecords = Object.keys(groupedRecords).map((group) => {
       return aggregate(groupedRecords[group], columnIdx);
     });
-
-	
 
     //selectedView.steps[step].aggregations = []
 
@@ -308,10 +303,7 @@
       })
     );
 
-	
-
     changeColumnType(selectedView, columnIdx, step);
-
 
     return flattenRecords(aggregatedRecords);
   }
@@ -362,8 +354,8 @@
       ) {
         newRecords = setFilter(column, selectedView.steps[step], newRecords);
       }
-	  
-	  if (
+
+      if (
         selectedView.steps[step].type == "summarize" &&
         !selectedView.steps[step].hidden
       ) {
@@ -395,19 +387,18 @@
     columns.forEach((col, i) => {
       if (i !== idx && !col.source.table.id == selectedView.baseTable.id) {
         //col.aggregation = col.aggregation;
-		//console.log(col,"COL 1")
+        //console.log(col,"COL 1")
       } //
 
       if (i !== idx) {
         col.aggregation = view.steps[step].aggregations.map((a) => a[i]);
-		console.log(i,idx,col,"COL 2")
+        console.log(i, idx, col, "COL 2");
       }
 
       if (i == idx) {
         col.aggregation = null;
-		console.log(i,idx,col,"COL 3")
+        console.log(i, idx, col, "COL 3");
       }
-
     });
   }
 
@@ -495,7 +486,7 @@
       <div />
     </div>
 
-    <div class="w-7/12 flex-grow p-4">
+    <div class="w-7/12 p-4 border-r border-l">
       <div
         class="border overflow-hidden rounded {theme.tableBorderColor} flex flex-col h-full"
         on:click|self={() => (inspector = { action: "Query Details" })}

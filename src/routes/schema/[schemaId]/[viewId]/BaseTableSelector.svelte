@@ -19,7 +19,7 @@
 </script>
 
 
-<div class="{theme.primaryColor} bg-opacity-20 {theme.textColor} p-2 flex items-center space-x-3">
+<div class="{theme.darkBackgroundColor} border-b bg-opacity-20 {theme.textColor} p-2 flex items-center space-x-3">
 	<div class="font-semibold">Exploring</div>
 
 	<Dropdown full={false} width={'w-96'}>
@@ -32,7 +32,7 @@
 
 			<i class="ri-arrow-drop-down-line align-bottom" />
 		</div>
-		<div slot="menu" class="p-2">
+		<div slot="menu">
 			<input
 				type="text"
 				class="p-2 w-full {theme.inputBackgroundColor} bg-opacity-60"
@@ -42,7 +42,7 @@
 			{#each filter(entities.tables,searchTerm) as table}
 				<div
 					on:click={() => dispatch('tableSelected', table)}
-					class="p-2 hover:{theme.primaryColor} cursor-pointer"
+					class="p-2 hover:bg-opacity-20 bg-opacity-0 {theme.primaryColor} cursor-pointer"
 				>
 					<div class="space-x-1">
 						<i class="ri-table-line align-bottom" /> <span>{table.name}</span>

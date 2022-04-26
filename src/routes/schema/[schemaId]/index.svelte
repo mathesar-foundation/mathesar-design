@@ -49,7 +49,7 @@
 
 <div class="flex flex-grow {theme.darkPrimaryColor} bg-opacity-10">
 
-    <SideBar on:openObject={(e)=> window.location = `/schema/0/${e.detail.type}/${e.detail.id}` } schema={ schema }/>
+    <SideBar expanded={ true } on:openObject={(e)=> window.location = `/schema/0/${e.detail.type}/${e.detail.id}` } schema={ schema }/>
     
     <div class="p-8 space-y-4 {theme.textColor}">
         <div class="flex items-center space-x-2">
@@ -69,7 +69,7 @@
 
         <div class="space-y-4">
             {#each schema.tables as table}
-                <a class="block space-x-1" href="tables/{schema.id}-{table.id}"><i class="ri-table-fill align-bottom" style="color:{table.color}"></i> <span>{table.name}</span></a>
+                <a class="block space-x-1" href="./{schema.id}/table/{table.id}"><i class="ri-table-fill align-bottom" style="color:{table.color}"></i> <span>{table.name}</span></a>
             {/each}
         </div>
 
