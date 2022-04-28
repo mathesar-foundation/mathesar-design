@@ -76,7 +76,7 @@
 	<div>Loading (can be removed)</div>
 {:then entities}
 
-<TopNav {entities} />
+	<TopNav {schema} />
 	<div class="w-screen flex {theme.darkPrimaryColor} bg-opacity-10">
 	
 		<SideBar {schema} on:openObject={(e)=> window.location = `/schema/0/${e.detail.type}/${e.detail.id}` }/>

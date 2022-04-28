@@ -2,14 +2,10 @@
     import { page } from "$app/stores";
     import { theme } from "$lib/themes";
     import { v4 as uuidv4 } from 'uuid';
+    import _ from "lodash";
 
-    const { schemaId } = $page.params;
+    export let schema;
 
-    export let entities;
-
-    let schema = entities.schemas.find(schema => schema.id == schemaId);
-
-    
 </script>
 
 <div class="p-2 flex space-x-3 items-center border-b {theme.backgroundColor} {theme.tableBorderColor}">
@@ -20,8 +16,8 @@
 
         {#if $page.params.schemaId}
        
-            <div class="{theme.textColor}">
-                <div class="{theme.primaryColor} {theme.inverseTextColor} text-sm px-1 inline-block rounded mr-1">D</div>
+            <div class="border {theme.textColor} {theme.tableBorderColor} rounded flex items-center space-x-1 p-1 text-sm">
+                <div class="{theme.primaryColor} {theme.inverseTextColor} text-sm px-1 text-center rounded">{_.startCase(schema.name.slice(0,2))}</div>
                 <span>database</span>
                 <span class="{theme.mutedTextColor}">/</span>
                 <a href="/schema/{ schema.id }"  class="font-semibold"><i class="ri-share-line align-bottom"></i> {schema.name}</a>

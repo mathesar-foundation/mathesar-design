@@ -1,12 +1,13 @@
 <script>
   import { theme } from "$lib/themes";
   import { icon } from "$lib/iconMap";
-  import { afterUpdate, createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
 
   import { getColumnIndex } from "$lib/utils";
 
   import _ from "lodash";
-  const dispatch = createEventDispatcher();
+  
   export let selectedView;
   export let inspector;
   export let records;

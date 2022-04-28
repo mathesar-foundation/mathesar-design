@@ -166,7 +166,10 @@
   }
 
   function getColumnRecords(columns) {
+    console.log(columns,"COLUMNS")
+
     let records = columns.map((c) => {
+
       let columnIdx = getColumnNameIndex(c.source.table, c);
 
       if (c.source.link.column.name == c.name) {
@@ -183,6 +186,8 @@
             r[columnIdx],
           ]);
 
+          
+
           let mergedRecord = c.source.table.records
             .map((r) => r[0])
             .reduce((acc, list) => {
@@ -193,6 +198,8 @@
               return acc;
             }, []);
 
+
+            console.log(mergedRecord,"MERGED")
           return mergedRecord;
         } else {
           return c.source.table.records.map((r) => r[columnIdx]);
@@ -201,7 +208,7 @@
         columnIdx = getColumnNameIndex(
           c.source.link.table,
           c.source.link.column
-        ); //c.source.link.table.columns.indexOf(c.source.link.column)
+        );
         let recordId = c.source.link.table.records.map((r) => r[columnIdx]);
 
         let mergedRecord = recordId
@@ -209,8 +216,9 @@
             return c.source.table.records.find((r) => r[0] == rId);
           })
           .map((r) => r[getColumnNameIndex(c.source.table, c)]);
-
-        return mergedRecord; //c.source.link.table.records.map(r => r[columnIdx])
+        
+          console.log(mergedRecord,"MERGED 2")
+        return mergedRecord;
       }
     });
 
@@ -218,11 +226,11 @@
       item.forEach((record, i) => {
         acc[i] = records.map((r) => r[i]);
       });
-
       return acc;
     }, []);
     //
 
+    // HIDE NULL or EMPTY
     let filteredRecords = mergedRecords.filter((record) => {
       if (mergedRecords.some((r) => r.length > 1)) {
         return !record.some((r) => r == undefined);
@@ -231,6 +239,7 @@
       }
     });
 
+    // RETURN COUNT AGGREGATION
     columns.forEach((col, i) => {
       if (col.aggregation && col.aggregation == "Count") {
         filteredRecords.forEach((r) => {
@@ -239,8 +248,9 @@
       }
     });
 
+    console.log(filteredRecords,"FILTER 2")
+
     return filteredRecords;
-    //return mergedRecords;
   }
 
   function deleteColumn(column) {
@@ -279,6 +289,9 @@
         (r) => r[columnIdx] && _.toString(r).includes(value)
       );
     }
+
+    console.log(records,"FILTERED")
+    return records;
   }
 
   function setSummarization(column, step, records) {
@@ -395,12 +408,10 @@
 
       if (i !== idx) {
         col.aggregation = view.steps[step].aggregations.map((a) => a[i]);
-        console.log(i, idx, col, "COL 2");
       }
 
       if (i == idx) {
         col.aggregation = null;
-        console.log(i, idx, col, "COL 3");
       }
     });
   }
@@ -454,7 +465,7 @@
 {#await loadData()}
   <div>Loading (can be removed)</div>
 {:then entities}
-  <TopNav {entities} />
+  <TopNav {schema} />
 
   <BaseTableSelector
     {entities}
@@ -544,11 +555,11 @@
           <div class="border-b {theme.tableBorderColor}" />
 
           <h4 class="font-semibold text-sm">Save Options</h4>
-          <div class="grid space-y-1 text-sm">
+          <div class="grid space-y-1 w">
             <label for="viewName">View Name</label>
             <input
               type="text"
-              class="p-2 rounded {theme.inputBackgroundColor} bg-opacity-80"
+              class="p-2 rounded {theme.inputBackgroundColor} border {theme.lightBorderColor}"
               bind:value={selectedView.name}
             />
           </div>

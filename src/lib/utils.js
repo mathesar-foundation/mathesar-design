@@ -65,6 +65,7 @@ export async function loadEntities(){
             });
         })
 
+
         entities.tables.forEach(table => {
             table.constraints.forEach((constraint,i) => {
                 if(constraint.type == "Foreign Key"){
@@ -72,6 +73,8 @@ export async function loadEntities(){
                     constraint.referenceTable = {...referenceTable}
                 }
             });
+
+            
         })
 
         entities.views.forEach(view => {

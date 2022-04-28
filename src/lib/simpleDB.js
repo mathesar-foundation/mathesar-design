@@ -161,7 +161,6 @@ export async function saveEntities(entities) {
         newEntities[entityName] = noRefEntities;
       });
 
-      console.log("SAVE", newEntities)
 
       saveToStorage(newEntities);
     } else {

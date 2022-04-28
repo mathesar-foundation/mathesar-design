@@ -41,7 +41,7 @@
 		<label for="columnName">Name</label>
 		<input
 			id="columnName"
-			class="p-2 rounded {theme.inputBackgroundColor} bg-opacity-80"
+			class="p-2 rounded {theme.inputBackgroundColor} border {theme.lightBorderColor} bg-opacity-80"
 			type="text"
 			bind:value={column.alias}
 		/>

@@ -74,7 +74,7 @@
 			<Dropdown>
 				<div
 					slot="toggle"
-					class="cursor-pointer flex items-center border {theme.lightBorderColor} space-x-1 p-2 rounded"
+					class="cursor-pointer flex items-center border {theme.lightBorderColor} {theme.inputBackgroundColor} space-x-1 p-2 rounded"
 				>
 					<span class="flex-grow">{_.startCase(selectedView.steps[step].summaryCondition||summarizations[selectedView.steps[step].column.type][0])}</span>
 					<i class="ri-arrow-drop-down-line align-bottom" />
@@ -82,7 +82,7 @@
 				<div slot="menu">
 					{#each summarizations[selectedView.steps[step].column.type] as condition}
 						<div
-							class="hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor} space-x-1 p-2"
+							class="hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor} cursor-pointer space-x-1 p-2"
 							on:click={() => (selectedView.steps[step].summaryCondition = condition)}
 						>
 							<span>{_.startCase(condition)}</span>
@@ -96,7 +96,7 @@
 				{#each selectedView.columns as column, i}
 					{#if column !== selectedView.steps[step].column}
 						<div><i class="{icon[column.type]} align-bottom" /> {column.alias}</div>
-						<div class="border {theme.mediumBorderColor} p-2 rounded">
+						<div class="border {theme.mediumBorderColor} {theme.inputBackgroundColor} p-2 rounded">
 							{selectedView.steps[step].aggregations.map(a => a[i])}
 						
 						</div>
@@ -110,7 +110,7 @@
 				<Dropdown>
 					<div
 						slot="toggle"
-						class="cursor-pointer border {theme.lightBorderColor} space-x-1 p-2 rounded"
+						class="cursor-pointer border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 rounded"
 					>
 						<span>{selectedView.steps[step].condition}</span>
 					</div>

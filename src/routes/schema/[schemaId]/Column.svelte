@@ -1,23 +1,27 @@
 <script>
 	import { theme } from '$lib/themes';
 	import { icon } from '$lib/iconMap';
-	import { hexToRGB } from '$lib/utils';
+	import { hexToRGB, aggregations } from '$lib/utils';
 	import Dropdown from '$lib/Dropdown.svelte';
 	export let column = {};
+	export let table;
 </script>
 
 <div
 	class="border-r bg-opacity-0 hover:bg-opacity-40 {theme.darkBackgroundColor} flex items-center p-2 {theme.tableBorderColor} {theme.textColor} w-80"
 >
 	<Dropdown full={true}>
-		<div class="space-y-1 cursor-pointer" slot="toggle">
-			<div>
-				<i
-					class="rounded align-bottom {icon[column.type]} {column.source?.table.color||theme.lightBackgroundColor}"
-					
-				/>
-				<span>{column.name}</span>
-			</div>
+		<div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
+	
+				<div class="{column.source?.table.color||theme.lightBackgroundColor} px-1 text-sm rounded text-center">
+				<i class="{icon[column.type]}"/>
+				{#if column.aggregation}
+				<i class="{icon[column.aggregation]}"></i>
+				{/if}
+				</div>
+				
+				<div>{table.type == "table"?column.name:column.alias}</div>
+		
 		</div>
 
 		<div slot="menu" class="text-sm py-2">
