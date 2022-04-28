@@ -16,6 +16,7 @@ var icon = {
     'sort': 'ri-arrow-up-down-fill',
     'deduplicate': 'ri-tools-line',
     'List': 'ri-list-unordered',
+    'query':'ri-file-search-fill'
 }
 
 export { icon }

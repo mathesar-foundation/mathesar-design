@@ -85,7 +85,7 @@ export async function loadEntities(){
         return entities;
     }
 
-    return await simpleDB.loadEntities("schemas", "tables", "views", addExtraReferences);
+    return await simpleDB.loadEntities("schemas", "tables", "views", "queries", addExtraReferences);
 }
 
 export async function saveEntities(entities){
