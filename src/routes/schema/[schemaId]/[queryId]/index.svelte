@@ -27,7 +27,7 @@
   import BaseTableSelector from "./BaseTableSelector.svelte";
 
   const { schemaId } = $page.params;
-  const { viewId } = $page.params;
+  const { queryId } = $page.params;
 
   let columns = [];
   let schema = {};
@@ -42,8 +42,8 @@
 
   let newView = {
     id: uuidv4(),
-    type: "view",
-    name: "New View",
+    type: "query",
+    name: "New Query",
     columns: [],
   };
 
@@ -54,27 +54,27 @@
 
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     tables = entities.schemas.find((schema) => schema.id == schemaId).tables;
-    selectedView = entities.views.find((view) => view.id == viewId);
+    selectedView = entities.queries.find((view) => view.id == queryId);
 
 
     
 
     //inspector = { action: 'Column', column: selectedView.columns[2] };
 
-    let viewCount = entities.views.filter((v) =>
-      v.name.startsWith("New View")
+    let viewCount = entities.queries.filter((v) =>
+      v.name.startsWith("New Query")
     ).length;
 
     if (!selectedView) {
       selectedView = {
-        id: viewId,
+        id: queryId,
         schemaId: _.toNumber(schemaId),
-        type: "view",
-        name: `New View (${viewCount})`,
+        type: "query",
+        name: `New Query (${viewCount})`,
         columns: [],
         steps: {},
       };
-      //entities.views.push(selectedView)
+      //entities.queries.push(selectedView)
       //entities = entities;
     }
 
@@ -166,7 +166,6 @@
   }
 
   function getColumnRecords(columns) {
-    console.log(columns,"COLUMNS")
 
     let records = columns.map((c) => {
 
@@ -199,7 +198,6 @@
             }, []);
 
 
-            console.log(mergedRecord,"MERGED")
           return mergedRecord;
         } else {
           return c.source.table.records.map((r) => r[columnIdx]);
@@ -382,19 +380,37 @@
     return newRecords;
   }
 
-  function saveView() {
+  function saveQuery() {
     resetPreview();
     selectedView.records = applySteps(selectedView.records, selectedView.steps);
 
-    if (!entities.views.find((v) => v.id == viewId)) {
-      entities.views.push(selectedView);
-      notifications.info("New View Saved", 3000);
+    if (!entities.queries.find((v) => v.id == queryId)) {
+      entities.queries.push(selectedView);
+      notifications.info("New Query Saved", 3000);
     } else {
       notifications.info("Changes Saved", 3000);
     }
 
     selectedView = selectedView;
     entities = entities;
+  }
+
+  function saveView() {
+    resetPreview();
+
+      selectedView = {
+        ...selectedView,
+        id: uuidv4(),
+        querieId:queryId,
+        type:"view"
+      }
+
+      entities.views.push(selectedView);
+      notifications.info("New View Saved", 3000);
+
+
+      selectedView = selectedView;
+      entities = entities;
   }
 
   function changeColumnType(view, idx, step) {
@@ -564,20 +580,14 @@
             />
           </div>
 
-          <div class="flex items-center space-x-2">
-            {#if entities.views.find((v) => v.id == selectedView.id)}
+          <div class="grid space-y-2">
+            {#if entities.queries.find((v) => v.id == selectedView.id)}
               <button
-                on:click={saveView}
+                on:click={saveQuery}
                 disabled={!selectedView.baseTable}
                 class:opacity-60={!selectedView.baseTable}
                 class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
                 >Save Changes</button
-              >
-            {:else}
-              <a
-                href="./"
-                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
-                >Close without Saving</a
               >
               <button
                 on:click={saveView}
@@ -586,7 +596,24 @@
                 class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
                 >Save as View</button
               >
+            {:else}
+              <a
+                href="./"
+                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
+                >Close without Saving</a
+              >
+              <button
+                on:click={saveQuery}
+                disabled={!selectedView.baseTable}
+                class:opacity-60={!selectedView.baseTable}
+                class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
+                >Save Query</button
+              >
+
+              
+
             {/if}
+            
           </div>
         </div>
       {/if}

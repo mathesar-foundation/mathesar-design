@@ -153,8 +153,8 @@ export function newView(table){
 
         let view = {
             id: uuidv4(),
-            name: `View of ${newTable.name}`,
-            type: 'view',
+            name: `Query of ${newTable.name}`,
+            type: 'query',
             baseTable: newTable,
             columns: newTable.columns,
             records: newTable.records,

@@ -17,7 +17,7 @@
   }
 </script>
 
-<div class="flex shrink-0 border">
+<div class="flex shrink-0">
   <div class="{theme.mediumBackgroundColor} bg-opacity-30">
     <div
       class="w-12 h-12 {theme.textColor} cursor-pointer hover:bg-opacity-80 bg-opacity-0 {theme.darkPrimaryColor} flex"
@@ -45,9 +45,9 @@
           class="flex text-sm {theme.textColor} p-2 space-x-4 border-b leading-6 {theme.tableBorderColor}"
         >
           <button class="font-semibold {theme.lightBackgroundColor} rounded px-1">All ({schema.tables.length})</button>
-          <button>Queries ({schema.queries.length})</button>
-          <button>Views ({schema.views.length})</button>
-          <button>Tables ({schema.tables.length})</button>
+          <button>Queries ({schema.queries?.length})</button>
+          <button>Views ({schema.views?.length})</button>
+          <button>Tables ({schema.tables?.length})</button>
           
         </div>
 
@@ -60,6 +60,7 @@
               ><i class="ri-add-line align-bottom" /></a
             >
           </div>
+          {#if schema.queries}
           {#each schema.queries as table, i}
             <a href="http://{$page.url.host}/schema/{schema.id}/{table.id}"
               class="{theme.textColor} p-2 border-b block {theme.tableBorderColor} cursor-pointer space-x-1"
@@ -69,6 +70,9 @@
               <span>{table.name}</span>
           </a>
           {/each}
+          {:else}
+          <div class="p-2 {theme.mutedTextColor} text-sm">You have no queries</div>
+          {/if}
         </div>
 
         <div>
@@ -80,6 +84,7 @@
               ><i class="ri-add-line align-bottom" /></a
             >
           </div>
+          {#if schema.views}
           {#each schema.views as table, i}
             <div
               class="{theme.textColor} p-2 border-b {theme.tableBorderColor} cursor-pointer space-x-1"
@@ -89,6 +94,10 @@
               <span>{table.name}</span>
             </div>
           {/each}
+          {:else}
+            <div class="p-2 {theme.mutedTextColor} text-sm">You have no views</div>
+          {/if}
+
         </div>
 
         <div>

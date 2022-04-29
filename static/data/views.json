@@ -1,24 +1,2 @@
 [
-    {
-        "id":"85ec4059-9571-4b2d-9220-32c81077fbc8",
-        "name": "New View",
-        "type": "view",
-        "schemaId":0,
-        "limit": 100,
-        "offset": 0,
-        "baseTable": {
-            "tableId": 0
-        },
-        "columns":[
-            {
-                "name":"test",
-                "type":"text"
-            }
-        ],
-        "records":[
-            [1],
-            [2]
-        ],
-        "steps":{}
-    }
 ]

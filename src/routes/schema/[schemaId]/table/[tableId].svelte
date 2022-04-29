@@ -56,7 +56,7 @@
 	}
 
 	function openView(view) {
-		entities.views.push(view);
+		entities.queries.push(view);
 		entities = entities;
 		saveEntities(entities);
 
