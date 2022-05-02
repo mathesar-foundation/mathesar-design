@@ -619,11 +619,10 @@
           {#if entities.queries.find((v) => v.id == selectedView.id)}
             <div class="border-b {theme.tableBorderColor}" />
             <div class="space-y-1">
-              <h4 class="font-semibold text-sm">Create View from Query</h4>
+              <h4 class="font-semibold text-sm">Publish as View</h4>
               <p class="text-xs {theme.mutedTextColor}">
-                Views differ from saved queries in that they include the Data
-                Explorer configuration—selected columns in the base table,
-                transformations, and filters—along with the query.
+                Views differ from saved queries in that they don't include the Data
+                Explorer configuration—transformation steps, and filters—along with the query.
               </p>
             </div>
             <button
@@ -631,7 +630,7 @@
               disabled={!selectedView.baseTable}
               class:opacity-60={!selectedView.baseTable}
               class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
-              >Create View</button
+              >Publish View</button
             >
           {/if}
           <div class="border-b {theme.tableBorderColor}" />

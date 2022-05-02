@@ -88,9 +88,11 @@
 				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
 					<i class="ri-layout-row-fill align-bottom" /> Group by Column
 				</div>
+				{#if table.type == "table"}
 				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 text-gray-500">
 					Delete Column
 				</div>
+				{/if}
 			</div>
 		</div>
 	</Dropdown>

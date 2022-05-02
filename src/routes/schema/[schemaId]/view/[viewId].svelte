@@ -13,9 +13,12 @@
   import Toolbar from "../Toolbar.svelte";
   import Table from "../Table.svelte";
 
+  import Modal from "$lib/Modal.svelte"
+
   import SideBar from "../SideBar.svelte";
 
   let activeEdit;
+  let showQueryModal;
 
   let schema = {};
   let view = {};
@@ -57,7 +60,6 @@
 	    columnIdx,
     };
 
-    console.log(activeEdit,"ACTIVE EDIT")
   }
 
   function updateCell(e){
@@ -94,7 +96,7 @@
     >
       <Tabs />
 
-      <Toolbar on:openView={(e) => openDataExplorer(e.detail)} table={view} />
+      <Toolbar on:openQuery={()=>showQueryModal = !showQueryModal} on:openView={(e) => openDataExplorer(e.detail)} table={view} />
 
       {#if activeEdit}
         <div class="p-2">
@@ -110,6 +112,21 @@
       />
     </div>
   </div>
+
+  <Modal bind:open={showQueryModal} title="SQL Query">
+    <div slot="body" class="space-y-2">
+      <div class="flex items-center">
+        <button class="border rounded p-2"><i class="ri-clipboard-line align-bottom"></i> Copy Query</button>
+      </div>
+      <div class="border p-4 rounded bg-zinc-800 text-white">
+<pre><code>CREATE VIEW '{view.name}' AS
+SELECT
+{view.columns.map(c => c.name).join(',')}
+FROM '{view.baseTable.name}'         
+</code></pre>
+      </div>
+    </div>
+  </Modal>
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}

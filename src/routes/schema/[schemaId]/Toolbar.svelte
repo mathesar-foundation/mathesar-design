@@ -77,16 +77,12 @@
       {#if table.type == "view"}
         <div class="border-t {theme.tableBorderColor}" />
     
-        <div
+        <div on:click={()=>dispatch('openQuery')}
           class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
         >
-          Edit Query
+        View SQL Query
         </div>
-        <div
-          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
-        >
-          View SQL Query
-        </div>
+        
       {/if}
       <div class="border-t {theme.tableBorderColor}" />
       <div
