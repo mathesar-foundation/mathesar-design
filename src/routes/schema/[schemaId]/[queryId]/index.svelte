@@ -1,7 +1,7 @@
 <script>
   import * as Flatted from "flatted";
   import ColumnEditor from "./ColumnEditor.svelte";
-  import { beforeUpdate } from "svelte";
+  import { beforeUpdate, onMount } from "svelte";
   import { theme } from "$lib/themes";
   import { page } from "$app/stores";
 
@@ -37,6 +37,7 @@
   let activeFormula = {};
 
   let selectedView;
+  let runQuery;
 
   let entities;
 
@@ -49,15 +50,15 @@
 
   let inspector = { action: "Query Details" };
 
+
+
   async function loadData() {
+ 
     entities = await loadEntities();
 
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     tables = entities.schemas.find((schema) => schema.id == schemaId).tables;
     selectedView = entities.queries.find((view) => view.id == queryId);
-
-
-    
 
     //inspector = { action: 'Column', column: selectedView.columns[2] };
 
@@ -74,8 +75,14 @@
         columns: [],
         steps: {},
       };
+
+      runQuery=false;
       //entities.queries.push(selectedView)
       //entities = entities;
+    }
+
+    if (selectedView) {
+      runQuery=true;
     }
 
     getColumnRecords(selectedView.columns);
@@ -166,9 +173,7 @@
   }
 
   function getColumnRecords(columns) {
-
     let records = columns.map((c) => {
-
       let columnIdx = getColumnNameIndex(c.source.table, c);
 
       if (c.source.link.column.name == c.name) {
@@ -185,8 +190,6 @@
             r[columnIdx],
           ]);
 
-          
-
           let mergedRecord = c.source.table.records
             .map((r) => r[0])
             .reduce((acc, list) => {
@@ -196,7 +199,6 @@
 
               return acc;
             }, []);
-
 
           return mergedRecord;
         } else {
@@ -214,8 +216,8 @@
             return c.source.table.records.find((r) => r[0] == rId);
           })
           .map((r) => r[getColumnNameIndex(c.source.table, c)]);
-        
-          console.log(mergedRecord,"MERGED 2")
+
+        console.log(mergedRecord, "MERGED 2");
         return mergedRecord;
       }
     });
@@ -246,7 +248,7 @@
       }
     });
 
-    console.log(filteredRecords,"FILTER 2")
+    console.log(filteredRecords, "FILTER 2");
 
     return filteredRecords;
   }
@@ -288,7 +290,7 @@
       );
     }
 
-    console.log(records,"FILTERED")
+    console.log(records, "FILTERED");
     return records;
   }
 
@@ -391,6 +393,7 @@
       notifications.info("Changes Saved", 3000);
     }
 
+    runQuery = false;
     selectedView = selectedView;
     entities = entities;
   }
@@ -398,19 +401,19 @@
   function saveView() {
     resetPreview();
 
-      selectedView = {
-        ...selectedView,
-        id: uuidv4(),
-        querieId:queryId,
-        type:"view"
-      }
+    newView = {
+      ...selectedView,
+      id: uuidv4(),
+      name: `View of ${selectedView.name}`,
+      querieId: queryId,
+      type: "view",
+    };
 
-      entities.views.push(selectedView);
-      notifications.info("New View Saved", 3000);
+    entities.views.push(newView);
+    notifications.info(`New View '${newView.name}' Saved`, 3000);
 
-
-      selectedView = selectedView;
-      entities = entities;
+    //selectedView = selectedView;
+    entities = entities;
   }
 
   function changeColumnType(view, idx, step) {
@@ -476,6 +479,12 @@
 
     selectedView.columns[columnIdx] = column;
   }
+
+  function selectBaseTable(table) {
+    selectedView.baseTable = table;
+    inspector.action = "Add Column";
+    console.log(table);
+  }
 </script>
 
 {#await loadData()}
@@ -485,10 +494,9 @@
 
   <BaseTableSelector
     {entities}
-    {selectedView}
+    bind:selectedView
     on:tableSelected={(e) => {
-      selectedView.baseTable = e.detail;
-      inspector.action = "Add Column";
+      selectBaseTable(e.detail);
     }}
   />
 
@@ -521,29 +529,44 @@
         class="border overflow-hidden rounded {theme.tableBorderColor} flex flex-col h-full"
         on:click|self={() => (inspector = { action: "Query Details" })}
       >
-        <div class="p-2">
-          <h3>Result Table</h3>
-        </div>
-
-        {#if selectedView.columns.length > 0}
-          <TablePreview
-            records={applySteps(selectedView.records, selectedView.steps)}
-            bind:inspector
-            bind:selectedView
-          />
-        {:else if !selectedView.baseTable}
-          <div
-            class="border-t {theme.darkBackgroundColor} opacity-40 text-center {theme.mutedTextColor} {theme.tableBorderColor} p-10 flex-grow"
-          >
-            <span class="text-xl">Select a base table to get started</span>
+       
+      {#if runQuery && !!entities.queries.find((v) => v.id == selectedView.id)}
+          <div class="h-full w-full p-8 text-center space-y-2">
+            <div class="text-xl {theme.mutedTextColor}">Run query or preview to list results</div>
+            <button class="border p-2 rounded {theme.mediumBorderColor}" on:click={()=>runQuery = !runQuery}>Run Query</button>
+            <button class="border p-2 rounded {theme.lightBackgroundColor}" on:click={()=>runQuery = !runQuery}>Preview</button>
           </div>
         {:else}
-          <div
-            class="border-t {theme.darkBackgroundColor} opacity-40 text-center {theme.mutedTextColor} {theme.tableBorderColor} p-10 flex-grow"
-          >
-            <span class="text-xl">Select or drop columns</span>
-          </div>
-        {/if}
+          
+        
+        {#if selectedView.columns.length > 0}
+        <div class="p-2 flex items-center space-x-4">
+          <h3 class="font-semibold">Result</h3>
+          <p class="text-sm {theme.mutedTextColor}">Query Run Succesfully</p>
+        </div>
+        <TablePreview
+          records={applySteps(selectedView.records, selectedView.steps)}
+          bind:inspector
+          bind:selectedView
+        />
+      {:else if !selectedView.baseTable}
+        <div
+          class="border-t {theme.darkBackgroundColor} opacity-40 text-center {theme.mutedTextColor} {theme.tableBorderColor} p-10 flex-grow"
+        >
+          <span class="text-xl">Select a base table to get started</span>
+        </div>
+      {:else}
+        <div
+          class="border-t {theme.darkBackgroundColor} opacity-40 text-center {theme.mutedTextColor} {theme.tableBorderColor} p-10 flex-grow"
+        >
+          <span class="text-xl">Select or drop columns</span>
+        </div>
+      {/if}
+
+
+      {/if}
+
+        
       </div>
     </div>
 
@@ -555,53 +578,29 @@
       </div>
 
       {#if inspector.action == "Query Details"}
-        <div class="p-2 space-y-2">
-          <h4 class="text-sm font-semibold">SQL Query</h4>
-          <p class="text-xs {theme.mutedTextColor}">
-            This view is a virtual table based on a SQL statement's result set.
-            The SQL below can be used to recreate this view.
-          </p>
-
-          <button
-            disabled={!selectedView.baseTable}
-            class:opacity-60={!selectedView.baseTable}
-            class="w-full {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
-            >View SQL Query</button
-          >
-          <div class="border-b {theme.tableBorderColor}" />
-
+        <div class="p-2 space-y-4">
           <h4 class="font-semibold text-sm">Save Options</h4>
-          <div class="grid space-y-1 w">
-            <label for="viewName">View Name</label>
-            <input
-              type="text"
-              class="p-2 rounded {theme.inputBackgroundColor} border {theme.lightBorderColor}"
-              bind:value={selectedView.name}
-            />
-          </div>
 
           <div class="grid space-y-2">
+            <div class="grid space-y-1">
+              <label class="text-sm font-semibold" for="viewName"
+                >Query Name</label
+              >
+              <input
+                type="text"
+                class="p-2 rounded {theme.inputBackgroundColor} border {theme.lightBorderColor}"
+                bind:value={selectedView.name}
+              />
+            </div>
             {#if entities.queries.find((v) => v.id == selectedView.id)}
               <button
                 on:click={saveQuery}
                 disabled={!selectedView.baseTable}
                 class:opacity-60={!selectedView.baseTable}
                 class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
-                >Save Changes</button
-              >
-              <button
-                on:click={saveView}
-                disabled={!selectedView.baseTable}
-                class:opacity-60={!selectedView.baseTable}
-                class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
-                >Save as View</button
+                >Save Changes to Query</button
               >
             {:else}
-              <a
-                href="./"
-                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
-                >Close without Saving</a
-              >
               <button
                 on:click={saveQuery}
                 disabled={!selectedView.baseTable}
@@ -610,11 +609,46 @@
                 >Save Query</button
               >
 
-              
-
+              <a
+                href="./"
+                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
+                >Close without Saving</a
+              >
             {/if}
-            
           </div>
+          {#if entities.queries.find((v) => v.id == selectedView.id)}
+            <div class="border-b {theme.tableBorderColor}" />
+            <div class="space-y-1">
+              <h4 class="font-semibold text-sm">Create View from Query</h4>
+              <p class="text-xs {theme.mutedTextColor}">
+                Views differ from saved queries in that they include the Data
+                Explorer configuration—selected columns in the base table,
+                transformations, and filters—along with the query.
+              </p>
+            </div>
+            <button
+              on:click={saveView}
+              disabled={!selectedView.baseTable}
+              class:opacity-60={!selectedView.baseTable}
+              class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
+              >Create View</button
+            >
+          {/if}
+          <div class="border-b {theme.tableBorderColor}" />
+          <div class="space-y-1">
+            <h4 class="text-sm font-semibold">SQL Query</h4>
+            <p class="text-xs {theme.mutedTextColor}">
+              This view is a virtual table based on a SQL statement's result
+              set. The SQL below can be used to recreate this view.
+            </p>
+          </div>
+
+          <button
+            disabled={!selectedView.baseTable}
+            class:opacity-60={!selectedView.baseTable}
+            class="w-full {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
+            >View SQL Query</button
+          >
         </div>
       {/if}
 

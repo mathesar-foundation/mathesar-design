@@ -44,10 +44,10 @@
         <div
           class="flex text-sm {theme.textColor} p-2 space-x-4 border-b leading-6 {theme.tableBorderColor}"
         >
-          <button class="font-semibold {theme.lightBackgroundColor} rounded px-1">All ({schema.tables.length})</button>
-          <button>Queries ({schema.queries?.length})</button>
-          <button>Views ({schema.views?.length})</button>
-          <button>Tables ({schema.tables?.length})</button>
+          <button class="font-semibold {theme.lightBackgroundColor} rounded px-1">All ({schema.tables.length|0})</button>
+          <button>Queries ({schema.queries?.length|0})</button>
+          <button>Views ({schema.views?.length|0})</button>
+          <button>Tables ({schema.tables?.length|0})</button>
           
         </div>
 

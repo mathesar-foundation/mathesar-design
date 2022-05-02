@@ -1,13 +1,18 @@
 <script>
 	import { theme } from '$lib/themes';
 	import { isForeignKey, linksToTable } from '$lib/utils';
-	import { createEventDispatcher } from 'svelte';
+	import { afterUpdate, createEventDispatcher } from 'svelte';
 	import { icon } from '$lib/iconMap';
 	import Column from './Column.svelte';
 
 	export let tables;
 	export let selectedView;
 	let baseTable = selectedView.baseTable;
+
+	afterUpdate(()=>{
+		baseTable = selectedView.baseTable;
+	})
+	
 	let viewMode = 'available';
 
 	const dispatch = createEventDispatcher();
