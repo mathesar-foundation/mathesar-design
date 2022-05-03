@@ -76,7 +76,7 @@
 
 		setTimeout(() => {
 			window.location.href= `/schema/${schemaId}`
-		}, "1000")
+		}, "200")
 		
 	}
 
