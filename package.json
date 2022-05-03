@@ -29,6 +29,8 @@
     "highlight-words": "^1.2.0",
     "jsonata": "^1.8.5",
     "lodash": "^4.17.21",
+    "pluralize": "^8.0.0",
+    "randomcolor": "^0.6.2",
     "tailwind-dynamic-classes": "^1.0.4",
     "tippy.js": "^6.3.7",
     "uuidv4": "^6.2.12"

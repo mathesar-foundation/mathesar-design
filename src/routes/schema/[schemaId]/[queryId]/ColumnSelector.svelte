@@ -125,7 +125,7 @@
 		{#each tables.filter((t) => linksToTable(baseTable, t)) as table}
 			<div class="p-2 space-x-1 flex flex-wrap items-center ">
 				<i class="ri-checkbox-multiple-blank-fill align-bottom" />
-				<div class="{table.color} px-1 rounded w-max">{table.name}</div>
+				<div class="px-1 rounded w-max" style="background-color: {table.color};">{table.name}</div>
 
 				<div>
 					<span>via</span>

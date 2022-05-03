@@ -15,6 +15,6 @@
 	on:click={() => dispatch('addColumn',{baseTable, sourceColumn, column})}
 	class="p-2 cursor-pointer hover:bg-opacity-40 bg-zinc-200 bg-opacity-0"
 >
-	<i class="{icon[column.type]} align-bottom {sourceTable.color} rounded mr-1" />
+	<i class="{icon[column.type]} align-bottom rounded mr-1" style="background-color: {sourceTable.color};"/>
 	{column.name}
 </div>

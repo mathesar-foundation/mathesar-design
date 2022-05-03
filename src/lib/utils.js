@@ -1,16 +1,15 @@
 import jsonata from "jsonata";
 import * as simpleDB from  '$lib/simpleDB';
-import { bgColor200 } from "tailwind-dynamic-classes";
+import { bgColor300 } from "tailwind-dynamic-classes";
 import { v4 as uuidv4 } from 'uuid';
 import _ from 'lodash';
 import * as Flatted from 'flatted';
+import randomColor from 'randomcolor';
 
-const colors = [
-    "red", "orange", "yellow",
-    "green", "blue", "purple"
-];
 
 export let activeSchema = 'album_collection';
+
+let shades = ['purple','blue','teal']
 
 export function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -59,7 +58,7 @@ export function getColumnIndex(table, column) {
 export async function loadEntities(){
     function addExtraReferences(entities) {
         entities.tables.forEach(table => {
-            table.color = Object.values(bgColor200)[_.random(0,Object.values(bgColor200).length)];
+            table.color = randomColor({ luminosity: 'light', hue: 'blue', format: 'rgba', alpha: 0.8 });
             table.columns.forEach(col => {
                 col.id = uuidv4();
             });

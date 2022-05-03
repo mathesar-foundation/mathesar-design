@@ -13,7 +13,7 @@
 	<Dropdown full={true}>
 		<div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
 	
-				<div class="{column.source?.table.color||theme.lightBackgroundColor} px-1 text-sm rounded text-center">
+				<div class="px-1 text-sm rounded text-center" style="background-color:{column.source?.table.color}">
 				<i class="{icon[column.type]}"/>
 				{#if column.aggregation}
 				<i class="{icon[column.aggregation]}"></i>

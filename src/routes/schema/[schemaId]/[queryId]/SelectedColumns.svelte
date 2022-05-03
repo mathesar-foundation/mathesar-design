@@ -2,6 +2,7 @@
 	import { theme } from '$lib/themes';
 	export let inspector;
 	export let selectedView;
+	export let missingTables;
 	import { icon } from '$lib/iconMap';
 </script>
 
@@ -25,11 +26,13 @@
 					<div
 						
 						on:click={() => (inspector = { action: 'Column', column: column })}
-						class="{inspector.column == column
-							? theme.lightBackgroundColor
-							: ''} cursor-pointer flex items-center space-x-2 border-b text-sm border-zinc-200 hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor}  p-2 w-full shrink-0"
+						class:bg-red-100={missingTables[column.source.table.id]}
+						class="cursor-pointer flex items-center space-x-2 border-b text-sm border-zinc-200 p-2 w-full shrink-0"
 					>
-						<span class="rounded text-xs {column.source.table.color} bg-opacity-80 align-bottom px-1">
+						{#if missingTables[column.source.table.id]}
+							<i class="ri-error-warning-fill align-bottom"></i>
+						{/if}
+						<span class="rounded text-xs bg-opacity-80 align-bottom px-1" style="background-color:{column.source.table.color}">
 							
 							<i class="{icon[column.type]}"/>
 							<i class={icon[column.aggregation]} />

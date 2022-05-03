@@ -31,24 +31,27 @@
   </div>
 
   {#if expanded}
-    <div
-      class="flex flex-grow flex-col border-r border-zinc-200 h-full bg-opacity-10"
-    >
-      <input
-        type="text"
-        class="bg-zinc-100 bg-opacity-40 p-2"
-        placeholder="Type to Search"
-      />
+    <div class="flex flex-grow flex-col border-r border-zinc-200 h-full p-2">
+      
+      <div class="border flex items-center border rounded overflow-hidden">
+        <i class="ri-search-line align-bottom px-1 text-zinc-500" />
+        <input
+          type="text"
+          class="bg-zinc-100 bg-opacity-40 flex-grow p-1 text-sm"
+          placeholder="Type to Search"
+        />
+      </div>
 
       <div>
         <div
           class="flex text-sm text-zinc-800 p-2 space-x-4 border-b leading-6 border-zinc-200"
         >
-          <button class="font-semibold {theme.lightBackgroundColor} rounded px-1">All ({schema.tables.length|0})</button>
-          <button>Queries ({schema.queries?.length|0})</button>
-          <button>Views ({schema.views?.length|0})</button>
-          <button>Tables ({schema.tables?.length|0})</button>
-          
+          <button class="font-semibold bg-zinc-50 rounded px-1"
+            >All ({schema.tables.length | 0})</button
+          >
+          <button>Queries ({schema.queries?.length | 0})</button>
+          <button>Views ({schema.views?.length | 0})</button>
+          <button>Tables ({schema.tables?.length | 0})</button>
         </div>
 
         <div>
@@ -61,17 +64,17 @@
             >
           </div>
           {#if schema.queries}
-          {#each schema.queries as table, i}
-            <a href="http://{$page.url.host}/schema/{schema.id}/{table.id}"
-              class="text-zinc-800 p-2 border-b block border-zinc-200 cursor-pointer space-x-1"
-              
-            >
-              <i class="{icon[table.type]} align-bottom" />
-              <span>{table.name}</span>
-          </a>
-          {/each}
+            {#each schema.queries as table, i}
+              <a
+                href="http://{$page.url.host}/schema/{schema.id}/{table.id}"
+                class="text-zinc-800 p-2 border-b block border-zinc-200 cursor-pointer space-x-1"
+              >
+                <i class="{icon[table.type]} align-bottom" />
+                <span>{table.name}</span>
+              </a>
+            {/each}
           {:else}
-          <div class="p-2 text-zinc-500 text-sm">You have no queries</div>
+            <div class="p-2 text-zinc-500 text-sm">You have no queries</div>
           {/if}
         </div>
 
@@ -85,19 +88,18 @@
             >
           </div>
           {#if schema.views}
-          {#each schema.views as table, i}
-            <div
-              class="text-zinc-800 p-2 border-b border-zinc-200 cursor-pointer space-x-1"
-              on:click={() => dispatch("openObject", table)}
-            >
-              <i class="{icon[table.type]} align-bottom" />
-              <span>{table.name}</span>
-            </div>
-          {/each}
+            {#each schema.views as table, i}
+              <div
+                class="text-zinc-800 p-2 border-b border-zinc-200 cursor-pointer space-x-1"
+                on:click={() => dispatch("openObject", table)}
+              >
+                <i class="{icon[table.type]} align-bottom" />
+                <span>{table.name}</span>
+              </div>
+            {/each}
           {:else}
             <div class="p-2 text-zinc-500 text-sm">You have no views</div>
           {/if}
-
         </div>
 
         <div>

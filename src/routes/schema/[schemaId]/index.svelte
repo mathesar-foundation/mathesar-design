@@ -45,10 +45,10 @@
 
     <div class="space-y-4 w-full text-zinc-800">
       <div
-        class="flex items-center space-x-2 bg-opacity-10 p-8 bg-orange-500"
+        class="flex items-center space-x-2 bg-opacity-10 p-8 bg-indigo-500"
       >
         <div
-          class="bg-orange-500 text-white text-2xl py-2 w-12 text-center rounded"
+          class="bg-indigo-500 text-white text-2xl py-2 w-12 text-center rounded"
         >
           {_.startCase(schema.name.slice(0, 2))}
         </div>

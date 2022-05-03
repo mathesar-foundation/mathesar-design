@@ -27,8 +27,7 @@ on:click|self={() => (inspector = { action: "Query Details" })}
             : theme.mediumBackgroundColor} whitespace-nowrap cursor-pointer h-full p-2 space-x-1"
         >
           <span
-            class="{column.source.table
-              .color} leading-4 px-1 inline-block text-center rounded text-xs"
+            class="leading-4 px-1 inline-block text-center rounded text-xs" style="background-color: {column.source.table.color} ;"
           >
             
             <i class={icon[column.type]} />
@@ -60,16 +59,16 @@ on:click|self={() => (inspector = { action: "Query Details" })}
                 
                   {#each cell as item}
                     <div
-                      class="inline-block mr-1 px-2 rounded-xl {selectedView
-                        .columns[i].source.table.color} bg-opacity-30"
+                      class="inline-block mr-1 px-2 rounded-xl bg-opacity-30" style="background-color: {selectedView
+                        .columns[i].source.table.color}"
                     >
                       {item}
                     </div>
                   {/each}
                 {:else}
                   <div
-                    class="inline-block mr-1 px-2 rounded-xl {selectedView
-                      .columns[i].source.table.color} bg-opacity-30"
+                    class="inline-block mr-1 px-2 rounded-xl bg-opacity-30" style="background-color: {selectedView
+                      .columns[i].source.table.color};"
                   >
                     {cell}
                   </div>

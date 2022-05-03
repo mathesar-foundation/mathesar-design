@@ -4,6 +4,7 @@
   import { beforeUpdate, onMount } from "svelte";
   import { theme } from "$lib/themes";
   import { page } from "$app/stores";
+  import pluralize from "pluralize"
 
   import {
     clone,
@@ -31,7 +32,7 @@
 
   let columns = [];
   let schema = {};
-  let tables = [];
+  let missingTables = {}
 
   let showFormulaModal = false;
   let activeFormula = {};
@@ -51,14 +52,15 @@
   let inspector = { action: "Query Details" };
 
 
-
   async function loadData() {
  
     entities = await loadEntities();
 
     schema = entities.schemas.find((schema) => schema.id == schemaId);
-    tables = entities.schemas.find((schema) => schema.id == schemaId).tables;
     selectedView = entities.queries.find((view) => view.id == queryId);
+    
+    
+
 
     //inspector = { action: 'Column', column: selectedView.columns[2] };
 
@@ -82,6 +84,24 @@
     }
 
     if (selectedView) {
+      
+      selectedView.columns.map(c => c.source.table.id).forEach(t=> {
+        console.log(t)
+        if (!entities.tables.find(table => table.id == t)){
+           console.log(t,"MISING")
+           missingTables[t]=true
+        }
+      });
+
+      console.log(missingTables,"MISSING")
+
+      
+     
+
+      console.log(selectedView.columns)
+     
+
+
       runQuery=true;
     }
 
@@ -509,7 +529,7 @@
       class="flex-grow h-full flex flex-col shrink-0 {theme.darkBackgroundColor}"
     >
       <div>
-        <SelectedColumns bind:selectedView bind:inspector />
+        <SelectedColumns {missingTables} bind:selectedView bind:inspector />
       </div>
 
       <Transformations
@@ -524,7 +544,15 @@
       <div />
     </div>
 
-    <div class="w-7/12 p-4 border-r border-l">
+    <div class="w-7/12 p-4 border-r border-l space-y-2">
+
+      {#if Object.keys(missingTables).length>0}
+              <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left">
+                <div class="font-semibold"><i class="ri-error-warning-fill align-bottom font-light"></i> Warning</div>
+                This query cannot be run because it is missing {Object.keys(missingTables).length} {pluralize('table', Object.keys(missingTables).length)}.
+              </div>
+            {/if}
+
       <div
         class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
         on:click|self={() => (inspector = { action: "Query Details" })}
@@ -532,9 +560,10 @@
        
       {#if runQuery && !!entities.queries.find((v) => v.id == selectedView.id)}
           <div class="h-full w-full p-8 text-center space-y-2">
+            
             <div class="text-xl text-zinc-500">Run query or preview to list results</div>
-            <button class="border p-2 rounded {theme.mediumBorderColor}" on:click={()=>runQuery = !runQuery}>Run Query</button>
-            <button class="border p-2 rounded {theme.lightBackgroundColor}" on:click={()=>runQuery = !runQuery}>Preview</button>
+            <button disabled={Object.keys(missingTables).length>0} class:opacity-50={Object.keys(missingTables).length>0} class="border p-2 rounded {theme.mediumBorderColor}" on:click={()=>runQuery = !runQuery}>Run Query</button>
+            <button disabled={Object.keys(missingTables).length>0} class:opacity-50={Object.keys(missingTables).length>0} class="border p-2 rounded bg-zinc-50" on:click={()=>runQuery = !runQuery}>Preview</button>
           </div>
         {:else}
           
@@ -611,7 +640,7 @@
 
               <a
                 href="./"
-                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} text-zinc-800 p-1 text-sm rounded"
+                class="w-full block text-center border {theme.mediumBorderColor} bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
                 >Close without Saving</a
               >
             {/if}
@@ -645,7 +674,7 @@
           <button
             disabled={!selectedView.baseTable}
             class:opacity-60={!selectedView.baseTable}
-            class="w-full {theme.lightBackgroundColor} text-zinc-800 p-1 text-sm rounded"
+            class="w-full bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
             >View SQL Query</button
           >
         </div>

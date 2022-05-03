@@ -21,7 +21,7 @@ export function topNav() {
     if (activeSchema !== null) {
 
         schemaName.innerHTML = /*HTML*/
-            `<div class="$bg-orange-500 $text-white text-sm px-1 rounded mr-2">D</div>
+            `<div class="$bg-indigo-500 $text-white text-sm px-1 rounded mr-2">D</div>
     <div class="$text-zinc-800 space-x-2">
         <span>database</span>
         <span class="$text-zinc-500">/</span>
@@ -32,7 +32,7 @@ export function topNav() {
 
     } else {
         schemaName.innerHTML = /*HTML*/
-            `<div class="$bg-orange-500 $text-white text-sm px-1 rounded mr-2">M</div>
+            `<div class="$bg-indigo-500 $text-white text-sm px-1 rounded mr-2">M</div>
     <div class="$text-zinc-800 space-x-2">
         <span>D</span>
     </div>`;

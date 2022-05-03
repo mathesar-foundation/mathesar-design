@@ -33,17 +33,21 @@
 			<i class="ri-arrow-drop-down-line align-bottom" />
 		</div>
 		<div slot="menu">
-			<input
-				type="text"
-				class="p-2 w-full bg-zinc-100 bg-opacity-60"
-				placeholder="Search Tables"
-				bind:value={searchTerm}
-			/>
+			
+
+			<div class="border flex items-center flex-grow border rounded overflow-hidden m-2">
+				<i class="ri-search-line align-bottom px-1 text-zinc-500" />
+				<input
+				  type="text"
+				  class="bg-zinc-100 bg-opacity-40 flex-grow p-1 text-sm"
+				  placeholder="Search Tables"
+				/>
+			  </div>
 			
 			{#each filter(entities.tables,searchTerm) as table}
 				<div
 					on:click={() => dispatch('tableSelected', table)}
-					class="p-2 hover:bg-opacity-20 bg-opacity-0 bg-orange-500 cursor-pointer"
+					class="p-2 hover:bg-indigo-100 border-t cursor-pointer"
 				>
 					<div class="space-x-1">
 						<i class="ri-table-line align-bottom" /> <span>{table.name}</span>
@@ -55,12 +59,12 @@
 	</Dropdown>
 	{#if selectedView.baseTable}
 	<div>
-		<button class="border py-1 px-2 rounded {theme.lightBackgroundColor}">Open Table</button>
+		<button class="border py-1 px-2 rounded bg-zinc-50">Open Table</button>
 	</div>
 	{/if}
 	<div class="flex justify-end flex-grow">
 		<!--
-	<button class="border py-1 px-2 rounded {theme.lightBackgroundColor}">Leave Data Explorer</button>
+	<button class="border py-1 px-2 rounded bg-zinc-50">Leave Data Explorer</button>
 	-->
 	</div>
 </div>

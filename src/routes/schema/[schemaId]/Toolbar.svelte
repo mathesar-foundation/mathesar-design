@@ -38,7 +38,7 @@
     <button
       slot="toggle"
       class="text-lg px-2 py-3 space-x-1 bg-white bg-opacity-10 hover:bg-opacity-80"
-      ><i style="color:{table.color}" class="{icon[table.type]} align-bottom" />
+      ><i class="{icon[table.type]} align-bottom" />
       <span>{table.name}</span>
       <i class="ri-arrow-drop-down-line align-bottom" /></button
     >
@@ -85,7 +85,7 @@
         
       {/if}
       <div class="border-t border-zinc-200" />
-      <div
+      <div on:click={()=>dispatch('deleteTable')}
         class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 space-x-1 bg-zinc-200 cursor-pointer"
       >
         <i class="ri-delete-bin-line align-bottom" />
@@ -102,7 +102,7 @@
     <div slot="menu" class="p-2 space-y-2">
       <button
         on:click={() => dispatch("addFilter", table)}
-        class="p-1 {theme.lightBackgroundColor} w-full rounded"
+        class="p-1 bg-zinc-50 w-full rounded"
         ><i class="ri-add-line align-bottom" /> Add Filter</button
       >
 
@@ -131,7 +131,7 @@
           <div slot="menu">
             {#each table.columns as _column}
               <div
-                class="hover:bg-opacity-80 bg-opacity-0 cursor-pointer {theme.lightBackgroundColor} space-x-1 p-2"
+                class="hover:bg-opacity-80 bg-opacity-0 cursor-pointer bg-zinc-50 space-x-1 p-2"
                 on:click={() => (table.filter.column = _column)}
               >
                 <i class="{icon[_column.type]} align-bottom border rounded" />
@@ -154,7 +154,7 @@
               <div slot="menu">
                 {#each conditions[table.filter.column.type] as condition}
                   <div
-                    class="hover:bg-opacity-80 bg-opacity-0 cursor-pointer {theme.lightBackgroundColor} space-x-1 p-2"
+                    class="hover:bg-opacity-80 bg-opacity-0 cursor-pointer bg-zinc-50 space-x-1 p-2"
                     on:click={() => (table.filter.condition = condition)}
                   >
                     <span>{condition}</span>

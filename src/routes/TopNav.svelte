@@ -27,7 +27,7 @@
         <span><i class="ri-database-2-line align-bottom"></i> My Database</span>
         <span class=text-zinc-500>/</span>
         <div
-          class="bg-orange-500 text-white text-sm px-1 text-center rounded"
+          class="bg-indigo-500 text-white text-sm px-1 text-center rounded"
         >
           {_.startCase(schema.name.slice(0, 2))}
         </div>
@@ -60,11 +60,16 @@
     </div>
   </Dropdown>
   
+
+
+<div class="border flex items-center flex-grow border rounded overflow-hidden">
+  <i class="ri-search-line align-bottom px-1 text-zinc-500" />
   <input
-  type="text"
-  class="py-1 px-2 border flex-grow text-sm bg-zinc-100 rounded border-zinc-300"
-  placeholder="Search or Jump To…"
-/>
+    type="text"
+    class="bg-zinc-100 bg-opacity-40 flex-grow p-1 text-sm"
+    placeholder="Search or Jump To…"
+  />
+</div>
   <div
     on:click={localStorage.clear()}
     class="cursor-pointer text-zinc-500"

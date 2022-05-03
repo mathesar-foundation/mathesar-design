@@ -61,7 +61,7 @@
 
            {#each chunks as chunk}
             <pre class="flex">{#each chunk as term}
-                    <div class="rounded inline px-1" style="background-color:{term.match?hexToRGB(table.color,0.3):''};">
+                    <div class="rounded inline px-1">
                         {term.text}
                     </div>
                 {/each}</pre>  

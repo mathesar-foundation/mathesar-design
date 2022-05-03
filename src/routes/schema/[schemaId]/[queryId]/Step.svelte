@@ -59,7 +59,7 @@
 			<div slot="menu">
 				{#each selectedView.columns as column}
 					<div
-						class="hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor} space-x-1 p-2"
+						class="hover:bg-opacity-40 bg-opacity-0 bg-zinc-50 space-x-1 p-2"
 						on:click={() => (selectedView.steps[step].column = column)}
 					>
 						<i class="{icon[column.type]} align-bottom border rounded" /> <span>{column.alias}</span>
@@ -82,7 +82,7 @@
 				<div slot="menu">
 					{#each summarizations[selectedView.steps[step].column.type] as condition}
 						<div
-							class="hover:bg-opacity-40 bg-opacity-0 {theme.lightBackgroundColor} cursor-pointer space-x-1 p-2"
+							class="hover:bg-opacity-40 bg-opacity-0 bg-zinc-50 cursor-pointer space-x-1 p-2"
 							on:click={() => (selectedView.steps[step].summaryCondition = condition)}
 						>
 							<span>{_.startCase(condition)}</span>
@@ -117,7 +117,7 @@
 					<div slot="menu">
 						{#each conditions[selectedView.steps[step].column.type] as condition}
 							<div
-								class="hover:{theme.lightBackgroundColor} space-x-1 p-2"
+								class="hover:bg-zinc-50 space-x-1 p-2"
 								on:click={() => (selectedView.steps[step].condition = condition)}
 							>
 								<span>{condition}</span>

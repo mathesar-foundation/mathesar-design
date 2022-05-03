@@ -10,7 +10,7 @@
     <div class="grid grid-cols-3">
         <div class="col-span-1">Column</div>
         <div class="text-sm col-span-2">
-            <i class="{icon[column.type]} {column.source.table.color} align-bottom rounded" />
+            <i class="{icon[column.type]} align-bottom rounded" style="background-color: {column.source.table.color};"/>
             {column.name}
         </div>
     </div>
@@ -18,7 +18,7 @@
     <div class="grid grid-cols-3">
         <div class="col-span-1">Table</div>
         <div class="text-sm col-span-2">
-            <span class="rounded px-1 bg-opacity-20 {column.source.table.color}"
+            <span class="rounded px-1 bg-opacity-20" style="background-color: {column.source.table.color};"
                 >{column.source.table.name}</span
             >
         </div>
@@ -34,7 +34,7 @@
                 >
                 {externalLink.column}
             {/if}
-            <span class="rounded px-1 bg-opacity-20 {column.source.link.table.color}"
+            <span class="rounded px-1 bg-opacity-20" style="background-color: {column.source.link.table.color}"
                 >{column.source.link.table.name}</span
             >
             <div class="space-x-1">

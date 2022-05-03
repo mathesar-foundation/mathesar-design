@@ -64,7 +64,7 @@
 		<Dropdown>
 			<div
 				slot="toggle"
-				class="cursor-pointer {theme.lightBackgroundColor} py-1 px-2 rounded flex items-center"
+				class="cursor-pointer bg-zinc-50 py-1 px-2 rounded flex items-center"
 			>
 				<div class="flex-grow"><i class="{icon[column.aggregation]} align-bottom" /> {column.aggregation}</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
@@ -94,7 +94,7 @@
 		{#if !column.source.filter?.column}
 			<button
 				on:click={() => dispatch('addFilter', column)}
-				class="p-1 {theme.lightBackgroundColor} w-full rounded"
+				class="p-1 bg-zinc-50 w-full rounded"
 				><i class="ri-add-line align-bottom" /> Add Filter</button
 			>
 		{:else}
@@ -123,7 +123,7 @@
 					<div slot="menu">
 						{#each selectedView.columns as _column}
 							<div
-								class="hover:{theme.lightBackgroundColor} space-x-1 p-2 cursor-pointer"
+								class="hover:bg-zinc-50 space-x-1 p-2 cursor-pointer"
 								on:click={() => (column.source.filter.column = _column)}
 							>
 								<i class="{icon[_column.type]} align-bottom border rounded" />
@@ -146,7 +146,7 @@
 							<div slot="menu">
 								{#each conditions[column.source.filter.column.type] as condition}
 									<div
-										class="hover:{theme.lightBackgroundColor} space-x-1 p-2"
+										class="hover:bg-zinc-50 space-x-1 p-2"
 										on:click={() => (column.source.filter.condition = condition)}
 									>
 										<span>{condition}</span>
@@ -171,7 +171,7 @@
 	<div class="space-y-2 grid">
 		<button
 			on:click={dispatch('deleteColumn', column)}
-			class="{theme.lightBackgroundColor} p-1 rounded"
+			class="bg-zinc-50 p-1 rounded"
 			><i class="ri-delete-bin-line align-bottom" /> Delete Column</button
 		>
 	</div>

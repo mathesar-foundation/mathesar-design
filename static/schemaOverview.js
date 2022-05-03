@@ -33,7 +33,7 @@ export function schemaOverview(tables) {
         <h3 class="py-4 text-xl">Get Started</h3>
         <div class="grid grid-cols-4 gap-2">
             <div class="$bg-zinc-100 bg-opacity-40 p-2 space-y-2">
-                <div class="$bg-orange-500 py-1 px-2 bg-opacity-20 rounded flex items-center space-x-2">
+                <div class="$bg-indigo-500 py-1 px-2 bg-opacity-20 rounded flex items-center space-x-2">
                     <i class="${icon['table']} text-xl $text-zinc-800"></i>
                     <span>Create a Table</span>
                 </div>
@@ -44,7 +44,7 @@ export function schemaOverview(tables) {
                 </div>
             </div>
             <div class="$bg-zinc-100 bg-opacity-40 p-2 space-y-2">
-                <div class="$bg-orange-500 py-1 px-2 bg-opacity-20 rounded flex items-center space-x-2">
+                <div class="$bg-indigo-500 py-1 px-2 bg-opacity-20 rounded flex items-center space-x-2">
                     <i class="${icon['view']} text-xl $text-zinc-800"></i>
                     <span>Create a View</span>
                 </div>

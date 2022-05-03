@@ -24,7 +24,6 @@
 	let table = {};
 	let activeMode = 'table';
 
-
 	let openLinkOptions = false;
 
 	async function loadData() {
@@ -70,6 +69,17 @@
 		
 	}
 
+	function deleteTable(){
+		let tableIdx = entities.tables.indexOf(table);
+		entities.tables.splice(tableIdx,1);
+		entities = entities;
+
+		setTimeout(() => {
+			window.location.href= `/schema/${schemaId}`
+		}, "1000")
+		
+	}
+
 </script>
 
 {#await loadData()}
@@ -83,7 +93,7 @@
 	
 		<div class="flex overflow-hidden flex-col h-full flex-grow" style="height: calc(100vh - 52px);">
 			<Tabs />
-			<Toolbar on:switch={showMode} {table} on:linkTable={linkTable} on:CreateView={(e)=> openView(e.detail) } />
+			<Toolbar on:deleteTable={deleteTable} on:switch={showMode} bind:table={table} on:linkTable={linkTable} on:CreateView={(e)=> openView(e.detail) } />
 
 			{#if activeMode == 'edit'}
 				<Design {table} />

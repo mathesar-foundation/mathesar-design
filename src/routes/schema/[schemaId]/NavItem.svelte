@@ -6,7 +6,7 @@
 
 </script>
 
-<a class="block p-1 hover:bg-orange-500 hover:bg-opacity-20 rounded text-zinc-800" href="{ url }">
-    <i class="{icon[table.type]} align-bottom" style="color:{table.color}"></i> 
+<a class="block p-1 hover:bg-indigo-500 hover:bg-opacity-20 rounded text-zinc-800" href="{ url }">
+    <i class="{icon[table.type]} align-bottom"></i> 
     {table.name}
 </a>

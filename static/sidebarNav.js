@@ -41,12 +41,12 @@ export function sidebarNav(tables) {
         let createNavItem = function (table) {
             let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
             let tableIcon = `<i class="${icon[table.type]} align-bottom ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>${table.isMaterialized?`<span class="text-xs ml-1 align-text-bottom $text-zinc-500">M</span>`:''}`
-            let activeClasses = `${table.id == activeTable ? `$bg-orange-500 bg-opacity-40 font-semibold` : ''}`;
+            let activeClasses = `${table.id == activeTable ? `$bg-indigo-500 bg-opacity-40 font-semibold` : ''}`;
       
             if (!query) {
-                return `<a class="flex items-center ${table.unsaved?'bg-orange-200 bg-opacity-20 unsaved-table':''} $text-zinc-800 py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
+                return `<a class="flex items-center ${table.unsaved?'bg-indigo-200 bg-opacity-20 unsaved-table':''} $text-zinc-800 py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
                 <div class="mr-auto"><span class="mr-2">${tableIcon}</span>${table.name}</div>
-                ${table.unsaved?`<i class="ri-checkbox-blank-circle-fill text-orange-200 text-xs"></i>`:''}
+                ${table.unsaved?`<i class="ri-checkbox-blank-circle-fill text-indigo-200 text-xs"></i>`:''}
                 </a>`;
             } else {
                 return `<a class="block $text-zinc-800 py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">

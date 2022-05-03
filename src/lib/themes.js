@@ -82,12 +82,12 @@ export let themes = {
         tableBorderColor: 'border-zinc-300',
         tableBackgroundColor: 'bg-white',
         tableHeaderBackgroundColor: 'bg-white',
-        primaryColor: 'bg-orange-500',
+        primaryColor: 'bg-indigo-500',
         primaryBorderColor: 'border-zinc-800',
         inputBackgroundColor: 'bg-zinc-50',
         darkPrimaryColor: 'bg-zinc-100',
-        primaryTextColor: 'text-orange-600',
-        contrastTextColor: 'text-orange-900'
+        primaryTextColor: 'text-indigo-600',
+        contrastTextColor: 'text-indigo-900'
     }
 };
 

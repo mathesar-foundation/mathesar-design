@@ -32,8 +32,8 @@
     <div class="text-lg">Sample Schemas</div>
     {#each entities.schemas as schema,i}
 
-        <a class="block hover:bg-opacity-10 bg-opacity-0 bg-orange-500 border-2 p-4 text-lg rounded space-x-2 { theme.textColor } border-zinc-200" href="/schema/{i}">
-            <span class="bg-orange-500 text-white text-sm py-1 px-2 text-lg text-center rounded">{_.startCase(schema.name.slice(0,2))}</span>
+        <a class="block hover:bg-opacity-10 bg-opacity-0 bg-indigo-500 border-2 p-4 text-lg rounded space-x-2 { theme.textColor } border-zinc-200" href="/schema/{i}">
+            <span class="bg-indigo-500 text-white text-sm py-1 px-2 text-lg text-center rounded">{_.startCase(schema.name.slice(0,2))}</span>
             <span>{schema.name}</span>
         </a>
     {/each}
