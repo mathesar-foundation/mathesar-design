@@ -48,16 +48,16 @@
 
 {#if allowed}
 
-<div class="flex-grow space-y-2 {theme.darkBackgroundColor} p-4 border-b-4 {theme.tableBorderColor}">
+<div class="flex-grow space-y-2 {theme.darkBackgroundColor} p-4 border-b-4 border-zinc-200">
     <div class="flex items-center space-x-4">
-        <h3  class="{theme.textColor}">View Query</h3>
-        <button class="ml-auto {theme.textColor}"><i class="ri-edit-line align-bottom {theme.primaryTextColor}"></i> Edit in View Builder</button>
-        <button class="{theme.textColor}"><i class="ri-clipboard-line align-bottom {theme.primaryTextColor}"></i> Copy</button>
+        <h3  class="text-zinc-800">View Query</h3>
+        <button class="ml-auto text-zinc-800"><i class="ri-edit-line align-bottom {theme.primaryTextColor}"></i> Edit in View Builder</button>
+        <button class="text-zinc-800"><i class="ri-clipboard-line align-bottom {theme.primaryTextColor}"></i> Copy</button>
     </div>
-    <p class="text-sm {theme.mutedTextColor}"><i class="ri-error-warning-fill align-bottom"></i>Warning: Once you edit the generated query, you cannot go back and use the view editor interface to update or modify this view.</p>
+    <p class="text-sm text-zinc-500"><i class="ri-error-warning-fill align-bottom"></i>Warning: Once you edit the generated query, you cannot go back and use the view editor interface to update or modify this view.</p>
      
-    <div class="border p-2 {theme.tableBorderColor}">
-    <code class="{theme.textColor} text-sm space-y-1">
+    <div class="border p-2 border-zinc-200">
+    <code class="text-zinc-800 text-sm space-y-1">
 
            {#each chunks as chunk}
             <pre class="flex">{#each chunk as term}
@@ -75,6 +75,6 @@
 </div>
 {:else}
 
-<div class="p-2 {theme.textColor}">Not allowed</div>
+<div class="p-2 text-zinc-800">Not allowed</div>
 
 {/if}

@@ -501,7 +501,7 @@
   />
 
   <div
-    class="flex-grow flex {theme.textColor} max-w-full overflow-hidden"
+    class="flex-grow flex text-zinc-800 max-w-full overflow-hidden"
     style="height: calc(100vh - 120px);"
   >
     <div
@@ -526,13 +526,13 @@
 
     <div class="w-7/12 p-4 border-r border-l">
       <div
-        class="border overflow-hidden rounded {theme.tableBorderColor} flex flex-col h-full"
+        class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
         on:click|self={() => (inspector = { action: "Query Details" })}
       >
        
       {#if runQuery && !!entities.queries.find((v) => v.id == selectedView.id)}
           <div class="h-full w-full p-8 text-center space-y-2">
-            <div class="text-xl {theme.mutedTextColor}">Run query or preview to list results</div>
+            <div class="text-xl text-zinc-500">Run query or preview to list results</div>
             <button class="border p-2 rounded {theme.mediumBorderColor}" on:click={()=>runQuery = !runQuery}>Run Query</button>
             <button class="border p-2 rounded {theme.lightBackgroundColor}" on:click={()=>runQuery = !runQuery}>Preview</button>
           </div>
@@ -542,7 +542,7 @@
         {#if selectedView.columns.length > 0}
         <div class="p-2 flex items-center space-x-4">
           <h3 class="font-semibold">Result</h3>
-          <p class="text-sm {theme.mutedTextColor}">Query Run Succesfully</p>
+          <p class="text-sm text-zinc-500">Query Run Succesfully</p>
         </div>
         <TablePreview
           records={applySteps(selectedView.records, selectedView.steps)}
@@ -551,13 +551,13 @@
         />
       {:else if !selectedView.baseTable}
         <div
-          class="border-t {theme.darkBackgroundColor} opacity-40 text-center {theme.mutedTextColor} {theme.tableBorderColor} p-10 flex-grow"
+          class="border-t {theme.darkBackgroundColor} opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
         >
           <span class="text-xl">Select a base table to get started</span>
         </div>
       {:else}
         <div
-          class="border-t {theme.darkBackgroundColor} opacity-40 text-center {theme.mutedTextColor} {theme.tableBorderColor} p-10 flex-grow"
+          class="border-t {theme.darkBackgroundColor} opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
         >
           <span class="text-xl">Select or drop columns</span>
         </div>
@@ -573,7 +573,7 @@
     <div
       class="flex flex-col h-full overflow-y-scroll w-80 {theme.darkBackgroundColor}"
     >
-      <div class="text-sm font-semibold border-b {theme.tableBorderColor} p-2">
+      <div class="text-sm font-semibold border-b border-zinc-200 p-2">
         <h4 class="leading-6">{inspector.action}</h4>
       </div>
 
@@ -588,7 +588,7 @@
               >
               <input
                 type="text"
-                class="p-2 rounded {theme.inputBackgroundColor} border {theme.lightBorderColor}"
+                class="p-2 rounded bg-zinc-100 border border-zinc-300"
                 bind:value={selectedView.name}
               />
             </div>
@@ -597,7 +597,7 @@
                 on:click={saveQuery}
                 disabled={!selectedView.baseTable}
                 class:opacity-60={!selectedView.baseTable}
-                class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
+                class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
                 >Save Changes to Query</button
               >
             {:else}
@@ -605,22 +605,22 @@
                 on:click={saveQuery}
                 disabled={!selectedView.baseTable}
                 class:opacity-60={!selectedView.baseTable}
-                class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
+                class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
                 >Save Query</button
               >
 
               <a
                 href="./"
-                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
+                class="w-full block text-center border {theme.mediumBorderColor} {theme.lightBackgroundColor} text-zinc-800 p-1 text-sm rounded"
                 >Close without Saving</a
               >
             {/if}
           </div>
           {#if entities.queries.find((v) => v.id == selectedView.id)}
-            <div class="border-b {theme.tableBorderColor}" />
+            <div class="border-b border-zinc-200" />
             <div class="space-y-1">
               <h4 class="font-semibold text-sm">Publish as View</h4>
-              <p class="text-xs {theme.mutedTextColor}">
+              <p class="text-xs text-zinc-500">
                 Views differ from saved queries in that they don't include the Data
                 Explorer configuration—transformation steps, and filters—along with the query.
               </p>
@@ -629,14 +629,14 @@
               on:click={saveView}
               disabled={!selectedView.baseTable}
               class:opacity-60={!selectedView.baseTable}
-              class="w-full border {theme.mediumBorderColor} {theme.textColor} p-1 text-sm rounded"
+              class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
               >Publish View</button
             >
           {/if}
-          <div class="border-b {theme.tableBorderColor}" />
+          <div class="border-b border-zinc-200" />
           <div class="space-y-1">
             <h4 class="text-sm font-semibold">SQL Query</h4>
-            <p class="text-xs {theme.mutedTextColor}">
+            <p class="text-xs text-zinc-500">
               This view is a virtual table based on a SQL statement's result
               set. The SQL below can be used to recreate this view.
             </p>
@@ -645,7 +645,7 @@
           <button
             disabled={!selectedView.baseTable}
             class:opacity-60={!selectedView.baseTable}
-            class="w-full {theme.lightBackgroundColor} {theme.textColor} p-1 text-sm rounded"
+            class="w-full {theme.lightBackgroundColor} text-zinc-800 p-1 text-sm rounded"
             >View SQL Query</button
           >
         </div>

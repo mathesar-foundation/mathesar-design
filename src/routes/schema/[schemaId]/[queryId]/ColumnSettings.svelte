@@ -25,14 +25,14 @@
 <Modal title="Column Settings" open={showColumnModal} on:close={ closeModal }>
     <div slot="body" class="space-y-4 h-full flex flex-col">
 
-        <div class="space-y-2 {theme.textColor}">
+        <div class="space-y-2 text-zinc-800">
             <label class=" block" for="">Column Name</label>
-            <input bind:value={ activeColumn.name } type="text" class="p-2 w-full rounded bg-opacity-30 {theme.inputBackgroundColor} {theme.textColor}">
+            <input bind:value={ activeColumn.name } type="text" class="p-2 w-full rounded bg-opacity-30 bg-zinc-100 text-zinc-800">
             <div>Data Type: {activeColumn.type}</div>
         </div>
 
         {#if activeColumn.source}
-        <div class="border {theme.tableBorderColor} {theme.textColor} p-2 rounded space-y-2">
+        <div class="border border-zinc-200 text-zinc-800 p-2 rounded space-y-2">
             <h4 class="text-lg">Source</h4>
             <div>
                 
@@ -45,7 +45,7 @@
 
 
         
-        <div class="border {theme.tableBorderColor} {theme.textColor} p-2 rounded space-y-2">
+        <div class="border border-zinc-200 text-zinc-800 p-2 rounded space-y-2">
             <h4 class="text-lg">Filters ({activeColumn.filters?activeColumn.filters.length:0})</h4>
             
             {#if activeColumn.filters}
@@ -53,27 +53,27 @@
                     <div class="flex items-center space-x-2">
 
                         <Dropdown>
-                            <button class="{theme.mediumBackgroundColor} p-2 rounded {theme.textColor}" slot="toggle">
+                            <button class="bg-zinc-200 p-2 rounded text-zinc-800" slot="toggle">
                                 {filter.condition} <i class="ri-arrow-down-s-line align-bottom"></i>
                             </button>
                             <div slot="menu">
                                 {#each filterOptions as option}
-                                    <div class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}">{option}</div>
+                                    <div class="p-2 cursor-pointer hover:bg-zinc-200">{option}</div>
                                 {/each}
                             </div>
                         </Dropdown>
                     
                     
-                        <input bind:value={filter.value} class="{theme.inputBackgroundColor} p-2 rounded">
+                        <input bind:value={filter.value} class="bg-zinc-100 p-2 rounded">
                       
 
-                        <button class="{theme.textColor} {theme.darkPrimaryColor} py-2 px-3 rounded"><i class="ri-add-line align-bottom"></i>Add Filter</button>
-                        <button class="{theme.textColor} {theme.mediumBackgroundColor} py-2 px-3 rounded"><i class="ri-close-line align-bottom"></i></button>
+                        <button class="text-zinc-800 bg-zinc-100 py-2 px-3 rounded"><i class="ri-add-line align-bottom"></i>Add Filter</button>
+                        <button class="text-zinc-800 bg-zinc-200 py-2 px-3 rounded"><i class="ri-close-line align-bottom"></i></button>
                     </div>
                 {/each}
                 {:else}
 
-                <button class="{theme.textColor} {theme.darkPrimaryColor} py-2 px-3 rounded"><i class="ri-add-line align-bottom"></i>Add Filter</button>
+                <button class="text-zinc-800 bg-zinc-100 py-2 px-3 rounded"><i class="ri-add-line align-bottom"></i>Add Filter</button>
 
                 {/if}
         </div>
@@ -82,7 +82,7 @@
     
     </div>
     <div slot="footer" class="p-6 text-right space-x-1">
-        <button on:click={closeModal} class="p-2 {theme.mediumBackgroundColor} {theme.textColor} rounded">Cancel</button>
-        <button on:click={updateColumn} class="p-2 {theme.darkPrimaryColor} {theme.textColor} rounded">Apply</button>
+        <button on:click={closeModal} class="p-2 bg-zinc-200 text-zinc-800 rounded">Cancel</button>
+        <button on:click={updateColumn} class="p-2 bg-zinc-100 text-zinc-800 rounded">Apply</button>
     </div>
 </Modal>

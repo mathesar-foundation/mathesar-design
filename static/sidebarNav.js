@@ -40,18 +40,18 @@ export function sidebarNav(tables) {
 
         let createNavItem = function (table) {
             let tableURL = `${window.location.pathname}?activeSchema=${activeSchema}&activeTable=${table.id}`;
-            let tableIcon = `<i class="${icon[table.type]} align-bottom ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>${table.isMaterialized?`<span class="text-xs ml-1 align-text-bottom ${theme.mutedTextColor}">M</span>`:''}`
-            let activeClasses = `${table.id == activeTable ? `${theme.primaryColor} bg-opacity-40 font-semibold` : ''}`;
+            let tableIcon = `<i class="${icon[table.type]} align-bottom ${table.type == 'table' ? theme.primaryTextColor : theme.contrastTextColor}"></i>${table.isMaterialized?`<span class="text-xs ml-1 align-text-bottom $text-zinc-500">M</span>`:''}`
+            let activeClasses = `${table.id == activeTable ? `$bg-orange-500 bg-opacity-40 font-semibold` : ''}`;
       
             if (!query) {
-                return `<a class="flex items-center ${table.unsaved?'bg-orange-200 bg-opacity-20 unsaved-table':''} ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
+                return `<a class="flex items-center ${table.unsaved?'bg-orange-200 bg-opacity-20 unsaved-table':''} $text-zinc-800 py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
                 <div class="mr-auto"><span class="mr-2">${tableIcon}</span>${table.name}</div>
                 ${table.unsaved?`<i class="ri-checkbox-blank-circle-fill text-orange-200 text-xs"></i>`:''}
                 </a>`;
             } else {
-                return `<a class="block ${theme.textColor} py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
+                return `<a class="block $text-zinc-800 py-1 px-2 rounded mx-1 ${activeClasses}" href="${tableURL}">
                 <div class="mr-auto"><span class="mr-2">${tableIcon}</span>${table.name}</div>
-                <span class="text-sm ${theme.mutedTextColor}">${table.columns.length} Columns ${table.records.length} Records</span>
+                <span class="text-sm $text-zinc-500">${table.columns.length} Columns ${table.records.length} Records</span>
                 </a>`
             }
         };
@@ -59,12 +59,12 @@ export function sidebarNav(tables) {
         if (tablesList.length > 0) {
             const uniqueTypes = [...new Set(tablesList.map(item => item.type))].reverse();
             if (query){
-                sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${tablesList.length} results for '${query}'</div>`;
+                sidebarContent.innerHTML += `<div class="$text-zinc-800 p-2">${tablesList.length} results for '${query}'</div>`;
             };
             uniqueTypes.forEach(type => {
                 if (selectedTab == 'all') {
                     sidebarContent.innerHTML += `
-                    <div class="px-2 py-1 border-b ${theme.tableBorderColor} border-opacity-60 capitalize ${theme.textColor} font-semibold text-sm">${type}s</div>
+                    <div class="px-2 py-1 border-b $border-zinc-200 border-opacity-60 capitalize $text-zinc-800 font-semibold text-sm">${type}s</div>
                     <div class="flex-grow" style="overflow-y:scroll">
                         ${tablesList.filter(item => item.type == type).map(item => createNavItem(item)).join('')}
                     </div>
@@ -76,16 +76,16 @@ export function sidebarNav(tables) {
             });
         };
 
-        let emptyState = `<div class="${theme.mutedTextColor} ${theme.primaryBorderColor}">No ${selectedTab} available</div>`
-        let emptyStateAll = `<div class="${theme.mutedTextColor} ${theme.primaryBorderColor} ">No tables or views available</div>`
+        let emptyState = `<div class="$text-zinc-500 ${theme.primaryBorderColor}">No ${selectedTab} available</div>`
+        let emptyStateAll = `<div class="$text-zinc-500 ${theme.primaryBorderColor} ">No tables or views available</div>`
 
         if (tablesList.length == 0 && query !== undefined) {
             sidebarNav.style.display = 'none';
-            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">No Results for '${query}' <a href="#" class="whitespace-nowrap ${theme.primaryTextColor}">Clear Search</a></div>`;
+            sidebarContent.innerHTML += `<div class="$text-zinc-800 p-2">No Results for '${query}' <a href="#" class="whitespace-nowrap ${theme.primaryTextColor}">Clear Search</a></div>`;
         }
 
         if (tablesList.length == 0 && query == undefined) {
-            sidebarContent.innerHTML += `<div class="${theme.textColor} p-2">${selectedTab == 'all' ? emptyStateAll : emptyState} </div>`;
+            sidebarContent.innerHTML += `<div class="$text-zinc-800 p-2">${selectedTab == 'all' ? emptyStateAll : emptyState} </div>`;
         }
 
 
@@ -172,9 +172,9 @@ export function sidebarNav(tables) {
     sidebarWrapper.style.overflowY = 'hidden';
 
     sidebarWrapper.innerHTML = `
-    <div class="shrink-0 ${theme.mediumBackgroundColor} bg-opacity-40">
-        <a href="javascript:void(0)" data-target="default" class="${theme.textColor} ${theme.darkPrimaryColor} active bg-opacity-40 sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
-        <a href="javascript:void(0)" data-target="apps" class="${theme.textColor} bg-opacity-20 sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
+    <div class="shrink-0 $bg-zinc-200 bg-opacity-40">
+        <a href="javascript:void(0)" data-target="default" class="$text-zinc-800 $bg-zinc-100 active bg-opacity-40 sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-menu-line text-lg mx-auto"></i></a>
+        <a href="javascript:void(0)" data-target="apps" class="$text-zinc-800 bg-opacity-20 sidebar-nav flex items-center" style="width:40px; height:40px"><i class="ri-function-line text-lg mx-auto"></i></a>
     </div>`;
 
 
@@ -187,11 +187,11 @@ export function sidebarNav(tables) {
     ];
 
     appContent.innerHTML = `
-        <div class="px-2 py-1 border-b ${theme.tableBorderColor} border-opacity-60 text-sm ${theme.textColor}">Plugins</div>
-        <div class="p-2 ${theme.textColor} space-y-2">
+        <div class="px-2 py-1 border-b $border-zinc-200 border-opacity-60 text-sm $text-zinc-800">Plugins</div>
+        <div class="p-2 $text-zinc-800 space-y-2">
             ${apps.map(app => {
                 return `
-                <div class="p-2 ${theme.darkPrimaryColor} bg-opacity-30 space-y-2">
+                <div class="p-2 $bg-zinc-100 bg-opacity-30 space-y-2">
                     <h3>${app.name}</h3>
                     <p class="text-sm">${app.description}</p>
                     <button class="bg-green-500 text-sm px-2"><i class="ri-add-line align-bottom"></i> Add</button>

@@ -9,25 +9,25 @@
 </script>
 
 <div
-  class="p-2 flex space-x-3 items-center border-b {theme.backgroundColor} {theme.tableBorderColor}"
+  class="p-2 flex space-x-3 items-center border-b bg-white border-zinc-200"
 >
   <a
     href="/"
-    class="block {theme.mediumBackgroundColor} text-sm {theme.textColor} rounded px-1 text-opacity-40 border {theme.lightBorderColor}"
+    class="block bg-zinc-200 text-sm text-zinc-800 rounded px-1 text-opacity-40 border border-zinc-300"
     >Prototype</a
   >
 
   <div class="flex items-center mr-2 space-x-3">
     <div
-      class="border {theme.textColor} {theme.tableBorderColor} rounded flex items-center space-x-1 p-1 text-sm"
+      class="border text-zinc-800 border-zinc-200 rounded flex items-center space-x-1 p-1 text-sm"
     >
       {#if $page.params.schemaId}
         
 
         <span><i class="ri-database-2-line align-bottom"></i> My Database</span>
-        <span class={theme.mutedTextColor}>/</span>
+        <span class=text-zinc-500>/</span>
         <div
-          class="{theme.primaryColor} {theme.inverseTextColor} text-sm px-1 text-center rounded"
+          class="bg-orange-500 text-white text-sm px-1 text-center rounded"
         >
           {_.startCase(schema.name.slice(0, 2))}
         </div>
@@ -44,14 +44,14 @@
 
     <!--
         {#if $page.params.schemaId}
-        <a href="/schema/{ schema.id }/{uuidv4()}" class="border {theme.tableBorderColor} py-1 px-2 rounded {theme.textColor}">Data Explorer</a>
+        <a href="/schema/{ schema.id }/{uuidv4()}" class="border border-zinc-200 py-1 px-2 rounded text-zinc-800">Data Explorer</a>
         {/if}
         -->
 
    
   </div>
   <Dropdown>
-    <button class="border text-sm p-1 rounded {theme.tableBorderColor}" slot="toggle">
+    <button class="border text-sm p-1 rounded border-zinc-200" slot="toggle">
         New <i class="ri-add-line align-bottom"></i>
     </button>
     <div slot="menu">
@@ -62,12 +62,12 @@
   
   <input
   type="text"
-  class="py-1 px-2 border flex-grow text-sm {theme.inputBackgroundColor} rounded {theme.lightBorderColor}"
+  class="py-1 px-2 border flex-grow text-sm bg-zinc-100 rounded border-zinc-300"
   placeholder="Search or Jump To…"
 />
   <div
     on:click={localStorage.clear()}
-    class="cursor-pointer {theme.mutedTextColor}"
+    class="cursor-pointer text-zinc-500"
   >
     Reset
   </div>

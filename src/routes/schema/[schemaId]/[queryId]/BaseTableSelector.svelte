@@ -18,7 +18,7 @@
 </script>
 
 
-<div class="{theme.darkBackgroundColor} border-b-2 bg-opacity-20 {theme.textColor} p-2 flex items-center space-x-3">
+<div class="{theme.darkBackgroundColor} border-b-2 bg-opacity-20 text-zinc-800 p-2 flex items-center space-x-3">
 	<div class="font-semibold">Exploring</div>
 
 	<Dropdown closeOnClick={true} full={false} width={'w-96'}>
@@ -35,7 +35,7 @@
 		<div slot="menu">
 			<input
 				type="text"
-				class="p-2 w-full {theme.inputBackgroundColor} bg-opacity-60"
+				class="p-2 w-full bg-zinc-100 bg-opacity-60"
 				placeholder="Search Tables"
 				bind:value={searchTerm}
 			/>
@@ -43,12 +43,12 @@
 			{#each filter(entities.tables,searchTerm) as table}
 				<div
 					on:click={() => dispatch('tableSelected', table)}
-					class="p-2 hover:bg-opacity-20 bg-opacity-0 {theme.primaryColor} cursor-pointer"
+					class="p-2 hover:bg-opacity-20 bg-opacity-0 bg-orange-500 cursor-pointer"
 				>
 					<div class="space-x-1">
 						<i class="ri-table-line align-bottom" /> <span>{table.name}</span>
 					</div>
-					<div class="text-xs {theme.mutedTextColor}">{table.records.length} Records {table.columns.length} Columns</div>
+					<div class="text-xs text-zinc-500">{table.records.length} Records {table.columns.length} Columns</div>
 				</div>
 			{/each}
 		</div>

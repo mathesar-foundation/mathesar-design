@@ -53,7 +53,7 @@
 		<Dropdown full={true}>
 			<button
 				slot="toggle"
-				class="cursor-pointer w-full {theme.mediumBackgroundColor} py-1 px-2 text-sm flex items-center rounded"
+				class="cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded"
 			>
 				<div class="flex-grow">Select Step</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
@@ -61,37 +61,37 @@
 			<div slot="menu">
 				<div
 					on:click={() => newStep('filter')}
-					class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+					class="p-2 cursor-pointer hover:bg-zinc-200"
 				>
 					<i class="ri-filter-line align-bottom" /> Filter
 				</div>
 				<div
 					on:click={() => newStep('summarize')}
-					class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+					class="p-2 cursor-pointer hover:bg-zinc-200"
 				>
 					<i class="ri-layout-row-fill align-bottom" /> Summarize
 				</div>
 				<div
 					on:click={() => newStep('sort')}
-					class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+					class="p-2 cursor-pointer hover:bg-zinc-200"
 				>
 					<i class="ri-arrow-up-down-fill align-bottom" /> Sort
 				</div>
 				<div
 					on:click={() => newStep('deduplicate')}
-					class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+					class="p-2 cursor-pointer hover:bg-zinc-200"
 				>
 					<i class="ri-tools-line align-bottom" /> Deduplicate
 				</div>
 				<div
 					on:click={() => newStep('limit')}
-					class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+					class="p-2 cursor-pointer hover:bg-zinc-200"
 				>
 					<i class="ri-tools-line align-bottom" /> Limit
 				</div>
 				<div
 					on:click={() => newStep('offset')}
-					class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+					class="p-2 cursor-pointer hover:bg-zinc-200"
 				>
 					<i class="ri-tools-line align-bottom" /> Offset
 				</div>
@@ -100,7 +100,7 @@
 	{:else}
 		<button
 			disabled
-			class="opacity-40 cursor-pointer w-full {theme.mediumBackgroundColor} py-1 px-2 text-sm flex items-center rounded"
+			class="opacity-40 cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded"
 		>
 			<div class="flex-grow">Select Step</div>
 			<i class="ri-arrow-drop-down-line align-bottom" />
@@ -108,7 +108,7 @@
 	{/if}
 </div>
 
-<div class="border-t overflow-y-scroll p-2 {theme.tableBorderColor} space-y-2 flex-grow">
+<div class="border-t overflow-y-scroll p-2 border-zinc-200 space-y-2 flex-grow">
 	{#each Object.keys(selectedView.steps) as step,i}
 		<Step bind:minimize={ minimize[i] } on:previewStep on:deleteStep {step} bind:selectedView={selectedView} />
 	{/each}

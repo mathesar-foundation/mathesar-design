@@ -21,10 +21,10 @@ export function topNav() {
     if (activeSchema !== null) {
 
         schemaName.innerHTML = /*HTML*/
-            `<div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded mr-2">D</div>
-    <div class="${theme.textColor} space-x-2">
+            `<div class="$bg-orange-500 $text-white text-sm px-1 rounded mr-2">D</div>
+    <div class="$text-zinc-800 space-x-2">
         <span>database</span>
-        <span class="${theme.mutedTextColor}">/</span>
+        <span class="$text-zinc-500">/</span>
         <span class="font-semibold">
             <i class="ri-share-line align-bottom"></i> ${activeSchema}
         </span>
@@ -32,8 +32,8 @@ export function topNav() {
 
     } else {
         schemaName.innerHTML = /*HTML*/
-            `<div class="${theme.primaryColor} ${theme.inverseTextColor} text-sm px-1 rounded mr-2">M</div>
-    <div class="${theme.textColor} space-x-2">
+            `<div class="$bg-orange-500 $text-white text-sm px-1 rounded mr-2">M</div>
+    <div class="$text-zinc-800 space-x-2">
         <span>D</span>
     </div>`;
     }
@@ -46,7 +46,7 @@ export function topNav() {
 
     let accountSelector = document.createElement('div');
     accountSelector.classList.add('p-1');
-    accountSelector.innerHTML = `<i class="ri-user-fill align-bottom ${theme.textColor}"></i> <i class="ri-more-2-line align-bottom ${theme.textColor}"></i>`;
+    accountSelector.innerHTML = `<i class="ri-user-fill align-bottom $text-zinc-800"></i> <i class="ri-more-2-line align-bottom $text-zinc-800"></i>`;
 
 
     let newTableBtn = components.createButton('New Table', { style: 'secondary', icon: 'add' });
@@ -83,7 +83,7 @@ function createSchemaDropdown() {
 
     let listSchemas = function (_schemas) {
         let item = _schemas.map(schema => {
-            return `<div class="p-1 border ${theme.tableBorderColor}"><a class="${theme.primaryTextColor}" href="?activeSchema=${schema.name}">${schema.name}</a></div>`
+            return `<div class="p-1 border $border-zinc-200"><a class="${theme.primaryTextColor}" href="?activeSchema=${schema.name}">${schema.name}</a></div>`
         }).join('');
         return `${item}`
     }

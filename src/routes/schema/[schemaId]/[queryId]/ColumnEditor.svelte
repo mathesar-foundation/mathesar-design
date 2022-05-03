@@ -41,7 +41,7 @@
 		<label for="columnName">Name</label>
 		<input
 			id="columnName"
-			class="p-2 rounded {theme.inputBackgroundColor} border {theme.lightBorderColor} bg-opacity-80"
+			class="p-2 rounded bg-zinc-100 border border-zinc-300 bg-opacity-80"
 			type="text"
 			bind:value={column.alias}
 		/>
@@ -54,10 +54,10 @@
 	</div>
 
 	{#if records.some((r) => Array.isArray(r)) || column.aggregation}
-		<div class="border-t {theme.tableBorderColor}" />
+		<div class="border-t border-zinc-200" />
 		<div class="">
 			<h4>Aggregation Formula</h4>
-			<p class="text-sm {theme.mutedTextColor}">
+			<p class="text-sm text-zinc-500">
 				Columns containing multiple records are aggregated to be displayed in a single row.
 			</p>
 		</div>
@@ -73,7 +73,7 @@
 				{#each typeOptions[column.source.link.column.type].aggregations as aggregation}
 					<div
 						on:click={() => updateAggregation(aggregation)}
-						class="p-2 cursor-pointer hover:{theme.mediumBackgroundColor}"
+						class="p-2 cursor-pointer hover:bg-zinc-200"
 					>
 						<i class="{icon[aggregation]} align-bottom" />
 						{aggregation}
@@ -81,10 +81,10 @@
 				{/each}
 			</div>
 		</Dropdown>
-		<div class="border-t {theme.tableBorderColor}" />
+		<div class="border-t border-zinc-200" />
 		<div>
 			<h4>Filter Linked Records</h4>
-			<p class="text-sm {theme.mutedTextColor}">
+			<p class="text-sm text-zinc-500">
 				Add a filter to narrow down the linked records that will be included in this column.
 			</p>
 		</div>
@@ -98,7 +98,7 @@
 				><i class="ri-add-line align-bottom" /> Add Filter</button
 			>
 		{:else}
-			<div class="rounded {theme.mediumBackgroundColor} p-2 text-sm space-y-2">
+			<div class="rounded bg-zinc-200 p-2 text-sm space-y-2">
 				<div class="flex items-center">
 					<div class="font-semibold flex-grow">Column</div>
 					<button on:click={() => dispatch('deleteFilter', column)}>
@@ -108,7 +108,7 @@
 				<Dropdown>
 					<div
 						slot="toggle"
-						class="cursor-pointer {theme.inputBackgroundColor}  border {theme.lightBorderColor} p-2 rounded flex items-center"
+						class="cursor-pointer bg-zinc-100  border border-zinc-300 p-2 rounded flex items-center"
 					>
 						<div class="flex-grow space-x-1">
 							<i
@@ -138,7 +138,7 @@
 						<Dropdown>
 							<div
 								slot="toggle"
-								class="cursor-pointer border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 flex items-center whitespace-nowrap rounded"
+								class="cursor-pointer border bg-zinc-100 border-zinc-300 space-x-1 p-2 flex items-center whitespace-nowrap rounded"
 							>
 								<span>{column.source.filter.condition}</span>
 								<i class="ri-arrow-drop-down-line align-bottom" />
@@ -157,7 +157,7 @@
 					{/if}
 					{#if column.source.filter.value !== undefined}
 						<input
-							class="{theme.inputBackgroundColor} p-2 rounded w-full"
+							class="bg-zinc-100 p-2 rounded w-full"
 							type="text"
 							bind:value={column.source.filter.value}
 						/>
@@ -167,7 +167,7 @@
 		{/if}
 	{/if}
 
-	<div class="border-b flex-grow {theme.tableBorderColor}" />
+	<div class="border-b flex-grow border-zinc-200" />
 	<div class="space-y-2 grid">
 		<button
 			on:click={dispatch('deleteColumn', column)}

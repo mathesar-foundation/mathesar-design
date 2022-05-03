@@ -17,8 +17,8 @@
 
 <div class="overflow-y-scroll h-full flex flex-col">
 
-    <div class="drop-shadow-md flex { theme.tableBorderColor } {theme.mediumBackgroundColor} border-b" >
-        <div class="p-3 w-10 border-r {theme.tableBorderColor}"></div>
+    <div class="drop-shadow-md flex { theme.tableBorderColor } bg-zinc-200 border-b" >
+        <div class="p-3 w-10 border-r border-zinc-200"></div>
         {#each table.columns as column }
             <Column column={ column } table={ table }/> 
         {/each} 
@@ -28,7 +28,7 @@
         {#if table.records}     
             {#each table.records as record,i }
                 <div class="flex border-b { theme.tableBorderColor }">
-                    <div class="p-3 {theme.mediumBackgroundColor} bg-opacity-20 w-10 border-r {theme.tableBorderColor} text-xs {theme.mutedTextColor} text-center">{i}</div>
+                    <div class="p-3 bg-zinc-200 bg-opacity-20 w-10 border-r border-zinc-200 text-xs text-zinc-500 text-center">{i}</div>
                     {#each record as cell,j}
                         <Cell on:editCell={()=>dispatch('editCell',{table,columnIdx:j,recordIdx:i})} cell={ cell } column={ table.columns[j] }/>
                     {/each}

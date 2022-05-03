@@ -6,7 +6,7 @@
     export let externalLink;
 </script>
 
-<div class="border {theme.lightBorderColor} rounded p-2 space-y-4 text-sm">
+<div class="border border-zinc-300 rounded p-2 space-y-4 text-sm">
     <div class="grid grid-cols-3">
         <div class="col-span-1">Column</div>
         <div class="text-sm col-span-2">

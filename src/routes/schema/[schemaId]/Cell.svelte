@@ -10,7 +10,7 @@
 
 <div
   on:click={()=> dispatch('editCell')}
-  class="hover:bg-opacity-60 bg-opacity-0 {theme.darkPrimaryColor} cursor-pointer p-2 border-r w-80 space-y-1 {theme.tableBorderColor} {theme.textColor}"
+  class="hover:bg-opacity-60 bg-opacity-0 bg-zinc-100 cursor-pointer p-2 border-r w-80 space-y-1 border-zinc-200 text-zinc-800"
 >
   {#if column.aggregation == "List"}
     {#if Array.isArray(cell)}

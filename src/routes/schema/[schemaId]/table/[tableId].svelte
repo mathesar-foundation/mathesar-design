@@ -77,7 +77,7 @@
 {:then entities}
 
 	<TopNav {schema} />
-	<div class="w-screen flex {theme.darkPrimaryColor} bg-opacity-10">
+	<div class="w-screen flex bg-zinc-100 bg-opacity-10">
 	
 		<SideBar {schema} on:openObject={(e)=> window.location = `/schema/0/${e.detail.type}/${e.detail.id}` }/>
 	
@@ -97,7 +97,7 @@
 				<Table {table} />
 			{:else}
 				{#if table && table.type == 'table'}
-					<div class="p-5 {theme.textColor}">Table has no columns</div>
+					<div class="p-5 text-zinc-800">Table has no columns</div>
 				{/if}
 
 			{/if}

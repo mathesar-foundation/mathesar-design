@@ -31,7 +31,7 @@
 	}
 </script>
 
-<div class="p-2 border-b text-sm  {theme.lightBorderColor} flex">
+<div class="p-2 border-b text-sm  border-zinc-300 flex">
 	<div
 		on:click={() => (viewMode = 'available')}
 		class:font-semibold={viewMode == 'available'}
@@ -54,7 +54,7 @@
 			<input
 				type="text"
 				placeholder="Search Columns"
-				class="p-2  {theme.inputBackgroundColor}"
+				class="p-2  bg-zinc-100"
 			/>
 		</div>
 
@@ -82,7 +82,7 @@
 					</span>
 				</div>
 
-				<div class="border-l {theme.lightBorderColor} ml-4">
+				<div class="border-l border-zinc-300 ml-4">
 					{#each getReferenceTable(baseTable, column).columns as col}
 						{#if !isForeignKey(getReferenceTable(baseTable, column), col)}
 							<Column
@@ -104,7 +104,7 @@
 									>{getReferenceTable(getReferenceTable(baseTable, column), col).name}</span
 								>
 							</div>
-							<div class="border-l {theme.lightBorderColor} ml-4">
+							<div class="border-l border-zinc-300 ml-4">
 								{#each getReferenceTable(getReferenceTable(baseTable, column), col).columns as col2}
 									<Column
 										baseTable={getReferenceTable(baseTable, column)}
@@ -157,7 +157,7 @@
 						>
 					</div>
 
-					<div class="border-l {theme.lightBorderColor} ml-8">
+					<div class="border-l border-zinc-300 ml-8">
 						{#each getReferenceTable(table, column).columns as col}
 							{#if !isForeignKey(getReferenceTable(table, column), col)}
 								<Column
@@ -179,7 +179,7 @@
 										).color}">{getReferenceTable(getReferenceTable(table, column), col).name}</div
 									>
 								</div>
-								<div class="border-l {theme.lightBorderColor} ml-4">
+								<div class="border-l border-zinc-300 ml-4">
 									{#each getReferenceTable(getReferenceTable(table, column), col).columns as col2}
 										<Column
 											baseTable={getReferenceTable(table, column)}

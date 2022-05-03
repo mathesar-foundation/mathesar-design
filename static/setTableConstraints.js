@@ -172,15 +172,15 @@ function showForm(constraint) {
 
     form.innerHTML = `
         <div>
-            <h5 class="text-sm ${theme.mutedTextColor}">Constraint Name</h5>
+            <h5 class="text-sm $text-zinc-500">Constraint Name</h5>
             ${constraint.name}
         </div>
         <div>
-            <h5 class="text-sm ${theme.mutedTextColor}">Constraint Type</h5>
+            <h5 class="text-sm $text-zinc-500">Constraint Type</h5>
             ${constraint.type}
         </div>
         <div>
-            <h5 class="text-sm ${theme.mutedTextColor}">Columns</h5>
+            <h5 class="text-sm $text-zinc-500">Columns</h5>
             ${constraint.columns.map(col => col).join('')}
         </div>
         
@@ -189,15 +189,15 @@ function showForm(constraint) {
     if (constraint.type == 'Foreign Key') {
         form.innerHTML += `
         <div>
-            <h5 class="text-sm ${theme.mutedTextColor}">Referenced Table</h5>
+            <h5 class="text-sm $text-zinc-500">Referenced Table</h5>
             ${constraint.referenceTable}
         </div>
         <div>
-            <h5 class="text-sm ${theme.mutedTextColor}">On Update</h5>
+            <h5 class="text-sm $text-zinc-500">On Update</h5>
             <div>No Action</div>
         </div>
         <div>
-            <h5 class="text-sm ${theme.mutedTextColor}">On Delete</h5>
+            <h5 class="text-sm $text-zinc-500">On Delete</h5>
             <div>No Action</div>
         </div>
         `

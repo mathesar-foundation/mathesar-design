@@ -114,7 +114,7 @@ function buildActiveTables() {
         tabsWrapper.append(createTab(tab));
     });
 
-    //tabsWrapper.innerHTML += `<div class="border-b ${theme.tableBorderColor} w-full flex items-center px-2"><button><i class="ri-add-line"></i></button></div>`
+    //tabsWrapper.innerHTML += `<div class="border-b $border-zinc-200 w-full flex items-center px-2"><button><i class="ri-add-line"></i></button></div>`
 }
 
 function createTab(tab) {
@@ -129,7 +129,7 @@ function createTab(tab) {
 
     let iconType = (selectTableById(tab) !== undefined) ? selectTableById(tab).type : 'error';;
 
-    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label space-x-1"><i class="${icon[iconType]} align-bottom ${iconClass}"></i><span>${tabLabel}</span></div> <button class="close-tab text-sm px-1 rounded ${theme.mediumBackgroundColor} bg-opacity-40"><i class="ri-close-line align-text-top"></i></button>`;
+    item.innerHTML = /*HTML*/`<div class="p-2 block tab-label space-x-1"><i class="${icon[iconType]} align-bottom ${iconClass}"></i><span>${tabLabel}</span></div> <button class="close-tab text-sm px-1 rounded $bg-zinc-200 bg-opacity-40"><i class="ri-close-line align-text-top"></i></button>`;
 
     item.querySelector('.close-tab').addEventListener('click', function () {
         closeActiveTable(tab);
@@ -152,9 +152,9 @@ function createTab(tab) {
 if (activeSchema ==  null && activeTable == null) {
     let schemaList = document.createElement('div');
     schemaList.style.height = 'calc(100vh - 51px)';
-    schemaList.innerHTML = `<div class="${theme.textColor} p-2 space-y-2">
+    schemaList.innerHTML = `<div class="$text-zinc-800 p-2 space-y-2">
     <h3 class="text-lg">Schemas (${savedTables.length})</h3>
-    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="?activeSchema=${t.name}"><div>${t.name}</div> <span class="${theme.mutedTextColor} text-sm">${t.description}</span></a>`).join('')}
+    ${savedTables.map(t => `<a class="border ${theme.primaryBorderColor} border-opacity-40 block p-2" href="?activeSchema=${t.name}"><div>${t.name}</div> <span class="$text-zinc-500 text-sm">${t.description}</span></a>`).join('')}
     
     </div>`
     appWrapper.append(schemaList)
@@ -307,7 +307,7 @@ export function createColumnSelector(table, fn, options) {
         //console.log(valueSample);
 
         let label = document.createElement('label');
-        label.innerHTML = `${col.name} <span class="text-xs ${theme.mutedTextColor}">(Example values: ${valueSample})</span>`;
+        label.innerHTML = `${col.name} <span class="text-xs $text-zinc-500">(Example values: ${valueSample})</span>`;
         let iconType = createIcon(col.type);
         iconType.classList.add('mr-2');
 
@@ -411,7 +411,7 @@ export function linkToTable(col) {
             selectorHeader.innerHTML = `<h4>Select a Column To Link To</h4>`
             columnSelector.appendChild(selectorHeader);
 
-            columnSelector.prepend(createNote(`Note: You can only link a single record from the <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> table to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${activeTableName}</span> records to each <span class="${theme.mediumBackgroundColor} ${theme.textColor} px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="javascript:void(0)" data-modal="tableRelationships" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`));
+            columnSelector.prepend(createNote(`Note: You can only link a single record from the <span class="$bg-zinc-200 $text-zinc-800 px-1 rounded">${table.name}</span> table to each <span class="$bg-zinc-200 $text-zinc-800 px-1 rounded">${activeTableName}</span> record. If you need to link multiple <span class="$bg-zinc-200 $text-zinc-800 px-1 rounded">${activeTableName}</span> records to each <span class="$bg-zinc-200 $text-zinc-800 px-1 rounded">${table.name}</span> record you need to set a different relationship. <a href="javascript:void(0)" data-modal="tableRelationships" class="${theme.primaryTextColor}">Click here to learn more about table relationships.</a>`));
             columnSelector.appendChild(createColumnSelector(selectTableById(selectedTableId), showLinkOptions));
 
             columnSelector.appendChild(createNote(`Note: We recommend that you select a column that has unique values. We've pre-selected a column for you if we've found one.`));
@@ -456,7 +456,7 @@ export function linkToMultiple(table) {
         let item = document.createElement('a');
         item.setAttribute('href', 'javascript:void(0)')
         item.classList.add('border', theme.lightBorderColor, 'p-1', 'block');
-        item.innerHTML = `${table.name} <span class="${theme.mutedTextColor}">${table.columns[1].name}</span>`;
+        item.innerHTML = `${table.name} <span class="$text-zinc-500">${table.columns[1].name}</span>`;
         item.addEventListener('click', function () {
             selectedTable.push(table);
             item.classList.add(theme.mediumBackgroundColor);
@@ -502,7 +502,7 @@ export function linkToMultiple(table) {
 
 
     let warning = document.createElement('div');
-    warning.innerHTML = `<div class="mt-2 text-sm ${theme.mutedTextColor}">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
+    warning.innerHTML = `<div class="mt-2 text-sm $text-zinc-500">A junction table will be created in order to establish a many-to-many relationship between the current and the selected table.</div>`;
 
     gridContainer.appendChild(warning);
     gridContainer.appendChild(gridContainerActions);

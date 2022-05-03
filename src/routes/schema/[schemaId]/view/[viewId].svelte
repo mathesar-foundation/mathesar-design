@@ -83,7 +83,7 @@
   <div>Loading (can be removed)</div>
 {:then entities}
   <TopNav {schema} />
-  <div class="w-screen flex {theme.darkPrimaryColor} bg-opacity-10">
+  <div class="w-screen flex bg-zinc-100 bg-opacity-10">
     <SideBar
       {schema}
       on:openObject={(e) =>

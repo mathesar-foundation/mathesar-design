@@ -21,49 +21,49 @@
 </script>
 
 <!--
-<div class="flex-grow space-y-2 {theme.backgroundColor} p-4 border-b-4 {theme.tableBorderColor}">
-    <h3  class="{theme.textColor}">Edit View</h3>
+<div class="flex-grow space-y-2 bg-white p-4 border-b-4 border-zinc-200">
+    <h3  class="text-zinc-800">Edit View</h3>
 
 
-    <div class="{theme.textColor} space-y-2">
+    <div class="text-zinc-800 space-y-2">
 
-    <div class="border rounded space-y-2 p-2 {theme.tableBorderColor}">
+    <div class="border rounded space-y-2 p-2 border-zinc-200">
 
     {#each table.columns as column}
-        <div class="space-y-2 border p-2 rounded {theme.tableBorderColor}">
-        <div class="space-x-1 {theme.tableBorderColor}">
+        <div class="space-y-2 border p-2 rounded border-zinc-200">
+        <div class="space-x-1 border-zinc-200">
             <i style="background-color: {column.color};" class="rounded {icon[column.type]} align-bottom"></i>
             <span>{column.name}</span>
         </div>
             <div class="flex space-x-1">
-                <span class="{theme.mutedTextColor}">From</span>
-                <span class="rounded {theme.mediumBackgroundColor} px-1">{column.source.tableName}</span>
-                <span class="rounded {theme.mediumBackgroundColor} px-1">{column.source.columnName}</span>
+                <span class="text-zinc-500">From</span>
+                <span class="rounded bg-zinc-200 px-1">{column.source.tableName}</span>
+                <span class="rounded bg-zinc-200 px-1">{column.source.columnName}</span>
             </div>
    
             {#if column.source.filter}
                 <div class="flex space-x-1">
-                <span class="{theme.mutedTextColor}">Where</span>
+                <span class="text-zinc-500">Where</span>
                 {#each column.source.filter as filter}
-                    <span class="rounded {theme.mediumBackgroundColor} px-1">{filter.columnId}</span>
-                    <span class="rounded {theme.mediumBackgroundColor} px-1">{filter.function}</span>
-                    <span class="rounded {theme.mediumBackgroundColor} px-1">{filter.pattern}</span>
+                    <span class="rounded bg-zinc-200 px-1">{filter.columnId}</span>
+                    <span class="rounded bg-zinc-200 px-1">{filter.function}</span>
+                    <span class="rounded bg-zinc-200 px-1">{filter.pattern}</span>
                 {/each}
                 </div>
             {/if}
     
             {#if column.source.formula}
             <div class="flex space-x-1">
-                <div class="{theme.mutedTextColor}">Formula</div>
-                <span class="rounded {theme.mediumBackgroundColor} px-1">{column.source.formula.expression}</span>
+                <div class="text-zinc-500">Formula</div>
+                <span class="rounded bg-zinc-200 px-1">{column.source.formula.expression}</span>
                 </div>
             {/if}
 
             {#if column.aggregation}
                 <div class="flex space-x-1">
-                    <div class="{theme.mutedTextColor}">Aggregation</div>
-                    <span class="rounded {theme.mediumBackgroundColor} px-1">{column.aggregation.function}</span>
-                    <span class="rounded {theme.mediumBackgroundColor} px-1">{column.aggregation.option}</span>
+                    <div class="text-zinc-500">Aggregation</div>
+                    <span class="rounded bg-zinc-200 px-1">{column.aggregation.function}</span>
+                    <span class="rounded bg-zinc-200 px-1">{column.aggregation.option}</span>
                 </div>
             {/if}
         </div>
@@ -75,15 +75,15 @@
      
     {#if table.group}
     <div class="flex space-x-1">
-        <div class="{theme.mutedTextColor}">Group By</div>
-        <span class="rounded {theme.mediumBackgroundColor} px-1">{table.group.tableId}</span>
-        <span class="rounded {theme.mediumBackgroundColor} px-1">{table.group.columnId}</span>
+        <div class="text-zinc-500">Group By</div>
+        <span class="rounded bg-zinc-200 px-1">{table.group.tableId}</span>
+        <span class="rounded bg-zinc-200 px-1">{table.group.columnId}</span>
     </div>
 
     {/if}
     {#if table.join}
     <div>
-        <div class="border p-2 {theme.tableBorderColor}">
+        <div class="border p-2 border-zinc-200">
             From 
             <span class="border px-1">{ table.join.tableLeft }</span> 
             Inner Join 

@@ -12,7 +12,7 @@ export function createLookupMenu(cell) {
     menu.style.position = 'absolute';
     menu.style.width = '280px';
 
-    //menu.innerHTML = `<div class="${theme.textColor} text-lg">Search Records</div>`
+    //menu.innerHTML = `<div class="$text-zinc-800 text-lg">Search Records</div>`
 
     let summaryRecords = selectTableByName(cell.lookupTable).records.map(record => record);
 
@@ -49,7 +49,7 @@ export function createLookupMenu(cell) {
 
 
         recordsList.innerHTML =
-            `<div class="${theme.textColor} py-1 px-2 border-b flex align-center ${theme.tableBorderColor}">
+            `<div class="$text-zinc-800 py-1 px-2 border-b flex align-center $border-zinc-200">
                 <div>${records.length} Records</div>
                 <a href="javascript:void(0)" id="selectColumns" class="ml-auto text-sm ${theme.primaryTextColor}"><i class="ri-settings-4-line align-bottom"></i> Preferences</a> 
             </div>`;
@@ -83,9 +83,9 @@ export function createLookupMenu(cell) {
                 .map(([r, i]) => {
                     console.log(r);
                     if (r.length > 0) {
-                        return `<div class="flex space-x-2"><div class="${theme.mutedTextColor}">${columns[i]}:</div><div>${r}</div></div>`
+                        return `<div class="flex space-x-2"><div class="$text-zinc-500">${columns[i]}:</div><div>${r}</div></div>`
                     } else {
-                        return `<div class="flex space-x-2"><div class="${theme.mutedTextColor}">${columns[i]}:</div><div class="italic ${theme.mutedTextColor}">NULL</div></div>`
+                        return `<div class="flex space-x-2"><div class="$text-zinc-500">${columns[i]}:</div><div class="italic $text-zinc-500">NULL</div></div>`
                     }
 
                 }).join('');
@@ -138,9 +138,9 @@ export function createLookupMenu(cell) {
         if (filteredRecords.length == 0) {
             //recordsList.innerHTML = filteredRecords.length;
             recordsList.childNodes[1].innerHTML += `
-            <div class="p-1 ${theme.textColor}">
+            <div class="p-1 $text-zinc-800">
             <h4>No results found for '${searchRecords.value}'.</h4>
-            <div class="text-sm ${theme.mutedTextColor}">Try changing the table link preferences for this column or add a new record for '${searchRecords.value}'.</div>
+            <div class="text-sm $text-zinc-500">Try changing the table link preferences for this column or add a new record for '${searchRecords.value}'.</div>
             </div>
             `;
             recordsList.childNodes[1].append(

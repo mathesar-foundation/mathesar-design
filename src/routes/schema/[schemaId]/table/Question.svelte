@@ -9,9 +9,9 @@
 
 </script>
 
-<div class="{theme.textColor} space-y-2">
+<div class="text-zinc-800 space-y-2">
        
-    <div class="flex items-center border {theme.tableBorderColor} rounded p-2">
+    <div class="flex items-center border border-zinc-200 rounded p-2">
         <p>Can a single {table.name} record be linked to more than one {selectedTable.name} record?</p>
         <div class="ml-auto">
             <div class="space-x-2"><input bind:group={ answers[0] } value="Yes" type="radio" name="q1" id="a1"> <label for="a1">Yes</label></div>
@@ -19,7 +19,7 @@
         </div>
 
     </div>
-    <div class="flex items-center border {theme.tableBorderColor} rounded p-2">
+    <div class="flex items-center border border-zinc-200 rounded p-2">
         <p>Can a single {selectedTable.name} record be linked to more than one {table.name} record?</p>
 
         <div class="ml-auto">

@@ -35,7 +35,7 @@
 {:then entities}
   <TopNav {schema} />
 
-  <div class="flex flex-grow {theme.darkPrimaryColor} bg-opacity-10">
+  <div class="flex flex-grow bg-zinc-100 bg-opacity-10">
     <SideBar
       expanded={true}
       on:openObject={(e) =>
@@ -43,18 +43,18 @@
       {schema}
     />
 
-    <div class="space-y-4 w-full {theme.textColor}">
+    <div class="space-y-4 w-full text-zinc-800">
       <div
-        class="flex items-center space-x-2 bg-opacity-10 p-8 {theme.primaryColor}"
+        class="flex items-center space-x-2 bg-opacity-10 p-8 bg-orange-500"
       >
         <div
-          class="{theme.primaryColor} {theme.inverseTextColor} text-2xl py-2 w-12 text-center rounded"
+          class="bg-orange-500 text-white text-2xl py-2 w-12 text-center rounded"
         >
           {_.startCase(schema.name.slice(0, 2))}
         </div>
         <div>
           <h2 class="text-xl font-semibold">{schema.name}</h2>
-          <p class="text-sm {theme.mutedTextColor}">
+          <p class="text-sm text-zinc-500">
             {schema.tables.filter((t) => t.type == "table").length} Tables
             {schema.tables.filter((t) => t.type == "view").length} Views
           </p>
@@ -80,7 +80,7 @@
         <div class="border-b py-2">
             <h3 class="text-lg">Activity</h3>
             </div>
-        <p class={theme.mutedTextColor}>No Activity</p>
+        <p class=text-zinc-500>No Activity</p>
 
         <div class="border-b py-2">
             <h3 class="text-lg">Get Started</h3>

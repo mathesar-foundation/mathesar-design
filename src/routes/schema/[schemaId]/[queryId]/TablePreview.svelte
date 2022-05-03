@@ -15,11 +15,11 @@
 
 <div
 on:click|self={() => (inspector = { action: "Query Details" })}
-  class="overflow-scroll border-t flex-grow {theme.darkBackgroundColor} bg-opacity-10 {theme.tableBorderColor}"
+  class="overflow-scroll border-t flex-grow {theme.darkBackgroundColor} bg-opacity-10 border-zinc-200"
 >
   <div class="flex w-max items-stretch">
     {#each selectedView.columns as column}
-      <div class="border-r w-64 {theme.tableBorderColor}">
+      <div class="border-r w-64 border-zinc-200">
         <div
           on:click={() => (inspector = { action: "Column", column: column })}
           class="{inspector.column == column
@@ -45,10 +45,10 @@ on:click|self={() => (inspector = { action: "Query Details" })}
     <div>
       {#each records as record, j}
 
-        <div class="flex border-b {theme.tableBorderColor}">
+        <div class="flex border-b border-zinc-200">
           {#each record as cell, i}
             <div
-              class="w-64 border-r space-y-1 {theme.tableBorderColor} p-2 {getColumnIndex(
+              class="w-64 border-r space-y-1 border-zinc-200 p-2 {getColumnIndex(
                 selectedView,
                 inspector.column
               ) == i
@@ -85,6 +85,6 @@ on:click|self={() => (inspector = { action: "Query Details" })}
   </div>
   
 </div>
-<div class="{theme.tableBorderColor} border-t p-2 {theme.darkBackgroundColor}">
+<div class="border-zinc-200 border-t p-2 {theme.darkBackgroundColor}">
 	{selectedView.records?.length || 0} Records
 </div>

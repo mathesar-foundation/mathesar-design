@@ -32,61 +32,61 @@
 </script>
 
 <div
-  class="{theme.textColor} flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  {theme.tableBorderColor}"
+  class="text-zinc-800 flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  border-zinc-200"
 >
   <Dropdown>
     <button
       slot="toggle"
-      class="text-lg px-2 py-3 space-x-1 {theme.backgroundColor} bg-opacity-10 hover:bg-opacity-80"
+      class="text-lg px-2 py-3 space-x-1 bg-white bg-opacity-10 hover:bg-opacity-80"
       ><i style="color:{table.color}" class="{icon[table.type]} align-bottom" />
       <span>{table.name}</span>
       <i class="ri-arrow-drop-down-line align-bottom" /></button
     >
     <div slot="menu">
       <div
-        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
       >
         Rename {_.startCase(table.type)}
       </div>
       <div
-        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
       >
         Duplicate {_.startCase(table.type)}
       </div>
 
       {#if table.type == "table"}
-        <div class="border-t {theme.tableBorderColor}" />
+        <div class="border-t border-zinc-200" />
         <div
-          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
         >
           Table Constraints
         </div>
         <div
-          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
         >
           Table Preferences
         </div>
         <div
           on:click={() => dispatch("CreateView", newView(table))}
-          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
         >
           Open in Data Explorer
         </div>
       {/if}
 
       {#if table.type == "view"}
-        <div class="border-t {theme.tableBorderColor}" />
+        <div class="border-t border-zinc-200" />
     
         <div on:click={()=>dispatch('openQuery')}
-          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 {theme.mediumBackgroundColor} cursor-pointer"
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
         >
         View SQL Query
         </div>
         
       {/if}
-      <div class="border-t {theme.tableBorderColor}" />
+      <div class="border-t border-zinc-200" />
       <div
-        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 space-x-1 {theme.mediumBackgroundColor} cursor-pointer"
+        class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 space-x-1 bg-zinc-200 cursor-pointer"
       >
         <i class="ri-delete-bin-line align-bottom" />
         <span>Delete {_.startCase(table.type)}</span>
@@ -116,7 +116,7 @@
         <Dropdown>
           <div
             slot="toggle"
-            class="cursor-pointer {theme.inputBackgroundColor}  border {theme.lightBorderColor} p-2 rounded flex items-center"
+            class="cursor-pointer bg-zinc-100  border border-zinc-300 p-2 rounded flex items-center"
           >
             <div class="flex-grow space-x-1">
               <i
@@ -146,7 +146,7 @@
             <Dropdown>
               <div
                 slot="toggle"
-                class="cursor-pointer border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 flex items-center whitespace-nowrap rounded"
+                class="cursor-pointer border bg-zinc-100 border-zinc-300 space-x-1 p-2 flex items-center whitespace-nowrap rounded"
               >
                 <span>{table.filter.condition}</span>
                 <i class="ri-arrow-drop-down-line align-bottom" />
@@ -165,7 +165,7 @@
           {/if}
           {#if table.filter.value !== undefined}
             <input
-              class="{theme.inputBackgroundColor} border {theme.lightBorderColor} p-2 rounded w-full"
+              class="bg-zinc-100 border border-zinc-300 p-2 rounded w-full"
               type="text"
               bind:value={table.filter.value}
             />
@@ -177,7 +177,7 @@
 </div>
 
 <!--
-<div class="{theme.textColor} flex items-center space-x-3 px-2 border-b {theme.tableBorderColor}">
+<div class="text-zinc-800 flex items-center space-x-3 px-2 border-b border-zinc-200">
 	<div class="flex-grow flex items-center space-x-3">
 		<Dropdown>
 			<button slot="toggle" class="text-xl"
@@ -185,29 +185,29 @@
 				{table.name} <i class="ri-arrow-drop-down-line align-bottom" /></button
 			>
 			<div slot="menu">
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
 					Table Constraints
 				</div>
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
 					Table Preferences
 				</div>
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
 					Delete Table
 				</div>
 			</div>
 		</Dropdown>
 
 		<Filter {table} />
-		<button class="border rounded py-1 px-2 {theme.tableBorderColor}"
+		<button class="border rounded py-1 px-2 border-zinc-200"
 			><i class="ri-arrow-up-down-fill align-bottom {theme.primaryTextColor}" /> Sort</button
 		>
-		<button class="border rounded py-1 px-2 {theme.tableBorderColor}"
+		<button class="border rounded py-1 px-2 border-zinc-200"
 			><i class="ri-layout-row-fill align-bottom {theme.primaryTextColor}" /> Group</button
 		>
 	</div>
 
 	{#if table.type == 'view'}
-		<div class="border-l flex items-center p-2 space-x-2 {theme.tableBorderColor}">
+		<div class="border-l flex items-center p-2 space-x-2 border-zinc-200">
 			<div>Query</div>
 			<a
 				class="border rounded p-1 w-32 text-center {theme.mediumBorderColor}"
@@ -223,38 +223,38 @@
 
 	{#if table.type == 'table'}
 		<Dropdown>
-			<button slot="toggle" class="border rounded py-1 px-2 {theme.tableBorderColor}"
+			<button slot="toggle" class="border rounded py-1 px-2 border-zinc-200"
 				><i class="ri-add-line align-bottom" /> New View from Table</button
 			>
 			<div slot="menu">
 				<div
 					on:click={() => dispatch('CreateView', newView(table))}
-					class="px-2 py-1 p-2 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer"
+					class="px-2 py-1 p-2 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer"
 				>
 					<div>All Records</div>
-					<div class="text-sm {theme.mutedTextColor}">
+					<div class="text-sm text-zinc-500">
 						Create a view with all records from this table
 					</div>
 				</div>
 				<div
-					class="px-2 py-1 p-2 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer"
+					class="px-2 py-1 p-2 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer"
 				>
 					<div>Filtered Only</div>
-					<div class="text-sm {theme.mutedTextColor}">
+					<div class="text-sm text-zinc-500">
 						Create a view based on your current filter options
 					</div>
 				</div>
 				<div
-					class="px-2 py-1 p-2 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer"
+					class="px-2 py-1 p-2 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer"
 					on:click={() => handleToggleModal()}
 				>
 					<div>Duplicates Only</div>
-					<div class="text-sm {theme.mutedTextColor}">Create a view containing duplicates only</div>
+					<div class="text-sm text-zinc-500">Create a view containing duplicates only</div>
 				</div>
 			</div>
 		</Dropdown>
 
-		<button on:click={linkTable} class="border rounded py-1 px-2 {theme.tableBorderColor}"
+		<button on:click={linkTable} class="border rounded py-1 px-2 border-zinc-200"
 			><i class="ri-links-fill align-bottom" /> Link Table</button
 		>
 	{/if}

@@ -39,7 +39,7 @@ export function createTable(obj) {
                 header.innerHTML = `
                 <div>
                     <div>${headerIcon.outerHTML} ${col.name}</div>
-                    <div class="text-xs ${theme.mutedTextColor}"></div>
+                    <div class="text-xs $text-zinc-500"></div>
                 </div>`;
 
                 let referenceColor = selectTableByName(col.lookupTable).color;
@@ -120,7 +120,7 @@ export function createTable(obj) {
                 dataTypeLabel.innerHTML = `
                 <div class="p-1">${columnTypeIcon.outerHTML} ${linkedColumnType}</div>
                 <div class="text-sm">
-                <div class="mx-1 ${theme.mutedTextColor}">Linked to <i class="ri ri-table-line align-bottom"></i> ${columnConstraints.referenceTable}</div>
+                <div class="mx-1 $text-zinc-500">Linked to <i class="ri ri-table-line align-bottom"></i> ${columnConstraints.referenceTable}</div>
                 </div>`;
             }
 
@@ -527,7 +527,7 @@ export function createTable(obj) {
     let tableFooter = document.createElement('div');
     tableFooter.classList.add('mt-auto', 'p-2', theme.textColor, 'w-full')
 
-    document.querySelector('.table-wrapper').innerHTML += `<div class="mt-auto ${theme.textColor} p-2">${obj.records.length} Records</div>`;
+    document.querySelector('.table-wrapper').innerHTML += `<div class="mt-auto $text-zinc-800 p-2">${obj.records.length} Records</div>`;
 
     return tableWrapper;
 };
@@ -560,7 +560,7 @@ function createRecordLink(cell) {
 
 function createRecordSummary(cell) {
     let referencedTable = selectTableByName(cell.lookupTable);
-    let summary = referencedTable.columns.map(col => `<span class="${theme.mutedTextColor}">${col.name}:</span> ${getRecordByValue(cell.lookupTable, col.name, cell.value)}`).slice(0, 5).join(' ');
+    let summary = referencedTable.columns.map(col => `<span class="$text-zinc-500">${col.name}:</span> ${getRecordByValue(cell.lookupTable, col.name, cell.value)}`).slice(0, 5).join(' ');
     let link = document.createElement('div');
     link.classList.add('bg-' + selectTableByName(cell.lookupTable).color + '-600', 'rounded', 'p-1', 'bg-opacity-20', 'mr-1', 'text-sm');
     link.innerHTML = summary;
@@ -636,7 +636,7 @@ function createCellMenu(cell) {
         let item = document.createElement('a');
         item.href = 'javascript:void(0)';
         item.classList.add('p-1', theme.textColor, 'block')
-        item.innerHTML = `<i class="${option.icon} ${theme.mutedTextColor} mr-1 align-bottom"></i> ${option.label}`;
+        item.innerHTML = `<i class="${option.icon} $text-zinc-500 mr-1 align-bottom"></i> ${option.label}`;
         return item;
 
     }

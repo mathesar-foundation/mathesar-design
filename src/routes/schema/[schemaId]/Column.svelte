@@ -8,7 +8,7 @@
 </script>
 
 <div
-	class="border-r bg-opacity-0 hover:bg-opacity-40 {theme.darkBackgroundColor} flex items-center p-2 {theme.tableBorderColor} {theme.textColor} w-80"
+	class="border-r bg-opacity-0 hover:bg-opacity-40 {theme.darkBackgroundColor} flex items-center p-2 border-zinc-200 text-zinc-800 w-80"
 >
 	<Dropdown full={true}>
 		<div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
@@ -26,8 +26,8 @@
 
 		<div slot="menu" class="text-sm py-2">
 			<div class="space-y-2">
-				<div class="border-b space-y-2 px-2 pb-2 {theme.tableBorderColor}">
-					<div class="{theme.mutedTextColor} text-xs">Data Type</div>
+				<div class="border-b space-y-2 px-2 pb-2 border-zinc-200">
+					<div class="text-zinc-500 text-xs">Data Type</div>
 					<div class="space-x-1">
 						<i
 							class="rounded align-bottom {icon[column.type]}"
@@ -35,15 +35,15 @@
 						/>
 						<span class="capitalize">{column.type}</span>
 						<span
-							class="text-xs font-mono {theme.mediumBackgroundColor} px-1 rounded {theme.mutedTextColor}"
+							class="text-xs font-mono bg-zinc-200 px-1 rounded text-zinc-500"
 							>{column.db}</span
 						>
 					</div>
 
 					{#if column.source}
 						<div class="space-y-1 grid">
-							<h4 class="{theme.mutedTextColor} text-xs">Source</h4>
-							<div class="border {theme.tableBorderColor} rounded p-2 space-y-2">
+							<h4 class="text-zinc-500 text-xs">Source</h4>
+							<div class="border border-zinc-200 rounded p-2 space-y-2">
 								<div class="grid grid-cols-3">
 									<div class="col-span-1">Column</div>
 
@@ -78,18 +78,18 @@
 					{/if}
 				</div>
 
-				<div class="{theme.mutedTextColor} text-xs mb-1 px-2">Operations</div>
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
+				<div class="text-zinc-500 text-xs mb-1 px-2">Operations</div>
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
 					<i class="ri-sort-asc align-bottom" /> Sort Ascending
 				</div>
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
 					<i class="ri-sort-desc align-bottom" /> Sort Descending
 				</div>
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
 					<i class="ri-layout-row-fill align-bottom" /> Group by Column
 				</div>
 				{#if table.type == "table"}
-				<div class="px-2 py-1 hover:{theme.darkPrimaryColor} hover:bg-opacity-40 text-gray-500">
+				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 text-gray-500">
 					Delete Column
 				</div>
 				{/if}

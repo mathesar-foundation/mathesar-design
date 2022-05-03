@@ -35,9 +35,9 @@ export function setColumnPreferences(cell) {
     let searchFieldsForm = document.createElement('div');
     searchFieldsForm.classList.add('space-y-2');
     let selectedColumns = table.columns.map(col => {
-        return `<div class="border flex py-1 px-2 ${theme.mediumBackgroundColor} ${theme.tableBorderColor}">
+        return `<div class="border flex py-1 px-2 $bg-zinc-200 $border-zinc-200">
         
-        <i class="ri-align-justify align-bottom mr-1 ${theme.mutedTextColor}"></i> ${col.name} <i class="ri-delete-bin-line align-bottom ml-auto"></i>
+        <i class="ri-align-justify align-bottom mr-1 $text-zinc-500"></i> ${col.name} <i class="ri-delete-bin-line align-bottom ml-auto"></i>
         </div>`
     }).slice(0,5).join('');
 
@@ -50,7 +50,7 @@ export function setColumnPreferences(cell) {
 
     recordPreviewForm.innerHTML = `
         <div>
-        <p class="${theme.mutedTextColor}">Show a preview of related fields when linking a record to this column.</p>
+        <p class="$text-zinc-500">Show a preview of related fields when linking a record to this column.</p>
         </div>
 
         <div>
@@ -61,7 +61,7 @@ export function setColumnPreferences(cell) {
 
     searchFieldsForm.innerHTML = `
         <div>
-        <p class="${theme.mutedTextColor}">Specify the columns and the order to be used when searching records from the referenced table.</p>
+        <p class="$text-zinc-500">Specify the columns and the order to be used when searching records from the referenced table.</p>
         </div>
 
 
@@ -70,21 +70,21 @@ export function setColumnPreferences(cell) {
 
 
         
-        <div class="space-y-2 ${theme.tableBorderColor}">
+        <div class="space-y-2 $border-zinc-200">
 
-            <button class="py-1 px-2 border whitespace-nowrap ${theme.lightBorderColor} ${theme.textColor}">Reset to Default</button>
+            <button class="py-1 px-2 border whitespace-nowrap $border-zinc-300 $text-zinc-800">Reset to Default</button>
             
             <div>
         <h4>Select and Order Columns</h4>
-        <p class="${theme.mutedTextColor} text-sm">Drag-and-drop to reorder the columns</p>
+        <p class="$text-zinc-500 text-sm">Drag-and-drop to reorder the columns</p>
         </div>
 
             <div class="flex align-center space-x-2">
-                <select class="py-1 px-2 w-full ${theme.inputBackgroundColor} ${theme.textColor} bg-opacity-20 border ${theme.tableBorderColor}">
+                <select class="py-1 px-2 w-full $bg-zinc-100 $text-zinc-800 bg-opacity-20 border $border-zinc-200">
                     <option>- Select Column -</option>
                     ${allColumns}
                 </select>
-                <button class="py-1 px-2 border ${theme.lightBorderColor} ${theme.textColor}">
+                <button class="py-1 px-2 border $border-zinc-300 $text-zinc-800">
                     <i class="ri ri-add-line align-bottom"></i>
                 </button>
                 

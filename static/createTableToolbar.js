@@ -143,8 +143,8 @@ function linkTableWizard(obj) {
         questionsWrapper.append(diagram);
 
         let questionsList = [
-            `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${_table}</span> record?</div>`,
-            `<div>Can a single <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}</span> record be linked to more than one <span class="px-1 ${theme.primaryColor} bg-opacity-20 rounded">${obj.name}</span> record?</div>`
+            `<div>Can a single <span class="$bg-orange-500 bg-opacity-20 rounded px-1">${obj.name}</span> record be linked to more than one <span class="px-1 $bg-orange-500 bg-opacity-20 rounded">${_table}</span> record?</div>`,
+            `<div>Can a single <span class="$bg-orange-500 bg-opacity-20 rounded px-1">${_table}</span> record be linked to more than one <span class="px-1 $bg-orange-500 bg-opacity-20 rounded">${obj.name}</span> record?</div>`
         ];
 
         // createQuestions
@@ -179,10 +179,10 @@ function linkTableWizard(obj) {
 
                     summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="${theme.mutedTextColor}">We will create a new table to map records from <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${_table}</span></p>
+                    <p class="$text-zinc-500">We will create a new table to map records from <span class="$bg-orange-500 $text-zinc-800 bg-opacity-20 rounded px-1">${obj.name}</span> to records from <span class="$bg-orange-500 $text-zinc-800 bg-opacity-20 rounded px-1">${_table}</span></p>
                     <div class="my-1">
                     <label class="block">New Table Name</label>
-                    <input type="text" class="${theme.inputBackgroundColor} bg-opacity-20 ${theme.tableBorderColor} border p-1" value="${_table}_mapping_${obj.name}">
+                    <input type="text" class="$bg-zinc-100 bg-opacity-20 $border-zinc-200 border p-1" value="${_table}_mapping_${obj.name}">
                     </div>`;
 
                    
@@ -199,10 +199,10 @@ function linkTableWizard(obj) {
                         //} else {
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="${theme.mutedTextColor}">We will create a new column in the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${_table}</span> table.</p>
+                    <p class="$text-zinc-500">We will create a new column in the <span class="$bg-orange-500 $text-zinc-800 bg-opacity-20 rounded px-1">${_table}</span> table and set up a foreign key constraint to the <span class="$bg-orange-500 $text-zinc-800 bg-opacity-20 rounded px-1">${_table}</span> table.</p>
                     <div class="my-1">
                     <label class="block">New Column Name</label>
-                    <input type="text" class="${theme.inputBackgroundColor} bg-opacity-20 ${theme.tableBorderColor} border p-1" value="${obj.name}Id">
+                    <input type="text" class="$bg-zinc-100 bg-opacity-20 $border-zinc-200 border p-1" value="${obj.name}Id">
                     </div>
                     `;
                         // }
@@ -216,10 +216,10 @@ function linkTableWizard(obj) {
                         //} else {
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="${theme.mutedTextColor}">We will create a new column in the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a foreign key constraint to the <span class="${theme.primaryColor} ${theme.textColor} bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
+                    <p class="$text-zinc-500">We will create a new column in the <span class="$bg-orange-500 $text-zinc-800 bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a foreign key constraint to the <span class="$bg-orange-500 $text-zinc-800 bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
                     <div class="my-1">
                     <label class="block">New Column Name</label>
-                    <input type="text" class="${theme.inputBackgroundColor} bg-opacity-20 ${theme.tableBorderColor} border p-1" value="${_table}Id">
+                    <input type="text" class="$bg-zinc-100 bg-opacity-20 $border-zinc-200 border p-1" value="${_table}Id">
                     </div>
                     `;
                         // }
@@ -227,7 +227,7 @@ function linkTableWizard(obj) {
                         diagram.innerHTML = createDiagram(1,1).outerHTML;
                         summary.innerHTML = `
                     <h4>Under the hood</h4>
-                    <p class="text-sm">We will create a new column named <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${_table}Id</span> in the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a unique and foreign key constraint to the <span class="${theme.primaryColor} bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
+                    <p class="text-sm">We will create a new column named <span class="$bg-orange-500 bg-opacity-20 rounded px-1">${_table}Id</span> in the <span class="$bg-orange-500 bg-opacity-20 rounded px-1">${obj.name}</span> table and set up a unique and foreign key constraint to the <span class="$bg-orange-500 bg-opacity-20 rounded px-1">${obj.name}</span> table.</p>
                     `;
 
                     }

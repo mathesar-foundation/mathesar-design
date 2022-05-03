@@ -50,25 +50,25 @@
 <Modal title="Add New Formula Column" open={ showFormulaModal } on:close={ closeModal }>
     <div slot="body" class="space-y-4 h-full flex flex-col">
         <div class="space-y-2">
-            <label class="{theme.textColor} block" for="">Column Name</label>
-            <input type="text" bind:value={ activeFormula.name } class="p-2 w-full bg-opacity-30 rounded {theme.inputBackgroundColor} {theme.textColor}" placeholder="Column Name">
+            <label class="text-zinc-800 block" for="">Column Name</label>
+            <input type="text" bind:value={ activeFormula.name } class="p-2 w-full bg-opacity-30 rounded bg-zinc-100 text-zinc-800" placeholder="Column Name">
         </div>
 
         
 
         <div class="grid grid-cols-6 flex-grow gap-4">
             <div class="col-span-2">
-                <div class="border {theme.tableBorderColor} rounded {theme.textColor} h-full p-2 space-y-2">
+                <div class="border border-zinc-200 rounded text-zinc-800 h-full p-2 space-y-2">
                     <div class="text-lg">Functions</div>
-                    <div class="{theme.mutedTextColor}">String Functions</div>
-                    <div on:click={ ()=>{expression += 'COUNT( )'} } class="hover:bg-opacity-90 {theme.mediumBackgroundColor} bg-opacity-60 cursor-pointer py-1 px-2 rounded">Count</div>
+                    <div class="text-zinc-500">String Functions</div>
+                    <div on:click={ ()=>{expression += 'COUNT( )'} } class="hover:bg-opacity-90 bg-zinc-200 bg-opacity-60 cursor-pointer py-1 px-2 rounded">Count</div>
                 </div>
             </div>
 
 
             <div class="col-span-4">
 
-                <div class="border p-2 h-full rounded space-y-2 {theme.textColor} {theme.tableBorderColor}">
+                <div class="border p-2 h-full rounded space-y-2 text-zinc-800 border-zinc-200">
                     {#each formulas as formula}
                         <h4 class="capitalize">Set Variables for {formula.name}</h4>
                         <p>To use this formula, you'll need to set some options:</p>
@@ -81,7 +81,7 @@
 
                             {#if argument.type == "integer"}
                                 <div>Select Integer</div>
-                                <input type="text" class="{theme.inputBackgroundColor} p-2 rounded bg-opacity-60 w-48">
+                                <input type="text" class="bg-zinc-100 p-2 rounded bg-opacity-60 w-48">
                             {/if}
         
                         {/each}
@@ -89,7 +89,7 @@
                 </div>
 
                 <!--
-                <div class="{theme.textColor} border {theme.tableBorderColor} rounded h-full p-2 space-y-2">
+                <div class="text-zinc-800 border border-zinc-200 rounded h-full p-2 space-y-2">
                     <div class="text-lg">Columns</div>
                     <div class="space-y-2">
                         {#each validColumns(view.columns, activeFormula) as column}
@@ -105,7 +105,7 @@
         </div>
     </div>
     <div slot="footer" class="p-6 text-right space-x-1">
-        <button on:click={closeModal} class="p-2 {theme.mediumBackgroundColor} {theme.textColor} rounded">Cancel</button>
-        <button on:click={updateFormula} class="p-2 {theme.darkPrimaryColor} {theme.textColor} rounded">Apply</button>
+        <button on:click={closeModal} class="p-2 bg-zinc-200 text-zinc-800 rounded">Cancel</button>
+        <button on:click={updateFormula} class="p-2 bg-zinc-100 text-zinc-800 rounded">Apply</button>
     </div>
 </Modal>

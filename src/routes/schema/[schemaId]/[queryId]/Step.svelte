@@ -25,7 +25,7 @@
 </script>
 
 <div
-	class="{theme.mediumBackgroundColor} p-2 rounded space-y-2 text-sm"
+	class="bg-zinc-200 p-2 rounded space-y-2 text-sm"
 	class:opacity-20={selectedView.steps[step].hidden}
 	
 >
@@ -51,7 +51,7 @@
 		<div class="font-semibold">Column</div>
 		<Dropdown>
 			
-			<div slot="toggle" class="cursor-pointer flex items-center border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 rounded">
+			<div slot="toggle" class="cursor-pointer flex items-center border bg-zinc-100 border-zinc-300 space-x-1 p-2 rounded">
 				
 				<span class="flex-grow"><i class="{icon[selectedView.steps[step].column.type]} align-bottom border rounded" /> {selectedView.steps[step].column.alias}</span>
 				<i class="ri-arrow-drop-down-line align-bottom" />
@@ -74,7 +74,7 @@
 			<Dropdown>
 				<div
 					slot="toggle"
-					class="cursor-pointer flex items-center border {theme.lightBorderColor} {theme.inputBackgroundColor} space-x-1 p-2 rounded"
+					class="cursor-pointer flex items-center border border-zinc-300 bg-zinc-100 space-x-1 p-2 rounded"
 				>
 					<span class="flex-grow">{_.startCase(selectedView.steps[step].summaryCondition||summarizations[selectedView.steps[step].column.type][0])}</span>
 					<i class="ri-arrow-drop-down-line align-bottom" />
@@ -96,7 +96,7 @@
 				{#each selectedView.columns as column, i}
 					{#if column !== selectedView.steps[step].column}
 						<div><i class="{icon[column.type]} align-bottom" /> {column.alias}</div>
-						<div class="border {theme.mediumBorderColor} {theme.inputBackgroundColor} p-2 rounded">
+						<div class="border {theme.mediumBorderColor} bg-zinc-100 p-2 rounded">
 							{selectedView.steps[step].aggregations.map(a => a[i])}
 						
 						</div>
@@ -110,7 +110,7 @@
 				<Dropdown>
 					<div
 						slot="toggle"
-						class="cursor-pointer border {theme.inputBackgroundColor} {theme.lightBorderColor} space-x-1 p-2 rounded"
+						class="cursor-pointer border bg-zinc-100 border-zinc-300 space-x-1 p-2 rounded"
 					>
 						<span>{selectedView.steps[step].condition}</span>
 					</div>
@@ -128,7 +128,7 @@
 			{/if}
 			{#if selectedView.steps[step].value !== undefined}
 				<input
-					class="{theme.inputBackgroundColor} p-2 rounded w-full"
+					class="bg-zinc-100 p-2 rounded w-full"
 					type="text"
 					bind:value={selectedView.steps[step].value}
 				/>
