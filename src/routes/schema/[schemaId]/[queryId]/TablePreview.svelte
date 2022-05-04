@@ -11,6 +11,17 @@
   export let selectedView;
   export let inspector;
   export let records;
+
+  console.log(records,"TEST")
+
+  function formatRange(cell){
+    if(Array.isArray(cell)){
+      return `${cell[0]}-${cell[cell.length-1]}`
+    } else {
+      return cell;
+    }
+   
+  }
 </script>
 
 <div
@@ -73,6 +84,8 @@ on:click|self={() => (inspector = { action: "Query Details" })}
                     {cell}
                   </div>
                 {/if}
+              {:else if selectedView.columns[i].aggregation == "range"}
+                {formatRange(cell)}
               {:else}
                 {cell}
               {/if}

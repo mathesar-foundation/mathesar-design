@@ -12,6 +12,7 @@
 
 	export let minimize = true;
 
+
 	function deleteStep(step) {
 		delete selectedView.steps[step];
 
@@ -49,7 +50,7 @@
 	{#if !minimize}
 
 		<div class="font-semibold">Column</div>
-		<Dropdown>
+		<Dropdown closeOnClick={true}>
 			
 			<div slot="toggle" class="cursor-pointer flex items-center border bg-zinc-100 border-zinc-300 space-x-1 p-2 rounded">
 				
@@ -71,7 +72,7 @@
 		{#if selectedView.steps[step].aggregations}
 			
 			<div class="font-semibold">Summarize By</div>
-			<Dropdown>
+			<Dropdown closeOnClick={true}>
 				<div
 					slot="toggle"
 					class="cursor-pointer flex items-center border border-zinc-300 bg-zinc-100 space-x-1 p-2 rounded"
@@ -91,6 +92,13 @@
 				</div>
 			</Dropdown>
 
+			{#if selectedView.steps[step].summaryCondition}
+			<div class="flex items-center space-x-2">
+				<label for="">Size</label>
+				<input type="number" class="p-2 border w-full rounded" bind:value={selectedView.steps[step].rangeSize}>
+			</div>
+			{/if}
+
 			<div class="font-semibold">Aggregations</div>
 			<div class="space-y-2">
 				{#each selectedView.columns as column, i}
@@ -107,7 +115,7 @@
 
 		<div class="flex items-center space-x-2">
 			{#if selectedView.steps[step].condition}
-				<Dropdown>
+				<Dropdown closeOnClick={true}>
 					<div
 						slot="toggle"
 						class="cursor-pointer border bg-zinc-100 border-zinc-300 space-x-1 p-2 rounded"

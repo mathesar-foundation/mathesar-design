@@ -102,14 +102,10 @@
         }
       })
 
-      console.log(missingTables,missingColumns,"MISSING")
-      
-
-      //console.log(selectedView.columns.map(c => c.source.link.column.id).map(c => allColumns.map(c => c.id).includes(c.id)))
-     
+           
 
 
-      runQuery=true;
+      //runQuery=true;
     }
 
     getColumnRecords(selectedView.columns);
@@ -275,7 +271,6 @@
       }
     });
 
-    console.log(filteredRecords, "FILTER 2");
 
     return filteredRecords;
   }
@@ -317,12 +312,29 @@
       );
     }
 
-    console.log(records, "FILTERED");
     return records;
   }
 
+  function setRange(records,size){
+
+    let range = _.chunk(Object.keys(records), size)
+
+    let groupedRange = range.reduce((acc,curr) => {
+
+      let rangeDescription = `${curr[0]}-${curr[curr.length-1]}`
+
+      acc[rangeDescription]= _.flatten(curr.map(c => records[c]))
+
+      return acc;
+      
+    },{})
+
+
+    return groupedRange;
+  }
+
   function setSummarization(column, step, records) {
-    //console.log(column, step, records,"SUMMARIZE")
+    //console.log(column, selectedView.steps[step], records,"SUMMARIZE")
 
     let columnIdx = selectedView.columns.indexOf(column);
 
@@ -330,13 +342,17 @@
       return n[columnIdx];
     });
 
+
+    if(selectedView.steps[step].summaryCondition == "range"){
+      groupedRecords = setRange(groupedRecords,selectedView.steps[step].rangeSize);
+    }
+ 
+
     let aggregatedRecords = Object.keys(groupedRecords).map((group) => {
+
       return aggregate(groupedRecords[group], columnIdx);
     });
 
-    //selectedView.steps[step].aggregations = []
-
-    //selectedView.steps[step].aggregations = aggregations;
 
     selectedView.steps[step].aggregations.splice(
       0,
@@ -381,14 +397,15 @@
     });
   }
 
-  function applySteps(records, steps) {
+  function applySteps(records) {
+    //COPY RECORDS
     let newRecords = Flatted.parse(Flatted.stringify(records));
-
     newRecords = flattenRecords(newRecords);
 
     resetColumnTypes(selectedView.columns);
 
     Object.keys(selectedView.steps).forEach((step) => {
+
       let column = selectedView.steps[step].column;
 
       if (
@@ -444,12 +461,14 @@
   }
 
   function changeColumnType(view, idx, step) {
+
+    
+
     let columns = view.columns;
 
     columns.forEach((col, i) => {
       if (i !== idx && !col.source.table.id == selectedView.baseTable.id) {
-        //col.aggregation = col.aggregation;
-        //console.log(col,"COL 1")
+        
       } //
 
       if (i !== idx) {
@@ -458,6 +477,11 @@
 
       if (i == idx) {
         col.aggregation = null;
+
+        if(view.steps[step].summaryCondition == "range"){
+          col.aggregation = "range";
+        }
+        
       }
     });
   }
@@ -510,7 +534,6 @@
   function selectBaseTable(table) {
     selectedView.baseTable = table;
     inspector.action = "Add Column";
-    console.log(table);
   }
 </script>
 
