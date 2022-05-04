@@ -18,7 +18,7 @@
 </script>
 
 
-<div class="{theme.darkBackgroundColor} border-b-2 bg-opacity-20 text-zinc-800 p-2 flex items-center space-x-3">
+<div class="bg-zinc-50 border-b-2 bg-opacity-20 text-zinc-800 p-2 flex items-center space-x-3">
 	<div class="font-semibold">Exploring</div>
 
 	<Dropdown closeOnClick={true} full={false} width={'w-96'}>

@@ -1,19 +1,17 @@
 <script>
-	import { theme } from '$lib/themes';
 	import { icon } from '$lib/iconMap';
-	import { hexToRGB, aggregations } from '$lib/utils';
 	import Dropdown from '$lib/Dropdown.svelte';
 	export let column = {};
 	export let table;
 </script>
 
 <div
-	class="border-r bg-opacity-0 hover:bg-opacity-40 {theme.darkBackgroundColor} flex items-center p-2 border-zinc-200 text-zinc-800 w-80"
+	class="border-r bg-opacity-0 hover:bg-opacity-40 bg-zinc-50 flex items-center p-2 border-zinc-200 text-zinc-800 w-80"
 >
 	<Dropdown full={true}>
 		<div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
 	
-				<div class="px-1 text-sm rounded text-center" style="background-color:{column.source?.table.color}">
+				<div class="px-1 text-sm rounded text-center bg-zinc-100" style="background-color:{column.source?.table.color}">
 				<i class="{icon[column.type]}"/>
 				{#if column.aggregation}
 				<i class="{icon[column.aggregation]}"></i>

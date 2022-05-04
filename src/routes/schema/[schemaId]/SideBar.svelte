@@ -17,21 +17,21 @@
   }
 </script>
 
-<div class="flex shrink-0">
-  <div class="bg-zinc-200 bg-opacity-30">
+<div class="flex shrink-0 bg-zinc-600">
+  <div class="bg-indigo-300 bg-opacity-20">
     <div
-      class="w-12 h-12 text-zinc-800 cursor-pointer hover:bg-opacity-80 bg-opacity-0 bg-zinc-100 flex"
+      class="w-12 h-12 text-zinc-100 cursor-pointer hover:bg-opacity-80 bg-opacity-0 bg-zinc-100 flex"
       on:click={() => (expanded = !expanded)}
     >
       <i class="ri-menu-line text-lg m-auto" />
     </div>
-    <div class="w-12 h-12 text-zinc-800 flex">
+    <div class="w-12 h-12 text-zinc-100 flex">
       <i class="ri-function-line text-lg m-auto" />
     </div>
   </div>
 
   {#if expanded}
-    <div class="flex flex-grow flex-col border-r border-zinc-200 h-full p-2">
+    <div class="flex flex-grow flex-col border-r border-zinc-200 bg-white h-full p-2">
       
       <div class="border flex items-center border rounded overflow-hidden">
         <i class="ri-search-line align-bottom px-1 text-zinc-500" />

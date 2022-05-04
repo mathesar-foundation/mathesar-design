@@ -46,7 +46,7 @@
 				out:scale={{ duration: 75, start: 0.95 }}
 				class="origin-top-left absolute left-0 min-w-fit {width
 					? width
-					: 'w-52'} z-40 mt-1 {theme.darkBackgroundColor} rounded shadow-md border border-zinc-200 shadow-md"
+					: 'w-52'} z-40 mt-1 bg-zinc-50 rounded shadow-md border border-zinc-200 shadow-md"
 			>
 				<slot name="menu" />
 			</div>

@@ -62,7 +62,7 @@
     
 
 
-    //inspector = { action: 'Column', column: selectedView.columns[2] };
+    //inspector = { action: 'Column', column: selectedView.columns[1] };
 
     let viewCount = entities.queries.filter((v) =>
       v.name.startsWith("New Query")
@@ -526,7 +526,7 @@
   >
     <div
       on:click|self={() => (inspector = { action: "Query Details" })}
-      class="flex-grow h-full flex flex-col shrink-0 {theme.darkBackgroundColor}"
+      class="flex-grow h-full flex flex-col shrink-0 bg-zinc-50"
     >
       <div>
         <SelectedColumns {missingTables} bind:selectedView bind:inspector />
@@ -580,13 +580,13 @@
         />
       {:else if !selectedView.baseTable}
         <div
-          class="border-t {theme.darkBackgroundColor} opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
+          class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
         >
           <span class="text-xl">Select a base table to get started</span>
         </div>
       {:else}
         <div
-          class="border-t {theme.darkBackgroundColor} opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
+          class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
         >
           <span class="text-xl">Select or drop columns</span>
         </div>
@@ -600,7 +600,7 @@
     </div>
 
     <div
-      class="flex flex-col h-full overflow-y-scroll w-80 {theme.darkBackgroundColor}"
+      class="flex flex-col h-full overflow-y-scroll w-80 bg-zinc-50"
     >
       <div class="text-sm font-semibold border-b border-zinc-200 p-2">
         <h4 class="leading-6">{inspector.action}</h4>

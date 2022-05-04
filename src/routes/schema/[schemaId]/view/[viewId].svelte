@@ -24,6 +24,8 @@
   let view = {};
   let entities;
 
+  
+
   async function loadData() {
     entities = await loadEntities();
 
@@ -31,7 +33,7 @@
     view = entities.views.find((v) => v.id == viewId);
 
 
-
+    console.log(view)
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -39,6 +41,8 @@
 
     return entities;
   }
+
+  
 
   beforeUpdate(() => {
     saveEntities(entities);

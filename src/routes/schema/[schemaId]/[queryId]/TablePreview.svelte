@@ -15,7 +15,7 @@
 
 <div
 on:click|self={() => (inspector = { action: "Query Details" })}
-  class="overflow-scroll border-t flex-grow {theme.darkBackgroundColor} bg-opacity-10 border-zinc-200"
+  class="overflow-scroll border-t flex-grow bg-zinc-50 bg-opacity-10 border-zinc-200"
 >
   <div class="flex w-max items-stretch">
     {#each selectedView.columns as column}
@@ -84,6 +84,6 @@ on:click|self={() => (inspector = { action: "Query Details" })}
   </div>
   
 </div>
-<div class="border-zinc-200 border-t p-2 {theme.darkBackgroundColor}">
+<div class="border-zinc-200 border-t p-2 bg-zinc-50">
 	{selectedView.records?.length || 0} Records
 </div>

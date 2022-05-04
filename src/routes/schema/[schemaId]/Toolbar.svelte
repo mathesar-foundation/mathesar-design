@@ -29,18 +29,39 @@
   function linkTable() {
     dispatch("linkTable");
   }
+
+  let tableColors=[];
+
+  let tableSources = table.columns.some(c => c.source);
+
+  if (tableSources){
+    tableColors = table.columns.map(c => c.source.table.color);
+  }
+
+  console.log(tableColors)
 </script>
 
+<div  style="background: linear-gradient(45deg,{tableColors.join(',')})">
+
 <div
-  class="text-zinc-800 flex items-center space-x-3 border-b {theme.darkBackgroundColor} bg-opacity-40  border-zinc-200"
+  class="text-zinc-800 flex items-center space-x-3 border-b bg-zinc-50 bg-opacity-80  border-zinc-200"
+ 
 >
+ 
   <Dropdown>
     <button
       slot="toggle"
-      class="text-lg px-2 py-3 space-x-1 bg-white bg-opacity-10 hover:bg-opacity-80"
-      ><i class="{icon[table.type]} align-bottom" />
+      class="text-lg px-2 py-3 space-x-1 border-r bg-opacity-10 hover:bg-opacity-80"
+     
+      >
+
+      <div class="">
+      <i class="{icon[table.type]} align-bottom" />
       <span>{table.name}</span>
-      <i class="ri-arrow-drop-down-line align-bottom" /></button
+      <i class="ri-arrow-drop-down-line align-bottom" />
+      </div>
+      
+    </button
     >
     <div slot="menu">
       <div
@@ -82,6 +103,14 @@
         >
         View SQL Query
         </div>
+
+        {#if tableSources}
+        <div
+          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
+        >
+        Edit Query
+        </div>
+        {/if}
         
       {/if}
       <div class="border-t border-zinc-200" />
@@ -174,8 +203,14 @@
       </div>
     </div>
   </Dropdown>
-</div>
+  <button class="p-1 border border-zinc-300 rounded">Group</button>
+  <button class="p-1 border border-zinc-300 rounded">Sort</button>
 
+  {#if tableSources}
+    <button>Open in Data Explorer</button>
+  {/if}
+</div>
+</div>
 <!--
 <div class="text-zinc-800 flex items-center space-x-3 px-2 border-b border-zinc-200">
 	<div class="flex-grow flex items-center space-x-3">

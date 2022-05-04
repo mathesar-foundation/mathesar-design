@@ -48,7 +48,7 @@
 
 {#if allowed}
 
-<div class="flex-grow space-y-2 {theme.darkBackgroundColor} p-4 border-b-4 border-zinc-200">
+<div class="flex-grow space-y-2 bg-zinc-50 p-4 border-b-4 border-zinc-200">
     <div class="flex items-center space-x-4">
         <h3  class="text-zinc-800">View Query</h3>
         <button class="ml-auto text-zinc-800"><i class="ri-edit-line align-bottom {theme.primaryTextColor}"></i> Edit in View Builder</button>

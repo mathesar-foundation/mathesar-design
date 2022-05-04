@@ -10,7 +10,7 @@
     
     </script>
     
-    <div class="p-2 space-y-2 border {theme.darkBackgroundColor} rounded border-zinc-200 text-zinc-800">
+    <div class="p-2 space-y-2 border bg-zinc-50 rounded border-zinc-200 text-zinc-800">
 
         <div>
             <i style="background-color: {column.color};" class="{icon[column.type]} rounded align-bottom"></i>

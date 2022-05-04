@@ -64,7 +64,7 @@
 		<Dropdown>
 			<div
 				slot="toggle"
-				class="cursor-pointer bg-zinc-50 py-1 px-2 rounded flex items-center"
+				class="cursor-pointer bg-zinc-50 py-1 px-2 rounded border flex items-center"
 			>
 				<div class="flex-grow"><i class="{icon[column.aggregation]} align-bottom" /> {column.aggregation}</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
@@ -94,7 +94,7 @@
 		{#if !column.source.filter?.column}
 			<button
 				on:click={() => dispatch('addFilter', column)}
-				class="p-1 bg-zinc-50 w-full rounded"
+				class="p-1 bg-zinc-50 w-full rounded border"
 				><i class="ri-add-line align-bottom" /> Add Filter</button
 			>
 		{:else}
