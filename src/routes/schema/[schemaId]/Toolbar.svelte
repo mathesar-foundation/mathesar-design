@@ -124,7 +124,7 @@
   </Dropdown>
 
   <Dropdown>
-    <button slot="toggle" class="border {theme.mediumBorderColor} p-1 rounded"
+    <button slot="toggle" class="border {theme.mediumBorderColor} py-1 px-2 rounded"
       ><i class="ri-filter-fill align-bottom" />
       Filter <i class="ri-arrow-drop-down-line align-bottom" /></button
     >
@@ -203,8 +203,12 @@
       </div>
     </div>
   </Dropdown>
-  <button class="p-1 border border-zinc-300 rounded">Group</button>
-  <button class="p-1 border border-zinc-300 rounded">Sort</button>
+  <button class="py-1 px-2 border border-zinc-300 rounded">
+    <i class="ri-layout-2-line align-bottom"></i> Group <i class="ri-arrow-drop-down-line align-bottom" />
+  </button>
+  <button class="py-1 px-2 border border-zinc-300 rounded">
+    <i class="ri-arrow-up-down-line align-bottom"></i> Sort <i class="ri-arrow-drop-down-line align-bottom" />
+  </button>
 
   {#if tableSources}
     <button>Open in Data Explorer</button>

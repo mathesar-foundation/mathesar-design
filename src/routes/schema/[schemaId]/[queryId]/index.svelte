@@ -32,7 +32,8 @@
 
   let columns = [];
   let schema = {};
-  let missingTables = {}
+  let missingTables = {};
+  let missingColumns = {};
 
   let showFormulaModal = false;
   let activeFormula = {};
@@ -86,19 +87,25 @@
     if (selectedView) {
       
       selectedView.columns.map(c => c.source.table.id).forEach(t=> {
-        console.log(t)
         if (!entities.tables.find(table => table.id == t)){
-           console.log(t,"MISING")
            missingTables[t]=true
         }
       });
 
-      console.log(missingTables,"MISSING")
-
       
-     
 
-      console.log(selectedView.columns)
+      let allColumns = _.flattenDeep(entities.tables.map(t => t.columns.map(c => c.id)))
+
+      selectedView.columns.map((c,i) => c.source.link.column.id).forEach(id => {
+        if(!allColumns.includes(id)){
+          missingColumns[id]=true
+        }
+      })
+
+      console.log(missingTables,missingColumns,"MISSING")
+      
+
+      //console.log(selectedView.columns.map(c => c.source.link.column.id).map(c => allColumns.map(c => c.id).includes(c.id)))
      
 
 
@@ -529,7 +536,7 @@
       class="flex-grow h-full flex flex-col shrink-0 bg-zinc-50"
     >
       <div>
-        <SelectedColumns {missingTables} bind:selectedView bind:inspector />
+        <SelectedColumns {missingColumns} {missingTables} bind:selectedView bind:inspector />
       </div>
 
       <Transformations
@@ -551,7 +558,14 @@
                 <div class="font-semibold"><i class="ri-error-warning-fill align-bottom font-light"></i> Warning</div>
                 This query cannot be run because it is missing {Object.keys(missingTables).length} {pluralize('table', Object.keys(missingTables).length)}.
               </div>
-            {/if}
+      {/if}
+
+      {#if Object.keys(missingColumns).length>0}
+        <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left">
+          <div class="font-semibold"><i class="ri-error-warning-fill align-bottom font-light"></i> Warning</div>
+          This query cannot be run because it is missing {Object.keys(missingColumns).length} {pluralize('column', Object.keys(missingColumns).length)}.
+        </div>
+      {/if}
 
       <div
         class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
@@ -674,7 +688,7 @@
           <button
             disabled={!selectedView.baseTable}
             class:opacity-60={!selectedView.baseTable}
-            class="w-full bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
+            class="w-full bg-zinc-50 text-zinc-800 border border-zinc-300 p-1 text-sm rounded"
             >View SQL Query</button
           >
         </div>

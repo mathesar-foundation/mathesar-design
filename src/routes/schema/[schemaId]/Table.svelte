@@ -9,10 +9,6 @@
     
     export let table; 
 
-    function showForm(column,cell){
-        
-    }
-
 </script>
 
 <div class="overflow-y-scroll h-full flex flex-col">
@@ -20,7 +16,7 @@
     <div class="drop-shadow-md flex { theme.tableBorderColor } bg-zinc-200 border-b" >
         <div class="p-3 w-10 border-r border-zinc-200"></div>
         {#each table.columns as column }
-            <Column column={ column } table={ table }/> 
+            <Column on:deleteColumn column={ column } table={ table }/> 
         {/each} 
     </div>
 

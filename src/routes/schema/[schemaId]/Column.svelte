@@ -1,4 +1,6 @@
 <script>
+	import { createEventDispatcher } from "svelte";
+	const dispatch = createEventDispatcher();
 	import { icon } from '$lib/iconMap';
 	import Dropdown from '$lib/Dropdown.svelte';
 	export let column = {};
@@ -6,7 +8,7 @@
 </script>
 
 <div
-	class="border-r bg-opacity-0 hover:bg-opacity-40 bg-zinc-50 flex items-center p-2 border-zinc-200 text-zinc-800 w-80"
+	class="border-r bg-opacity-0 bg-zinc-50 flex items-center p-2 border-zinc-200 text-zinc-800 w-80"
 >
 	<Dropdown full={true}>
 		<div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
@@ -73,22 +75,26 @@
 								</div>
 							</div>
 						</div>
+					{:else}
+						<div class="border rounded p-2">
+						This view's source cannot be located. Some features may be limited.
+						</div>
 					{/if}
 				</div>
 
 				<div class="text-zinc-500 text-xs mb-1 px-2">Operations</div>
-				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 cursor-pointer">
 					<i class="ri-sort-asc align-bottom" /> Sort Ascending
 				</div>
-				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 cursor-pointer">
 					<i class="ri-sort-desc align-bottom" /> Sort Descending
 				</div>
-				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 cursor-pointer">
+				<div class="px-2 py-1 hover:bg-zinc-100 cursor-pointer">
 					<i class="ri-layout-row-fill align-bottom" /> Group by Column
 				</div>
 				{#if table.type == "table"}
-				<div class="px-2 py-1 hover:bg-zinc-100 hover:bg-opacity-40 text-gray-500">
-					Delete Column
+				<div class="px-2 py-1 hover:bg-zinc-100 cursor-pointer" on:click={()=> dispatch('deleteColumn',column)}>
+					<i class="ri-delete-bin-line align-bottom"></i> Delete Column
 				</div>
 				{/if}
 			</div>

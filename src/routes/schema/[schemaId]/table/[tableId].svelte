@@ -80,6 +80,19 @@
 		
 	}
 
+	function deleteColumn(column){
+		let columnIdx = table.columns.indexOf(column);
+
+		table.columns.splice(columnIdx,1);
+
+		table.records.forEach(r => {
+			r.splice(columnIdx,1)
+			console.log(r[columnIdx])
+		})
+
+		table = table;
+	}
+
 </script>
 
 {#await loadData()}
@@ -104,7 +117,7 @@
 			{/if}
 
 			{#if table && table.columns}
-				<Table {table} />
+				<Table on:deleteColumn={(e)=>deleteColumn(e.detail)} bind:table={table} />
 			{:else}
 				{#if table && table.type == 'table'}
 					<div class="p-5 text-zinc-800">Table has no columns</div>

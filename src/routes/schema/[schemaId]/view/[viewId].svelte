@@ -33,7 +33,6 @@
     view = entities.views.find((v) => v.id == viewId);
 
 
-    console.log(view)
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -55,14 +54,14 @@
   }
 
   function showForm(columnIdx, recordIdx) {
-    activeEdit = {
-      column: view.columns[columnIdx],
-	    table: view.columns[columnIdx].source.link.table,
-      sourceColumn: view.columns[columnIdx].source.link.column,
-      cell: view.records[recordIdx][columnIdx],
-      recordIdx,
-	    columnIdx,
-    };
+    //activeEdit = {
+    //  column: view.columns[columnIdx],
+	  //  table: view.columns[columnIdx].source.link.table,
+    //  sourceColumn: view.columns[columnIdx].source.link.column,
+    //  cell: view.records[recordIdx][columnIdx],
+    //  recordIdx,
+	  //  columnIdx,
+    //};
 
   }
 

@@ -3,6 +3,7 @@
 	export let inspector;
 	export let selectedView;
 	export let missingTables;
+	export let missingColumns;
 	import { icon } from '$lib/iconMap';
 </script>
 
@@ -26,10 +27,10 @@
 					<div
 						
 						on:click={() => (inspector = { action: 'Column', column: column })}
-						class:bg-red-100={missingTables[column.source.table.id]}
+						class:bg-red-100={missingTables[column.source.table.id] || missingColumns[column.id]}
 						class="cursor-pointer flex items-center space-x-2 border-b text-sm border-zinc-200 p-2 w-full shrink-0"
 					>
-						{#if missingTables[column.source.table.id]}
+						{#if missingTables[column.source.table.id] || missingColumns[column.id]}
 							<i class="ri-error-warning-fill align-bottom"></i>
 						{/if}
 						<span class="rounded text-xs bg-opacity-80 align-bottom px-1" style="background-color:{column.source.table.color}">

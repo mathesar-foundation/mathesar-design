@@ -9,6 +9,7 @@ var icon = {
     'summary' : 'ri-align-justify',
     'table' : 'ri-table-fill',
     'view' : 'ri-grid-fill',
+    'view-editable':'ri-grid-line',
     'error' : 'ri-error-warning-line',
     'formula': 'ri-parentheses-fill',
     'filter': 'ri-filter-line',

@@ -8,6 +8,8 @@
   export let schema;
   export let expanded;
 
+  console.log(schema,"SCHEMA")
+
   const dispatch = createEventDispatcher();
 
   function addNew() {
@@ -92,8 +94,14 @@
               <div
                 class="text-zinc-800 p-2 border-b border-zinc-200 cursor-pointer space-x-1"
                 on:click={() => dispatch("openObject", table)}
-              >
+              > 
+
+              {#if !table.querie}
                 <i class="{icon[table.type]} align-bottom" />
+                {:else}
+                <i class="{icon[table.type+'-editable']} align-bottom" />
+
+              {/if}
                 <span>{table.name}</span>
               </div>
             {/each}
