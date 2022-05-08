@@ -2,14 +2,14 @@
 
 ## Design for visual query builder ("Data Explorer") #1065
 
-Representing different relationships between tables
+Representing different relationships between tables [DONE]
 Starting with a formula column vs. a direct column
-Column choices
+Column choices [DONE]
 Representing Formulas
-Representing Filters
-Representing Aggregations
-How to set and show "base table"
-Where to put the query builder in the navigation
+Representing Filters [DONE]
+Representing Aggregations [DONE]
+How to set and show "base table" [DONE]
+Where to put the query builder in the navigation [DONE]
 
 ## Support for listing database views #455
 

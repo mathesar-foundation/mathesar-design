@@ -8,11 +8,16 @@
 
   export let schema;
   export let expanded;
+  export let filter;
+
   const dispatch = createEventDispatcher();
 
   let types = ["views", "tables", "queries"];
 
-  function getTypes(arr) {
+  function getTypes(arr,filter) {
+    if(filter){
+    arr = [filter];
+    }
     let types = arr.reduce((acc, curr) => {
       acc[curr] = schema[curr];
       return acc;
@@ -22,7 +27,7 @@
   }
 
   function filterByType(type) {
-    types = [type];
+    filter = type;
   }
 </script>
 
@@ -55,18 +60,18 @@
       <div
         class="flex text-sm text-zinc-800 p-2 space-x-4 border-b leading-6 border-zinc-200"
       >
-        <button class="font-semibold bg-zinc-50 rounded px-1"
+        <button class:bg-zinc-200={!filter} on:click={()=> filter=null} class="font-semibold bg-zinc-50 rounded px-1"
           >All ({schema.tables.length | 0})</button
         >
-        {#each Object.keys(getTypes(types)) as type}
-          <button on:click={() => filterByType(type)}
+        {#each types as type}
+          <button class:bg-zinc-200={type == filter} class="font-semibold bg-zinc-50 rounded px-1" on:click={() => filterByType(type)}
             >{_.startCase(type)} ({getTypes(types)[type]?.length | 0})</button
           >
         {/each}
       </div>
 
       <div>
-        {#each Object.keys(getTypes(types)) as type}
+        {#each Object.keys(getTypes(types,filter)) as type}
           <div class="p-2 border-b flex items-center border-zinc-200">
             <h4 class="text-zinc-800 font-semibold text-sm">
               {_.startCase(type)}
