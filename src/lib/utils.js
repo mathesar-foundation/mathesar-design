@@ -98,12 +98,23 @@ export let conditions = {
         'contains',
     ],
     "list":[
-        'includes'
+        'includes',
+        'exclude',
+        'length equal to',
+        'length less than',
+        'lenght greater than'
     ],
     "number":[
         'equals',
         'greater than',
         'less than'
+    ],
+    "range":[
+        'contains value',
+        'lower bound less than',
+        'lower bound greater than',
+        'upper bound less than',
+        'upper bound greater than'
     ]
 }
 
@@ -121,18 +132,26 @@ export let summarizations = {
     ]
 }
 
+export let rangeOptions = {
+    "number":[
+        'Auto',
+        'Size',
+        'Groups'
+    ]
+}
+
 export let aggregations = {
-    "List":{
+    "list":{
         type: "text"
     },
-    "Count":{
+    "count":{
         type: "number"
     },
-    "Sum":{
+    "sum":{
         type: "number",
         restrict: ["number"]
     },
-    "Avg":{
+    "avg":{
         type: "number",
         restrict: ["number"]
     }
@@ -141,10 +160,10 @@ export let aggregations = {
 
 export let typeOptions = {
     text: {
-        aggregations: ['List','Count']
+        aggregations: ['list','count']
     },
     number: {
-        aggregations: ['Count','Sum','Avg','Max','Min','List']
+        aggregations: ['count','sum','avg','max','min','list']
     }
 }
 
@@ -178,4 +197,13 @@ export function newView(table){
 
         return newView;
 
+}
+
+export let dataTypes = {
+    "text":{},
+    "number":{},
+    "boolean":{},
+    "money":{},
+    "duration":{},
+    "date":{},
 }

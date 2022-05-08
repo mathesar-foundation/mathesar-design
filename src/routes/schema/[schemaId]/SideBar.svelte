@@ -4,18 +4,25 @@
   import { theme } from "$lib/themes";
   import { v4 as uuidv4 } from "uuid";
   import { icon } from "$lib/iconMap";
+  import _ from "lodash";
 
   export let schema;
   export let expanded;
-
-  console.log(schema,"SCHEMA")
-
   const dispatch = createEventDispatcher();
 
-  function addNew() {
-    dispatch("addNew", {
-      type: "view",
-    });
+  let types = ["views", "tables", "queries"];
+
+  function getTypes(arr) {
+    let types = arr.reduce((acc, curr) => {
+      acc[curr] = schema[curr];
+      return acc;
+    }, {});
+
+    return types;
+  }
+
+  function filterByType(type) {
+    types = [type];
   }
 </script>
 
@@ -33,9 +40,10 @@
   </div>
 
   {#if expanded}
-    <div class="flex flex-grow flex-col border-r border-zinc-200 bg-white h-full p-2">
-      
-      <div class="border flex items-center border rounded overflow-hidden">
+    <div
+      class="flex flex-grow flex-col border-r border-zinc-200 bg-white h-full"
+    >
+      <div class="border flex items-center border rounded overflow-hidden m-2">
         <i class="ri-search-line align-bottom px-1 text-zinc-500" />
         <input
           type="text"
@@ -44,91 +52,46 @@
         />
       </div>
 
-      <div>
-        <div
-          class="flex text-sm text-zinc-800 p-2 space-x-4 border-b leading-6 border-zinc-200"
+      <div
+        class="flex text-sm text-zinc-800 p-2 space-x-4 border-b leading-6 border-zinc-200"
+      >
+        <button class="font-semibold bg-zinc-50 rounded px-1"
+          >All ({schema.tables.length | 0})</button
         >
-          <button class="font-semibold bg-zinc-50 rounded px-1"
-            >All ({schema.tables.length | 0})</button
+        {#each Object.keys(getTypes(types)) as type}
+          <button on:click={() => filterByType(type)}
+            >{_.startCase(type)} ({getTypes(types)[type]?.length | 0})</button
           >
-          <button>Queries ({schema.queries?.length | 0})</button>
-          <button>Views ({schema.views?.length | 0})</button>
-          <button>Tables ({schema.tables?.length | 0})</button>
-        </div>
+        {/each}
+      </div>
 
-        <div>
+      <div>
+        {#each Object.keys(getTypes(types)) as type}
           <div class="p-2 border-b flex items-center border-zinc-200">
-            <h4 class="text-zinc-800 font-semibold text-sm">Queries</h4>
+            <h4 class="text-zinc-800 font-semibold text-sm">
+              {_.startCase(type)}
+            </h4>
             <a
-              href="http://{$page.url.host}/schema/{schema.id}/{uuidv4()}"
+              href="http://{$page.url.host}/schema/{schema.id}/{type}/{uuidv4()}"
               class="ml-auto bg-zinc-200 px-1 text-center rounded text-zinc-800 text-sm"
               ><i class="ri-add-line align-bottom" /></a
             >
           </div>
-          {#if schema.queries}
-            {#each schema.queries as table, i}
+          {#if getTypes(types)[type]?.length > 0}
+            {#each getTypes(types)[type] as item}
               <a
-                href="http://{$page.url.host}/schema/{schema.id}/{table.id}"
-                class="text-zinc-800 p-2 border-b block border-zinc-200 cursor-pointer space-x-1"
+                href="http://{$page.url
+                  .host}/schema/{schema.id}/{type}/{item.id}"
+                class="text-zinc-800 p-2 border-b block border-zinc-200 cursor-pointer space-x-1 hover:bg-zinc-200"
               >
-                <i class="{icon[table.type]} align-bottom" />
-                <span>{table.name}</span>
+                <i class="{icon[item.type]} align-bottom" />
+                <span>{item.name}</span>
               </a>
             {/each}
           {:else}
-            <div class="p-2 text-zinc-500 text-sm">You have no queries</div>
+            <div class="text-zinc-500 p-2">No {type}</div> 
           {/if}
-        </div>
-
-        <div>
-          <div class="p-2 border-b flex items-center border-zinc-200">
-            <h4 class="text-zinc-800 font-semibold text-sm">Views</h4>
-            <a
-              href="http://{$page.url.host}/schema/{schema.id}/{uuidv4()}"
-              class="ml-auto bg-zinc-200 px-1 text-center rounded text-zinc-800 text-sm"
-              ><i class="ri-add-line align-bottom" /></a
-            >
-          </div>
-          {#if schema.views}
-            {#each schema.views as table, i}
-              <div
-                class="text-zinc-800 p-2 border-b border-zinc-200 cursor-pointer space-x-1"
-                on:click={() => dispatch("openObject", table)}
-              > 
-
-              {#if !table.querie}
-                <i class="{icon[table.type]} align-bottom" />
-                {:else}
-                <i class="{icon[table.type+'-editable']} align-bottom" />
-
-              {/if}
-                <span>{table.name}</span>
-              </div>
-            {/each}
-          {:else}
-            <div class="p-2 text-zinc-500 text-sm">You have no views</div>
-          {/if}
-        </div>
-
-        <div>
-          <div class="p-2 border-b flex items-center border-zinc-200">
-            <h4 class="text-zinc-800 font-semibold text-sm">Tables</h4>
-            <a
-              href="http://{$page.url.host}/schema/{schema.id}/{uuidv4()}"
-              class="ml-auto bg-zinc-200 px-1 text-center rounded text-zinc-800 text-sm"
-              ><i class="ri-add-line align-bottom" /></a
-            >
-          </div>
-          {#each schema.tables as table, i}
-            <div
-              class="text-zinc-800 p-2 border-b border-zinc-200 cursor-pointer space-x-1"
-              on:click={() => dispatch("openObject", table)}
-            >
-              <i class="{icon[table.type]} align-bottom" />
-              <span>{table.name}</span>
-            </div>
-          {/each}
-        </div>
+        {/each}
       </div>
     </div>
   {/if}

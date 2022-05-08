@@ -12,11 +12,11 @@
   export let inspector;
   export let records;
 
-  console.log(records,"TEST")
+  //console.log(records,"TEST")
 
   function formatRange(cell){
     if(Array.isArray(cell)){
-      return `${cell[0]}-${cell[cell.length-1]}`
+      return `[${cell[0]}-${cell[cell.length-1]}]`
     } else {
       return cell;
     }
@@ -65,7 +65,7 @@ on:click|self={() => (inspector = { action: "Query Details" })}
                 ? theme.darkBackgroundColor
                 : ''}"
             >
-              {#if selectedView.columns[i].aggregation == "List"}
+              {#if selectedView.columns[i].aggregation == "list"}
                 {#if Array.isArray(cell)}
                 
                   {#each cell as item}

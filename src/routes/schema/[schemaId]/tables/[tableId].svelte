@@ -7,7 +7,7 @@
 	import Toolbar from '../Toolbar.svelte';
 	import LinkTableWizard from './LinkTableWizard.svelte';
 
-	import TopNav from "../../../TopNav.svelte"
+	import TopNav from "$lib/TopNav.svelte";
 
 	import Table from '../Table.svelte';
 	import Query from './Query.svelte';

@@ -1,5 +1,5 @@
 <script>
-    import TopNav from "./TopNav.svelte";
+    import TopNav from "$lib/TopNav.svelte";
     import _ from "lodash";
 	import {
 		loadEntities,

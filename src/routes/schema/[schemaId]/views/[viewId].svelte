@@ -3,7 +3,7 @@
   import { theme } from "$lib/themes";
   import { page } from "$app/stores";
 
-  import TopNav from "../../../TopNav.svelte";
+  import TopNav from "$lib/TopNav.svelte";
 
   import { loadEntities, saveEntities } from "$lib/utils";
   const { schemaId } = $page.params;

@@ -13,7 +13,7 @@
   class="hover:bg-opacity-60 bg-opacity-0 bg-zinc-100 cursor-pointer p-2 border-r w-80 space-y-1 border-zinc-200 text-zinc-800"
 >
   {#if column && column.aggregation}
-    {#if column.aggregation == "List"}
+    {#if column.aggregation == "list"}
 
       {#if Array.isArray(cell)}
         {#each cell as item}

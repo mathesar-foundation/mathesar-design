@@ -6,6 +6,7 @@ var icon = {
     'duration' : 'ri-timer-2-line',
     'date' : 'ri-calendar-line',
     'boolean' : 'ri-checkbox-line',
+    'money' : 'ri-money-dollar-circle-line',
     'summary' : 'ri-align-justify',
     'table' : 'ri-table-fill',
     'view' : 'ri-grid-fill',
@@ -16,10 +17,10 @@ var icon = {
     'summarize': 'ri-layout-row-fill',
     'sort': 'ri-arrow-up-down-fill',
     'deduplicate': 'ri-tools-line',
-    'List': 'ri-list-unordered',
+    'list': 'ri-list-unordered',
     'query':'ri-file-search-fill',
     'Count':'ri-equalizer-fill',
-    'range':'ri-table-line'
+    'range':'ri-space'
 }
 
 export { icon }

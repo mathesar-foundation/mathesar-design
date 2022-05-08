@@ -18,7 +18,7 @@
   import FormulaSettings from "./FormulaSettings.svelte";
   import ColumnSelector from "./ColumnSelector.svelte";
   import { v4 as uuidv4 } from "uuid";
-  import TopNav from "../../../TopNav.svelte";
+  import TopNav from "$lib/TopNav.svelte";
   import _ from "lodash";
   import SelectedColumns from "./SelectedColumns.svelte";
   import TablePreview from "./TablePreview.svelte";
@@ -300,7 +300,7 @@
     let condition = step.condition;
 
     // Change condition based on data type
-    if (!conditions[column.type].includes(condition)) {
+    if (!conditions[column.type].includes(condition) && !column.aggregation) {
       step.condition = conditions[column.type][0];
     }
 

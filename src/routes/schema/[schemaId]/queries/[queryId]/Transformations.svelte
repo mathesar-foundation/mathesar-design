@@ -50,12 +50,12 @@
 	<h4 class="font-semibold text-sm leading-6">Transform Steps ({Object.keys(selectedView.steps).length})</h4>
 
 	{#if selectedView.columns.length > 0}
-		<Dropdown full={true}>
+		<Dropdown full={true} closeOnClick={true}>
 			<button
 				slot="toggle"
-				class="cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded"
+				class="cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded text-left"
 			>
-				<div class="flex-grow">Select Step</div>
+				<div class="flex-grow"><i class="ri-add-line align-bottom"></i> Add Step</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
 			</button>
 			<div slot="menu">
@@ -97,6 +97,10 @@
 				</div>
 			</div>
 		</Dropdown>
+
+	
+
+		
 	{:else}
 		<button
 			disabled
@@ -109,6 +113,14 @@
 </div>
 
 <div class="border-t overflow-y-scroll p-2 border-zinc-200 space-y-2 flex-grow">
+
+	{#if Object.keys(selectedView.steps).length > 0}
+		<button class="cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded space-x-1">
+		<i class="ri-delete-bin-line align-bottom"></i><span>Remove All Steps</span>
+			
+		</button>
+		{/if}
+		
 	{#each Object.keys(selectedView.steps) as step,i}
 		<Step bind:minimize={ minimize[i] } on:previewStep on:deleteStep {step} bind:selectedView={selectedView} />
 	{/each}

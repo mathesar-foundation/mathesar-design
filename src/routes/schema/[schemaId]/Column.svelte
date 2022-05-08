@@ -3,14 +3,17 @@
 	const dispatch = createEventDispatcher();
 	import { icon } from '$lib/iconMap';
 	import Dropdown from '$lib/Dropdown.svelte';
-	export let column = {};
+	import DataType from './DataType.svelte';
+	export let column;
 	export let table;
+	let editDataType;
 </script>
 
 <div
 	class="border-r bg-opacity-0 bg-zinc-50 flex items-center p-2 border-zinc-200 text-zinc-800 w-80"
 >
-	<Dropdown full={true}>
+	<Dropdown full={true} closeOnClick={false}>
+		
 		<div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
 	
 				<div class="px-1 text-sm rounded text-center bg-zinc-100" style="background-color:{column.source?.table.color}">
@@ -25,10 +28,15 @@
 		</div>
 
 		<div slot="menu" class="text-sm py-2">
+
+			<DataType bind:editDataType={editDataType} bind:column={column} on:save={()=>editDataType = false} />
+
+			{#if !editDataType}
 			<div class="space-y-2">
 				<div class="border-b space-y-2 px-2 pb-2 border-zinc-200">
 					<div class="text-zinc-500 text-xs">Data Type</div>
-					<div class="space-x-1">
+
+					<div class="space-x-1 border cursor-pointer hover:bg-zinc-100" on:click={()=> editDataType = true}>
 						<i
 							class="rounded align-bottom {icon[column.type]}"
 							style="background-color: {column.color};"
@@ -48,8 +56,7 @@
 									<div class="col-span-1">Column</div>
 
 									<div class="col-span-2">
-										<i class="{icon[column.type]} align-bottom" />
-										{column.name}
+										<i class="{icon[column.type]} align-bottom" />{column.name}
 									</div>
 								</div>
 
@@ -76,9 +83,11 @@
 							</div>
 						</div>
 					{:else}
-						<div class="border rounded p-2">
-						This view's source cannot be located. Some features may be limited.
-						</div>
+						{#if table.type == "view"}
+							<div class="border rounded p-2">
+							This view's source cannot be located. Some features may be limited.
+							</div>
+						{/if}
 					{/if}
 				</div>
 
@@ -98,8 +107,11 @@
 				</div>
 				{/if}
 			</div>
+			{/if}
 		</div>
+		
 	</Dropdown>
+	
 </div>
 
 <!--
