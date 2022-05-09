@@ -49,6 +49,11 @@
                 "name": "firstActorId",
                 "type": "number",
                 "db": "INTEGER"
+            },
+            {
+                "name": "genres",
+                "type": "array",
+                "db": "ARRAY"
             }
         ],
         "records": [
@@ -57,28 +62,32 @@
                 "Star Wars: The Rise of Skywalker",
                 "Star Wars is an action-packed thrill ride full of space battles, frantic lightsaber duels and other types of action.",
                 0,
-                2
+                2,
+                ["Action","Comedy","Drama"]
             ],
             [
                 1,
                 "Dune",
                 "A mythic and emotionally charged hero's journey, Dune tells the story of Paul Atreides, a brilliant and gifted young man born into a great destiny beyond his understanding",
                 1,
-                3
+                3,
+                ["Action","Comedy","Drama"]
             ],
             [
                 2,
                 "Super 8",
                 "A train crash sets off a series of bizarre events in a small town. When Jack Lang, the deputy sheriff, begins the investigation, he uncovers a shocking secret.",
                 0,
-                4
+                4,
+                ["Action","Comedy","Drama"]
             ],
             [
                 3,
                 "Star Trek",
                 "James Kirk, a brash young man, and Spock, an alien with human and Vulcan blood, join the crew of the USS Enterprise to combat Nero, a member of the Romulan race who wants to destroy multiple planets.",
                 0,
-                4
+                4,
+                ["Action","Comedy","Drama"]
             ]
         ]
     },

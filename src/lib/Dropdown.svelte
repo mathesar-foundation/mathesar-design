@@ -12,6 +12,7 @@
 
 	onMount(() => {
 		const handleOutsideClick = (event) => {
+
 			if (show && !menu.contains(event.target)) {
 				show = false;
 			}
@@ -35,7 +36,7 @@
 	});
 </script>
 
-<div class="relative {full ? 'flex-grow' : ''}" bind:this={menu}>
+<div class="relative" class:flex-grow={full} bind:this={menu}>
 	<div on:click={() => (show = !show)}>
 		<slot name="toggle" />
 	</div>

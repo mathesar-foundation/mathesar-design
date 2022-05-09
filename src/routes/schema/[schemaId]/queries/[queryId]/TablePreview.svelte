@@ -20,7 +20,14 @@
     } else {
       return cell;
     }
-   
+  }
+
+  function formatCount(cell){
+    if(Array.isArray(cell)){
+      return cell.length
+    } else {
+      return 1;
+    }
   }
 </script>
 
@@ -86,6 +93,8 @@ on:click|self={() => (inspector = { action: "Query Details" })}
                 {/if}
               {:else if selectedView.columns[i].aggregation == "range"}
                 {formatRange(cell)}
+              {:else if selectedView.columns[i].aggregation == "count"}
+                {formatCount(cell)}
               {:else}
                 {cell}
               {/if}

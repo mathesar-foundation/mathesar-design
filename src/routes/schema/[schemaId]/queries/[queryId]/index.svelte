@@ -59,11 +59,7 @@
 
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     selectedView = entities.queries.find((view) => view.id == queryId);
-    
-    
 
-
-    //inspector = { action: 'Column', column: selectedView.columns[1] };
 
     let viewCount = entities.queries.filter((v) =>
       v.name.startsWith("New Query")
@@ -80,8 +76,6 @@
       };
 
       runQuery=false;
-      //entities.queries.push(selectedView)
-      //entities = entities;
     }
 
     if (selectedView) {
@@ -143,6 +137,7 @@
   }
 
   function addColumn(table, column, _column) {
+
     let source;
 
     if (column !== _column) {
@@ -158,6 +153,8 @@
         table: { ...source },
       },
     };
+
+    console.log(newColumn)
 
     if (!table.id == selectedView.baseTable.id) {
       newColumn.aggregation = typeOptions[newColumn.type].aggregations[0];
@@ -240,7 +237,6 @@
           })
           .map((r) => r[getColumnNameIndex(c.source.table, c)]);
 
-        console.log(mergedRecord, "MERGED 2");
         return mergedRecord;
       }
     });
@@ -517,7 +513,7 @@
     column.source.filter = {
       column: column,
       condition: conditions[column.type][0],
-      value: "",
+      value:"",
     };
 
     selectedView.columns[columnIdx] = column;

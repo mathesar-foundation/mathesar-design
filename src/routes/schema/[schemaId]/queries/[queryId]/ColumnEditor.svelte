@@ -5,6 +5,7 @@
 	import { typeOptions, conditions } from '$lib/utils';
 	import { beforeUpdate, createEventDispatcher } from 'svelte';
 	import { icon } from '$lib/iconMap';
+	import _ from "lodash";
 
 	const dispatch = createEventDispatcher();
 
@@ -38,7 +39,7 @@
 
 <div class="p-4 space-y-2 flex flex-col h-full">
 	<div class="space-y-1 grid">
-		<label for="columnName">Name</label>
+		<label class="font-semibold" for="columnName">Name</label>
 		<input
 			id="columnName"
 			class="p-2 rounded bg-zinc-100 border border-zinc-300 bg-opacity-80"
@@ -48,7 +49,7 @@
 	</div>
 
 	<div class="space-y-1 grid">
-		<h4>Source</h4>
+		<h4 class="font-semibold">Source</h4>
 		<Source {column} {externalLink}/>
 		
 	</div>
@@ -56,7 +57,7 @@
 	{#if records.some((r) => Array.isArray(r)) || column.aggregation}
 		<div class="border-t border-zinc-200" />
 		<div class="">
-			<h4>Aggregation Formula</h4>
+			<h4 class="font-semibold">Aggregation Formula</h4>
 			<p class="text-sm text-zinc-500">
 				Columns containing multiple records are aggregated to be displayed in a single row.
 			</p>
@@ -64,9 +65,9 @@
 		<Dropdown>
 			<div
 				slot="toggle"
-				class="cursor-pointer bg-zinc-50 py-1 px-2 rounded border flex items-center"
+				class="cursor-pointer bg-zinc-50 border-zinc-300 py-1 px-2 rounded border flex items-center"
 			>
-				<div class="flex-grow"><i class="{icon[column.aggregation]} align-bottom" /> {column.aggregation}</div>
+				<div class="flex-grow"><i class="{icon[column.aggregation]} align-bottom" /> {_.startCase(column.aggregation)}</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
 			</div>
 			<div slot="menu">
@@ -76,14 +77,14 @@
 						class="p-2 cursor-pointer hover:bg-zinc-200"
 					>
 						<i class="{icon[aggregation]} align-bottom" />
-						{aggregation}
+						{_.startCase(aggregation)}
 					</div>
 				{/each}
 			</div>
 		</Dropdown>
 		<div class="border-t border-zinc-200" />
 		<div>
-			<h4>Filter Linked Records</h4>
+			<h4 class="font-semibold">Filter Linked Records</h4>
 			<p class="text-sm text-zinc-500">
 				Add a filter to narrow down the linked records that will be included in this column.
 			</p>
@@ -94,7 +95,7 @@
 		{#if !column.source.filter?.column}
 			<button
 				on:click={() => dispatch('addFilter', column)}
-				class="p-1 bg-zinc-50 w-full rounded border"
+				class="p-1 bg-zinc-50 border-zinc-300 w-full rounded border"
 				><i class="ri-add-line align-bottom" /> Add Filter</button
 			>
 		{:else}

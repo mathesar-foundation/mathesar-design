@@ -49,7 +49,7 @@
 
   function openDataExplorer(view) {
     setTimeout(function () {
-      window.location = `/schema/${view.schema.id}/${view.id}`;
+      window.location = `/schema/${view.schema.id}/queries/${view.id}`;
     }, 200);
   }
 

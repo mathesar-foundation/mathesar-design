@@ -22,11 +22,17 @@
 			type: step
 		};
 
+		if (step == 'deduplicate') {
+			selectedView.steps[newStep] = {
+				type: step
+			};
+		}
+
 		if (step == 'filter') {
 			selectedView.steps[newStep] = {
 				...selectedView.steps[newStep],
 				condition: conditions[selectedView.steps[newStep].column.type][0],
-				value: ''
+				value:""
 			};
 		}
 
@@ -34,6 +40,13 @@
 			selectedView.steps[newStep] = {
 				...selectedView.steps[newStep],
 				aggregations:[]
+			};
+		}
+
+		if (step == 'sort') {
+			selectedView.steps[newStep] = {
+				...selectedView.steps[newStep],
+				direction: "ascending"
 			};
 		}
 

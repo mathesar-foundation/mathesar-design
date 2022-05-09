@@ -13,10 +13,10 @@ Where to put the query builder in the navigation [DONE]
 
 ## Support for listing database views #455
 
-Users should be able to browse through a list of all available views in the currently open schema. This should probably happen in a different page with a paginated view.
-Users should be able to access all views through the left pane.
-Users should be able to search for views by name from the left pane, even if they are not visible in the left pane.
-Users should be able to open a view in a tab. The design for what happens when a view is opened will be covered in Support for opening and interacting with a View #466.
+Users should be able to browse through a list of all available views in the currently open schema. This should probably happen in a different page with a paginated view. [DONE]
+Users should be able to access all views through the left pane. [DONE]
+Users should be able to search for views by name from the left pane, even if they are not visible in the left pane. [DONE]
+Users should be able to open a view in a tab. The design for what happens when a view is opened will be covered in Support for opening and interacting with a View #466. [DONE]
 
 ## Support for opening and interacting with a View #466
 

@@ -61,7 +61,7 @@
 
 
 		setTimeout(function () {
-			window.location = `/schema/${ table.schema.id }/${ view.id }`
+			window.location = `/schema/${ table.schema.id }/queries/${ view.id }`
     	}, 200);
 		
 		

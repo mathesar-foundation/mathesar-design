@@ -38,7 +38,6 @@
     tableColors = table.columns.map(c => c.source.table.color);
   }
 
-  console.log(tableColors)
 </script>
 
 <div  style="background: linear-gradient(45deg,{tableColors.join(',')})">
@@ -131,17 +130,12 @@
     <div slot="menu" class="p-2 space-y-2">
       <button
         on:click={() => dispatch("addFilter", table)}
-        class="p-1 bg-zinc-50 w-full rounded"
+        class="p-1 border-zinc-300 text-sm border w-full rounded"
         ><i class="ri-add-line align-bottom" /> Add Filter</button
       >
 
-      <div class="rounded p-2 text-sm space-y-2">
-        <div class="flex items-center">
-          <div class="font-semibold flex-grow">Column</div>
-          <button on:click={() => dispatch("deleteFilter", table)}>
-            <i class="ri-delete-bin-line align-bottom" />
-          </button>
-        </div>
+      <div class="rounded text-sm space-y-2">
+
         <Dropdown>
           <div
             slot="toggle"

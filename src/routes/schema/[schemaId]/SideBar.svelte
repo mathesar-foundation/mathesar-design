@@ -8,18 +8,27 @@
 
   export let schema;
   export let expanded;
-  export let filter;
+  let filter;
+  let searchTerm;
 
   const dispatch = createEventDispatcher();
 
   let types = ["views", "tables", "queries"];
 
-  function getTypes(arr,filter) {
+  function getTypes(arr,filter,searchTerm) {
     if(filter){
-    arr = [filter];
+      arr = [filter];
     }
+
     let types = arr.reduce((acc, curr) => {
-      acc[curr] = schema[curr];
+
+      if(searchTerm && schema[curr]){
+        acc[curr] = schema[curr].filter(obj =>  obj && _.lowerCase(obj.name).includes(_.lowerCase(searchTerm)))
+      } else {
+        acc[curr] = schema[curr];
+      }
+      //console.log(acc,"FILTERED")
+
       return acc;
     }, {});
 
@@ -54,24 +63,25 @@
           type="text"
           class="bg-zinc-100 bg-opacity-40 flex-grow p-1 text-sm"
           placeholder="Type to Search"
+          bind:value={searchTerm}
         />
       </div>
 
       <div
         class="flex text-sm text-zinc-800 p-2 space-x-4 border-b leading-6 border-zinc-200"
       >
-        <button class:bg-zinc-200={!filter} on:click={()=> filter=null} class="font-semibold bg-zinc-50 rounded px-1"
+        <button class:bg-indigo-200={!filter} on:click={()=> filter=null} class="font-semibold bg-zinc-50 rounded px-1"
           >All ({schema.tables.length | 0})</button
         >
         {#each types as type}
-          <button class:bg-zinc-200={type == filter} class="font-semibold bg-zinc-50 rounded px-1" on:click={() => filterByType(type)}
+          <button class:bg-indigo-200={type == filter} class="font-semibold bg-zinc-50 rounded px-1" on:click={() => filterByType(type)}
             >{_.startCase(type)} ({getTypes(types)[type]?.length | 0})</button
           >
         {/each}
       </div>
 
       <div>
-        {#each Object.keys(getTypes(types,filter)) as type}
+        {#each Object.keys(getTypes(types,filter,searchTerm)) as type}
           <div class="p-2 border-b flex items-center border-zinc-200">
             <h4 class="text-zinc-800 font-semibold text-sm">
               {_.startCase(type)}
@@ -82,8 +92,8 @@
               ><i class="ri-add-line align-bottom" /></a
             >
           </div>
-          {#if getTypes(types)[type]?.length > 0}
-            {#each getTypes(types)[type] as item}
+          {#if getTypes(types,filter,searchTerm)[type]?.length > 0}
+            {#each getTypes(types,filter,searchTerm)[type] as item}
               <a
                 href="http://{$page.url
                   .host}/schema/{schema.id}/{type}/{item.id}"
@@ -94,7 +104,7 @@
               </a>
             {/each}
           {:else}
-            <div class="text-zinc-500 p-2">No {type}</div> 
+            <div class="text-sm text-zinc-500 p-2">No {type} {searchTerm?'found':''}</div> 
           {/if}
         {/each}
       </div>

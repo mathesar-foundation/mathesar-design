@@ -19,8 +19,9 @@ var icon = {
     'deduplicate': 'ri-tools-line',
     'list': 'ri-list-unordered',
     'query':'ri-file-search-fill',
-    'Count':'ri-equalizer-fill',
-    'range':'ri-space'
+    'count':'ri-equalizer-fill',
+    'range':'ri-space',
+    'array':'ri-brackets-line'
 }
 
 export { icon }

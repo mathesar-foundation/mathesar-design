@@ -28,7 +28,7 @@
 		</div>
 
 		<div slot="menu" class="text-sm py-2">
-
+			
 			<DataType bind:editDataType={editDataType} bind:column={column} on:save={()=>editDataType = false} />
 
 			{#if !editDataType}
@@ -36,16 +36,18 @@
 				<div class="border-b space-y-2 px-2 pb-2 border-zinc-200">
 					<div class="text-zinc-500 text-xs">Data Type</div>
 
-					<div class="space-x-1 border cursor-pointer hover:bg-zinc-100" on:click={()=> editDataType = true}>
+					<div class="space-x-2 w-full cursor-pointer flex items-center" on:click={()=> editDataType = true}>
 						<i
 							class="rounded align-bottom {icon[column.type]}"
 							style="background-color: {column.color};"
 						/>
 						<span class="capitalize">{column.type}</span>
 						<span
-							class="text-xs font-mono bg-zinc-200 px-1 rounded text-zinc-500"
+							class="text-sm align-bottom font-mono bg-zinc-200 px-1 rounded text-zinc-500"
 							>{column.db}</span
 						>
+						<div class="flex-grow"></div>
+						<i class="ri-arrow-right-s-line align-bottom"></i>
 					</div>
 
 					{#if column.source}

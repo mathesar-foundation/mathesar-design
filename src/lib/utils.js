@@ -129,6 +129,9 @@ export let summarizations = {
     "number":[
         'value',
         'range'
+    ],
+    "array":[
+        'value'
     ]
 }
 
@@ -164,6 +167,9 @@ export let typeOptions = {
     },
     number: {
         aggregations: ['count','sum','avg','max','min','list']
+    },
+    array: {
+        aggregations: ['list','count']
     }
 }
 
@@ -206,4 +212,5 @@ export let dataTypes = {
     "money":{},
     "duration":{},
     "date":{},
+    "array":{}
 }

@@ -12,6 +12,8 @@
 
 	export let minimize = true;
 
+	console.log(selectedView.steps[step])
+
 
 	function deleteStep(step) {
 		delete selectedView.steps[step];
@@ -37,6 +39,15 @@
 
 	function setFilterCondition(condition){
 		selectedView.steps[step].condition = condition;
+	}
+
+	function filterByValue(columns,value){
+		if(value instanceof Object){
+			return columns;
+		} else {
+			return columns.filter(c => _.lowerCase(c.name).includes(_.lowerCase(value)))
+		}
+	
 	}
 </script>
 
@@ -69,30 +80,33 @@
 
 	{#if !minimize}
 
+		{#if selectedView.steps[step].column}
+
 		<div class="font-semibold">Column</div>
 		<Dropdown closeOnClick={true}>
 			
 			<div slot="toggle" class="cursor-pointer flex items-center border bg-zinc-50 border-zinc-300 space-x-1 p-2 rounded">
 				
-				<span class="flex-grow">
+				<div class="flex-grow">
 					<div class="rounded inline-block text-xs px-1" style="background-color:{selectedView.steps[step].column.source.table.color}">
 						<i class="{icon[selectedView.steps[step].column.type]} align-bottom" /> 
 						<i class="{icon[selectedView.steps[step].column.aggregation]} align-bottom" /> 
 					</div>
-					{selectedView.steps[step].column.alias}</span>
+					{selectedView.steps[step].column.alias}</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
 			</div>
 			<div slot="menu">
 				{#each selectedView.columns as column}
 					<div
-						class="hover:bg-opacity-40 bg-opacity-0 bg-zinc-50 space-x-1 p-2"
+						class="hover:bg-zinc-200 cursor-pointer bg-zinc-50 space-x-1 p-2"
 						on:click={() => (selectedView.steps[step].column = column)}
 					>
-						<i class="{icon[column.type]} align-bottom border rounded" /> <span>{column.alias}</span>
+						<i class="{icon[column.type]} align-bottom border rounded" style="background-color:{selectedView.steps[step].column.source.table.color}"/> <span>{column.alias}</span>
 					</div>
 				{/each}
 			</div>
 		</Dropdown>
+		{/if}
 
 		{#if selectedView.steps[step].aggregations}
 			
@@ -181,12 +195,63 @@
 				</Dropdown>
 			{/if}
 			{#if selectedView.steps[step].value !== undefined}
-				<input
-					class="bg-zinc-100 p-2 rounded w-full"
+				<Dropdown full={true} closeOnClick={true}>
+				<div slot="toggle">
+
+				{#if selectedView.steps[step].value instanceof Object}
+					<div class="flex items-center bg-zinc-50 rounded border-zinc-300 border p-2">
+					<div class="flex-grow">
+						<div class="rounded inline-block text-xs px-1" style="background-color:{selectedView.steps[step].value.source.table.color}">
+							<i class="{icon[selectedView.steps[step].value.type]} align-bottom" /> 
+							<i class="{icon[selectedView.steps[step].value.aggregation]} align-bottom" /> 
+						</div>
+						{selectedView.steps[step].value.alias}</div>
+					<i class="ri-arrow-drop-down-line align-bottom" />
+					</div>
+				{:else}
+					<input 
+					class="bg-zinc-50 border-zinc-300 border p-2 rounded w-full"
 					type="text"
 					bind:value={selectedView.steps[step].value}
-				/>
+					/>
+				{/if}
+				
+
+				
+				</div>	
+					
+				<div slot="menu">
+					{#if selectedView.steps[step].value instanceof Object}
+					<div class="p-2" on:click={()=> selectedView.steps[step].value=""}>Clear Column</div>
+					{:else}
+					<div class="p-2">Value: {selectedView.steps[step].value}</div>
+					{/if}
+					<div class="border-t w-full"></div>
+
+					{#each filterByValue(selectedView.columns,selectedView.steps[step].value) as column}
+					<div
+						class="hover:bg-zinc-200 bg-opacity-0 bg-zinc-50 cursor-pointer space-x-1 p-2"
+						on:click={() => (selectedView.steps[step].value = column)}
+					>
+						<i class="{icon[column.type]} align-bottom border rounded" style="background-color:{selectedView.steps[step].value.source?.table.color}" /> <span>{column.alias}</span>
+					</div>
+					{/each}
+				</div>
+				</Dropdown>
 			{/if}
+
+			{#if selectedView.steps[step].direction}
+				<Dropdown>
+					<button class="bg-zinc-50 w-full cursor-pointer space-x-1 p-2 border border-zinc-300 rounded" slot="toggle">
+						<span class="flex-grow">{selectedView.steps[step].direction}</span>
+						<i class="ri-arrow-drop-down-line align-bottom" />
+					</button>
+				</Dropdown>
+			{/if}
+
+
 		</div>
+
+
 	{/if}
 </div>
