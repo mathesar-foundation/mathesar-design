@@ -6,12 +6,11 @@
     import { dataTypes } from "$lib/utils";
     import _ from "lodash";
 
-    export let editDataType;
 
    
 </script>
 
-{#if editDataType}
+
 <div class="w-full">
     <div class="p-2 border-b cursor-pointer text-sm" on:click={()=> dispatch('save')}>
         <i class="ri-arrow-left-s-line align-bottom"></i> <span>Go Back</span> 
@@ -31,4 +30,3 @@
         </div>
     </div>
 </div>
-{/if}

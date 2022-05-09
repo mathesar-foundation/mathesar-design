@@ -1,6 +1,6 @@
 <script>
 	import { theme } from '$lib/themes';
-	import { onMount } from 'svelte';
+	import { afterUpdate, beforeUpdate, onMount } from 'svelte';
 	import { scale } from 'svelte/transition';
 
 	export let show = false; // menu state
@@ -11,8 +11,11 @@
 	export let closeOnClick;
 
 	onMount(() => {
-		const handleOutsideClick = (event) => {
 
+		
+
+		const handleOutsideClick = (event) => {
+			console.log(menu.contains(event.target),event.target)
 			if (show && !menu.contains(event.target)) {
 				show = false;
 			}

@@ -7,6 +7,12 @@
 	export let column;
 	export let table;
 	let editDataType;
+
+	function setDataType(){
+		setTimeout(function () {
+			editDataType = !editDataType
+    	}, 100);
+	}
 </script>
 
 <div
@@ -29,14 +35,16 @@
 
 		<div slot="menu" class="text-sm py-2">
 			
-			<DataType bind:editDataType={editDataType} bind:column={column} on:save={()=>editDataType = false} />
+			
 
-			{#if !editDataType}
+			{#if editDataType}
+				<DataType bind:column={column} on:save={setDataType} />
+			{:else}
 			<div class="space-y-2">
 				<div class="border-b space-y-2 px-2 pb-2 border-zinc-200">
 					<div class="text-zinc-500 text-xs">Data Type</div>
 
-					<div class="space-x-2 w-full cursor-pointer flex items-center" on:click={()=> editDataType = true}>
+					<div class="space-x-2 w-full cursor-pointer flex items-center" on:click={setDataType}>
 						<i
 							class="rounded align-bottom {icon[column.type]}"
 							style="background-color: {column.color};"
