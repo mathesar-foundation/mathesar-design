@@ -13,6 +13,8 @@
   export let table;
 
 
+  console.log(table)
+
   table.filter = {
 	  column: table.columns[0],
 	  condition: conditions[table.columns[0].type][0],
@@ -104,11 +106,11 @@
         </div>
 
         {#if tableSources}
-        <div
-          class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
+        <a href="/schema/{table.schemaId}/queries/{table.querieId}"
+          class="px-2 block py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
         >
         Edit Query
-        </div>
+      </a>
         {/if}
         
       {/if}
@@ -204,9 +206,7 @@
     <i class="ri-arrow-up-down-line align-bottom"></i> Sort <i class="ri-arrow-drop-down-line align-bottom" />
   </button>
 
-  {#if tableSources}
-    <button>Open in Data Explorer</button>
-  {/if}
+
 </div>
 </div>
 <!--

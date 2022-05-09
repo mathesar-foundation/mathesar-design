@@ -20,10 +20,10 @@ Users should be able to open a view in a tab. The design for what happens when a
 
 ## Support for opening and interacting with a View #466
 
-Data Type
-Sources
+Data Type [DONE]
+Sources [DONE]
 Formula
-Link?
+Link? [DONE]
 Rows: Similar to table rows (at least as far as viewing goes, editing will be different and is out of scope for this issue)
 Sorts: Similar to tables.
 Groups: Similar to tables.
