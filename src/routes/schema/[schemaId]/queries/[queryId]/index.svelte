@@ -52,14 +52,11 @@
 
   let inspector = { action: "Query Details" };
 
-
   async function loadData() {
  
     entities = await loadEntities();
-
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     selectedView = entities.queries.find((view) => view.id == queryId);
-
 
     let viewCount = entities.queries.filter((v) =>
       v.name.startsWith("New Query")
@@ -96,7 +93,7 @@
         }
       })
 
-           
+      //inspector = {action:"Column",column:selectedView.columns[0]}
 
 
       //runQuery=true;

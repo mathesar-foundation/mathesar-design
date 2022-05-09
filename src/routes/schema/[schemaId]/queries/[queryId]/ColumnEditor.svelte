@@ -21,6 +21,12 @@
 		externalLink = column.source.table.constraints.find(
 			(c) => c.referenceTable && c.referenceTable.id == selectedView.baseTable.id
 		);
+
+		if(externalLink && externalLink.referenceTable){
+			externalLink['primaryKeyColumn']=getPrimaryKeyColumn(externalLink.referenceTable);
+		}
+
+		console.log(externalLink)
 		selectedView = selectedView;
 	});
 
@@ -34,6 +40,14 @@
 
 		column = column;
 	}
+
+	function getPrimaryKeyColumn(table){
+        let primaryKeyColumn = table.constraints.find(c => c.type == "Primary Key").column;
+
+   
+        return table.columns.find(c => primaryKeyColumn == c.name );
+        
+    }
 
 </script>
 
