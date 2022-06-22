@@ -1,6 +1,5 @@
 <script>
     import Modal from '$lib/Modal.svelte';
-    import { theme } from '$lib/themes';
     import Dropdown from "$lib/Dropdown.svelte"
     import Question from "./Question.svelte";
     export let showModal;

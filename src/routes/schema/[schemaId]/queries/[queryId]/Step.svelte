@@ -12,7 +12,6 @@
 
 	export let minimize = true;
 
-	console.log(selectedView.steps[step])
 
 
 	function deleteStep(step) {

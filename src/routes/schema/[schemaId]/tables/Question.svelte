@@ -5,7 +5,6 @@
 
     let answers = []
 
-    $: console.log(answers);
 
 </script>
 

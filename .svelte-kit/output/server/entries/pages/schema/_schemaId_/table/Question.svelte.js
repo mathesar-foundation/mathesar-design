@@ -8,7 +8,6 @@ const Question = create_ssr_component(($$result, $$props, $$bindings, slots) => 
   if ($$props.selectedTable === void 0 && $$bindings.selectedTable && selectedTable !== void 0)
     $$bindings.selectedTable(selectedTable);
   {
-    console.log(answers);
   }
   return `<div class="${"text-zinc-800 space-y-2"}"><div class="${"flex items-center border border-zinc-200 rounded p-2"}"><p>Can a single ${escape(table.name)} record be linked to more than one ${escape(selectedTable.name)} record?</p>
         <div class="${"ml-auto"}"><div class="${"space-x-2"}"><input value="${"Yes"}" type="${"radio"}" name="${"q1"}" id="${"a1"}"${answers[0] === "Yes" ? add_attribute("checked", true, 1) : ""}> <label for="${"a1"}">Yes</label></div>

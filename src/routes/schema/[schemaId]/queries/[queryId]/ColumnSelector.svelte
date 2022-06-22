@@ -12,8 +12,14 @@
 	afterUpdate(()=>{
 		baseTable = selectedView.baseTable;
 	})
+
+	let viewModes = [
+		'In Table',
+		'Linked Tables',
+		'In Use'
+	]
 	
-	let viewMode = 'available';
+	let viewMode = viewModes[0];
 
 	const dispatch = createEventDispatcher();
 
@@ -29,38 +35,44 @@
 			column
 		});
 	}
+
+	
 </script>
 
-<div class="p-2 border-b text-sm  border-zinc-300 flex">
-	<div
-		on:click={() => (viewMode = 'available')}
-		class:font-semibold={viewMode == 'available'}
-		class="flex-grow text-center cursor-pointer"
-	>
-		Available
-	</div>
-	<div
-		on:click={() => (viewMode = 'in use')}
-		class:font-semibold={viewMode !== 'available'}
-		class="flex-grow text-center cursor-pointer"
-	>
-		In Use
-	</div>
+<!--
+<div class="grid">
+	<input
+		type="text"
+		placeholder="Search Columns"
+		class="p-2  bg-zinc-100"
+	/>
+</div>
+-->
+
+
+<div class="p-2 text-sm  border-zinc-300 flex space-x-2">
+	{#each viewModes as option}
+		<div
+		on:click={() => (viewMode = option)}
+		class:font-semibold={viewMode == option}
+		class:bg-indigo-200={viewMode == option}
+		class="flex-grow text-center bg-zinc-200 rounded cursor-pointer"
+		>
+		{option}
+		</div>
+	{/each}
 </div>
 
-<div class="leading-6">
-	{#if viewMode == 'available'}
-		<div class="grid">
-			<input
-				type="text"
-				placeholder="Search Columns"
-				class="p-2  bg-zinc-100"
-			/>
-		</div>
+<div class="leading-6 h-full border-b overflow-y-scroll p-2 space-y-1">
 
-		<div class="p-2">
+		{#if viewMode == "In Table"}
+
+		<!--
+		<div class="p-2 border">
 			<div class="{baseTable.color} w-max px-1 rounded ">{baseTable.name}</div>
 		</div>
+		-->
+
 		{#each baseTable.columns as column}
 			{#if !isForeignKey(baseTable, column)}
 				<Column
@@ -68,6 +80,8 @@
 					sourceTable={baseTable}
 					{column}
 					sourceColumn={column}
+					on:dragColumn
+					on:dropColumn
 					on:addColumn={(e) => addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
 				/>
 			{:else}
@@ -82,7 +96,7 @@
 					</span>
 				</div>
 
-				<div class="border-l border-zinc-300 ml-4">
+				<div class="border-l-2 border-zinc-300 ml-4 space-y-1 pl-1">
 					{#each getReferenceTable(baseTable, column).columns as col}
 						{#if !isForeignKey(getReferenceTable(baseTable, column), col)}
 							<Column
@@ -104,7 +118,7 @@
 									>{getReferenceTable(getReferenceTable(baseTable, column), col).name}</span
 								>
 							</div>
-							<div class="border-l border-zinc-300 ml-4">
+							<div class="border-l-2 border-zinc-300 ml-4 space-y-1 pl-1">
 								{#each getReferenceTable(getReferenceTable(baseTable, column), col).columns as col2}
 									<Column
 										baseTable={getReferenceTable(baseTable, column)}
@@ -121,6 +135,12 @@
 				</div>
 			{/if}
 		{/each}
+		
+		{/if}
+
+		
+		
+		{#if viewMode == "Linked Tables"}
 
 		{#each tables.filter((t) => linksToTable(baseTable, t)) as table}
 			<div class="p-2 space-x-1 flex flex-wrap items-center ">
@@ -198,9 +218,14 @@
 				{/if}
 			{/each}
 		{/each}
-	{:else}
-		{#each selectedView.columns as column}
-			<div class="border p-2">{column.name}</div>
-		{/each}
-	{/if}
+
+		{/if}
+
+
+		{#if viewMode == "In Use"}
+			columns
+		{/if}
+
+		
+	
 </div>

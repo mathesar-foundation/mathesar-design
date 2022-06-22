@@ -1,37 +1,96 @@
 <script>
-    import { createEventDispatcher } from "svelte";
+    import { afterUpdate, createEventDispatcher, onMount } from "svelte";
     const dispatch = createEventDispatcher();
     import { theme } from "$lib/themes";
     import Column from "./Column.svelte";
     import Cell from "./Cell.svelte";
-
-    export let fixedHeight;
+	import { v4 as uuidv4 } from "uuid";
+    //export let fixedHeight;
+    let columnSelection = {};
     
+    import RecordSelector from "./tables/RecordSelector.svelte";
     export let table; 
+
+    let activeEdit;
+    let cells = {};
+    
+
+    onMount(()=>{
+        cells = table.cells;
+        //cells = createCells(table);
+        //activeEdit = cells[1][3];
+        //cells[1][3].edit = true;
+    })
+
+
+    function editCell(cell,record){
+        let cellIdx = cells[record].indexOf(cell);
+        cells = table.cells
+
+        //cells[record][cellIdx].edit = true;
+        if(cell.link){
+            activeEdit = cells[record][cellIdx];
+        }
+    }
+
+    function closePanels(){
+        activeEdit = {};
+        cells = {}
+        table = table;
+    }
 
 </script>
 
-<div class="overflow-y-scroll h-full flex flex-col">
 
-    <div class="drop-shadow-md flex { theme.tableBorderColor } bg-zinc-200 border-b" >
-        <div class="p-3 w-10 border-r border-zinc-200"></div>
+
+<div class="overflow-y-scroll h-full flex flex-col  bg-zinc-50" on:click|self={closePanels}>
+
+    
+
+    <div class="drop-shadow-sm flex border-b { theme.tableBorderColor }">
+        <div class="p-3 w-10 border-r border-zinc-200 shrink-0"></div>
         {#each table.columns as column }
-            <Column on:deleteColumn column={ column } table={ table }/> 
+            <Column bind:columnSelection={columnSelection} on:selectColumn on:extractToTable on:deleteColumn bind:column={ column } bind:table={ table }/> 
         {/each} 
     </div>
+
+    {#each Object.keys(cells) as record}
+        <div class="flex { theme.tableBorderColor }">
+
+            <div class="p-3 w-10 border-b border-r border-zinc-200 text-xs text-zinc-500 text-center shrink-0">{record}</div>
+
+            {#each table.cells[record] as cell,j}
+                <Cell on:editCell={(e)=>editCell(e.detail,record)} bind:cell={ cell }/>
+            {/each}
+    
+        </div>
+    {/each}
+
+    {#if activeEdit}
+        <RecordSelector bind:record={activeEdit}/>
+    {/if}
+       
+
+    <!--
 
     <div class="flex-grow {fixedHeight?fixedHeight:''}">
         {#if table.records}     
             {#each table.records as record,i }
-                <div class="flex border-b { theme.tableBorderColor }">
-                    <div class="p-3 bg-zinc-200 bg-opacity-20 w-10 border-r border-zinc-200 text-xs text-zinc-500 text-center">{i}</div>
-                    {#each record as cell,j}
-                        <Cell on:editCell={()=>dispatch('editCell',{table,columnIdx:j,recordIdx:i})} cell={ cell } column={ table.columns[j] }/>
+                <div class="flex { theme.tableBorderColor }">
+                    <div class="p-3 bg-white w-10 border-r border-zinc-200 text-xs text-zinc-500 text-center shrink-0">{i}</div>
+
+         
+               
+                    {#each cells[i] as cell,j}
+                        <Cell on:editCell={(e)=>editCell(e.detail,record)} bind:cell={ cell } column={ table.columns[j] }/>
                     {/each}
+              
                 </div>
             {/each}
         {/if}
      
     </div>
+
+    -->
 
 </div>

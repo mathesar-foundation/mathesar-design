@@ -4,7 +4,7 @@
 	import Dropdown from '$lib/Dropdown.svelte';
 	import { theme } from '$lib/themes';
 
-	export let entities;
+	export let schema;
 	export let selectedView;
 	let searchTerm = "";
 
@@ -18,17 +18,23 @@
 </script>
 
 
-<div class="bg-zinc-50 border-b-2 bg-opacity-20 text-zinc-800 p-2 flex items-center space-x-3">
-	<div class="font-semibold">Exploring</div>
 
+
+
+<div class="border-b text-zinc-800 p-2 space-y-1 relative">
+	
+	
+	
+
+	<h4 class="text-sm font-semibold flex-grow leading-6">Base Table</h4>
 	<Dropdown closeOnClick={true} full={false} width={'w-96'}>
 		
 		<div
 			slot="toggle"
-			class="{theme.mediumBorderColor} border px-2 py-1 rounded cursor-pointer space-x-1"
+			class="{theme.mediumBorderColor} border p-1 flex bg-white items-center rounded cursor-pointer space-x-1"
 		>
 			<i class="ri-table-line align-bottom" />
-			<span>{selectedView.baseTable ? selectedView.baseTable.name : 'Select Base Table'}</span>
+			<span class="flex-grow">{selectedView.baseTable ? selectedView.baseTable.name : 'Select Base Table'}</span>
 
 			<i class="ri-arrow-drop-down-line align-bottom" />
 		</div>
@@ -44,7 +50,7 @@
 				/>
 			  </div>
 			
-			{#each filter(entities.tables,searchTerm) as table}
+			{#each filter(schema.tables,searchTerm) as table}
 				<div
 					on:click={() => dispatch('tableSelected', table)}
 					class="p-2 hover:bg-indigo-100 border-t cursor-pointer"
@@ -57,14 +63,29 @@
 			{/each}
 		</div>
 	</Dropdown>
+
+	
+	{#if !selectedView.baseTable}
+		<div class="top-20 left-0 z-10 absolute">
+		
+			<div class="w-4 border-solid border-b-indigo-500 mx-8 border-b-8 border-x-transparent border-x-8 border-t-0"></div>
+		
+			<div class="bg-indigo-500 text-white p-8 rounded mx-2 space-y-2">
+				<h4 class="font-semibold text-xl font-light opacity-80">Select a Base Table</h4>	
+				<p class="text-sm">To begin your query, select a base table. The base table will determine the joins with other tables.</p>
+			</div>
+		</div>
+		
+		
+	{/if}
+	
+
 	{#if selectedView.baseTable}
+	<!--
 	<div>
 		<button class="border py-1 px-2 rounded bg-zinc-50">Open Table</button>
 	</div>
-	{/if}
-	<div class="flex justify-end flex-grow">
-		<!--
-	<button class="border py-1 px-2 rounded bg-zinc-50">Leave Data Explorer</button>
 	-->
-	</div>
+	{/if}
+
 </div>

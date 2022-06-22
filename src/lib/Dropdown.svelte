@@ -9,13 +9,13 @@
 
 	export let width;
 	export let closeOnClick;
+	export let position = "left"
 
 	onMount(() => {
 
 		
 
 		const handleOutsideClick = (event) => {
-			console.log(menu.contains(event.target),event.target)
 			if (show && !menu.contains(event.target)) {
 				show = false;
 			}
@@ -48,7 +48,7 @@
 				on:click={()=> {if(closeOnClick){ show = !show }} }
 				in:scale={{ duration: 100, start: 0.95 }}
 				out:scale={{ duration: 75, start: 0.95 }}
-				class="origin-top-left absolute left-0 min-w-fit {width
+				class="origin-top-left absolute {position}-0 min-w-fit {width
 					? width
 					: 'w-52'} z-40 mt-1 bg-zinc-50 rounded shadow-md border border-zinc-200 shadow-md"
 			>

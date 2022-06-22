@@ -26,7 +26,6 @@
 			externalLink['primaryKeyColumn']=getPrimaryKeyColumn(externalLink.referenceTable);
 		}
 
-		console.log(externalLink)
 		selectedView = selectedView;
 	});
 

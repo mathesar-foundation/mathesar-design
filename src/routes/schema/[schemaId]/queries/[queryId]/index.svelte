@@ -4,7 +4,10 @@
   import { beforeUpdate, onMount } from "svelte";
   import { theme } from "$lib/themes";
   import { page } from "$app/stores";
-  import pluralize from "pluralize"
+  import pluralize from "pluralize";
+  import { icon } from "$lib/iconMap";
+  import Dropdown from "$lib/Dropdown.svelte";
+  
 
   import {
     clone,
@@ -16,6 +19,7 @@
   } from "$lib/utils";
 
   import FormulaSettings from "./FormulaSettings.svelte";
+  import Parameters from "./Parameters.svelte";
   import ColumnSelector from "./ColumnSelector.svelte";
   import { v4 as uuidv4 } from "uuid";
   import TopNav from "$lib/TopNav.svelte";
@@ -26,6 +30,7 @@
   import { notifications } from "$lib/notifications.js";
   import Toast from "$lib/Toast.svelte";
   import BaseTableSelector from "./BaseTableSelector.svelte";
+  import SideBar from "./../../SideBar.svelte";
 
   const { schemaId } = $page.params;
   const { queryId } = $page.params;
@@ -37,6 +42,7 @@
 
   let showFormulaModal = false;
   let activeFormula = {};
+  let draggedColumn;
 
   let selectedView;
   let runQuery;
@@ -50,10 +56,9 @@
     columns: [],
   };
 
-  let inspector = { action: "Query Details" };
+  let inspector = { action: "Query Output" };
 
   async function loadData() {
- 
     entities = await loadEntities();
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     selectedView = entities.queries.find((view) => view.id == queryId);
@@ -72,29 +77,31 @@
         steps: {},
       };
 
-      runQuery=false;
+      runQuery = false;
     }
 
     if (selectedView) {
-      
-      selectedView.columns.map(c => c.source.table.id).forEach(t=> {
-        if (!entities.tables.find(table => table.id == t)){
-           missingTables[t]=true
-        }
-      });
+      selectedView.columns
+        .map((c) => c.source.table.id)
+        .forEach((t) => {
+          if (!entities.tables.find((table) => table.id == t)) {
+            missingTables[t] = true;
+          }
+        });
 
-      
+      let allColumns = _.flattenDeep(
+        entities.tables.map((t) => t.columns.map((c) => c.id))
+      );
 
-      let allColumns = _.flattenDeep(entities.tables.map(t => t.columns.map(c => c.id)))
-
-      selectedView.columns.map((c,i) => c.source.link.column.id).forEach(id => {
-        if(!allColumns.includes(id)){
-          missingColumns[id]=true
-        }
-      })
+      selectedView.columns
+        .map((c, i) => c.source.link.column.id)
+        .forEach((id) => {
+          if (!allColumns.includes(id)) {
+            missingColumns[id] = true;
+          }
+        });
 
       //inspector = {action:"Column",column:selectedView.columns[0]}
-
 
       //runQuery=true;
     }
@@ -133,8 +140,7 @@
     ).referenceTable;
   }
 
-  function addColumn(table, column, _column) {
-
+  function createNewColumn(table, column, _column) {
     let source;
 
     if (column !== _column) {
@@ -150,8 +156,6 @@
         table: { ...source },
       },
     };
-
-    console.log(newColumn)
 
     if (!table.id == selectedView.baseTable.id) {
       newColumn.aggregation = typeOptions[newColumn.type].aggregations[0];
@@ -169,9 +173,30 @@
       table: table,
     };
 
-    selectedView.columns.push(newColumn);
+    return newColumn;
+  }
 
-    inspector = { action: "Column", column: newColumn };
+  function startDragColumn(table, column, _column) {
+    draggedColumn = createNewColumn(table, column, _column);
+  }
+
+  function dropColumn() {
+    let newColumn = draggedColumn;
+    draggedColumn = null;
+
+    selectedView.columns.push(newColumn);
+    //inspector = { action: "Column", column: newColumn };
+    selectedView.records = getColumnRecords(selectedView.columns);
+    selectedView = selectedView;
+    applySteps(selectedView.records);
+  }
+
+  function addColumn(table, column, _column) {
+    console.log(table, "TABLE 1");
+    let newColumn = createNewColumn(table, column, _column);
+
+    selectedView.columns.push(newColumn);
+    //inspector = { action: "Column", column: newColumn };
     selectedView.records = getColumnRecords(selectedView.columns);
     selectedView = selectedView;
     applySteps(selectedView.records);
@@ -264,7 +289,6 @@
       }
     });
 
-
     return filteredRecords;
   }
 
@@ -308,20 +332,16 @@
     return records;
   }
 
-  function setRange(records,size){
+  function setRange(records, size) {
+    let range = _.chunk(Object.keys(records), size);
 
-    let range = _.chunk(Object.keys(records), size)
+    let groupedRange = range.reduce((acc, curr) => {
+      let rangeDescription = `${curr[0]}-${curr[curr.length - 1]}`;
 
-    let groupedRange = range.reduce((acc,curr) => {
-
-      let rangeDescription = `${curr[0]}-${curr[curr.length-1]}`
-
-      acc[rangeDescription]= _.flatten(curr.map(c => records[c]))
+      acc[rangeDescription] = _.flatten(curr.map((c) => records[c]));
 
       return acc;
-      
-    },{})
-
+    }, {});
 
     return groupedRange;
   }
@@ -335,17 +355,16 @@
       return n[columnIdx];
     });
 
-
-    if(selectedView.steps[step].summaryCondition == "range"){
-      groupedRecords = setRange(groupedRecords,selectedView.steps[step].rangeSize);
+    if (selectedView.steps[step].summaryCondition == "range") {
+      groupedRecords = setRange(
+        groupedRecords,
+        selectedView.steps[step].rangeSize
+      );
     }
- 
 
     let aggregatedRecords = Object.keys(groupedRecords).map((group) => {
-
       return aggregate(groupedRecords[group], columnIdx);
     });
-
 
     selectedView.steps[step].aggregations.splice(
       0,
@@ -398,7 +417,6 @@
     resetColumnTypes(selectedView.columns);
 
     Object.keys(selectedView.steps).forEach((step) => {
-
       let column = selectedView.steps[step].column;
 
       if (
@@ -454,14 +472,10 @@
   }
 
   function changeColumnType(view, idx, step) {
-
-    
-
     let columns = view.columns;
 
     columns.forEach((col, i) => {
       if (i !== idx && !col.source.table.id == selectedView.baseTable.id) {
-        
       } //
 
       if (i !== idx) {
@@ -471,10 +485,9 @@
       if (i == idx) {
         col.aggregation = null;
 
-        if(view.steps[step].summaryCondition == "range"){
+        if (view.steps[step].summaryCondition == "range") {
           col.aggregation = "range";
         }
-        
       }
     });
   }
@@ -510,7 +523,7 @@
     column.source.filter = {
       column: column,
       condition: conditions[column.type][0],
-      value:"",
+      value: "",
     };
 
     selectedView.columns[columnIdx] = column;
@@ -526,7 +539,7 @@
 
   function selectBaseTable(table) {
     selectedView.baseTable = table;
-    inspector.action = "Add Column";
+    //inspector.action = "Add Column";
   }
 </script>
 
@@ -535,223 +548,345 @@
 {:then entities}
   <TopNav {schema} />
 
-  <BaseTableSelector
-    {entities}
-    bind:selectedView
-    on:tableSelected={(e) => {
-      selectBaseTable(e.detail);
-    }}
-  />
-
-  <div
-    class="flex-grow flex text-zinc-800 max-w-full overflow-hidden"
-    style="height: calc(100vh - 120px);"
-  >
-    <div
-      on:click|self={() => (inspector = { action: "Query Details" })}
-      class="flex-grow h-full flex flex-col shrink-0 bg-zinc-50"
-    >
-      <div>
-        <SelectedColumns {missingColumns} {missingTables} bind:selectedView bind:inspector />
-      </div>
-
-      <Transformations
-        on:previewStep={(e) => previewSteps(e.detail)}
-        on:AddStep={(e) => applySteps(e.detail)}
-        on:deleteStep={(e) => {
-          applySteps(selectedView.records);
-        }}
-        bind:selectedView
-      />
-
-      <div />
-    </div>
-
-    <div class="w-7/12 p-4 border-r border-l space-y-2">
-
-      {#if Object.keys(missingTables).length>0}
-              <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left">
-                <div class="font-semibold"><i class="ri-error-warning-fill align-bottom font-light"></i> Warning</div>
-                This query cannot be run because it is missing {Object.keys(missingTables).length} {pluralize('table', Object.keys(missingTables).length)}.
-              </div>
-      {/if}
-
-      {#if Object.keys(missingColumns).length>0}
-        <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left">
-          <div class="font-semibold"><i class="ri-error-warning-fill align-bottom font-light"></i> Warning</div>
-          This query cannot be run because it is missing {Object.keys(missingColumns).length} {pluralize('column', Object.keys(missingColumns).length)}.
-        </div>
-      {/if}
-
-      <div
-        class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
-        on:click|self={() => (inspector = { action: "Query Details" })}
-      >
-       
-      {#if runQuery && !!entities.queries.find((v) => v.id == selectedView.id)}
-          <div class="h-full w-full p-8 text-center space-y-2">
-            
-            <div class="text-xl text-zinc-500">Run query or preview to list results</div>
-            <button disabled={Object.keys(missingTables).length>0} class:opacity-50={Object.keys(missingTables).length>0} class="border p-2 rounded {theme.mediumBorderColor}" on:click={()=>runQuery = !runQuery}>Run Query</button>
-            <button disabled={Object.keys(missingTables).length>0} class:opacity-50={Object.keys(missingTables).length>0} class="border p-2 rounded bg-zinc-50" on:click={()=>runQuery = !runQuery}>Preview</button>
-          </div>
-        {:else}
-          
-        
-        {#if selectedView.columns.length > 0}
-        <div class="p-2 flex items-center space-x-4">
-          <h3 class="font-semibold">Result</h3>
-          <p class="text-sm text-zinc-500">Query Run Succesfully</p>
-        </div>
-        <TablePreview
-          records={applySteps(selectedView.records, selectedView.steps)}
-          bind:inspector
-          bind:selectedView
-        />
-      {:else if !selectedView.baseTable}
-        <div
-          class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
-        >
-          <span class="text-xl">Select a base table to get started</span>
-        </div>
-      {:else}
-        <div
-          class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
-        >
-          <span class="text-xl">Select or drop columns</span>
-        </div>
-      {/if}
-
-
-      {/if}
-
-        
-      </div>
-    </div>
+  <div class="w-screen flex bg-zinc-100 bg-opacity-10">
+    <SideBar
+      {schema}
+      on:openObject={(e) =>
+        (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
+    />
 
     <div
-      class="flex flex-col h-full overflow-y-scroll w-80 bg-zinc-50"
+      class="flex overflow-hidden flex-col h-full flex-grow"
+      style="height: calc(100vh - 52px);"
     >
-      <div class="text-sm font-semibold border-b border-zinc-200 p-2">
-        <h4 class="leading-6">{inspector.action}</h4>
-      </div>
+      <div class="border-b flex items-center space-x-4 pr-2">
 
-      {#if inspector.action == "Query Details"}
-        <div class="p-2 space-y-4">
-          <h4 class="font-semibold text-sm">Save Options</h4>
-
-          <div class="grid space-y-2">
-            <div class="grid space-y-1">
-              <label class="text-sm font-semibold" for="viewName"
-                >Query Name</label
-              >
-              <input
-                type="text"
-                class="p-2 rounded bg-zinc-100 border border-zinc-300"
-                bind:value={selectedView.name}
-              />
-            </div>
-            {#if entities.queries.find((v) => v.id == selectedView.id)}
-              <button
-                on:click={saveQuery}
-                disabled={!selectedView.baseTable}
-                class:opacity-60={!selectedView.baseTable}
-                class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
-                >Save Changes to Query</button
-              >
-            {:else}
-              <button
-                on:click={saveQuery}
-                disabled={!selectedView.baseTable}
-                class:opacity-60={!selectedView.baseTable}
-                class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
-                >Save Query</button
-              >
-
-              <a
-                href="./"
-                class="w-full block text-center border {theme.mediumBorderColor} bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
-                >Close without Saving</a
-              >
-            {/if}
-          </div>
-          {#if entities.queries.find((v) => v.id == selectedView.id)}
-            <div class="border-b border-zinc-200" />
-            <div class="space-y-1">
-              <h4 class="font-semibold text-sm">Publish as View</h4>
-              <p class="text-xs text-zinc-500">
-                Views differ from saved queries in that they don't include the Data
-                Explorer configuration—transformation steps, and filters—along with the query.
-              </p>
-            </div>
+        <div class="text-lg px-2 py-3 space-x-1 border-r bg-opacity-10 hover:bg-opacity-80 flex items-center">
+          <i class="{icon[selectedView.type]} align-bottom text-xl" />
+          <input class="hover:bg-indigo-100 p-1 rounded" type="text" bind:value={selectedView.name}>
+        
+          <Dropdown>
             <button
-              on:click={saveView}
+              slot="toggle"
+              class=""
+            >
+            <i class="ri-arrow-drop-down-line align-bottom" />
+            </button>
+            <div slot="menu">
+              <div
+                class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
+              >
+                View SQL Query
+              </div>
+              <div
+                class="px-2 py-1 hover:bg-opacity-40 bg-opacity-0 bg-zinc-200 cursor-pointer"
+              >
+                Publish as View
+              </div>
+            </div>
+          </Dropdown>
+        </div>
+        
+
+        <div class="flex flex-grow justify-end items-center space-x-2">
+          {#if entities.queries.find((v) => v.id == selectedView.id)}
+            <button
+              on:click={saveQuery}
               disabled={!selectedView.baseTable}
               class:opacity-60={!selectedView.baseTable}
-              class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
-              >Publish View</button
+              class="border {theme.mediumBorderColor} text-zinc-800 p-2 text-sm rounded"
+              >Save</button
+            >
+          {:else}
+            <button
+              on:click={saveQuery}
+              disabled={!selectedView.baseTable}
+              class:opacity-60={!selectedView.baseTable}
+              class="border {theme.mediumBorderColor} text-zinc-800 p-2 text-sm rounded"
+              >Save</button
             >
           {/if}
-          <div class="border-b border-zinc-200" />
-          <div class="space-y-1">
-            <h4 class="text-sm font-semibold">SQL Query</h4>
-            <p class="text-xs text-zinc-500">
-              This view is a virtual table based on a SQL statement's result
-              set. The SQL below can be used to recreate this view.
-            </p>
-          </div>
-
-          <button
-            disabled={!selectedView.baseTable}
-            class:opacity-60={!selectedView.baseTable}
-            class="w-full bg-zinc-50 text-zinc-800 border border-zinc-300 p-1 text-sm rounded"
-            >View SQL Query</button
+          <a
+            href="../"
+            class="block text-center border {theme.mediumBorderColor} bg-zinc-50 text-zinc-800 p-2 text-sm rounded"
+            >Close without Saving</a
           >
         </div>
-      {/if}
+      </div>
 
-      {#if inspector.action == "Add Column"}
-        <div>
-          <ColumnSelector
-            on:addColumn={(e) =>
-              addColumn(
-                e.detail.sourceTable,
-                e.detail.sourceColumn,
-                e.detail.column
-              )}
-            tables={entities.tables}
-            bind:selectedView
-          />
+      <div class="flex-grow flex text-zinc-800 max-w-full overflow-hidden">
+        <div
+          on:click|self={() => (inspector = { action: "Query Output" })}
+          class="flex-grow h-full flex flex-col shrink-0 bg-zinc-50"
+        >
+          <div>
+            <BaseTableSelector
+              {schema}
+              bind:selectedView
+              on:tableSelected={(e) => {
+                selectBaseTable(e.detail);
+              }}
+            />
+          </div>
+
+          <div class="border h-full overflow-hidden">
+            {#if selectedView.baseTable}
+              <ColumnSelector
+                on:dropColumn={dropColumn}
+                on:dragColumn={(e) =>
+                  startDragColumn(
+                    e.detail.baseTable,
+                    e.detail.sourceColumn,
+                    e.detail.column
+                  )}
+                on:addColumn={(e) =>
+                  addColumn(
+                    e.detail.sourceTable,
+                    e.detail.sourceColumn,
+                    e.detail.column
+                  )}
+                tables={entities.tables}
+                bind:selectedView
+              />
+            {/if}
+          </div>
+
+          <!--
+          <div>
+            <SelectedColumns
+              {missingColumns}
+              {missingTables}
+              bind:selectedView
+              bind:inspector
+            />
+          </div>
+          -->
+
+          <div />
         </div>
-      {/if}
 
-      {#if inspector.action == "Column"}
-        <ColumnEditor
-          on:deleteFilter={(e) => deleteColumnFilter(e.detail)}
-          on:addFilter={(e) => addColumnFilter(e.detail)}
-          on:updateAggregation={(e) =>
-            updateAggregation(
-              e.detail.aggregation,
-              e.detail.column,
-              e.detail.columnIdx
-            )}
-          on:deleteColumn={(e) => deleteColumn(e.detail)}
-          bind:selectedView
-          bind:column={inspector.column}
-        />
-      {/if}
+        <div class="w-7/12 p-2 border-r border-l space-y-2">
+          {#if Object.keys(missingTables).length > 0}
+            <div
+              class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left"
+            >
+              <div class="font-semibold">
+                <i class="ri-error-warning-fill align-bottom font-light" /> Warning
+              </div>
+              This query cannot be run because it is missing {Object.keys(
+                missingTables
+              ).length}
+              {pluralize("table", Object.keys(missingTables).length)}.
+            </div>
+          {/if}
+
+          {#if Object.keys(missingColumns).length > 0}
+            <div
+              class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left"
+            >
+              <div class="font-semibold">
+                <i class="ri-error-warning-fill align-bottom font-light" /> Warning
+              </div>
+              This query cannot be run because it is missing {Object.keys(
+                missingColumns
+              ).length}
+              {pluralize("column", Object.keys(missingColumns).length)}.
+            </div>
+          {/if}
+
+          <div
+            class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
+            on:click|self={() => (inspector = { action: "Query Output" })}
+          >
+            {#if runQuery && !!entities.queries.find((v) => v.id == selectedView.id)}
+              <div class="h-full w-full p-8 text-center space-y-2">
+                <div class="text-xl text-zinc-500">
+                  Run query or preview to list results
+                </div>
+                <button
+                  disabled={Object.keys(missingTables).length > 0}
+                  class:opacity-50={Object.keys(missingTables).length > 0}
+                  class="border p-2 rounded {theme.mediumBorderColor}"
+                  on:click={() => (runQuery = !runQuery)}>Run Query</button
+                >
+                <button
+                  disabled={Object.keys(missingTables).length > 0}
+                  class:opacity-50={Object.keys(missingTables).length > 0}
+                  class="border p-2 rounded bg-zinc-50"
+                  on:click={() => (runQuery = !runQuery)}>Preview</button
+                >
+              </div>
+            {:else if selectedView.columns.length > 0}
+              <div class="p-2 flex items-center space-x-4">
+                <h3 class="font-semibold">Result</h3>
+                <p class="text-sm text-zinc-500">Query Run Succesfully</p>
+              </div>
+              <TablePreview
+                records={applySteps(selectedView.records, selectedView.steps)}
+                tables={entities.tables}
+                bind:draggedColumn
+                bind:inspector
+                bind:selectedView
+              />
+            {:else if !selectedView.baseTable}
+              <div
+                class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
+              >
+                <span class="text-xl">Select a base table to get started</span>
+              </div>
+            {:else}
+              <div
+                class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
+              >
+                <span class="text-xl">Select or drop columns</span>
+              </div>
+            {/if}
+          </div>
+        </div>
+
+        <div class="flex flex-col h-full overflow-y-scroll w-80 bg-zinc-50">
+          <div class="text-sm font-semibold border-b border-zinc-200 p-2">
+            <h4 class="leading-6">{inspector.action}</h4>
+          </div>
+
+          {#if inspector.action == "Query Output"}
+            <div class="p-2 space-y-2 border-b">
+
+              <Parameters bind:selectedView={selectedView}/>
+
+
+             
+            </div>
+            <Transformations
+              on:previewStep={(e) => previewSteps(e.detail)}
+              on:AddStep={(e) => applySteps(e.detail)}
+              on:deleteStep={(e) => {
+                applySteps(selectedView.records);
+              }}
+              bind:selectedView
+            />
+          {/if}
+
+          <!--
+            <div class="p-2 space-y-4 border-t">
+              <h4 class="font-semibold text-sm">Save Options</h4>
+              
+              <div class="grid space-y-2">
+                <div class="grid space-y-1">
+                  <label class="text-sm font-semibold" for="viewName"
+                    >Query Name</label
+                  >
+                  <input
+                    type="text"
+                    class="p-2 rounded bg-zinc-100 border border-zinc-300"
+                    bind:value={selectedView.name}
+                  />
+                </div>
+                {#if entities.queries.find((v) => v.id == selectedView.id)}
+                  <button
+                    on:click={saveQuery}
+                    disabled={!selectedView.baseTable}
+                    class:opacity-60={!selectedView.baseTable}
+                    class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
+                    >Save Changes to Query</button
+                  >
+                {:else}
+                  <button
+                    on:click={saveQuery}
+                    disabled={!selectedView.baseTable}
+                    class:opacity-60={!selectedView.baseTable}
+                    class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
+                    >Save Query</button
+                  >
+
+                  <a
+                    href="./"
+                    class="w-full block text-center border {theme.mediumBorderColor} bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
+                    >Close without Saving</a
+                  >
+                {/if}
+              </div>
+              
+              {#if entities.queries.find((v) => v.id == selectedView.id)}
+                <div class="border-b border-zinc-200" />
+                <div class="space-y-1">
+                  <h4 class="font-semibold text-sm">Publish as View</h4>
+                  <p class="text-xs text-zinc-500">
+                    Views differ from saved queries in that they don't include
+                    the Data Explorer configuration—transformation steps, and
+                    filters—along with the query.
+                  </p>
+                </div>
+                <button
+                  on:click={saveView}
+                  disabled={!selectedView.baseTable}
+                  class:opacity-60={!selectedView.baseTable}
+                  class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
+                  >Publish View</button
+                >
+              {/if}
+              <div class="border-b border-zinc-200" />
+              <div class="space-y-1">
+                <h4 class="text-sm font-semibold">SQL Query</h4>
+                <p class="text-xs text-zinc-500">
+                  This view is a virtual table based on a SQL statement's result
+                  set. The SQL below can be used to recreate this view.
+                </p>
+              </div>
+
+              <button
+                disabled={!selectedView.baseTable}
+                class:opacity-60={!selectedView.baseTable}
+                class="w-full bg-zinc-50 text-zinc-800 border border-zinc-300 p-1 text-sm rounded"
+                >View SQL Query</button
+              >
+            </div>
+          -->
+
+          {#if inspector.action == "Add Column"}
+            <div>
+              <ColumnSelector
+                on:addColumn={(e) =>
+                  addColumn(
+                    e.detail.sourceTable,
+                    e.detail.sourceColumn,
+                    e.detail.column
+                  )}
+                tables={entities.tables}
+                bind:selectedView
+              />
+            </div>
+          {/if}
+
+          {#if inspector.action == "Column"}
+            <ColumnEditor
+              on:deleteFilter={(e) => deleteColumnFilter(e.detail)}
+              on:addFilter={(e) => addColumnFilter(e.detail)}
+              on:updateAggregation={(e) =>
+                updateAggregation(
+                  e.detail.aggregation,
+                  e.detail.column,
+                  e.detail.columnIdx
+                )}
+              on:deleteColumn={(e) => deleteColumn(e.detail)}
+              bind:selectedView
+              bind:column={inspector.column}
+            />
+          {/if}
+        </div>
+      </div>
+
+      <FormulaSettings
+        bind:showFormulaModal
+        activeFormula={clone(activeFormula)}
+        view={newView}
+        {columns}
+        on:updateFormula={updateFormula}
+      />
+
+      <Toast />
     </div>
   </div>
-
-  <FormulaSettings
-    bind:showFormulaModal
-    activeFormula={clone(activeFormula)}
-    view={newView}
-    {columns}
-    on:updateFormula={updateFormula}
-  />
-
-  <Toast />
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}

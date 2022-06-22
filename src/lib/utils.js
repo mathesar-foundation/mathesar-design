@@ -55,6 +55,24 @@ export function getColumnIndex(table, column) {
     return table.columns.indexOf(table.columns.find((col) => col == column));
 }
 
+function isLink(table,record,idx){
+        
+    return table.constraints.find(c => c.type == "Foreign Key" && c.column == table.columns[idx].name)
+}
+
+function isKey(table,record,idx){
+    
+    return table.constraints.find(c => c.type == "Primary Key" && c.column == table.columns[idx].name)
+}
+
+function getSummary(table,record,idx){
+    if (isLink(table,record,idx)) {
+        return isLink(table,record,idx).referenceTable
+    }
+
+    return null;
+}
+
 export async function loadEntities(){
     function addExtraReferences(entities) {
         entities.tables.forEach(table => {
@@ -62,9 +80,35 @@ export async function loadEntities(){
             table.columns.forEach(col => {
                 col.id = uuidv4();
             });
+
+
+            table.summary = [1,2]
+
+            table.cells = table.records.reduce((acc,record,i) => {
+                console.log(record[0])
+                acc[i] = record.map((r,idx) => {
+              
+                    return ({
+                        content: r,
+                        
+                        table: table,
+                        column: table.columns[idx],
+                        record: i,
+                        link: isLink(table,record,idx),
+                        primary: isKey(table,record,idx),
+                        edit: false
+                    })
+                });
+    
+            
+              return acc;
+            },{});
+
+            
+
+            
         });
 
-        console.log(entities.tables)
 
 
         entities.tables.forEach(table => {
@@ -75,8 +119,28 @@ export async function loadEntities(){
                 }
             });
 
+            console.log(_.flatten(Object.values(table.cells)),"CELLS")
+
+            //table.cells.forEach(cell => {
+                //if(cell.link){
+                    //cell.summary = cell.link.referenceTable.records.find(r => r[0] == cell.content).map(r => r[1])
+               // }
+                
+            //});
+
+            Object.keys(table.cells).forEach(row => {
+                console.log(table.cells[row],"Tesitng cell")
+                table.cells[row].forEach(cell => {
+                    if(cell.link){
+                        cell.summary = cell.link.referenceTable.records.filter(r => r[0] == cell.content).map(r => `${r[1]} ${r[2]}`)
+                    }
+                })
+            })
+
             
         })
+
+        console.log(entities)
 
         entities.views.forEach(view => {
             let baseTable = entities.tables.find(table => table.id == view.baseTable.tableId);

@@ -21,7 +21,9 @@ var icon = {
     'query':'ri-file-search-fill',
     'count':'ri-equalizer-fill',
     'range':'ri-space',
-    'array':'ri-brackets-line'
+    'array':'ri-brackets-line',
+    'time' : 'ri-timer-2-line',
+    'email' : 'ri-mail-line'
 }
 
 export { icon }

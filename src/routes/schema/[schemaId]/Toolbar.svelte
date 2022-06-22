@@ -13,13 +13,12 @@
   export let table;
 
 
-  console.log(table)
-
   table.filter = {
-	  column: table.columns[0],
-	  condition: conditions[table.columns[0].type][0],
-	  value: ''
+	  //column: table.columns[0],
+	  //condition: conditions[table.columns[0].type][0],
+	  //value: ''
   }
+
 
   const dispatch = createEventDispatcher();
 
@@ -34,10 +33,10 @@
 
   let tableColors=[];
 
-  let tableSources = table.columns.some(c => c.source);
+  let tableSources = table.columns?.some(c => c.source)||[];
 
-  if (tableSources){
-    tableColors = table.columns.map(c => c.source.table.color);
+  if (table.type == "view" && tableSources){
+    tableColors = table.columns.map(c => c.source.table.color)||[];
   }
 
 </script>

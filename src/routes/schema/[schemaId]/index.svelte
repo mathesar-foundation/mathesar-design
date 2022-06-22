@@ -54,8 +54,10 @@
         <div>
           <h2 class="text-xl font-semibold">{schema.name}</h2>
           <p class="text-sm text-zinc-500">
-            {schema.tables.filter((t) => t.type == "table").length} Tables
-            {schema.tables.filter((t) => t.type == "view").length} Views
+            {#if schema.tables}
+              {schema.tables?.filter((t) => t.type == "table").length||0} Tables
+              {schema.views?.filter((t) => t.type == "view").length||0} Views
+            {/if}
           </p>
         </div>
       </div>
@@ -65,15 +67,19 @@
         <h3 class="text-lg">Recent</h3>
         </div>
 
-        <div class="flex items-center space-x-4">
-          {#each schema.tables as table}
-            <a class="block border-2 space-x-1 p-4 rounded w-64" href="./{schema.id}/table/{table.id}"
+        <div class="flex space-x-4">
+          {#if schema.tables}
+          {#each schema.tables.slice(3) as table}
+            <a class="block border-2 space-x-1 p-4 rounded w-64" href="./{schema.id}/tables/{table.id}"
               ><i
                 class="ri-table-fill align-bottom"
       
               /> <span>{table.name}</span></a
             >
           {/each}
+          {:else}
+          <p class=text-zinc-500>No Recent</p>
+          {/if}
         </div>
 
         <div class="border-b py-2">

@@ -19,7 +19,6 @@ export function removeDropdownOutsideClickHandler(menu) {
 }
 
 export function addDropdownOutsideClickHandler(menu, fn) {
-    console.log(menu)
     function handler(event) {
         var isClickInsideElement = isNodeChildOf(event.target, menu); //|| event.target.tagName === 'INPUT';
         if (!isClickInsideElement) {

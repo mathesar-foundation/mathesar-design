@@ -66,9 +66,9 @@
 		<Dropdown full={true} closeOnClick={true}>
 			<button
 				slot="toggle"
-				class="cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded text-left"
+				class="cursor-pointer w-full bg-zinc-100 border border-zinc-300 py-1 px-2 text-sm flex items-center rounded text-left"
 			>
-				<div class="flex-grow"><i class="ri-add-line align-bottom"></i> Add Step</div>
+				<div class="flex-grow">Select Step</div>
 				<i class="ri-arrow-drop-down-line align-bottom" />
 			</button>
 			<div slot="menu">
@@ -117,7 +117,7 @@
 	{:else}
 		<button
 			disabled
-			class="opacity-40 cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded"
+			class="opacity-50 border border-zinc-300 cursor-pointer w-full bg-zinc-100 py-1 px-2 text-sm flex items-center rounded"
 		>
 			<div class="flex-grow">Select Step</div>
 			<i class="ri-arrow-drop-down-line align-bottom" />

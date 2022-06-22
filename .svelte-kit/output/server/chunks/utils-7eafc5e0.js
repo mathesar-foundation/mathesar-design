@@ -99,7 +99,6 @@ async function loadEntities() {
         col.id = v4();
       });
     });
-    console.log(entities.tables);
     entities.tables.forEach((table) => {
       table.constraints.forEach((constraint, i) => {
         if (constraint.type == "Foreign Key") {

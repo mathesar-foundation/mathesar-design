@@ -308,5 +308,301 @@
                 13
             ]
         ]
+    },{
+        "id":3,
+        "schemaId":1,
+        "name":"Checkouts",
+        "type":"table",
+        "constraints": [
+            {
+                "type": "Primary Key",
+                "column": "id"
+            },
+            {
+                "type": "Foreign Key",
+                "column": "Item Id",
+                "referenceTable": {
+                    "tableId": 5
+                }
+            },{
+                "type": "Foreign Key",
+                "column": "Patron Id",
+                "referenceTable": {
+                    "tableId": 4
+                }
+            }
+        ],
+        "columns":[
+            {
+                "name": "id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Item Id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Patron Id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Checkout Time",
+                "type": "time",
+                "db": "TIME"
+            },{
+                "name": "Due Date",
+                "type": "date",
+                "db": "DATE"
+            },{
+                "name": "Check In Time",
+                "type": "time",
+                "db": "TIME"
+            }
+        ],
+        "records":[
+            [
+                31,
+                51,
+                41,
+                "2022-06-16 01:05:00 am",
+                "2022-06-16 01:05:00 am",
+                "2022-06-16 01:05:00 am"
+            ],[
+                32,
+                52,
+                41,
+                "2022-06-16 01:05:00 am",
+                "2022-06-16 01:05:00 am",
+                "2022-06-16 01:05:00 am"
+            ]
+        ]
+
+    },{
+        "id":4,
+        "schemaId":1,
+        "name":"Patrons",
+        "type":"table",
+        "constraints": [
+            {
+                "type": "Primary Key",
+                "column": "id"
+            }
+        ],
+        "columns":[
+            {
+                "name": "id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "First Name",
+                "type": "text",
+                "db": "VARCHAR"
+            },{
+                "name": "Last Name",
+                "type": "text",
+                "db": "VARCHAR"
+            },{
+                "name": "Email",
+                "type": "email",
+                "db": "MATHESAR-EMAIL"
+            }
+        ],
+        "records":[
+            [
+                41,
+                "Susan",
+                "Rogers",
+                "srogers@email.com"
+            ],[
+                42,
+                "Martin",
+                "Smith",
+                "ms@email.com"
+            ]
+        ]
+    },{
+        "id":5,
+        "schemaId":1,
+        "name":"Items",
+        "type":"table",
+        "constraints": [
+            {
+                "type": "Primary Key",
+                "column": "id"
+            },{
+                "type": "Foreign Key",
+                "column": "Publication Id",
+                "referenceTable": {
+                    "tableId": 6
+                }
+            }
+        ],
+        "columns":[
+            {
+                "name": "id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Publication Id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Acquisition Date",
+                "type": "date",
+                "db": "DATE"
+            },{
+                "name": "Acquisition Price",
+                "type": "money",
+                "db": "MATHESAR-MONEY"
+            }
+        ],
+        "records":[
+            [
+                51,
+                61,
+                "18/12/1985",
+                2.58
+            ],[
+                52,
+                62,
+                "18/12/1985",
+                2.58
+            ]
+        ]
+    },{
+        "id":6,
+        "schemaId":1,
+        "name":"Publications",
+        "type":"table",
+        "constraints": [
+            {
+                "type": "Primary Key",
+                "column": "id"
+            },{
+                "type": "Foreign Key",
+                "column": "Author Id",
+                "referenceTable": {
+                    "tableId": 7
+                }
+            },{
+                "type": "Foreign Key",
+                "column": "Publisher Id",
+                "referenceTable": {
+                    "tableId": 8
+                }
+            }
+        ],
+        "columns":[
+            {
+                "name": "id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Title",
+                "type": "text",
+                "db": "VARCHAR"
+            },{
+                "name": "ISBN",
+                "type": "text",
+                "db": "VARCHAR"
+            },{
+                "name": "Year",
+                "type": "text",
+                "db": "VARCHAR"
+            },{
+                "name": "Author Id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Publisher Id",
+                "type": "number",
+                "db": "INTEGER"
+            }
+        ],
+        "records":[
+            [
+                61,
+                "Begin Act West One Oil",
+                "1-78132-991-5",
+                71,
+                81,
+                1901
+            ],[
+                62,
+                "Film Party Suggest Air",
+                "0-520-35216-5",
+                72,
+                82,
+                1901
+            ]
+        ]
+    },{
+        "id":7,
+        "schemaId":1,
+        "name":"Authors",
+        "type":"table",
+        "constraints": [
+            {
+                "type": "Primary Key",
+                "column": "id"
+            }
+        ],
+        "columns":[
+            {
+                "name": "id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "First Name",
+                "type": "text",
+                "db": "VARCHAR"
+            },{
+                "name": "Last Name",
+                "type": "text",
+                "db": "VARCHAR"
+            }
+        ],
+        "records":[
+            [
+                71,
+                "Kelly",
+                "Stephenson"
+            ],[
+                72,
+                "Jeffrey",
+                "Gutierrez"
+            ]
+        ]
+    },{
+        "id":8,
+        "schemaId":1,
+        "name":"Publishers",
+        "type":"table",
+        "constraints": [
+            {
+                "type": "Primary Key",
+                "column": "id"
+            }
+        ],
+        "columns":[
+            {
+                "name": "id",
+                "type": "number",
+                "db": "INTEGER"
+            },{
+                "name": "Name",
+                "type": "text",
+                "db": "VARCHAR"
+            }
+        ],
+        "records":[
+            [
+                81,
+                "Daniels-Ray"
+            ],[
+                82,
+                "Garcia, Walton and Reed"
+            ]
+        ]
     }
 ]

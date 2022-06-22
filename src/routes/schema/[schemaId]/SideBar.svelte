@@ -71,7 +71,7 @@
         class="flex text-sm text-zinc-800 p-2 space-x-4 border-b leading-6 border-zinc-200"
       >
         <button class:bg-indigo-200={!filter} on:click={()=> filter=null} class="font-semibold bg-zinc-50 rounded px-1"
-          >All ({schema.tables.length | 0})</button
+          >All ({schema.tables?.length | 0})</button
         >
         {#each types as type}
           <button class:bg-indigo-200={type == filter} class="font-semibold bg-zinc-50 rounded px-1" on:click={() => filterByType(type)}
@@ -97,10 +97,12 @@
               <a
                 href="http://{$page.url
                   .host}/schema/{schema.id}/{type}/{item.id}"
-                class="text-zinc-800 p-2 border-b block border-zinc-200 cursor-pointer space-x-1 hover:bg-zinc-200"
+                class="text-zinc-800 p-2 border-b block border-zinc-200 flex items-center cursor-pointer space-x-1 hover:bg-opacity-40 hover:bg-indigo-50"
               >
                 <i class="{icon[item.type]} align-bottom" />
-                <span>{item.name}</span>
+                <span class="flex-grow">{item.name}</span>
+                <i class="ri-add-line align-bottom border px-1 rounded hover:bg-indigo-200"></i>
+                <i class="ri-sip-line align-bottom border px-1 rounded hover:bg-indigo-200"></i>
               </a>
             {/each}
           {:else}

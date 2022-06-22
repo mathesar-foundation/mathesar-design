@@ -2,5 +2,8 @@
     {
         "id":0,
         "name":"album_collection"
+    },{
+        "id":1,
+        "name":"library_management"
     }
 ]

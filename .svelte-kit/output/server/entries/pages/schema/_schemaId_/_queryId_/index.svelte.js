@@ -168,7 +168,6 @@ const U5BqueryIdu5D = create_ssr_component(($$result, $$props, $$bindings, slots
         let mergedRecord = recordId.map((rId) => {
           return c.source.table.records.find((r) => r[0] == rId);
         }).map((r) => r[getColumnNameIndex(c.source.table, c)]);
-        console.log(mergedRecord, "MERGED 2");
         return mergedRecord;
       }
     });
@@ -192,7 +191,6 @@ const U5BqueryIdu5D = create_ssr_component(($$result, $$props, $$bindings, slots
         });
       }
     });
-    console.log(filteredRecords, "FILTER 2");
     return filteredRecords;
   }
   function setFilter(column, step, records) {
@@ -205,7 +203,6 @@ const U5BqueryIdu5D = create_ssr_component(($$result, $$props, $$bindings, slots
     if (condition == "contains" || condition == "includes") {
       return records.filter((r) => r[columnIdx] && _.toString(r).includes(value));
     }
-    console.log(records, "FILTERED");
     return records;
   }
   function setSummarization(column, step, records) {

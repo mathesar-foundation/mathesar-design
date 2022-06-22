@@ -81,7 +81,6 @@ export function createLookupMenu(cell) {
 
             let recordLabel = matchingCols
                 .map(([r, i]) => {
-                    console.log(r);
                     if (r.length > 0) {
                         return `<div class="flex space-x-2"><div class="$text-zinc-500">${columns[i]}:</div><div>${r}</div></div>`
                     } else {
