@@ -2,7 +2,6 @@
     import { afterUpdate, onMount } from 'svelte';
     import { theme } from "$lib/themes";
     import highlightWords from 'highlight-words';
-    import { hexToRGB } from "$lib/utils"
 
     export let table;
     let chunks = [];

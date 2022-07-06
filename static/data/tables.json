@@ -312,6 +312,16 @@
         "id":3,
         "schemaId":1,
         "name":"Checkouts",
+        "summary":[
+            {
+                "columnName": "Item Id"
+            },
+            {
+                "text":"-"
+            },{
+                "columnName": "Patron Id"
+            }
+        ],
         "type":"table",
         "constraints": [
             {
@@ -370,7 +380,7 @@
             ],[
                 32,
                 52,
-                41,
+                42,
                 "2022-06-16 01:05:00 am",
                 "2022-06-16 01:05:00 am",
                 "2022-06-16 01:05:00 am"
@@ -381,6 +391,16 @@
         "id":4,
         "schemaId":1,
         "name":"Patrons",
+        "summary":[
+            {
+                "columnName": "First Name"
+            },
+            {
+                "text":", "
+            },{
+                "columnName": "Last Name"
+            }
+        ],
         "type":"table",
         "constraints": [
             {
@@ -424,6 +444,11 @@
         "id":5,
         "schemaId":1,
         "name":"Items",
+        "summary":[
+            {
+                "columnName": "Publication Id"
+            }
+        ],
         "type":"table",
         "constraints": [
             {
@@ -473,6 +498,15 @@
         "id":6,
         "schemaId":1,
         "name":"Publications",
+        "summary":[
+            {
+                "columnName": "Title"
+            },{
+                "text": " "
+            },{
+                "columnName": "ISBN"
+            }
+        ],
         "type":"table",
         "constraints": [
             {
@@ -490,6 +524,9 @@
                 "referenceTable": {
                     "tableId": 8
                 }
+            },{
+                "type": "Unique",
+                "column": "ISBN"
             }
         ],
         "columns":[
@@ -506,10 +543,6 @@
                 "type": "text",
                 "db": "VARCHAR"
             },{
-                "name": "Year",
-                "type": "text",
-                "db": "VARCHAR"
-            },{
                 "name": "Author Id",
                 "type": "number",
                 "db": "INTEGER"
@@ -517,6 +550,10 @@
                 "name": "Publisher Id",
                 "type": "number",
                 "db": "INTEGER"
+            },{
+                "name": "Year",
+                "type": "text",
+                "db": "VARCHAR"
             }
         ],
         "records":[
@@ -540,6 +577,15 @@
         "id":7,
         "schemaId":1,
         "name":"Authors",
+        "summary":[
+            {
+                "columnName": "First Name"
+            },{
+                "text":"-"
+            },{
+                "columnName": "Last Name"
+            }
+        ],
         "type":"table",
         "constraints": [
             {
@@ -577,6 +623,11 @@
         "id":8,
         "schemaId":1,
         "name":"Publishers",
+        "summary":[
+            {
+                "columnName": "Name"
+            }
+        ],
         "type":"table",
         "constraints": [
             {

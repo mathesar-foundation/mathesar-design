@@ -1,10 +1,13 @@
 <script>
   import { theme } from "$lib/themes";
   import { afterUpdate, createEventDispatcher } from "svelte";
-  import _ from "lodash";
   const dispatch = createEventDispatcher();
+  import {getRecordSummary} from "$lib/utils";
+  import _ from "lodash";
+  
   export let cell;
-  export let column;
+  let column = cell.column;
+  export let columnSelection;
 
 
   function formatType(cell, aggregation) {
@@ -17,13 +20,19 @@
   function editCell() {
     dispatch('editCell',cell)
   }
+
+  
 </script>
 
 <div
   on:click={editCell}
   class:bg-indigo-200={cell.edit}
-  class:bg-indigo-50={cell.primary}
-  class="border-b bg-white cursor-pointer p-2 border-r w-80 space-y-1 border-zinc-200 text-zinc-800 w-48 shrink-0"
+  class:bg-zinc-50={cell.primary}
+  
+  class="border-b bg-white cursor-pointer p-2 border-r w-80 space-y-1 border-zinc-200 text-zinc-800 w-64 shrink-0"
+
+  class:bg-indigo-50={columnSelection[column.id]}
+  
 >
   {#if column && column.aggregation}
     <!--
@@ -58,11 +67,21 @@
   {:else}
     
     {#if cell.primary}
+      <div class="space-x-1">
       <a class="text-indigo-600 font-semibold" href="/schema/{cell.table.schema.id}/tables/{cell.table.id}/records/{cell.record}">{cell.content}</a>
+      <span class="opacity-80 italic text-sm">
+        ({getRecordSummary(cell)})
+      </span>
+      </div>
     {:else if cell.link}
-      <div class="px-2 inline-block rounded-xl" style="background-color: {cell.link.referenceTable?.color};">{cell.summary}</div>
+      <div class="px-2 inline-block rounded-xl" style="background-color: {cell.link.referenceTable?.color};">
+
+        {cell.link.referenceTable.rows.summaries[cell.record]}
+      </div>
     {:else}
-      <input type="text" bind:value={cell.content}>
+      <input type="text" class="bg-transparent" bind:value={cell.content}>
     {/if}
   {/if}
+    
+
 </div>

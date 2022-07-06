@@ -58,7 +58,7 @@ const FormulaSettings = create_ssr_component(($$result, $$props, $$bindings, slo
                                 ${validate_component(ColumnSelector, "ColumnSelector").$$render($$result, { columns, view }, {}, {})}` : ``}
 
                             ${argument.type == "integer" ? `<div>Select Integer</div>
-                                <input type="${"text"}" class="${"bg-zinc-100 p-2 rounded bg-opacity-60 w-48"}">` : ``}`;
+                                <input type="${"text"}" class="${"bg-zinc-100 p-2 rounded bg-opacity-60 w-64"}">` : ``}`;
         })}`;
       })}</div>
 

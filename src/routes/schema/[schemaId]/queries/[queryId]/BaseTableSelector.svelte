@@ -31,7 +31,7 @@
 		
 		<div
 			slot="toggle"
-			class="{theme.mediumBorderColor} border p-1 flex bg-white items-center rounded cursor-pointer space-x-1"
+			class="border-zinc-300 border p-1 flex bg-white items-center rounded cursor-pointer space-x-1"
 		>
 			<i class="ri-table-line align-bottom" />
 			<span class="flex-grow">{selectedView.baseTable ? selectedView.baseTable.name : 'Select Base Table'}</span>

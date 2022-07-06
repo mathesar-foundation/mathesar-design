@@ -7,7 +7,6 @@
   import pluralize from "pluralize";
   import { icon } from "$lib/iconMap";
   import Dropdown from "$lib/Dropdown.svelte";
-  
 
   import {
     clone,
@@ -100,15 +99,9 @@
             missingColumns[id] = true;
           }
         });
-
-      //inspector = {action:"Column",column:selectedView.columns[0]}
-
-      //runQuery=true;
     }
 
     getColumnRecords(selectedView.columns);
-
-    //selectedView.steps = {};
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -560,17 +553,19 @@
       style="height: calc(100vh - 52px);"
     >
       <div class="border-b flex items-center space-x-4 pr-2">
-
-        <div class="text-lg px-2 py-3 space-x-1 border-r bg-opacity-10 hover:bg-opacity-80 flex items-center">
+        <div
+          class="text-lg px-2 py-3 space-x-1 border-r bg-opacity-10 hover:bg-opacity-80 flex items-center"
+        >
           <i class="{icon[selectedView.type]} align-bottom text-xl" />
-          <input class="hover:bg-indigo-100 p-1 rounded" type="text" bind:value={selectedView.name}>
-        
+          <input
+            class="hover:bg-indigo-100 p-1 rounded"
+            type="text"
+            bind:value={selectedView.name}
+          />
+
           <Dropdown>
-            <button
-              slot="toggle"
-              class=""
-            >
-            <i class="ri-arrow-drop-down-line align-bottom" />
+            <button slot="toggle" class="">
+              <i class="ri-arrow-drop-down-line align-bottom" />
             </button>
             <div slot="menu">
               <div
@@ -586,7 +581,6 @@
             </div>
           </Dropdown>
         </div>
-        
 
         <div class="flex flex-grow justify-end items-center space-x-2">
           {#if entities.queries.find((v) => v.id == selectedView.id)}
@@ -594,7 +588,7 @@
               on:click={saveQuery}
               disabled={!selectedView.baseTable}
               class:opacity-60={!selectedView.baseTable}
-              class="border {theme.mediumBorderColor} text-zinc-800 p-2 text-sm rounded"
+              class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded"
               >Save</button
             >
           {:else}
@@ -602,13 +596,13 @@
               on:click={saveQuery}
               disabled={!selectedView.baseTable}
               class:opacity-60={!selectedView.baseTable}
-              class="border {theme.mediumBorderColor} text-zinc-800 p-2 text-sm rounded"
+              class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded"
               >Save</button
             >
           {/if}
           <a
             href="../"
-            class="block text-center border {theme.mediumBorderColor} bg-zinc-50 text-zinc-800 p-2 text-sm rounded"
+            class="block text-center border border-zinc-300 bg-zinc-50 text-zinc-800 p-2 text-sm rounded"
             >Close without Saving</a
           >
         </div>
@@ -617,7 +611,7 @@
       <div class="flex-grow flex text-zinc-800 max-w-full overflow-hidden">
         <div
           on:click|self={() => (inspector = { action: "Query Output" })}
-          class="flex-grow h-full flex flex-col shrink-0 bg-zinc-50"
+          class="h-full flex flex-col bg-zinc-50 w-80 "
         >
           <div>
             <BaseTableSelector
@@ -706,7 +700,7 @@
                 <button
                   disabled={Object.keys(missingTables).length > 0}
                   class:opacity-50={Object.keys(missingTables).length > 0}
-                  class="border p-2 rounded {theme.mediumBorderColor}"
+                  class="border p-2 rounded border-zinc-300"
                   on:click={() => (runQuery = !runQuery)}>Run Query</button
                 >
                 <button
@@ -744,18 +738,14 @@
           </div>
         </div>
 
-        <div class="flex flex-col h-full overflow-y-scroll w-80 bg-zinc-50">
+        <div class="flex flex-col h-full overflow-y-scroll bg-zinc-50 flex-grow">
           <div class="text-sm font-semibold border-b border-zinc-200 p-2">
             <h4 class="leading-6">{inspector.action}</h4>
           </div>
 
           {#if inspector.action == "Query Output"}
             <div class="p-2 space-y-2 border-b">
-
-              <Parameters bind:selectedView={selectedView}/>
-
-
-             
+              <Parameters bind:selectedView />
             </div>
             <Transformations
               on:previewStep={(e) => previewSteps(e.detail)}
@@ -787,7 +777,7 @@
                     on:click={saveQuery}
                     disabled={!selectedView.baseTable}
                     class:opacity-60={!selectedView.baseTable}
-                    class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
+                    class="w-full border border-zinc-300 text-zinc-800 p-1 text-sm rounded"
                     >Save Changes to Query</button
                   >
                 {:else}
@@ -795,13 +785,13 @@
                     on:click={saveQuery}
                     disabled={!selectedView.baseTable}
                     class:opacity-60={!selectedView.baseTable}
-                    class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
+                    class="w-full border border-zinc-300 text-zinc-800 p-1 text-sm rounded"
                     >Save Query</button
                   >
 
                   <a
                     href="./"
-                    class="w-full block text-center border {theme.mediumBorderColor} bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
+                    class="w-full block text-center border border-zinc-300 bg-zinc-50 text-zinc-800 p-1 text-sm rounded"
                     >Close without Saving</a
                   >
                 {/if}
@@ -821,7 +811,7 @@
                   on:click={saveView}
                   disabled={!selectedView.baseTable}
                   class:opacity-60={!selectedView.baseTable}
-                  class="w-full border {theme.mediumBorderColor} text-zinc-800 p-1 text-sm rounded"
+                  class="w-full border border-zinc-300 text-zinc-800 p-1 text-sm rounded"
                   >Publish View</button
                 >
               {/if}
@@ -852,7 +842,6 @@
                     e.detail.sourceColumn,
                     e.detail.column
                   )}
-                tables={entities.tables}
                 bind:selectedView
               />
             </div>

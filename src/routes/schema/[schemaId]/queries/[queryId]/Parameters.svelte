@@ -1,5 +1,6 @@
 <script>
   import Dropdown from "$lib/Dropdown.svelte";
+  import Toggle from "$lib/Toggle.svelte";
   import { icon } from "$lib/iconMap";
   export let selectedView;
 
@@ -28,6 +29,9 @@
   -->
 </div>
 
+
+
+
 {#if selectedView.parameters}
   {#each Object.keys(selectedView.parameters) as parameter}
      
@@ -42,7 +46,7 @@
           />
         </div>
         <div class="space-y-1">
-          <label class="text-sm font-semibold" for="">Column</label>
+          <label class="text-sm font-semibold" for="">Value</label>
           <div class="flex items-center space-x-1">
             <Dropdown full={true} position={"right"}>
                 <button
@@ -50,11 +54,14 @@
                 slot="toggle"
                 >
                 <span class="flex-grow"
-                    >{selectedView.parameters[parameter].name || "Select"}</span
+                    >{selectedView.parameters[parameter].value || "Select"}</span
                 >
                 <i class="ri-arrow-drop-down-line align-bottom" />
                 </button>
                 <div slot="menu">
+
+                
+                <!--
                 {#each selectedView.baseTable.columns as column}
                     <div
                     class="hover:bg-zinc-200 bg-opacity-0 bg-zinc-50 cursor-pointer space-x-1 p-2"
@@ -66,6 +73,7 @@
                     /> <span>{column.name}</span>
                     </div>
                 {/each}
+                -->
                 </div>
             </Dropdown>
             <button><i class="ri-delete-bin-line align-bottom"></i></button>

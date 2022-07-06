@@ -1,84 +1,325 @@
 <script>
-import { afterUpdate, createEventDispatcher, } from "svelte";
-const dispatch = createEventDispatcher();
-export let table;
-export let inspector;
+  import { afterUpdate, createEventDispatcher, onMount } from "svelte";
+  const dispatch = createEventDispatcher();
+  import { icon } from "$lib/iconMap";
+  import Toggle from "$lib/Toggle.svelte";
+  import Dropdown from "$lib/Dropdown.svelte";
+  import { dataTypes, isForeignKey, getLinkedTable } from "$lib/utils.js";
+  import DataTypeSettings from "./DataTypeSettings.svelte";
+  import SelectionActions from "./SelectionActions.svelte";
+  import _ from "lodash";
+  import Cell from "../Cell.svelte";
+  
+  export let table;
+  export let inspector;
 
-afterUpdate(()=>{
-    console.log(inspector,"INSPECTOR")
-});
+  let summaryTerm;
+  let summaryInput;
+  let key;
+  let keyCode;
+  let isCustomSummary = false;
+  let selectedCheckbox = [];
+  let selectedRadio;
+  let keepColumns;
 
-function getLinks(table) {
-	return table.constraints.filter(c => c.type == "Foreign Key");
-}
+  onMount(() => {
+    inspector.column = [table.columns[2],table.columns[3]];
+  });
 
+  afterUpdate(() => {
+    console.log(inspector, "INSPECTOR");
+  });
+
+  function getLinks(table) {
+    return table.constraints.filter((c) => c.type == "Foreign Key");
+  }
+
+  function getSummaryColumnByName(table, name) {
+    return table.columns.find((c) => c.name == name);
+  }
+
+  function handleKeyDown(event) {
+    console.log(event, "e");
+
+    key = event.key;
+    keyCode = event.keyCode;
+
+    if (keyCode == 32) {
+      addTextToSummary(summaryTerm);
+      summaryTerm = null;
+    }
+  }
+
+  function addTextToSummary(term) {
+    table.summary.push({
+      text: term,
+    });
+    table = table;
+  }
+
+  function addColumnToSummary(column) {
+    table.summary.push({
+      columnName: column.name,
+    });
+    summaryTerm = null;
+    table = table;
+  }
+
+  function filterColumnsByTerm(columns, term) {
+    return columns.filter((c) =>
+      _.lowerCase(c.name).includes(_.lowerCase(term))
+    );
+  }
+
+  let columnActions = [
+    //"Extract Columns to New Table",
+    //"Delete Columns",
+    //"Change Columns Data Type"
+    //"Create Map",
+    //"Remove Duplicates",
+    //"Split Column",
+    //"Merge Columns",
+    //"Calculate and Replace",
+    //"Calculate New Column",
+  ];
 </script>
 
+<div class="border-l w-80 bg-zinc-100 shrink-0 flex flex-col">
+  {#if !inspector.column}
+    <div class="border-b p-2 bg-zinc-300">
+      <h3 class="font-semibold text-sm">Table Properties</h3>
+    </div>
+    <div class="space-y-1 border-b p-2">
+      <label for="" class="text-sm">Table Name</label>
+      <input
+        class="p-1 border rounded w-full"
+        type="text"
+        bind:value={table.name}
+      />
+    </div>
 
+    <div class="p-2 space-y-2 flex-grow">
+      <h4 class="font-semibold text-sm">Display Options</h4>
+      <div class="space-y-1 space-x-1">
+        <Toggle
+          type="checkbox"
+          bind:checked={isCustomSummary}
+          value={"Use Custom Record Summary"}
+          let:checked
+        >
+          <div
+            class="rounded-full cursor-pointer mr-1 {checked
+              ? 'bg-indigo-400 pl-4'
+              : 'bg-zinc-400 pr-4'}"
+          >
+            <div
+              class="h-4 w-4 border-2 {checked
+                ? 'border-indigo-500'
+                : 'border-zinc-500'} rounded-full bg-white"
+            />
+          </div>
+          <span class="text-sm">Use Custom Record Summary</span>
+        </Toggle>
+      </div>
 
-<div class="p-4 border-l w-80 bg-zinc-100 shrink-0 space-y-4">
+      {#if isCustomSummary}
+        <div class="space-y-1 relative border p-1 rounded bg-zinc-50">
+          <label for="" class="text-sm">Summary Expression</label>
+          <div
+            class="p-1 border rounded bg-white flex items-center w-full space-x-1"
+          >
+            {#each table.summary as summary}
+              {#if summary.text}<span>{summary.text}</span>{/if}
+              {#if summary.columnName}
+                <span
+                  class=" px-2 rounded-full whitespace-nowrap"
+                  style="background-color:{table.color}"
+                  >{getSummaryColumnByName(table, summary.columnName)
+                    .name}</span
+                >
+              {/if}
+            {/each}
+            <input
+              on:click={() => (summaryTerm = " ")}
+              bind:this={summaryInput}
+              on:keydown={handleKeyDown}
+              class="w-full"
+              type="text"
+              bind:value={summaryTerm}
+            />
+          </div>
 
-
-    {#if inspector.column && inspector.column.length == 1}
-        COLUMN
-
-        {inspector.column[0].name}
-        <div>Data type</div>
-        <div>
-            Detect if link
-            <div>If not convert to link</div>
-                <div>first option is that a new table is created</div>
-                <div>second option is that column exist on other table</div>
-                <div>third is to create a map</div>
-            <div>If link display link info</div>
+          {#if summaryTerm}
+            <div
+              class="bg-white rounded border p-2 absolute w-full shadow-md space-y-1"
+            >
+              {#each filterColumnsByTerm(table.columns, summaryTerm) as column}
+                <div
+                  class="space-x-2 hover:bg-indigo-50 cursor-pointer rounded p-1"
+                  on:click={addColumnToSummary(column)}
+                >
+                  <i
+                    class="{icon[column.type]} align-bottom border rounded"
+                    style="background-color: {table.color};"
+                  />
+                  {column.name}
+                </div>
+              {/each}
+            </div>
+          {/if}
         </div>
-        <div>
-            Show constraints
-        </div>
-        <div>
-            <button class="border">Extract to Table</button>
-        </div>
-    {/if}
+      {/if}
+    </div>
+  {/if}
 
+  {#if inspector.column && inspector.column.length > 1}
 
-    {#if inspector.column && inspector.column.length > 1}
-        MULTIPLE COLUMNS ({inspector.column.length})
-        <div>
-            Shared properties
-        </div>
-        <div>
-            <button on:click={()=> dispatch('extractTable',inspector.column)} class="border">Extract to Table</button>
-        </div>
-    {/if}
-
-
-
-
+    <div class="border-b p-2 bg-zinc-300 flex items-center">
+      <h3 class="font-semibold text-sm flex-grow">Columns ({inspector.column.length})</h3>
+      <button class="border border-zinc-400 rounded px-1 text-zinc-600"><i class="ri-close-line align-bottom"></i></button>
+    </div>
 
     <!--
-    <div class="border-b p-2">
-        <h3 class="font-semibold">Table</h3>
-    </div>
-    <div class="space-y-1">
-        <label for="" class="text-sm font-semibold">Table Name</label>
-        <input class="p-2 border rounded w-full" type="text" bind:value={table.name}>
-    </div>
-    <h4 class="font-semibold text-sm">Links</h4>
-    <div class="space-y-1">
-        {#each getLinks(table) as link}
-            <div class="border rounded bg-white p-2">
-                {link.column} to {link.referenceTable.name}
-            </div>
-        {/each}
-    </div>
-    <h4 class="font-semibold text-sm">Saved Queries</h4>
-    <div>
-        No Saved Queries
-    </div>
-    <h4 class="font-semibold text-sm">Views</h4>
-    <div>
-
+    <div class="p-2 space-y-2">
+      <h4 class="font-semibold text-sm">Data Type</h4>
+      <div class="bg-white border border-zinc-300 p-1 rounded bg-zinc-50 text-zinc-600">Multiple</div>
     </div>
     -->
+
+    <SelectionActions on:extractColumns {table} column={inspector.column}/>
+
+    
+    
+
+
+    
+
+    
+  {/if}
+
+  {#if inspector.column && inspector.column.length == 1}
+    <div class="border-b p-2 bg-zinc-300">
+      <h3 class="font-semibold text-sm">Column</h3>
+    </div>
+
+    <div class="space-y-1 border-b p-2 ">
+      <label for="" class="text-sm">Column Name</label>
+      <input
+        class="p-1 border border-zinc-300 rounded w-full"
+        type="text"
+        bind:value={inspector.column[0].name}
+      />
+    </div>
+
+    <div class="space-y-1 border-b p-2 ">
+      <Toggle
+        type="checkbox"
+        bind:checked={inspector.column.allowDuplicates}
+        value={"Use Custom Record Summary"}
+        let:checked
+      >
+        <div
+          class="rounded-full cursor-pointer mr-1 {checked
+            ? 'bg-indigo-400 pl-4'
+            : 'bg-zinc-400 pr-4'}"
+        >
+          <div
+            class="h-4 w-4 border-2 {checked
+              ? 'border-indigo-500'
+              : 'border-zinc-500'} rounded-full bg-white"
+          />
+        </div>
+        <span class="text-sm">Allow Duplicates</span>
+      </Toggle>
+      <Toggle
+        type="checkbox"
+        bind:checked={inspector.column.allowNull}
+        value={"Use Custom Record Summary"}
+        let:checked
+      >
+        <div
+          class="rounded-full cursor-pointer mr-1 {checked
+            ? 'bg-indigo-400 pl-4'
+            : 'bg-zinc-400 pr-4'}"
+        >
+          <div
+            class="h-4 w-4 border-2 {checked
+              ? 'border-indigo-500'
+              : 'border-zinc-500'} rounded-full bg-white"
+          />
+        </div>
+        <span class="text-sm">Allow Null</span>
+      </Toggle>
+    </div>
+
+    {#if isForeignKey(table, inspector.column[0])}
+      <div class="space-y-2 border-b p-2 ">
+        <h4 class="font-semibold text-sm">Link Properties</h4>
+
+        
+          <div class="flex items-center">
+            <div class="w-2 border-zinc-300 h-16 border-l-2 border-y-2 rounded-l"></div>
+            <div class="flex-grow space-y-1">
+            <div class="">
+              <div
+                class="w-max px-2 rounded-t-lg text-sm bg-zinc-300"
+                
+              >
+                <i class="ri-table-line text-xs align-text-bottom" />
+                {table.name}
+              </div>
+              <div
+                class="p-1 rounded-b-lg rounded-r-lg bg-zinc-300"
+                
+              >
+                <div
+                  class="bg-zinc-50 w-full rounded p-1 space-x-1 "
+                >
+                <span class="text-sm text-zinc-600">FK</span>
+                  <i class="ri-key-line align-bottom rounded p-1" style="background-color: {table.color};" />
+                  {inspector.column[0].name} 
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div
+                class="p-1 rounded-t-lg rounded-r-lg bg-zinc-300"
+                
+              >
+                <div
+                  class="bg-zinc-50 w-full rounded p-1 space-x-1"
+                  
+                >
+                <span class="text-sm text-zinc-600">PK</span>
+                  <i class="ri-key-line align-bottom rounded p-1" style="background-color: {getLinkedTable(table, inspector.column[0]).color};"/> id
+                </div>
+              </div>
+              <div
+                class="w-max px-2 rounded-b-lg text-sm bg-zinc-300"
+               
+              >
+                <i class="ri-table-line text-xs align-text-bottom"/>
+                {getLinkedTable(table, inspector.column[0]).name}
+              </div>
+            </div>
+            </div>
+          </div>
+        
+
+        <button class="border p-1 rounded text-sm border-zinc-300 w-full"
+          ><i class="ri-delete-bin-line align-bottom" /> Remove Link</button
+        >
+      </div>
+    {/if}
+
+    <div class="space-y-2 flex-grow p-2">
+      <DataTypeSettings {table} column={inspector.column[0]} />
+    </div>
+      <SelectionActions {table} column={inspector.column[0]}/>
+    
+
+    
+  {/if}
+
 
 </div>

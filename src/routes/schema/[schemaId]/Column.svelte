@@ -19,17 +19,25 @@
     columnSelection[column.id] = !columnSelection[column.id];
     dispatch("selectColumn", columnSelection);
   }
-</script>
 
+  function getTableColor(column){
+    if(column.source){
+      return column.source.color;
+    } else {
+      return ``;
+    }
+  }
+</script>
 <div
-  class="border-r space-x-2 bg-zinc-50 flex items-center cursor-pointer whitespace-nowrap p-2 border-zinc-300 text-zinc-800 w-48 shrink-0"
+  class="border-r space-x-2 bg-zinc-50 flex items-center cursor-pointer whitespace-nowrap p-2 border-zinc-300 text-zinc-800 w-64 shrink-0"
   on:click={() => setColumnSelection(column)}
-  class:bg-indigo-500={columnSelection[column.id]}
-  class:text-white={columnSelection[column.id]}
+  class:bg-indigo-200={columnSelection[column.id]}
+
+  
 >
   <div
     class="px-1 text-sm rounded text-center"
-    style="background-color:{column.source?.table.color}"
+    style="background-color:{getTableColor(column)}"
   >
     <i class={icon[column.type]} />
     {#if column.aggregation}
@@ -37,10 +45,10 @@
     {/if}
   </div>
 
-  <div class="w-full">{column?.alias || column.name}</div>
+  <div class="w-full overflow-hidden" class:font-semibold={columnSelection[column.id]}>{column?.alias || column.name}</div>
   <Dropdown full={true} closeOnClick={false}>
     <div class="cursor-pointer space-x-2 flex items-center" slot="toggle">
-      <i class="ri-arrow-drop-down-line align-bottom border rounded px-1" />
+      <i class="ri-arrow-drop-down-line align-bottom border rounded px-1" class:border-indigo-300={columnSelection[column.id]} />
     </div>
 
     <div slot="menu" class="text-sm py-2">
@@ -56,8 +64,8 @@
               on:click={setDataType}
             >
               <i
-                class="rounded align-bottom {icon[column.type]}"
-                style="background-color: {column.color};"
+                class="rounded border align-bottom {icon[column.type]}"
+                style="background-color: {getTableColor(column)};"
               />
               <span class="capitalize">{column.type}</span>
               <span

@@ -41,7 +41,7 @@
 >
   <div class="flex border-b overflow-x-scroll">
     <div class="bg-zinc-50">
-      <div class="flex w-max items-stretch">
+      <div class="flex w-max overflow-hidden">
         {#each selectedView.columns as column}
           <div class="border-r w-64 border-zinc-200">
             <div
@@ -59,7 +59,7 @@
                 <i class={icon[column.aggregation]} />
               </span>
 
-              <span>{column.alias}</span>
+              <span class="">{column.alias}</span>
             </div>
           </div>
         {/each}

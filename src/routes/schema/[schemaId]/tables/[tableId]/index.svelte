@@ -1,6 +1,6 @@
 <script>
   import { afterUpdate, beforeUpdate, onMount } from "svelte";
-  import { loadEntities, saveEntities } from "$lib/utils";
+  import { loadEntities, saveEntities, createRows, setTableSummary } from "$lib/utils";
   import { page } from "$app/stores";
   import { tableStore } from "$lib/stores/tableStore";
   import Toolbar from "../../Toolbar.svelte";
@@ -10,15 +10,12 @@
   import { v4 as uuidv4 } from "uuid";
   import _ from "lodash";
   import LinkTableForm from "../LinkTableForm.svelte";
-  import LeaderLine from "leader-line";
 
   import TopNav from "$lib/TopNav.svelte";
   import Inspector from "../Inspector.svelte";
   import Table from "../../Table.svelte";
   import Query from "../Query.svelte";
-  import Design from "../Design.svelte";
   import SideBar from "../../SideBar.svelte";
-  import Tabs from "../../Tabs.svelte";
 
   let { schemaId } = $page.params;
   let { tableId } = $page.params;
@@ -30,6 +27,7 @@
   let activeMode = "table";
   let inspector = {};
   let newTable;
+  let showInspector = true;
 
   let openLinkOptions = false;
   let importDataModal;
@@ -59,11 +57,6 @@
 
     return entities;
   }
-
-  let start, end;
-  onMount(() => {
-    //new LeaderLine(start, end);
-  });
 
   beforeUpdate(() => {
     saveEntities(entities);
@@ -103,8 +96,8 @@
 
     table.columns.splice(columnIdx, 1);
 
-    table.records.forEach((r) => {
-      r.splice(columnIdx, 1);
+    Object.keys(table.rows.cells).forEach((r) => {
+      table.rows.cells[r].splice(columnIdx, 1);
     });
 
     table = table;
@@ -120,73 +113,12 @@
     entities = entities;
   }
 
-  function extractToTable(column) {
-    let columnIdx = table.columns.indexOf(column);
-
-    let newTable = {
-      id: uuidv4(),
-      name: `${column.name}(${table.name})`,
-      schemaId: schemaId,
-      type: "table",
-      constraints: [
-        {
-          type: "Primary Key",
-          column: "id",
-        },
-      ],
-      color: randomColor({
-        luminosity: "light",
-        hue: "blue",
-        format: "rgba",
-        alpha: 0.8,
-      }),
-      columns: [
-        {
-          id: uuidv4(),
-          name: "id",
-          type: "text",
-          db: "VARCHAR",
-        },
-        { ...column },
-      ],
-      records: _.uniq(table.records.map((r) => r[columnIdx])).map((r) => [
-        uuidv4(),
-        r,
-      ]),
-    };
-
-    table.constraints.push({
-      type: "Foreign Key",
-      column: column.name,
-      referenceTable: {
-        tableId: newTable.id,
-      },
-    });
-
-    table.records.forEach((r) => {
-      let foreignKey = newTable.records.find((record) =>
-        record.includes(r[columnIdx])
-      );
-      r.splice(columnIdx, 1, foreignKey[0]);
-    });
-
-    table = table;
-
-    entities.tables.push(newTable);
-    entities = entities;
-
-    setTimeout(() => {
-      window.location.href = `/schema/${schemaId}/tables/${newTable.id}`;
-    }, "300");
-  }
 
   function getColumnById(columnId) {
     return table.columns.find((c) => c.id == columnId);
   }
 
   function selectColumn(selection) {
-    console.log(selection, "test col");
-
     inspector = {
       column: Object.keys(selection)
         .filter((sel) => selection[sel])
@@ -203,6 +135,116 @@
       columns: columns,
       records: [],
     };
+  }
+
+  function extractRecords(columnIndexes, table) {
+    let records = table.records.map((r) => {
+      return columnIndexes.map((c) => r[c]);
+    });
+
+    records.forEach((r) => {
+      r.unshift(uuidv4());
+    });
+
+    return records;
+  }
+
+  function createLinkedTable(columns, table) {
+    let columnIdxs = columns.map((c) => table.columns.indexOf(c));
+
+    let idCol = {
+      id: uuidv4(),
+      name: "id",
+      type: "text",
+      db: "VARCHAR",
+    };
+
+    let linkedTable = {
+      id: uuidv4(),
+      name: `${columns[0].name}(${table.name})`,
+      columns: [idCol, ...columns],
+      schemaId: schemaId,
+      schema: {
+        id: schemaId
+      },
+      summary: [
+        {
+          columnName: `${columns[0].name}`,
+        }
+      ],
+      type: "table",
+      constraints: [
+        {
+          type: "Primary Key",
+          column: "id",
+        },
+      ],
+      color: randomColor({
+        luminosity: "light",
+        hue: "blue",
+        format: "rgba",
+        alpha: 0.8,
+      }),
+      records: extractRecords(columnIdxs, table),
+    };
+
+    linkedTable.rows = createRows(linkedTable);
+    linkedTable.summary = setTableSummary(linkedTable);
+
+    return linkedTable;
+  }
+
+  function createForeignKeyColumn(columns,table){
+    let newColumn = {
+      id: uuidv4(),
+      name: `${columns[0].name} Id`,
+      type: "text",
+      db: "VARCHAR",
+    };
+
+    return newColumn;
+  }
+
+  function extractColumns(columns, table) {
+    let foreignKeyColumn = createForeignKeyColumn(columns, table);
+    let newTable = createLinkedTable(columns, table);
+    let foreignKeyRecords = extractRecords([0], newTable);
+
+    console.log(foreignKeyRecords,"foreignKeyRecords");
+    
+
+    // ADD COLUMN
+    table.columns.push(foreignKeyColumn);
+
+    table.records.forEach((record,i) => {
+      record.push(foreignKeyRecords[i]);
+    });
+
+    table.constraints.push(
+      {
+        type: "Foreign Key",
+        column: foreignKeyColumn.name,
+        referenceTable: {
+          ...newTable
+        }
+      }
+    )
+
+    
+    
+    // ADD NEW TABLE
+    entities.tables.push(newTable);
+    entities = entities;
+
+    table.rows = createRows(table);
+    columns.forEach((column) => {
+      deleteColumn(column);
+    });
+    table = table;
+
+    
+    console.log(table,"table");
+    
   }
 </script>
 
@@ -221,8 +263,8 @@
       class="flex overflow-hidden flex-col h-full flex-grow"
       style="height: calc(100vh - 52px);"
     >
-      <Tabs />
       <Toolbar
+        bind:showInspector
         on:deleteTable={deleteTable}
         on:switch={showMode}
         bind:table
@@ -230,21 +272,28 @@
         on:CreateView={(e) => openView(e.detail)}
       />
 
-      {#if activeMode == "edit"}
-        <Design {table} />
-      {/if}
-
       {#if activeMode == "query"}
         <Query allowed={table.allowEdit} {table} />
       {/if}
 
       {#if table && table.columns}
-        <Table
-          on:selectColumn={(e) => selectColumn(e.detail)}
-          on:extractToTable={(e) => extractToTable(e.detail)}
-          on:deleteColumn={(e) => deleteColumn(e.detail)}
-          bind:table
-        />
+        <div class="flex flex-grow">
+          <Table
+            on:selectColumn={(e) => selectColumn(e.detail)}
+            on:deleteColumn={(e) => deleteColumn(e.detail)}
+            bind:table
+          />
+
+          {#if showInspector}
+            <Inspector
+              on:extractColumns={(e) =>
+                extractColumns(e.detail.column, e.detail.table)}
+              on:extractTable={(e) => extractTable(e.detail)}
+              bind:inspector
+              bind:table
+            />
+          {/if}
+        </div>
       {:else}
         <div class="p-8 flex justify-center space-x-8">
           <div
@@ -266,12 +315,6 @@
         {/if}
       {/if}
     </div>
-
-    <Inspector
-      on:extractTable={(e) => extractTable(e.detail)}
-      bind:inspector
-      bind:table
-    />
 
     {#if newTable}
       <LinkTableForm bind:table={newTable} />

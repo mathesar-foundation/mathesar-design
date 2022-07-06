@@ -1,8 +1,7 @@
 <script>
-	import { theme } from '$lib/themes';
 	import { icon } from '$lib/iconMap';
 	import Dropdown from '$lib/Dropdown.svelte';
-	import { afterUpdate, beforeUpdate, createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 	import { conditions, summarizations, rangeOptions } from '$lib/utils';
 	import _ from 'lodash';
@@ -11,8 +10,6 @@
 	export let step;
 
 	export let minimize = true;
-
-
 
 	function deleteStep(step) {
 		delete selectedView.steps[step];
@@ -87,7 +84,7 @@
 			<div slot="toggle" class="cursor-pointer flex items-center border bg-zinc-50 border-zinc-300 space-x-1 p-2 rounded">
 				
 				<div class="flex-grow">
-					<div class="rounded inline-block text-xs px-1" style="background-color:{selectedView.steps[step].column.source.table.color}">
+					<div class="rounded inline-block text-xs px-1 border" style="background-color:{selectedView.steps[step].column.source?.table.color||""}">
 						<i class="{icon[selectedView.steps[step].column.type]} align-bottom" /> 
 						<i class="{icon[selectedView.steps[step].column.aggregation]} align-bottom" /> 
 					</div>

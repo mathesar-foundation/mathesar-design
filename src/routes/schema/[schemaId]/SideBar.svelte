@@ -89,6 +89,7 @@
             <a
               href="http://{$page.url.host}/schema/{schema.id}/{type}/{uuidv4()}"
               class="ml-auto bg-zinc-200 px-1 text-center rounded text-zinc-800 text-sm"
+              target="_self"
               ><i class="ri-add-line align-bottom" /></a
             >
           </div>
@@ -97,6 +98,7 @@
               <a
                 href="http://{$page.url
                   .host}/schema/{schema.id}/{type}/{item.id}"
+                  target="_self"
                 class="text-zinc-800 p-2 border-b block border-zinc-200 flex items-center cursor-pointer space-x-1 hover:bg-opacity-40 hover:bg-indigo-50"
               >
                 <i class="{icon[item.type]} align-bottom" />

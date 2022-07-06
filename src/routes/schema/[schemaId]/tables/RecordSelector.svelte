@@ -4,7 +4,6 @@
     export let record;
 
 
-    console.log(record,"test")
 
     let position = [100,200];
 

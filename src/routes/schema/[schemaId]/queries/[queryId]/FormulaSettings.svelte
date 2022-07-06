@@ -3,7 +3,6 @@
     import Modal from '$lib/Modal.svelte';
     import Dropdown from "$lib/Dropdown.svelte";
     import { icon } from "$lib/iconMap";
-    import { hexToRGB } from "$lib/utils";
     import ColumnSelector from "./ColumnSelector.svelte";
 
     export let showFormulaModal;
@@ -81,7 +80,7 @@
 
                             {#if argument.type == "integer"}
                                 <div>Select Integer</div>
-                                <input type="text" class="bg-zinc-100 p-2 rounded bg-opacity-60 w-48">
+                                <input type="text" class="bg-zinc-100 p-2 rounded bg-opacity-60 w-64">
                             {/if}
         
                         {/each}
