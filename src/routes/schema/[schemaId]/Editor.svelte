@@ -202,7 +202,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col h-full overflow-y-scroll bg-zinc-50 flex-grow">
+    <div class="flex flex-col w-80 h-full overflow-y-scroll bg-zinc-50 flex-grow">
       <div class="text-sm font-semibold border-b border-zinc-200 p-2">
         <h4 class="leading-6">{inspector.action}</h4>
       </div>
@@ -313,14 +313,7 @@
 
       {#if inspector.action == "Column"}
         <ColumnEditor
-          on:deleteFilter={(e) => deleteColumnFilter(e.detail)}
-          on:addFilter={(e) => addColumnFilter(e.detail)}
-          on:updateAggregation={(e) =>
-            updateAggregation(
-              e.detail.aggregation,
-              e.detail.column,
-              e.detail.columnIdx
-            )}
+          
           on:deleteColumn={(e) => deleteColumn(e.detail)}
           bind:query
           bind:column={inspector.column}

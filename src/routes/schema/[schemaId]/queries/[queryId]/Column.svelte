@@ -25,9 +25,10 @@
     style="background-color: {sourceTable.color};"
   />
 
+  <!--
 <span class="border rounded px-1 text-sm">{sourceTable.name}</span>
   
-  
+  -->
 
   <span>{column.name}</span>
   <!--

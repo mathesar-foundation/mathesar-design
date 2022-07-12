@@ -35,7 +35,7 @@
 
   <div class="flex flex-grow bg-zinc-100 bg-opacity-10">
     <SideBar
-      expanded={true}
+      expanded={false}
       on:openObject={(e) =>
         (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
       {schema}

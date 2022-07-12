@@ -593,3 +593,11 @@ function changeColumnType(view, idx, step) {
     return groupedRange;
   }
 
+  export async function saveSchema(schema) {
+    let entities = await loadEntities();
+    entities.schemas.push(schema);
+
+    saveEntities(entities);
+    console.log(entities)
+  }
+

@@ -23,7 +23,6 @@
   } from "$lib/utils";
 
   import { v4 as uuidv4 } from "uuid";
-  import TopNav from "$lib/TopNav.svelte";
   import _ from "lodash";
   import { notifications } from "$lib/notifications.js";
   import Toast from "$lib/Toast.svelte";
@@ -42,7 +41,7 @@
 
   let selectedView;
   let runQuery;
-  let editMode;
+  let editMode = true;
 
   let entities;
 
@@ -248,6 +247,7 @@
   
   <div class="w-screen flex bg-zinc-100 bg-opacity-10">
     <SideBar
+    expanded={false}
       {schema}
       on:openObject={(e) =>
         (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}

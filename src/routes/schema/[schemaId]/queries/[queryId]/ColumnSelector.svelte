@@ -61,75 +61,82 @@
   {/each}
 </div>
 
-<div class="leading-6 h-full border-b overflow-y-scroll p-2 space-y-1">
+<div class="leading-6 h-full border-b overflow-y-scroll p-2 space-y-2">
   {#if viewMode == "All Columns"}
-  
-  <!--
-		<div class="p-2 border">
-			<div class="{baseTable.color} w-max px-1 rounded ">{baseTable.name}</div>
-		</div>
-	-->
+    <div>
+      <div class="bg-zinc-200 text-sm w-max px-2 rounded-t">
+        <i class="ri-table-line align-bottom" />
+        {baseTable.name}
+      </div>
 
-    {#each baseTable.columns as column}
-      {#if !isForeignKey(baseTable, column)}
-        <Column
-          {baseTable}
-          sourceTable={baseTable}
-          
-          {column}
-          on:addColumn={(e) =>
-            addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
-        />
-      {/if}
-    {/each}
-
-    {#each baseTable.columns as column}
-      {#if isForeignKey(baseTable, column)}
-        <!--FOREIGN KEY TABLES-->
-        <ColumnGroup
-        {baseTable}
-          table={getReferenceTable(baseTable, column)}
-          {column}
-          on:addColumn={(e) =>
-            addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
-        />
-
-        <div class="space-y-1">
-          {#each getReferenceTable(baseTable, column).columns as col}
-            {#if isForeignKey(getReferenceTable(baseTable, column), col)}
-              <ColumnGroup
+      <div class="bg-zinc-200 p-1 rounded-b rounded-r space-y-1">
+        {#each baseTable.columns as column}
+          {#if !isForeignKey(baseTable, column)}
+            <Column
               {baseTable}
-                table={getReferenceTable(
-                  getReferenceTable(baseTable, column),
-                  col
-                )}
-                column={col}
-                on:addColumn={(e) =>
-                  addColumn(
-                    e.detail.baseTable,
-                    e.detail.column,
-                    e.detail.column
-                  )}
-              />
-            {/if}
-          {/each}
+              sourceTable={baseTable}
+              {column}
+              on:addColumn={(e) =>
+                addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
+            />
+          {/if}
+        {/each}
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      {#each baseTable.columns as column}
+        {#if isForeignKey(baseTable, column)}
+          <!--FOREIGN KEY TABLES-->
+          <div class="">
+          <ColumnGroup
+            {baseTable}
+            table={getReferenceTable(baseTable, column)}
+            {column}
+            on:addColumn={(e) =>
+              addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
+          />
         </div>
-      {/if}
-    {/each}
 
-    {#each getLinkedTables(baseTable) as table}
-      <div class="space-y-2">
-        <ColumnGroup
-        {baseTable}
-          {table}
-          column={getForeignKeyColumn(baseTable, table)}
-          on:addColumn={(e) =>
-            addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
-        />
+          <div class="space-y-2">
+            {#each getReferenceTable(baseTable, column).columns as col}
+              {#if isForeignKey(getReferenceTable(baseTable, column), col)}
+              <div class="ml-4">
+                <ColumnGroup
+                  {baseTable}
+                  table={getReferenceTable(
+                    getReferenceTable(baseTable, column),
+                    col
+                  )}
+                  column={col}
+                  on:addColumn={(e) =>
+                    addColumn(
+                      e.detail.baseTable,
+                      e.detail.column,
+                      e.detail.column
+                    )}
+                />
+              </div>
+              {/if}
+            {/each}
+          </div>
+        {/if}
+      {/each}
+    </div>
+    <div class="">
+      {#each getLinkedTables(baseTable) as table}
+        <div class="space-y-2">
+          <ColumnGroup
+            {baseTable}
+            {table}
+            column={getForeignKeyColumn(baseTable, table)}
+            on:addColumn={(e) =>
+              addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
+          />
 
-        {#each table.columns as column}
-          {#if !isForeignKey(table, column)}
-            <!--
+          {#each table.columns as column}
+            {#if !isForeignKey(table, column)}
+              <!--
           <Column
             baseTable={table}
             sourceTable={table}
@@ -143,33 +150,39 @@
               )}
           />
 		  -->
-          {:else if column.name !== getForeignKeyColumn(baseTable, table).column}
-            <ColumnGroup
-            {baseTable}
-              table={getReferenceTable(table, column)}
-              {column}
-              on:addColumn={(e) =>
-                addColumn(e.detail.baseTable, e.detail.column, e.detail.column)}
-            />
+            {:else if column.name !== getForeignKeyColumn(baseTable, table).column}
+              <ColumnGroup
+                {baseTable}
+                table={getReferenceTable(table, column)}
+                {column}
+                on:addColumn={(e) =>
+                  addColumn(
+                    e.detail.baseTable,
+                    e.detail.column,
+                    e.detail.column
+                  )}
+              />
 
-            <div class="border">
-              {#each getReferenceTable(table, column).columns as col}
-                {#if isForeignKey(getReferenceTable(table, column), col)}
-                  <ColumnGroup
-                  {baseTable}
-                    table={getReferenceTable(
-                      getReferenceTable(table, column),
-                      col
-                    )}
-                    column={col}
-                    on:addColumn={(e) =>
-                      addColumn(
-                        e.detail.baseTable,
-                        e.detail.column,
-                        e.detail.column
+              <div>
+                {#each getReferenceTable(table, column).columns as col}
+                  {#if isForeignKey(getReferenceTable(table, column), col)}
+                  <div class="space-y-2">
+                    <ColumnGroup
+                      {baseTable}
+                      table={getReferenceTable(
+                        getReferenceTable(table, column),
+                        col
                       )}
-                  />
-                  <!--
+                      column={col}
+                      on:addColumn={(e) =>
+                        addColumn(
+                          e.detail.baseTable,
+                          e.detail.column,
+                          e.detail.column
+                        )}
+                    />
+                  </div>
+                    <!--
                 <div class="p-2 space-x-1 flex items-center">
                   <span>{col.name}</span>
                   <div
@@ -204,13 +217,14 @@
                   {/each}
                 </div>
 				-->
-                {/if}
-              {/each}
-            </div>
-          {/if}
-        {/each}
-      </div>
-    {/each}
+                  {/if}
+                {/each}
+              </div>
+            {/if}
+          {/each}
+        </div>
+      {/each}
+    </div>
   {/if}
 
   {#if viewMode == "In Use"}
