@@ -141,7 +141,7 @@ const U5BqueryIdu5D = create_ssr_component(($$result, $$props, $$bindings, slots
     if (selectedView) {
       runQuery = true;
     }
-    getColumnRecords(selectedView.columns);
+    getColumnRecords(selectedView);
     if (!entities || !entities.schemas || !entities.tables) {
       return;
     }

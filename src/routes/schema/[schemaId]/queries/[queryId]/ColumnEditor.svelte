@@ -9,24 +9,24 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let selectedView;
+	export let query;
 	export let column;
 	let externalLink;
 	let columnIdx;
 	let records = [];
 
 	beforeUpdate(() => {
-		columnIdx = selectedView.columns.indexOf(column);
-		records = selectedView.records.map((r) => r[columnIdx]);
+		columnIdx = query.columns.indexOf(column);
+		records = query.records.map((r) => r[columnIdx]);
 		externalLink = column.source.table.constraints.find(
-			(c) => c.referenceTable && c.referenceTable.id == selectedView.baseTable.id
+			(c) => c.referenceTable && c.referenceTable.id == query.baseTable.id
 		);
 
 		if(externalLink && externalLink.referenceTable){
 			externalLink['primaryKeyColumn']=getPrimaryKeyColumn(externalLink.referenceTable);
 		}
 
-		selectedView = selectedView;
+		query = query;
 	});
 
 	function updateAggregation(aggregation) {
@@ -135,7 +135,7 @@
 						<i class="ri-arrow-drop-down-line align-bottom" />
 					</div>
 					<div slot="menu">
-						{#each selectedView.columns as _column}
+						{#each query.columns as _column}
 							<div
 								class="hover:bg-zinc-50 space-x-1 p-2 cursor-pointer"
 								on:click={() => (column.source.filter.column = _column)}

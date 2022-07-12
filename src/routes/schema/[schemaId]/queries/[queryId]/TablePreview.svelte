@@ -9,7 +9,7 @@
 
   import _ from "lodash";
 
-  export let selectedView;
+  export let query;
   export let inspector;
   export let records;
   export let tables;
@@ -42,7 +42,7 @@
   <div class="flex border-b overflow-x-scroll">
     <div class="bg-zinc-50">
       <div class="flex w-max overflow-hidden">
-        {#each selectedView.columns as column}
+        {#each query.columns as column}
           <div class="border-r w-64 border-zinc-200">
             <div
               on:click={() =>
@@ -71,7 +71,7 @@
           on:addColumn={(e) =>
             addColumn(e.detail.sourceTable, e.detail.sourceColumn, e.detail.column)}
           {tables}
-          bind:selectedView
+          bind:query
         />
         -->
       </div>
@@ -83,18 +83,18 @@
               {#each record as cell, i}
                 <div
                   class="w-64 border-r space-y-1 border-zinc-200 p-2 {getColumnIndex(
-                    selectedView,
+                    query,
                     inspector.column
                   ) == i
                     ? theme.darkBackgroundColor
                     : ''}"
                 >
-                  {#if selectedView.columns[i].aggregation == "list"}
+                  {#if query.columns[i].aggregation == "list"}
                     {#if Array.isArray(cell)}
                       {#each cell as item}
                         <div
                           class="inline-block mr-1 px-2 rounded-xl bg-opacity-30"
-                          style="background-color: {selectedView.columns[i]
+                          style="background-color: {query.columns[i]
                             .source.table.color}"
                         >
                           {item}
@@ -103,15 +103,15 @@
                     {:else}
                       <div
                         class="inline-block mr-1 px-2 rounded-xl bg-opacity-30"
-                        style="background-color: {selectedView.columns[i].source
+                        style="background-color: {query.columns[i].source
                           .table.color};"
                       >
                         {cell}
                       </div>
                     {/if}
-                  {:else if selectedView.columns[i].aggregation == "range"}
+                  {:else if query.columns[i].aggregation == "range"}
                     {formatRange(cell)}
-                  {:else if selectedView.columns[i].aggregation == "count"}
+                  {:else if query.columns[i].aggregation == "count"}
                     {formatCount(cell)}
                   {:else}
                     {cell}
@@ -143,5 +143,5 @@
   
 </div>
 <div class="border-zinc-200 border-t p-2 bg-zinc-50">
-  {selectedView.records?.length || 0} Records
+  {query.records?.length || 0} Records
 </div>

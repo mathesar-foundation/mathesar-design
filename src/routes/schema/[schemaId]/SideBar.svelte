@@ -40,15 +40,16 @@
   }
 </script>
 
-<div class="flex shrink-0 bg-zinc-600">
-  <div class="bg-indigo-300 bg-opacity-20">
+<div class="flex shrink-0 bg-zinc-800">
+  
+  <div>
     <div
-      class="w-12 h-12 text-zinc-100 cursor-pointer hover:bg-opacity-80 bg-opacity-0 bg-zinc-100 flex"
+      class="w-10 h-10 text-zinc-100 font-semibold cursor-pointer hover:bg-opacity-80 bg-opacity-10 bg-zinc-100 flex"
       on:click={() => (expanded = !expanded)}
     >
       <i class="ri-menu-line text-lg m-auto" />
     </div>
-    <div class="w-12 h-12 text-zinc-100 flex">
+    <div class="w-10 h-10 text-zinc-100 flex">
       <i class="ri-function-line text-lg m-auto" />
     </div>
   </div>

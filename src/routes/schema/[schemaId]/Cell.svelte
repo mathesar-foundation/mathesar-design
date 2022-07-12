@@ -22,10 +22,12 @@
   }
 
   
+
+  
 </script>
 
 <div
-  on:click={editCell}
+  on:click={() => dispatch('selectCell',cell)}
   class:bg-indigo-200={cell.edit}
   class:bg-zinc-50={cell.primary}
   
@@ -74,10 +76,10 @@
       </span>
       </div>
     {:else if cell.link}
-      <div class="px-2 inline-block rounded-xl" style="background-color: {cell.link.referenceTable?.color};">
+      <a target="_self" href="/schema/{cell.link.referenceTable.schema.id}/tables/{cell.link.referenceTable.id}" class="px-2 inline-block rounded-xl" style="background-color: {cell.link.referenceTable?.color};">
 
         {cell.link.referenceTable.rows.summaries[cell.record]}
-      </div>
+      </a>
     {:else}
       <input type="text" class="bg-transparent" bind:value={cell.content}>
     {/if}

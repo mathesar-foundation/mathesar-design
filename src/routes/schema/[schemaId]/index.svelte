@@ -32,7 +32,6 @@
 {#await loadData()}
   <div>Loading (can be removed)</div>
 {:then entities}
-  <TopNav {schema} />
 
   <div class="flex flex-grow bg-zinc-100 bg-opacity-10">
     <SideBar

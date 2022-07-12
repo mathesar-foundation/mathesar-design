@@ -9,7 +9,6 @@
   export let baseTable;
   let showOptions;
 
-  console.log(column,table, "COLUMN");
 </script>
 
 

@@ -3,12 +3,12 @@
   import { afterUpdate, createEventDispatcher } from "svelte";
   import Column from "./Column.svelte";
   import ColumnGroup from "./ColumnGroup.svelte";
-
-  export let selectedView;
-  let baseTable = selectedView.baseTable;
+  export let schema;
+  export let query;
+  let baseTable = query.baseTable;
 
   afterUpdate(() => {
-    baseTable = selectedView.baseTable;
+    baseTable = query.baseTable;
   });
 
   let viewModes = ["All Columns", "In Use"];

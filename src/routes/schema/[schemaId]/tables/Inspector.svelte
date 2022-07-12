@@ -4,7 +4,7 @@
   import { icon } from "$lib/iconMap";
   import Toggle from "$lib/Toggle.svelte";
   import Dropdown from "$lib/Dropdown.svelte";
-  import { dataTypes, isForeignKey, getLinkedTable } from "$lib/utils.js";
+  import { dataTypes, isForeignKey, getLinkedTable, linksToTable, getForeignKeyColumn, getTableQueries } from "$lib/utils.js";
   import DataTypeSettings from "./DataTypeSettings.svelte";
   import SelectionActions from "./SelectionActions.svelte";
   import _ from "lodash";
@@ -23,7 +23,7 @@
   let keepColumns;
 
   onMount(() => {
-    inspector.column = [table.columns[2],table.columns[3]];
+    //inspector.column = [table.columns[2],table.columns[3]];
   });
 
   afterUpdate(() => {
@@ -82,6 +82,21 @@
     //"Calculate and Replace",
     //"Calculate New Column",
   ];
+
+  function getTableLinks(table) {
+    let schemaTables = table.schema.tables
+
+    let links = schemaTables.filter(t => {
+      return linksToTable(table,t)
+    });
+
+    if (links.length == 0) {
+      return null;
+    } else {
+      return links;
+    }
+  }
+
 </script>
 
 <div class="border-l w-80 bg-zinc-100 shrink-0 flex flex-col">
@@ -98,9 +113,13 @@
       />
     </div>
 
-    <div class="p-2 space-y-2 flex-grow">
-      <h4 class="font-semibold text-sm">Display Options</h4>
-      <div class="space-y-1 space-x-1">
+    <div>
+
+      <div class="p-2">
+        <h4 class="font-semibold text-sm">Display Options</h4>
+      </div>
+
+      <div class="space-y-2 p-2">
         <Toggle
           type="checkbox"
           bind:checked={isCustomSummary}
@@ -120,7 +139,9 @@
           </div>
           <span class="text-sm">Use Custom Record Summary</span>
         </Toggle>
-      </div>
+      
+
+      
 
       {#if isCustomSummary}
         <div class="space-y-1 relative border p-1 rounded bg-zinc-50">
@@ -170,7 +191,77 @@
         </div>
       {/if}
     </div>
+    </div>
+
+
+    <div class="">
+      <div class="border-t p-2 flex items-center">
+        <i class="ri-arrow-right-s-line align-bottom"></i>
+        <h4 class="font-semibold text-sm">Links to Table ({getTableLinks(table)?.length||0})</h4>
+      </div>
+      <div class="border-t p-2 space-y-2">
+        {#if getTableLinks(table)}
+        {#each getTableLinks(table) as linkTable}
+          <!--
+          <div class="bg-white border p-2 rounded text-sm">
+            <span class="font-semibold space-x-1"><i class="ri-table-line align-bottom"></i><span>{linkTable.name}</span></span>
+            <span>via</span>  
+            <span>{getForeignKeyColumn(linkTable,table).column}</span>
+          </div>
+          -->
+  
+          <div class="">
+            <div
+              class="w-max px-2 rounded-t-lg text-sm bg-zinc-300"
+              
+            >
+              <i class="ri-table-line text-xs align-text-bottom" />
+              {linkTable.name}
+            </div>
+            <div
+              class="p-1 rounded-b-lg rounded-r-lg bg-zinc-300"
+              
+            >
+              <div
+                class="bg-zinc-50 w-full rounded p-1 space-x-1 "
+              >
+              <span class="text-sm text-zinc-600">FK</span>
+                <i class="ri-key-line align-bottom rounded p-1" style="background-color: {linkTable.color};" />
+                {getForeignKeyColumn(linkTable,table).column}
+              </div>
+            </div>
+          </div>
+     
+        {/each}
+        {:else}
+        <span class="text-sm text-zinc-600">No Links</span> 
+  
+        {/if}
+  
+        <button class="border p-1 border-zinc-300 rounded text-sm w-full">Add Link</button>
+      </div>
+    </div>
+  
+    <div class="">
+      <div class="border-t p-2 flex items-center">
+        <i class="ri-arrow-right-s-line align-bottom"></i>
+        <h4 class="font-semibold text-sm">Queries ({getTableQueries(table)?.length||0})</h4>
+      </div>
+      <div class="border-t p-2">
+        {#if getTableQueries(table)}
+        {#each getTableQueries(table) as query}
+          <div class="bg-white border p-1 text-sm">
+            {query.name}
+          </div>
+        {/each}
+        {:else}
+        <span class="text-sm text-zinc-600">No Queries</span> 
+        {/if}
+      </div>
+    </div>
   {/if}
+
+ 
 
   {#if inspector.column && inspector.column.length > 1}
 

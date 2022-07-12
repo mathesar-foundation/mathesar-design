@@ -2,20 +2,20 @@
   import Dropdown from "$lib/Dropdown.svelte";
   import Toggle from "$lib/Toggle.svelte";
   import { icon } from "$lib/iconMap";
-  export let selectedView;
+  export let query;
 
   let newParameter;
 
   function addNewParameter() {
-    if (!selectedView.parameters) {
-      selectedView.parameters = {};
+    if (!query.parameters) {
+      query.parameters = {};
     }
 
     let parameterName = `Parameter-${
-      Object.keys(selectedView.parameters).length
+      Object.keys(query.parameters).length
     }`;
 
-    selectedView.parameters[parameterName] = {};
+    query.parameters[parameterName] = {};
   }
 </script>
 
@@ -32,8 +32,8 @@
 
 
 
-{#if selectedView.parameters}
-  {#each Object.keys(selectedView.parameters) as parameter}
+{#if query.parameters}
+  {#each Object.keys(query.parameters) as parameter}
      
 
     <div class="grid grid-cols-2 space-x-2">
@@ -54,7 +54,7 @@
                 slot="toggle"
                 >
                 <span class="flex-grow"
-                    >{selectedView.parameters[parameter].value || "Select"}</span
+                    >{query.parameters[parameter].value || "Select"}</span
                 >
                 <i class="ri-arrow-drop-down-line align-bottom" />
                 </button>
@@ -62,14 +62,14 @@
 
                 
                 <!--
-                {#each selectedView.baseTable.columns as column}
+                {#each query.baseTable.columns as column}
                     <div
                     class="hover:bg-zinc-200 bg-opacity-0 bg-zinc-50 cursor-pointer space-x-1 p-2"
-                    on:click={() => (selectedView.parameters[parameter] = column)}
+                    on:click={() => (query.parameters[parameter] = column)}
                     >
                     <i
                         class="{icon[column.type]} align-bottom border rounded"
-                        style="background-color:{selectedView.baseTable.color}"
+                        style="background-color:{query.baseTable.color}"
                     /> <span>{column.name}</span>
                     </div>
                 {/each}
@@ -87,8 +87,8 @@
 
 <button
   on:click={addNewParameter}
-  disabled={!selectedView.baseTable}
-  class:opacity-50={!selectedView.baseTable}
+  disabled={!query.baseTable}
+  class:opacity-50={!query.baseTable}
   class="border w-full border p-1 rounded text-sm border-zinc-300 bg-zinc-100"
   >Add Parameter</button
 >

@@ -2,17 +2,18 @@
     import { afterUpdate, createEventDispatcher } from "svelte";
     import { v4 as uuidv4 } from "uuid";
     const dispatch = createEventDispatcher();
-    import Table from "../../../Table.svelte";
+    import Table from "../../../../Table.svelte";
     export let table;
     export let link;
     export let queries;
+    export let recordId;
 
-   console.log(link,"COLUMN")
+    console.log(queries,"queries")
 
   function newQuery(table) {
     let query = {
       id: uuidv4(),
-      name: "New Query2",
+      name: "New Query",
       baseTable: table,
       type: "query",
       schemaId: table.schema.id,
@@ -41,6 +42,7 @@
 
 </script>
 
+
 <div class="flex items-center space-x-2">
     <h4 class="font-semibold">
       Embedded Queries ({queries.length})
@@ -54,8 +56,11 @@
 
   {#if queries.length > 0}
     {#each queries as query}
+      
       <div class="border">
         <div class="flex items-center p-2 space-x-2">
+          
+          {#if query && query.id}
           <input
             type="text"
             class="border p-1 rounded font-semibold"
@@ -63,8 +68,9 @@
           />
           <a
             class="border rounded py-1 px-2 bg-zinc-100"
-            href="/schema/{table.schema.id}/queries/{query.id}">Edit</a
+            href="/schema/{table.schema.id}/tables/{table.id}/records/{recordId}/{query.id}">Edit</a
           >
+          {/if}
           <div class="flex items-center border-l pl-2 space-x-2">
             <button class="py-1 px-2 rounded bg-zinc-600 text-white"><i class="ri-table-line align-bottom"></i></button>
             <button class="border py-1 px-2 rounded"><i class="ri-line-chart-line align-bottom"></i></button>

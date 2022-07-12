@@ -30,7 +30,7 @@
 
 <div style="background: linear-gradient(45deg,{tableColors.join(',')})">
   <div
-    class="text-zinc-800 flex items-center space-x-3 border-b bg-zinc-50 bg-opacity-80  border-zinc-300 pr-3"
+    class="text-zinc-800 flex items-center space-x-3 border-b-2 border-zinc-300 bg-zinc-50 bg-opacity-80  border-zinc-300 pr-3"
   >
     <Dropdown>
       <button
@@ -187,11 +187,15 @@
       <i class="ri-arrow-up-down-line align-bottom" /> Sort
       <i class="ri-arrow-drop-down-line align-bottom" />
     </button>
-    <!--
-    <div class="flex-grow flex items-center justify-end border">
-      <div class="font-semibold cursor-pointer" on:click={()=> showInspector = !showInspector}>Settings</div>
+  
+    <div class="flex-grow flex items-center justify-end">
+
+      <button
+      class:bg-zinc-700={showInspector}
+      class:text-zinc-100={showInspector}
+      class="border rounded p-1 px-2" on:click={()=> showInspector = !showInspector}><i class="ri-layout-right-2-line align-bottom"></i></button>
     </div>
-    -->
+ 
   </div>
 </div>
 <!--

@@ -1,13 +1,15 @@
 <script>
   import { afterUpdate, beforeUpdate } from "svelte";
   import TopNav from "$lib/TopNav.svelte";
+  import Breadcrumb from "$lib/Breadcrumb.svelte";
+  import RecordNavigation from "./RecordNavigation.svelte";
   import { page } from "$app/stores";
   import { icon } from "$lib/iconMap";
-  
+
   import Dropdown from "$lib/Dropdown.svelte";
-  import SideBar from "../../../SideBar.svelte";
+  import SideBar from "../../../../SideBar.svelte";
   import EmbeddedQueries from "./EmbeddedQueries.svelte";
- 
+
   import _ from "lodash";
   let { schemaId } = $page.params;
   let { tableId } = $page.params;
@@ -28,26 +30,13 @@
   let schema;
 
   async function loadData() {
-    console.log(tableId);
     entities = await loadEntities();
     table = entities.tables.find((table) => table.id == tableId);
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     record = table.records[recordId];
     cells = table.rows.cells[recordId];
 
-    linkedTables = entities.tables.filter((t) => {
-      let valid = false;
-
-      if (
-        t.constraints.some(
-          (c) => c.referenceTable && c.referenceTable.id == table.id
-        )
-      ) {
-        valid = true;
-      }
-
-      return valid;
-    });
+    linkedTables = getLinkedTables(entities.tables);
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -63,6 +52,22 @@
   });
 
   afterUpdate(() => {});
+
+  function getLinkedTables(tables) {
+    return tables.filter((t) => {
+      let valid = false;
+
+      if (
+        t.constraints.some(
+          (c) => c.referenceTable && c.referenceTable.id == table.id
+        )
+      ) {
+        valid = true;
+      }
+
+      return valid;
+    });
+  }
 
   function getLinkColumn(table, linkedTable) {
     return linkedTable.constraints.find(
@@ -92,31 +97,23 @@
       []
     );
 
-
-    let foreignKeyCells = Object.values(linkedTable.rows.cells)
-      .flat()
-      .filter((c) => c.link && c.content == linkedPrimaryKey.content);
-
     return linkedRecords;
   }
 
-  function saveQuery(query){
+  function saveQuery(query) {
     entities.queries.push(query);
 
     entities = entities;
 
-    console.log(query, entities.queries);
     saveEntities(entities);
 
     setTimeout(() => {
-      window.location.href = `/schema/${schemaId}/queries/${query.id}`;
+      window.location.href = `/schema/${schemaId}/tables/${tableId}/records/${recordId}/${query.id}`;
     }, 400);
   }
 
   function getTableQueries(table) {
     let queries = entities.queries.filter((q) => q.baseTable.id == table.id);
-
-    console.log(queries,"QUERIES")
 
     let queryTables = queries.map((query) => {
       if (query.records) {
@@ -128,22 +125,14 @@
       }
     });
 
-
     return queryTables;
   }
-
-  function lighter(rgba){
-    let [r, g, b, a] = rgba.split(",");
-    return `${r}, ${g}, ${b}, 0.2)`;
-  }
-  
 </script>
 
 <div class="bg-zinc-100 h-full">
   {#await loadData()}
     <div>Loading (can be removed)</div>
   {:then entities}
-    <TopNav schema={table.schema} />
 
     <div class="w-screen flex bg-zinc-100 bg-opacity-10">
       <SideBar
@@ -154,22 +143,26 @@
 
       <div
         class="flex overflow-hidden flex-col h-full flex-grow"
-        style="height: calc(100vh - 52px);"
+        style="height: calc(100vh - 78px);"
       >
-        <div class="py-1 px-3  space-x-2 border-b">
 
+        <RecordNavigation {cells} {table}/>
+        <!--
+        <div class="py-1 px-3  space-x-2 border-b">
           <span class="text-indigo-800"><i class="ri-table-line align-bottom"></i> <span>{table.name}</span></span>
           <span><i class="ri-arrow-right-s-line align-bottom"></i></span>
           <span class="text-indigo-800">{getRecordSummary(cells[0])}</span>
         </div>
-
+-->
         <div class="p-8 bg-white h-full space-y-4 overflow-y-scroll">
           <div class="space-y-1">
             <h3 class="text-2xl font-semibold">
               {getRecordSummary(cells[0])}
             </h3>
             <div class="">
-              Record in <a href="/" class="text-indigo-700"
+              Record in <a
+                href="/schema/{table.schema.id}/tables/{table.id}"
+                class="text-indigo-700"
                 ><i class="ri-table-line align-bottom" /> {table.name}</a
               >
             </div>
@@ -179,49 +172,44 @@
             {#each cells as cell}
               <div class="space-y-1">
                 {#if !cell.primary && !cell.link}
-                <div class="flex items-center space-x-1">
-                <i
-                    class="{icon[
-                      cell.column.type
-                    ]} align-bottom px-1 rounded"
-                    style="background-color: {cell.table.color}"
-                  />
-                  <h4 class="font-semibold">{_.startCase(cell.column.name)}</h4>
-                </div>
+                  <div class="flex items-center space-x-1">
+                    <i
+                      class="{icon[cell.column.type]} align-bottom px-1 rounded"
+                      style="background-color: {cell.table.color}"
+                    />
+                    <h4 class="font-semibold">
+                      {_.startCase(cell.column.name)}
+                    </h4>
+                  </div>
 
-                
-                    
-                    
-                    {#if !_.isArray(cell.content)}
-                      <div class="flex-grow">
-                        <input
-                          type="text"
-                          class="border border-zinc-300 w-full rounded p-2 focus:border-indigo-500"
-                          bind:value={cell.content}
-                        />
-                      </div>
-                    {:else}
-                      <div class="flex items-center space-x-2">
-                        {#each cell.content as item}
-                          <div class="bg-indigo-100 rounded-xl px-2">
-                            {item}
-                          </div>
-                        {/each}
-                      </div>
-                    {/if}
-
-                
+                  {#if !_.isArray(cell.content)}
+                    <div class="flex-grow">
+                      <input
+                        type="text"
+                        class="border border-zinc-300 w-full rounded p-2 focus:border-indigo-500"
+                        bind:value={cell.content}
+                      />
+                    </div>
+                  {:else}
+                    <div class="flex items-center space-x-2">
+                      {#each cell.content as item}
+                        <div class="bg-indigo-100 rounded-xl px-2">
+                          {item}
+                        </div>
+                      {/each}
+                    </div>
+                  {/if}
                 {/if}
 
                 {#if cell.link}
-                <div class="flex items-center space-x-1">
-                  <i
-                      class="{icon[
-                        cell.column.type
-                      ]} align-bottom px-1 rounded"
+                  <div class="flex items-center space-x-1">
+                    <i
+                      class="{icon[cell.column.type]} align-bottom px-1 rounded"
                       style="background-color: {cell.table.color}"
                     />
-                    <h4 class="font-semibold">{_.startCase(cell.link.column)}</h4>
+                    <h4 class="font-semibold">
+                      {_.startCase(cell.link.column)}
+                    </h4>
                   </div>
                   <div class="">
                     Record Linked from <a href="/" class="text-indigo-700"
@@ -237,7 +225,6 @@
                       href="/schema/{schemaId}/tables/{cell.link.referenceTable
                         .id}/records/{cell.record}"
                       target="_self"
-                      
                       class="px-2 inline-block rounded-xl"
                       style="background-color: {cell.link.referenceTable
                         ?.color};"
@@ -311,10 +298,13 @@
               </div>
             </div>
 
-
-            <EmbeddedQueries queries={getTableQueries(linkedTable)} on:save={(e)=>saveQuery(e.detail)} link={getLinkColumn(table, linkedTable)} bind:table={linkedTable} />
-
-            
+            <EmbeddedQueries
+              {recordId}
+              queries={getTableQueries(linkedTable)}
+              on:save={(e) => saveQuery(e.detail)}
+              link={getLinkColumn(table, linkedTable)}
+              bind:table={linkedTable}
+            />
           {/each}
         </div>
       </div>

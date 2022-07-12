@@ -6,69 +6,69 @@
   import { createEventDispatcher } from "svelte";
   import { conditions, stepOptions } from "$lib/utils";
   const dispatch = createEventDispatcher();
-  export let selectedView;
+  export let query;
 
   let minimize = [];
 
   function newStep(step) {
     //RESET PREVIEW
-    Object.keys(selectedView.steps).forEach((_step) => {
-      selectedView.steps[_step].hidden = false;
+    Object.keys(query.steps).forEach((_step) => {
+      query.steps[_step].hidden = false;
     });
 
     let newStep = `${step}_${
-      selectedView.steps ? Object.keys(selectedView.steps).length : 0
+      query.steps ? Object.keys(query.steps).length : 0
     }`;
 
 
-	selectedView.steps[newStep] = {
+	query.steps[newStep] = {
 		type: step
     };
 
     if (step !== "deduplicate" && step !== "limit"  && step !== "offset") {
-		selectedView.steps[newStep] = {
-			column: selectedView.columns[0],
+		query.steps[newStep] = {
+			column: query.columns[0],
     	};
     }
 
     if (step == "filter") {
-      selectedView.steps[newStep] = {
-        ...selectedView.steps[newStep],//DEFAULT
-        condition: conditions[selectedView.steps[newStep].column.type][0],
+      query.steps[newStep] = {
+        ...query.steps[newStep],//DEFAULT
+        condition: conditions[query.steps[newStep].column.type][0],
         value: "",
       };
     }
 
     if (step == "summarize") {
-      selectedView.steps[newStep] = {
-        ...selectedView.steps[newStep],
+      query.steps[newStep] = {
+        ...query.steps[newStep],
         aggregations: [],
       };
     }
 
     if (step == "sort") {
-      selectedView.steps[newStep] = {
-        ...selectedView.steps[newStep],
+      query.steps[newStep] = {
+        ...query.steps[newStep],
         direction: "ascending",
       };
     }
 
-    selectedView = selectedView;
-    dispatch("AddStep", selectedView.records);
-    minimize = Object.keys(selectedView.steps).map((s, i) =>
-      Object.keys(selectedView.steps).length > i + 1 ? true : false
+    query = query;
+    dispatch("AddStep", query.records);
+    minimize = Object.keys(query.steps).map((s, i) =>
+      Object.keys(query.steps).length > i + 1 ? true : false
     );
   }
 </script>
 
 <div class="p-2 space-y-2">
   <h4 class="font-semibold text-sm leading-6">
-    Transform Steps ({Object.keys(selectedView.steps).length})
+    Transform Steps ({Object.keys(query.steps).length})
   </h4>
 
   <Dropdown full={true} closeOnClick={true}>
     <button
-      disabled={!selectedView.columns.length > 0}
+      disabled={!query.columns.length > 0}
       slot="toggle"
       class="cursor-pointer w-full bg-zinc-100 border border-zinc-300 py-1 px-2 text-sm flex items-center rounded text-left"
     >
@@ -90,7 +90,7 @@
 </div>
 
 <div class="border-t overflow-y-scroll p-2 border-zinc-200 space-y-2 flex-grow">
-  {#if Object.keys(selectedView.steps).length > 0}
+  {#if Object.keys(query.steps).length > 0}
     <button
       class="cursor-pointer w-full bg-zinc-200 py-1 px-2 text-sm flex items-center rounded space-x-1"
     >
@@ -98,13 +98,13 @@
     </button>
   {/if}
 
-  {#each Object.keys(selectedView.steps) as step, i}
+  {#each Object.keys(query.steps) as step, i}
     <Step
       bind:minimize={minimize[i]}
       on:previewStep
       on:deleteStep
       {step}
-      bind:selectedView
+      bind:query
     />
   {/each}
 </div>

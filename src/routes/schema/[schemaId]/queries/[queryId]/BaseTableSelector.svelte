@@ -2,10 +2,9 @@
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 	import Dropdown from '$lib/Dropdown.svelte';
-	import { theme } from '$lib/themes';
 
 	export let schema;
-	export let selectedView;
+	export let query;
 	let searchTerm = "";
 
 	function filter(tables,searchTerm){
@@ -17,14 +16,8 @@
 	}
 </script>
 
-
-
-
-
 <div class="border-b text-zinc-800 p-2 space-y-1 relative">
-	
-	
-	
+
 
 	<h4 class="text-sm font-semibold flex-grow leading-6">Base Table</h4>
 	<Dropdown closeOnClick={true} full={false} width={'w-96'}>
@@ -34,7 +27,7 @@
 			class="border-zinc-300 border p-1 flex bg-white items-center rounded cursor-pointer space-x-1"
 		>
 			<i class="ri-table-line align-bottom" />
-			<span class="flex-grow">{selectedView.baseTable ? selectedView.baseTable.name : 'Select Base Table'}</span>
+			<span class="flex-grow">{query.baseTable ? query.baseTable.name : 'Select Base Table'}</span>
 
 			<i class="ri-arrow-drop-down-line align-bottom" />
 		</div>
@@ -49,6 +42,7 @@
 				  placeholder="Search Tables"
 				/>
 			  </div>
+			
 			
 			{#each filter(schema.tables,searchTerm) as table}
 				<div
@@ -65,7 +59,7 @@
 	</Dropdown>
 
 	
-	{#if !selectedView.baseTable}
+	{#if !query.baseTable}
 		<div class="top-20 left-0 z-10 absolute">
 		
 			<div class="w-4 border-solid border-b-indigo-500 mx-8 border-b-8 border-x-transparent border-x-8 border-t-0"></div>
@@ -80,7 +74,7 @@
 	{/if}
 	
 
-	{#if selectedView.baseTable}
+	{#if query.baseTable}
 	<!--
 	<div>
 		<button class="border py-1 px-2 rounded bg-zinc-50">Open Table</button>

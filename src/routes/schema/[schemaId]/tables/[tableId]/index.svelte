@@ -243,15 +243,17 @@
     table = table;
 
     
-    console.log(table,"table");
     
+  }
+
+  function closeInspector() {
+    showInspector = false;
   }
 </script>
 
 {#await loadData()}
   <div>Loading (can be removed)</div>
 {:then entities}
-  <TopNav {schema} />
   <div class="w-screen flex bg-zinc-100 bg-opacity-10">
     <SideBar
       {schema}
@@ -261,7 +263,7 @@
 
     <div
       class="flex overflow-hidden flex-col h-full flex-grow"
-      style="height: calc(100vh - 52px);"
+      style="height: calc(100vh - 78px);"
     >
       <Toolbar
         bind:showInspector
@@ -279,6 +281,7 @@
       {#if table && table.columns}
         <div class="flex flex-grow">
           <Table
+            on:closeInspector={closeInspector}
             on:selectColumn={(e) => selectColumn(e.detail)}
             on:deleteColumn={(e) => deleteColumn(e.detail)}
             bind:table
@@ -287,7 +290,7 @@
           {#if showInspector}
             <Inspector
               on:extractColumns={(e) =>
-                extractColumns(e.detail.column, e.detail.table)}
+              extractColumns(e.detail.column, e.detail.table)}
               on:extractTable={(e) => extractTable(e.detail)}
               bind:inspector
               bind:table

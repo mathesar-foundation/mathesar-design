@@ -1,9 +1,16 @@
 [
     {
+        "id":2,
+        "name":"public",
+        "description":"Default Postgres Database",
+        "isLocked":true
+    },{
         "id":0,
-        "name":"album_collection"
+        "name":"Music Collection",
+        "description":"Audio album management"
     },{
         "id":1,
-        "name":"library_management"
+        "name":"Library",
+        "description":"Library Management"
     }
 ]
