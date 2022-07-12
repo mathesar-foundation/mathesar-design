@@ -1,6 +1,7 @@
 <script>
   import { afterUpdate, beforeUpdate } from "svelte";
   import SideBar from "../../../../SideBar.svelte";
+  import _ from "lodash"
 
   import { page } from "$app/stores";
   import Editor from "../../../../Editor.svelte";
@@ -9,6 +10,9 @@
   let entities;
   let schema;
   let query;
+  let editMode;
+  let viewCount;
+  let runQuery;
 
   import { loadEntities, saveEntities } from "$lib/utils";
 
@@ -16,6 +20,8 @@
     entities = await loadEntities();
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     query = entities.queries.find((query) => query.id == queryId);
+
+
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -31,17 +37,23 @@
   });
 
   function closeQuery() {
-    let queryIdx = entities.queries.findIndex((query) => query.id == queryId);
+    //let queryIdx = entities.queries.findIndex((query) => query.id == queryId);
 
-    entities.queries = entities.queries.splice(0, queryIdx);
+
+
+    //entities.queries = entities.queries.splice(0,queryIdx, entities.queries[queryIdx]);
+
+
 
     entities = entities;
 
     saveEntities(entities);
 
+    console.log(entities)
+
     setTimeout(() => {
       window.location = `/schema/${schemaId}/tables/${tableId}/records/${recordId}`;
-    }, 300);
+    }, 400);
   }
 </script>
 
@@ -66,7 +78,7 @@
         </div>
       </div>
 
-      <Editor {schema} {query} />
+      <Editor {schema} bind:query={query} />
     </div>
   </div>
 {:catch error}

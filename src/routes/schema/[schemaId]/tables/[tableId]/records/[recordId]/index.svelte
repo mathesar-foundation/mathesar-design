@@ -105,6 +105,8 @@
 
     entities = entities;
 
+    console.log(entities,"test")
+
     saveEntities(entities);
 
     setTimeout(() => {

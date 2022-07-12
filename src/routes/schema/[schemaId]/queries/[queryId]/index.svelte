@@ -147,6 +147,7 @@
   }
 
   function saveQuery() {
+    console.log("SAVE QUERY");
     resetPreview();
     selectedView.records = applySteps(selectedView);
 
