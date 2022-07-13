@@ -79,9 +79,10 @@
 
       <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
+        on:click={newSchema}
           class="border-2 bg-zinc-100 rounded p-4 space-y-2 flex items-center cursor-pointer border-2 hover:border-indigo-400"
         >
-          <div class="mx-auto text-xl text-zinc-600" on:click={newSchema}>
+          <div class="mx-auto text-xl text-zinc-600">
             <i class="ri-add-line align-middle" /> New Schema
           </div>
         </div>

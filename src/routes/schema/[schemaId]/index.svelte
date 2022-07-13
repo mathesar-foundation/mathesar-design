@@ -27,24 +27,77 @@
   beforeUpdate(() => {
     saveEntities(entities);
   });
+
+  function uploadFile(){
+    console.log("uploadFile");
+  }
 </script>
 
 {#await loadData()}
   <div>Loading (can be removed)</div>
 {:then entities}
-
   <div class="flex flex-grow bg-zinc-100 bg-opacity-10">
     <SideBar
-      expanded={false}
+      expanded={schema.tables}
       on:openObject={(e) =>
         (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
       {schema}
     />
 
+    
+      <div class="w-full flex flex-col">
+        <div class="border-b-2 border-zinc-300 p-4 flex items-center space-x-2">
+          <div
+            class="bg-indigo-500 text-white text-2xl py-2 w-12 text-center rounded"
+          >
+            {_.startCase(schema.name.slice(0, 2))}
+          </div>
+          <div>
+            <h2 class="text-zinc-800 text-xl leading-8">
+              {schema.name}
+            </h2>
+            <p class="text-zinc-600 text-base">{schema.description}</p>
+          </div>
+        </div>
+        {#if !schema.tables}
+        <div class="space-y-2 p-8">
+          <h2 class="text-zinc-800 text-3xl font-light">Let's add some data</h2>
+          <p class="text-lg text-zinc-600">How would you like to begin?</p>
+        </div>
+
+        <div class="bg-zinc-50 p-8 flex-grow space-y-2">
+          <div class="p-4 space-y-2 bg-zinc-100 rounded">
+            <h4 class="font-semibold">Upload</h4>
+            <input
+              type="text"
+              class="border border-zinc-300 rounded p-2 bg-white w-96"
+              placeholder="Select a file"
+            />
+            <button on:click={uploadFile} class="p-2 border rounded">Upload</button>
+          </div>
+          <div class="p-4 space-y-2 bg-zinc-100 rounded">
+            <h4 class="font-semibold">Copy and Paste</h4>
+            <textarea placeholder="Paste CSV here" class="border border-zinc-300 rounded p-2 w-96 h-20" />
+          </div>
+          <div class="p-4 space-y-2 bg-zinc-100 rounded">
+            <h4 class="font-semibold">Start from Scratch</h4>
+
+            <button class="border-2 border-zinc-300 p-2 rounded"><i class="ri-add-line align-bottom"></i> New Table</button>
+          </div>
+        </div>
+        {/if}
+        {#if schema.tables && !schema.queries}
+        <div class="space-y-2 p-8">
+          <h2 class="text-zinc-800 text-3xl font-light">Create a Query</h2>
+          <p class="text-lg text-zinc-600">Now that we have data, it's time to dig into it</p>
+        </div>
+        {/if}
+      </div>
+   
+
+    <!--
     <div class="space-y-4 w-full text-zinc-800">
-      <div
-        class="flex items-center space-x-2 bg-opacity-10 p-8 bg-indigo-500"
-      >
+      <div class="flex items-center space-x-2 bg-opacity-10 p-8 bg-indigo-500">
         <div
           class="bg-indigo-500 text-white text-2xl py-2 w-12 text-center rounded"
         >
@@ -54,8 +107,8 @@
           <h2 class="text-xl font-semibold">{schema.name}</h2>
           <p class="text-sm text-zinc-500">
             {#if schema.tables}
-              {schema.tables?.filter((t) => t.type == "table").length||0} Tables
-              {schema.views?.filter((t) => t.type == "view").length||0} Views
+              {schema.tables?.filter((t) => t.type == "table").length || 0} Tables
+              {schema.views?.filter((t) => t.type == "view").length || 0} Views
             {/if}
           </p>
         </div>
@@ -63,38 +116,39 @@
 
       <div class="px-8 space-y-4">
         <div class="border-b py-2">
-        <h3 class="text-lg">Recent</h3>
+          <h3 class="text-lg">Recent</h3>
         </div>
 
         <div class="flex space-x-4">
           {#if schema.tables}
-          {#each schema.tables.slice(3) as table}
-            <a class="block border-2 space-x-1 p-4 rounded w-64" href="./{schema.id}/tables/{table.id}"
-              ><i
-                class="ri-table-fill align-bottom"
-      
-              /> <span>{table.name}</span></a
-            >
-          {/each}
+            {#each schema.tables.slice(3) as table}
+              <a
+                class="block border-2 space-x-1 p-4 rounded w-64"
+                href="./{schema.id}/tables/{table.id}"
+                ><i class="ri-table-fill align-bottom" />
+                <span>{table.name}</span></a
+              >
+            {/each}
           {:else}
-          <p class=text-zinc-500>No Recent</p>
+            <p class="text-zinc-500">No Recent</p>
           {/if}
         </div>
 
         <div class="border-b py-2">
-            <h3 class="text-lg">Activity</h3>
-            </div>
-        <p class=text-zinc-500>No Activity</p>
+          <h3 class="text-lg">Activity</h3>
+        </div>
+        <p class="text-zinc-500">No Activity</p>
 
         <div class="border-b py-2">
-            <h3 class="text-lg">Get Started</h3>
-            </div>
+          <h3 class="text-lg">Get Started</h3>
+        </div>
         <div>
           <button>Create a Table</button>
           <button>Create a View</button>
         </div>
       </div>
     </div>
+    -->
   </div>
 {:catch error}
   <p style="color: red">{error.message}</p>

@@ -69,7 +69,7 @@
         {baseTable.name}
       </div>
 
-      <div class="bg-zinc-200 p-1 rounded-b rounded-r space-y-1">
+      <div class="bg-zinc-200 p-1 rounded-b rounded-r">
         {#each baseTable.columns as column}
           {#if !isForeignKey(baseTable, column)}
             <Column

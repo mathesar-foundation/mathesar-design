@@ -26,7 +26,7 @@
 {:then entities}
 {#if schemaId}
   <div
-    class="border-b px-2 py-1 flex items-center text-sm space-x-2"
+    class="border-b border-zinc-300 px-2 py-1 flex items-center text-sm space-x-2"
   > 
  
     <div>
