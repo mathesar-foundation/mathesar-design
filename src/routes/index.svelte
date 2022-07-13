@@ -44,10 +44,12 @@
         queries, and transform your data in any way you need.
       </p>
       <div class="space-y-2 bg-indigo-800 p-6">
-        <h3 class="text-lg font-semibold">Using Schemas</h3>
+        <h3 class="text-lg font-semibold">Create your first schema <i class="ri-arrow-right-line align-bottom"></i></h3>
         <p class="text-zinc-100">
           You can think of schemas as the containers in which your data is
-          stored. They make it easy to organize tables and queries and to keep
+          stored.</p>
+        <p>
+          They make it easy to organize tables and queries and to keep
           track of table relationships.
         </p>
       </div>
@@ -105,7 +107,9 @@
                 </div>
                 <div class="text-zinc-600 text-sm">{schema.description}</div>
               </div>
+              {#if !schema.isLocked}
               <div><i class="ri-delete-bin-line text-zinc-800" /></div>
+              {/if}
             </div>
             <div class="border-t" />
             <div class="text-sm flex items-center space-x-2">
