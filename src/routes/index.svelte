@@ -34,7 +34,7 @@
   <div>Loading (can be removed)</div>
 {:then entities}
   <div class="flex h-screen">
-    <div class="bg-indigo-700 w-96 p-6 space-y-4 text-white">
+    <div class="bg-indigo-700 w-96 p-8 space-y-6 text-white flex flex-col">
       <h2 class="text-3xl font-light">Welcome</h2>
       <!--
       <p>Mathesar makes it possible for anyone to manage a PostgreSQL database without writing a single line of SQL code. </p>
@@ -73,7 +73,7 @@
         <input
           type="text"
           placeholder="Search Schemas"
-          class="border p-2 rounded w-full"
+          class="border p-2 bg-zinc-50 rounded w-full"
         />
       </div>
 

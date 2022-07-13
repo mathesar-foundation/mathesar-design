@@ -5,8 +5,8 @@
 
   let newSchema = {
     id: uuidv4(),
-    name: "New Schema",
-    description: "",
+    name: "New Project",
+    description: "Project Description",
     tables: [],
   };
 
@@ -20,8 +20,13 @@
   }
 </script>
 
-<div class="p-6 space-y-4 w-96">
-  <h2 class="text-2xl">New Schema</h2>
+<div class="flex h-screen">
+<div class="bg-indigo-700 w-96 p-8 space-y-4 text-white">
+  
+</div>
+
+<div class="p-8 space-y-4 w-96">
+  <h2 class="text-zinc-800 text-3xl font-light">New Schema</h2>
 
   <div class="space-y-1">
     <label class="block" for="">Name</label>
@@ -35,7 +40,9 @@
       bind:value={newSchema.description}
     />
   </div>
-  <div class="flex justify-end">
-  <button class="border border-zinc-300 p-2 rounded" on:click={openSchema}>Create Schema</button>
+  <div class="flex justify-end space-x-2">
+    <button class="border bg-zinc-200 p-2 rounded" on:click={openSchema}>Cancel</button>
+  <button class="border-2 border-zinc-300 p-2 rounded" on:click={openSchema}>Create Schema</button>
+</div>
 </div>
 </div>
