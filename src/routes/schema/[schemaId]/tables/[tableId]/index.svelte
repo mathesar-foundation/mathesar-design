@@ -27,7 +27,7 @@
   let activeMode = "table";
   let inspector = {};
   let newTable;
-  let showInspector = true;
+  let showInspector;
 
   let openLinkOptions = false;
   let importDataModal;
@@ -255,11 +255,7 @@
   <div>Loading (can be removed)</div>
 {:then entities}
   <div class="w-screen flex bg-zinc-100 bg-opacity-10">
-    <SideBar
-      {schema}
-      on:openObject={(e) =>
-        (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
-    />
+
 
     <div
       class="flex overflow-hidden flex-col h-full flex-grow"

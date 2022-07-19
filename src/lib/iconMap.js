@@ -23,7 +23,8 @@ var icon = {
     'range':'ri-space',
     'array':'ri-brackets-line',
     'time' : 'ri-timer-2-line',
-    'email' : 'ri-mail-line'
+    'email' : 'ri-mail-line',
+    'record':'ri-article-line'
 }
 
 export { icon }

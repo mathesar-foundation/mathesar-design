@@ -65,7 +65,7 @@ function getColumnIndexByName(table, name) {
     return table.columns.findIndex(c => c.name == name)
 }
 
-function getSummary(table, record, idx) {
+export function getSummary(table, record, idx) {
     if (table.summary) {
         return table.summary.map(item => {
             if (item.text) {
@@ -121,7 +121,7 @@ export async function loadEntities() {
     function addExtraReferences(entities) {
 
         entities.tables.forEach(table => {
-            table.color = randomColor({ luminosity: 'light', hue: 'blue', format: 'rgba', alpha: 0.8 });
+            table.color = randomColor({ luminosity: 'light', hue: 'blue', format: 'rgba', alpha: 0.7 });
             table.columns.forEach(col => {
                 col.id = uuidv4();
             });
@@ -335,8 +335,12 @@ export function getReferenceTable(table, column) {
 
 
 export function applySteps(table) {
-    //COPY RECORDS
+
+
+
     let newRecords = Flatted.parse(Flatted.stringify(table.records));
+
+
     newRecords = flattenRecords(newRecords);
 
     resetColumnTypes(table);
@@ -356,7 +360,7 @@ export function applySteps(table) {
                 table.steps[step].type == "summarize" &&
                 !table.steps[step].hidden
             ) {
-                newRecords = setSummarization(table,column, step, newRecords);
+                newRecords = setSummarization(table, column, step, newRecords);
             }
         });
     }
@@ -406,8 +410,18 @@ export function getColumnNameIndex(table, column) {
 }
 
 export function getColumnRecords(table) {
+
+    if(table.link){
+    let foreignKeyColumnIdx = getColumnIndexByName(table.baseTable, table.link.column)
+
+    if (foreignKeyColumnIdx !== -1) {
+        table.baseTable.records = table.baseTable.records.filter(r => r[foreignKeyColumnIdx] == 41)
+    }
+    }
+    
+
     let records = table.columns.map((c) => {
-        let columnIdx = getColumnNameIndex(c.source.table, c);
+    let columnIdx = getColumnNameIndex(c.source.table, c);
 
         if (c.source.link.column.name == c.name) {
             if (!!getMapTable(c.source.link.table, table.baseTable)) {
@@ -511,7 +525,7 @@ function setFilter(table, column, step, records) {
 }
 
 
-function setSummarization(table,column, step, records) {
+function setSummarization(table, column, step, records) {
     //console.log(column, selectedView.steps[step], records,"SUMMARIZE")
 
     let columnIdx = table.columns.indexOf(column);
@@ -548,56 +562,67 @@ function changeColumnType(view, idx, step) {
     let columns = view.columns;
 
     columns.forEach((col, i) => {
-      if (i !== idx && !col.source.table.id == view.baseTable.id) {
-      } //
+        if (i !== idx && !col.source.table.id == view.baseTable.id) {
+        } //
 
-      if (i !== idx) {
-        col.aggregation = view.steps[step].aggregations.map((a) => a[i]);
-      }
-
-      if (i == idx) {
-        col.aggregation = null;
-
-        if (view.steps[step].summaryCondition == "range") {
-          col.aggregation = "range";
+        if (i !== idx) {
+            col.aggregation = view.steps[step].aggregations.map((a) => a[i]);
         }
-      }
+
+        if (i == idx) {
+            col.aggregation = null;
+
+            if (view.steps[step].summaryCondition == "range") {
+                col.aggregation = "range";
+            }
+        }
     });
-  }
+}
 
-  function aggregate(items, idx) {
+function aggregate(items, idx) {
     let result = items.reduce(function (a, b) {
-      return a.map(function (v, i) {
-        if (v == b[i]) {
-          return v;
-        } else {
-          return [v, b[i]];
-        }
-      });
+        return a.map(function (v, i) {
+            if (v == b[i]) {
+                return v;
+            } else {
+                return [v, b[i]];
+            }
+        });
     });
 
     return result;
-  }
+}
 
-  function setRange(records, size) {
+function setRange(records, size) {
     let range = _.chunk(Object.keys(records), size);
 
     let groupedRange = range.reduce((acc, curr) => {
-      let rangeDescription = `${curr[0]}-${curr[curr.length - 1]}`;
+        let rangeDescription = `${curr[0]}-${curr[curr.length - 1]}`;
 
-      acc[rangeDescription] = _.flatten(curr.map((c) => records[c]));
+        acc[rangeDescription] = _.flatten(curr.map((c) => records[c]));
 
-      return acc;
+        return acc;
     }, {});
 
     return groupedRange;
-  }
+}
 
-  export async function saveSchema(schema) {
+export async function saveSchema(schema) {
     let entities = await loadEntities();
     entities.schemas.push(schema);
 
     saveEntities(entities);
     console.log(entities)
-  }
+}
 
+
+export function newEmptyRecord(table) {
+    return table.columns.map((c, i) => {
+        if (i == 0) {
+            return uuidv4();
+        } else {
+            return "NULL";
+        }
+
+    });
+}

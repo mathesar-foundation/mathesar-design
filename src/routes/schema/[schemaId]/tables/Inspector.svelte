@@ -247,7 +247,7 @@
         <i class="ri-arrow-right-s-line align-bottom"></i>
         <h4 class="font-semibold text-sm">Queries ({getTableQueries(table)?.length||0})</h4>
       </div>
-      <div class="border-t p-2">
+      <div class="border-t p-2 space-y-2">
         {#if getTableQueries(table)}
         {#each getTableQueries(table) as query}
           <div class="bg-white border p-1 text-sm">
@@ -256,6 +256,7 @@
         {/each}
         {:else}
         <span class="text-sm text-zinc-600">No Queries</span> 
+        <button class="border p-1 border-zinc-300 rounded text-sm w-full"><i class="ri-add-line align-bottom"></i> New Query</button>
         {/if}
       </div>
     </div>

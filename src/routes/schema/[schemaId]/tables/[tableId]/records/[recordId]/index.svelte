@@ -2,7 +2,7 @@
   import { afterUpdate, beforeUpdate } from "svelte";
   import TopNav from "$lib/TopNav.svelte";
   import Breadcrumb from "$lib/Breadcrumb.svelte";
-  import RecordNavigation from "./RecordNavigation.svelte";
+  import RecordNavigation from "../RecordNavigation.svelte";
   import { page } from "$app/stores";
   import { icon } from "$lib/iconMap";
 
@@ -11,9 +11,7 @@
   import EmbeddedQueries from "./EmbeddedQueries.svelte";
 
   import _ from "lodash";
-  let { schemaId } = $page.params;
-  let { tableId } = $page.params;
-  let { recordId } = $page.params;
+  let { schemaId, tableId, recordId } = $page.params;
 
   import {
     loadEntities,
@@ -28,6 +26,7 @@
   let linkedTables;
   let cells;
   let schema;
+  let activeView = "links";
 
   async function loadData() {
     entities = await loadEntities();
@@ -37,6 +36,8 @@
     cells = table.rows.cells[recordId];
 
     linkedTables = getLinkedTables(entities.tables);
+
+    console.log(table, record, cells);
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -105,8 +106,6 @@
 
     entities = entities;
 
-    console.log(entities,"test")
-
     saveEntities(entities);
 
     setTimeout(() => {
@@ -135,58 +134,31 @@
   {#await loadData()}
     <div>Loading (can be removed)</div>
   {:then entities}
-
     <div class="w-screen flex bg-zinc-100 bg-opacity-10">
-      <SideBar
-        {schema}
-        on:openObject={(e) =>
-          (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
-      />
-
       <div
         class="flex overflow-hidden flex-col h-full flex-grow"
-        style="height: calc(100vh - 78px);"
+        style="height: calc(100vh - 130px);"
       >
-
-        <RecordNavigation {cells} {table}/>
-        <!--
-        <div class="py-1 px-3  space-x-2 border-b">
-          <span class="text-indigo-800"><i class="ri-table-line align-bottom"></i> <span>{table.name}</span></span>
-          <span><i class="ri-arrow-right-s-line align-bottom"></i></span>
-          <span class="text-indigo-800">{getRecordSummary(cells[0])}</span>
-        </div>
--->
-        <div class="p-8 bg-white h-full space-y-4 overflow-y-scroll">
-          <div class="space-y-1">
-            <h3 class="text-2xl font-semibold">
-              {getRecordSummary(cells[0])}
-            </h3>
-            <div class="">
-              Record in <a
-                href="/schema/{table.schema.id}/tables/{table.id}"
-                class="text-indigo-700"
-                ><i class="ri-table-line align-bottom" /> {table.name}</a
-              >
-            </div>
-          </div>
-
-          <div class="space-y-4">
+        <div class="h-full bg-white overflow-y-scroll">
+          <div class="grid grid-cols-3 gap-4 p-4 bg-zinc-50 border-b">
             {#each cells as cell}
-              <div class="space-y-1">
-                {#if !cell.primary && !cell.link}
+              {#if !cell.link}
+                <div class="space-y-1">
                   <div class="flex items-center space-x-1">
                     <i
-                      class="{icon[cell.column.type]} align-bottom px-1 rounded"
-                      style="background-color: {cell.table.color}"
+                      class="{icon[
+                        cell.column.type
+                      ]} align-bottom px-1 rounded bg-zinc-100 text-sm"
                     />
-                    <h4 class="font-semibold">
+                    <div class="font-semibold">
                       {_.startCase(cell.column.name)}
-                    </h4>
+                    </div>
                   </div>
 
                   {#if !_.isArray(cell.content)}
                     <div class="flex-grow">
                       <input
+                        readonly={cell.primary}
                         type="text"
                         class="border border-zinc-300 w-full rounded p-2 focus:border-indigo-500"
                         bind:value={cell.content}
@@ -201,27 +173,29 @@
                       {/each}
                     </div>
                   {/if}
-                {/if}
+                </div>
+              {/if}
 
-                {#if cell.link}
+              {#if cell.link}
+                <div class="space-y-1">
                   <div class="flex items-center space-x-1">
                     <i
-                      class="{icon[cell.column.type]} align-bottom px-1 rounded"
-                      style="background-color: {cell.table.color}"
+                      class="{icon[
+                        cell.column.type
+                      ]} align-bottom px-1 rounded bg-zinc-100 text-sm"
                     />
-                    <h4 class="font-semibold">
+                    <div class="font-semibold">
                       {_.startCase(cell.link.column)}
-                    </h4>
-                  </div>
-                  <div class="">
-                    Record Linked from <a href="/" class="text-indigo-700"
+                    </div>
+                    <span>linked from</span>
+                    <a href="/" target="_self" class="text-indigo-700"
                       ><i class="ri-table-line align-bottom" />
                       {cell.link.referenceTable.name}</a
                     >
                   </div>
 
                   <div
-                    class="border border-zinc-300 rounded p-2 cursor-pointer hover:border-indigo-500 space-y-2"
+                    class="border border-zinc-300 bg-white rounded p-2 cursor-pointer hover:border-indigo-500 space-y-2"
                   >
                     <a
                       href="/schema/{schemaId}/tables/{cell.link.referenceTable
@@ -255,59 +229,80 @@
                   {/each}
                   -->
                   </div>
-                {/if}
-              </div>
+                </div>
+              {/if}
             {/each}
           </div>
-
-          <hr />
-
-          {#each linkedTables as linkedTable}
-            <div class="space-y-1">
-              <div class="flex items-center space-x-4">
-                <div>
-                  <h3 class="text-lg font-semibold leading-6">
-                    {linkedTable.name}
-                  </h3>
-                  <p>
-                    Linked via <span class="font-semibold"
-                      >{getLinkColumn(table, linkedTable).column}</span
-                    >
-                    in
-                    <a href="/" class="text-indigo-700"
-                      ><i class="ri-table-line align-bottom" />
-                      {linkedTable.name}</a
-                    >
-                  </p>
-                </div>
+          <div class="space-y-4 p-4">
+            <div class="flex items-center space-x-4">
+              <div
+                class="cursor-pointer"
+                class:font-semibold={activeView == "links"}
+                on:click={() => (activeView = "links")}
+              >
+                Links to Record ({linkedTables.length})
               </div>
-
-              <div class="border rounded p-2 border-zinc-300 space-x-2">
-                {#each getLinkedRecords(table, linkedTable, cells) as cell}
-                  <a
-                    href="/schema/{schemaId}/tables/{linkedTable.id}/records/{cell.record}"
-                    target="_self"
-                    class="py-1 rounded-full px-2 cursor-pointer"
-                    style="background-color: {cell.table.color}"
-                    >{getRecordSummary(cell)}</a
-                  >
-                  <button
-                    class="border px-1 rounded border-zinc-300 bg-zinc-100"
-                  >
-                    <i class="ri-add-line align-bottom" /></button
-                  >
-                {/each}
+              <div
+                class="cursor-pointer"
+                class:font-semibold={activeView == "queries"}
+                on:click={() => (activeView = "queries")}
+              >
+                Embedded Queries ({linkedTables.map((l) => getTableQueries(l).length).reduce((a, b) => a + b, 0)})
               </div>
             </div>
 
-            <EmbeddedQueries
-              {recordId}
-              queries={getTableQueries(linkedTable)}
-              on:save={(e) => saveQuery(e.detail)}
-              link={getLinkColumn(table, linkedTable)}
-              bind:table={linkedTable}
-            />
-          {/each}
+            {#if activeView == "links"}
+              {#each linkedTables as linkedTable}
+                <div class="">
+                  <div
+                    class="flex items-center space-x-4 bg-zinc-200 rounded-t w-max"
+                  >
+                    <div class="font-semibold leading-6 py-1 px-2">
+                      <i class="ri-table-line align-bottom" />
+                      {linkedTable.name}
+                    </div>
+                  </div>
+                  <div
+                    class="border-2 rounded-b rounded-r bg-white border-zinc-200 space-x-2 flex items-center"
+                  >
+                    <div class="border-r p-2">
+                      <i
+                        class="ri-key-line bg-zinc-100 p-1 rounded align-bottom"
+                      />
+                      <span>{getLinkColumn(table, linkedTable).column}</span>
+                    </div>
+                    {#each getLinkedRecords(table, linkedTable, cells) as cell}
+                      <a
+                        href="/schema/{schemaId}/tables/{linkedTable.id}/records/{cell.record}"
+                        target="_self"
+                        class="rounded-full px-2 cursor-pointer"
+                        style="background-color: {cell.table.color}"
+                        >{getRecordSummary(cell)}</a
+                      >
+                    {/each}
+                    <button
+                      class="border text-sm px-1 rounded border-zinc-300 bg-zinc-100"
+                    >
+                      <i class="ri-add-line align-bottom" /></button
+                    >
+                  </div>
+                </div>
+              {/each}
+            {/if}
+
+            {#if activeView == "queries"}
+              {#each linkedTables as linkedTable}
+                <EmbeddedQueries
+                  {cells}
+                  {recordId}
+                  queries={getTableQueries(linkedTable)}
+                  on:save={(e) => saveQuery(e.detail)}
+                  link={getLinkColumn(table, linkedTable)}
+                  bind:table={linkedTable}
+                />
+              {/each}
+            {/if}
+          </div>
         </div>
       </div>
     </div>

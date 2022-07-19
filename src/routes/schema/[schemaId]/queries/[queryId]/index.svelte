@@ -97,7 +97,7 @@
         });
     }
 
-    getColumnRecords(selectedView);
+    //getColumnRecords(selectedView);
 
     if (!entities || !entities.schemas || !entities.tables) {
       return;
@@ -110,18 +110,7 @@
     saveEntities(entities);
   });
 
-  function updateFormula(e) {
-    let newFormula = e.detail;
-    let activeFormulaIdx = newView.columns.indexOf(activeFormula);
-
-    if (activeFormulaIdx >= 0) {
-      newView.columns.splice(activeFormulaIdx, 1, newFormula);
-    } else {
-      newView.columns.push(newFormula);
-    }
-
-    newView = newView;
-  }
+ 
 
   function getReferenceTable(table, column) {
     return table.constraints.find(
@@ -233,11 +222,11 @@
     return table;
   }
 
-  function toggleEditMode(){
+  function toggleEditMode() {
     editMode = true;
   }
 
-  function leaveEditMode(){
+  function leaveEditMode() {
     editMode = false;
   }
 </script>
@@ -245,21 +234,14 @@
 {#await loadData()}
   <div>Loading (can be removed)</div>
 {:then entities}
-  
-  <div class="w-screen flex bg-zinc-100 bg-opacity-10">
-    <SideBar
-    expanded={false}
-      {schema}
-      on:openObject={(e) =>
-        (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
-    />
 
+
+
+  <div class="w-screen flex bg-zinc-100 bg-opacity-10">
     <div
       class="flex overflow-hidden flex-col h-full flex-grow"
       style="height: calc(100vh - 76px);"
     >
-    
-
       <div class="border-b-2 border-zinc-300 flex items-center space-x-4 pr-2">
         <div
           class="text-lg px-2 py-3 space-x-1 border-r bg-opacity-10 hover:bg-opacity-80 flex items-center"
@@ -290,56 +272,51 @@
           </Dropdown>
         </div>
 
-
         <div class="flex flex-grow justify-end items-center space-x-2">
           {#if !editMode}
-          <button class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded" on:click={toggleEditMode}>Edit</button>
-          {:else}
-
-
-          {#if entities.queries.find((v) => v.id == selectedView.id)}
             <button
-              on:click={saveQuery}
-              disabled={!selectedView.baseTable}
-              class:opacity-60={!selectedView.baseTable}
               class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded"
-              >Save</button
+              on:click={toggleEditMode}>Edit</button
             >
           {:else}
+            {#if entities.queries.find((v) => v.id == selectedView.id)}
+              <button
+                on:click={saveQuery}
+                disabled={!selectedView.baseTable}
+                class:opacity-60={!selectedView.baseTable}
+                class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded"
+                >Save</button
+              >
+            {:else}
+              <button
+                on:click={saveQuery}
+                disabled={!selectedView.baseTable}
+                class:opacity-60={!selectedView.baseTable}
+                class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded"
+                >Save</button
+              >
+            {/if}
             <button
-              on:click={saveQuery}
-              disabled={!selectedView.baseTable}
-              class:opacity-60={!selectedView.baseTable}
-              class="border border-zinc-300 text-zinc-800 p-2 text-sm rounded"
-              >Save</button
+              on:click={leaveEditMode}
+              class="block text-center border border-zinc-300 bg-zinc-50 text-zinc-800 p-2 text-sm rounded"
+              >Close without Saving</button
             >
           {/if}
-          <button
-            on:click={leaveEditMode}
-            class="block text-center border border-zinc-300 bg-zinc-50 text-zinc-800 p-2 text-sm rounded"
-            >Close without Saving</button
-          >
-
-          {/if}
-          
-          
         </div>
       </div>
 
       <div class="flex-grow">
         {#if !editMode}
-        <Table table={generateTable(selectedView)} />
+          <Table table={generateTable(selectedView)} />
         {:else}
-        <Editor schema={schema} bind:query={selectedView} />
+          <Editor {schema} bind:query={selectedView} />
         {/if}
-        
       </div>
-
-     
 
       <Toast />
     </div>
   </div>
+
 {:catch error}
   <p style="color: red">{error.message}</p>
 {/await}

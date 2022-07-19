@@ -44,13 +44,18 @@
         queries, and transform your data in any way you need.
       </p>
       <div class="space-y-2 bg-indigo-800 p-6">
-        <h3 class="text-lg font-semibold">Create your first schema <i class="ri-arrow-right-line align-bottom"></i></h3>
+        <h3 class="text-lg font-semibold">
+          Create your first schema <i
+            class="ri-arrow-right-line align-bottom"
+          />
+        </h3>
         <p class="text-zinc-100">
           You can think of schemas as the containers in which your data is
-          stored.</p>
+          stored.
+        </p>
         <p>
-          They make it easy to organize tables and queries and to keep
-          track of table relationships.
+          They make it easy to organize tables and queries and to keep track of
+          table relationships.
         </p>
       </div>
       <p class="text-sm border-l-2 text-zinc-200 pl-4 border-zinc-100">
@@ -79,7 +84,7 @@
 
       <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
-        on:click={newSchema}
+          on:click={newSchema}
           class="border-2 bg-zinc-100 rounded p-4 space-y-2 flex items-center cursor-pointer border-2 hover:border-indigo-400"
         >
           <div class="mx-auto text-xl text-zinc-600">
@@ -109,13 +114,13 @@
                 <div class="text-zinc-600 text-sm">{schema.description}</div>
               </div>
               {#if !schema.isLocked}
-              <div><i class="ri-delete-bin-line text-zinc-800" /></div>
+                <div><i class="ri-delete-bin-line text-zinc-800" /></div>
               {/if}
             </div>
             <div class="border-t" />
-            <div class="text-sm flex items-center space-x-2">
+            <div class="text-sm flex items-center space-x-2 text-zinc-600">
               <div>
-                <span>{schema.tables?.length || 0}</span> <span>Tables</span>
+                {schema.tables?.length || 0} Tables
               </div>
               <div>{schema.queries?.length || 0} Queries</div>
             </div>

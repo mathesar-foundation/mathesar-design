@@ -6,8 +6,8 @@
         "isLocked":true
     },{
         "id":0,
-        "name":"Music Collection",
-        "description":"Audio album management"
+        "name":"Movie Collection",
+        "description":"Movie Catalog management"
     },{
         "id":1,
         "name":"Library",

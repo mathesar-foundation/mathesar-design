@@ -312,6 +312,7 @@
         "id":3,
         "schemaId":1,
         "name":"Checkouts",
+        "description":"Checkouts",
         "summary":[
             {
                 "columnName": "Item Id"

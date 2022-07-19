@@ -1,34 +1,39 @@
 <script>
-    import * as Flatted from "flatted";
-    import BaseTableSelector from "./queries/[queryId]/BaseTableSelector.svelte";
-    import ColumnSelector from "./queries/[queryId]/ColumnSelector.svelte";
-    import ColumnEditor from "./queries/[queryId]/ColumnEditor.svelte";
-    import TablePreview from "./queries/[queryId]/TablePreview.svelte";
-    import Transformations from "./queries/[queryId]/Transformations.svelte";
-    import Parameters from "./queries/[queryId]/Parameters.svelte";
-    import pluralize from "pluralize";
-    import _ from "lodash";
-    
-    export let schema;
-    export let query;
+  import * as Flatted from "flatted";
+  import BaseTableSelector from "./queries/[queryId]/BaseTableSelector.svelte";
+  import ColumnSelector from "./queries/[queryId]/ColumnSelector.svelte";
+  import ColumnEditor from "./queries/[queryId]/ColumnEditor.svelte";
+  import TablePreview from "./queries/[queryId]/TablePreview.svelte";
+  import Transformations from "./queries/[queryId]/Transformations.svelte";
+  import Parameters from "./queries/[queryId]/Parameters.svelte";
+  import pluralize from "pluralize";
+  import _ from "lodash";
 
-    import {applySteps, previewSteps, getColumnNameIndex, getColumnRecords} from "$lib/utils";
-
-    let runQuery;
-    let missingTables = {};
-    let missingColumns = {};
-    let inspector = { action: "Query Output" };
+  export let schema;
+  export let query;
 
 
-    function addColumn(table, column, _column) {
-        let newColumn = createNewColumn(table, column, _column);
-        query.columns.push(newColumn);
-        query.records = getColumnRecords(query);
-        query = query;
-        applySteps(query);
-    }
+  import {
+    applySteps,
+    previewSteps,
+    getColumnNameIndex,
+    getColumnRecords,
+  } from "$lib/utils";
 
-    function createNewColumn(table, column, _column) {
+  let runQuery;
+  let missingTables = {};
+  let missingColumns = {};
+  let inspector = { action: "Query Output" };
+
+  function addColumn(table, column, _column) {
+    let newColumn = createNewColumn(table, column, _column);
+    query.columns.push(newColumn);
+    query.records = getColumnRecords(query);
+    query = query;
+    applySteps(query);
+  }
+
+  function createNewColumn(table, column, _column) {
     let source;
 
     if (column !== _column) {
@@ -69,9 +74,6 @@
     query.records = getColumnRecords(query);
     query = query;
   }
-
-
-  
 </script>
 
 <!--
@@ -81,36 +83,39 @@
 -->
 
 <div class="flex-grow h-full flex text-zinc-800 max-w-full overflow-hidden">
-    <div
-      on:click|self={() => (inspector = { action: "Query Output" })}
-      class="h-full flex flex-col bg-zinc-50 w-80 "
-    >
-      <div>
+  <div
+    on:click|self={() => (inspector = { action: "Query Output" })}
+    class="h-full flex flex-col bg-zinc-50 w-80 "
+  >
+    <div>
+      {#if !query.link}
         <BaseTableSelector
-          schema={schema}
+          {schema}
           bind:query
-          on:tableSelected={(e)=> query.baseTable = e.detail}
-          
+          on:tableSelected={(e) => (query.baseTable = e.detail)}
         />
-      </div>
+      {:else}
+        <div class="p-2 text-lg"><i class="ri-table-line align-bottom"></i> {query.baseTable.name}</div>
+      {/if}
+    </div>
 
-      <div class="border h-full overflow-hidden">
-        {#if query.baseTable}
-          <ColumnSelector
-            schema={schema}
-            on:addColumn={(e) =>
-              addColumn(
-                e.detail.sourceTable,
-                e.detail.sourceColumn,
-                e.detail.column
-              )}
-            tables={schema.tables}
-            bind:query
-          />
-        {/if}
-      </div>
+    <div class="border h-full overflow-hidden">
+      {#if query.baseTable}
+        <ColumnSelector
+          {schema}
+          on:addColumn={(e) =>
+            addColumn(
+              e.detail.sourceTable,
+              e.detail.sourceColumn,
+              e.detail.column
+            )}
+          tables={schema.tables}
+          bind:query
+        />
+      {/if}
+    </div>
 
-      <!--
+    <!--
       <div>
         <SelectedColumns
           {missingColumns}
@@ -121,107 +126,105 @@
       </div>
       -->
 
-      <div />
-    </div>
+    <div />
+  </div>
 
-    <div class="w-7/12 p-2 border-r border-l space-y-2">
-      {#if Object.keys(missingTables).length > 0}
-        <div
-          class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left"
-        >
-          <div class="font-semibold">
-            <i class="ri-error-warning-fill align-bottom font-light" /> Warning
-          </div>
-          This query cannot be run because it is missing {Object.keys(
-            missingTables
-          ).length}
-          {pluralize("table", Object.keys(missingTables).length)}.
+  <div class="w-7/12 p-2 border-r border-l space-y-2">
+    {#if Object.keys(missingTables).length > 0}
+      <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left">
+        <div class="font-semibold">
+          <i class="ri-error-warning-fill align-bottom font-light" /> Warning
         </div>
-      {/if}
-
-      {#if Object.keys(missingColumns).length > 0}
-        <div
-          class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left"
-        >
-          <div class="font-semibold">
-            <i class="ri-error-warning-fill align-bottom font-light" /> Warning
-          </div>
-          This query cannot be run because it is missing {Object.keys(
-            missingColumns
-          ).length}
-          {pluralize("column", Object.keys(missingColumns).length)}.
-        </div>
-      {/if}
-
-      <div
-        class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
-        on:click|self={() => (inspector = { action: "Query Output" })}
-      >
-        {#if runQuery && !!schema.queries.find((v) => v.id == query.id)}
-          <div class="h-full w-full p-8 text-center space-y-2">
-            <div class="text-xl text-zinc-500">
-              Run query or preview to list results
-            </div>
-            <button
-              disabled={Object.keys(missingTables).length > 0}
-              class:opacity-50={Object.keys(missingTables).length > 0}
-              class="border p-2 rounded border-zinc-300"
-              on:click={() => (runQuery = !runQuery)}>Run Query</button
-            >
-            <button
-              disabled={Object.keys(missingTables).length > 0}
-              class:opacity-50={Object.keys(missingTables).length > 0}
-              class="border p-2 rounded bg-zinc-50"
-              on:click={() => (runQuery = !runQuery)}>Preview</button
-            >
-          </div>
-        {:else if query.columns.length > 0}
-          <div class="p-2 flex items-center space-x-4">
-            <h3 class="font-semibold">Result</h3>
-            <p class="text-sm text-zinc-500">Query Run Succesfully</p>
-          </div>
-          <TablePreview
-            records={applySteps(query)}
-            tables={schema.tables}
-            bind:inspector
-            bind:query
-          />
-        {:else if !query.baseTable}
-          <div
-            class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
-          >
-            <span class="text-xl">Select a base table to get started</span>
-          </div>
-        {:else}
-          <div
-            class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
-          >
-            <span class="text-xl">Select or drop columns</span>
-          </div>
-        {/if}
+        This query cannot be run because it is missing {Object.keys(
+          missingTables
+        ).length}
+        {pluralize("table", Object.keys(missingTables).length)}.
       </div>
-    </div>
+    {/if}
 
-    <div class="flex flex-col w-80 h-full overflow-y-scroll bg-zinc-50 flex-grow">
-      <div class="text-sm font-semibold border-b border-zinc-200 p-2">
-        <h4 class="leading-6">{inspector.action}</h4>
-      </div>
-
-      {#if inspector.action == "Query Output"}
-        <div class="p-2 space-y-2 border-b">
-          <Parameters bind:query />
+    {#if Object.keys(missingColumns).length > 0}
+      <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded text-left">
+        <div class="font-semibold">
+          <i class="ri-error-warning-fill align-bottom font-light" /> Warning
         </div>
-        <Transformations
-          on:previewStep={(e) => previewSteps(query,e.detail)}
-          on:AddStep={(e) => applySteps(e.detail)}
-          on:deleteStep={(e) => {
-            applySteps(query);
-          }}
+        This query cannot be run because it is missing {Object.keys(
+          missingColumns
+        ).length}
+        {pluralize("column", Object.keys(missingColumns).length)}.
+      </div>
+    {/if}
+
+    <div
+      class="border overflow-hidden rounded border-zinc-200 flex flex-col h-full"
+      on:click|self={() => (inspector = { action: "Query Output" })}
+    >
+      {#if runQuery && !!schema.queries.find((v) => v.id == query.id)}
+        <div class="h-full w-full p-8 text-center space-y-2">
+          <div class="text-xl text-zinc-500">
+            Run query or preview to list results
+          </div>
+          <button
+            disabled={Object.keys(missingTables).length > 0}
+            class:opacity-50={Object.keys(missingTables).length > 0}
+            class="border p-2 rounded border-zinc-300"
+            on:click={() => (runQuery = !runQuery)}>Run Query</button
+          >
+          <button
+            disabled={Object.keys(missingTables).length > 0}
+            class:opacity-50={Object.keys(missingTables).length > 0}
+            class="border p-2 rounded bg-zinc-50"
+            on:click={() => (runQuery = !runQuery)}>Preview</button
+          >
+        </div>
+      {:else if query.columns.length > 0}
+        <div class="p-2 flex items-center space-x-4">
+          <h3 class="font-semibold">Result</h3>
+          <p class="text-sm text-zinc-500">Query Run Succesfully</p>
+        </div>
+        <TablePreview
+          records={applySteps(query)}
+          tables={schema.tables}
+          bind:inspector
           bind:query
         />
+      {:else if !query.baseTable}
+        <div
+          class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
+        >
+          <span class="text-xl">Select a base table to get started</span>
+        </div>
+      {:else}
+        <div
+          class="border-t bg-zinc-50 opacity-40 text-center text-zinc-500 border-zinc-200 p-10 flex-grow"
+        >
+          <span class="text-xl">Select or drop columns</span>
+        </div>
       {/if}
+    </div>
+  </div>
 
-      <!--
+  <div class="flex flex-col w-80 h-full overflow-y-scroll bg-zinc-50 flex-grow">
+    <div class="text-sm font-semibold border-b border-zinc-200 p-2">
+      <h4 class="leading-6">{inspector.action}</h4>
+    </div>
+
+    {#if inspector.action == "Query Output"}
+    <!--
+      <div class="p-2 space-y-2 border-b">
+        <Parameters bind:query />
+      </div>
+      -->
+      <Transformations
+        on:previewStep={(e) => previewSteps(query, e.detail)}
+        on:AddStep={(e) => applySteps(e.detail)}
+        on:deleteStep={(e) => {
+          applySteps(query);
+        }}
+        bind:query
+      />
+    {/if}
+
+    <!--
         <div class="p-2 space-y-4 border-t">
           <h4 class="font-semibold text-sm">Save Options</h4>
           
@@ -297,27 +300,26 @@
         </div>
       -->
 
-      {#if inspector.action == "Add Column"}
-        <div>
-          <ColumnSelector
-            on:addColumn={(e) =>
-              addColumn(
-                e.detail.sourceTable,
-                e.detail.sourceColumn,
-                e.detail.column
-              )}
-            bind:query
-          />
-        </div>
-      {/if}
-
-      {#if inspector.action == "Column"}
-        <ColumnEditor
-          
-          on:deleteColumn={(e) => deleteColumn(e.detail)}
+    {#if inspector.action == "Add Column"}
+      <div>
+        <ColumnSelector
+          on:addColumn={(e) =>
+            addColumn(
+              e.detail.sourceTable,
+              e.detail.sourceColumn,
+              e.detail.column
+            )}
           bind:query
-          bind:column={inspector.column}
         />
-      {/if}
-    </div>
+      </div>
+    {/if}
+
+    {#if inspector.action == "Column"}
+      <ColumnEditor
+        on:deleteColumn={(e) => deleteColumn(e.detail)}
+        bind:query
+        bind:column={inspector.column}
+      />
+    {/if}
   </div>
+</div>

@@ -9,7 +9,7 @@
 
 <div class="{ theme.backgroundColor } flex flex-col h-full">
     <TopNav {page} />
-    <Breadcrumb {page} />
+    
 <slot></slot>
 
 </div>

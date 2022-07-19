@@ -10,6 +10,8 @@
   let entities;
   let schema;
   let query;
+  let table;
+  let record;
   let editMode;
   let viewCount;
   let runQuery;
@@ -20,7 +22,8 @@
     entities = await loadEntities();
     schema = entities.schemas.find((schema) => schema.id == schemaId);
     query = entities.queries.find((query) => query.id == queryId);
-
+    table = entities.tables.find((table) => table.id == tableId);
+    record = table.records.find((record) => record.id == recordId);
 
 
     if (!entities || !entities.schemas || !entities.tables) {
@@ -61,11 +64,7 @@
   <div>Loading (can be removed)</div>
 {:then entities}
   <div class="w-screen flex bg-zinc-100 bg-opacity-10">
-    <SideBar
-      {schema}
-      on:openObject={(e) =>
-        (window.location = `/schema/0/${e.detail.type}/${e.detail.id}`)}
-    />
+
     <div
       class="flex overflow-hidden flex-col h-full flex-grow"
       style="height: calc(100vh - 76px);"
