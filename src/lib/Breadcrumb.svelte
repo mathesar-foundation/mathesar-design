@@ -38,7 +38,12 @@
   <div
     class="border-y border-zinc-300 px-2 py-1 flex items-center text-sm space-x-2 bg-zinc-200"
   >
-    <div>My Database</div>
+    <div>
+      <a href="/" class="text-indigo-600">
+        My Database</a
+      >
+      
+    </div>
     {#if schemaId}
       <i class="ri-arrow-right-s-line" />
       <div>
