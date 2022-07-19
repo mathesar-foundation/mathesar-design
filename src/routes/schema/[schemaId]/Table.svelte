@@ -7,6 +7,7 @@
 	
     //export let fixedHeight;
     let columnSelection = {};
+    let selectedCell = {};
 
     let cellSelection = {};
     
@@ -32,6 +33,10 @@
         activeEdit = {};
         cells = {}
         table = table;
+    }
+
+    function selectCell(cell){
+        selectedCell = cell;
     }
 
 
@@ -60,7 +65,7 @@
                 <div class="p-3 w-10 border-b border-r border-zinc-200 text-xs text-zinc-500 text-center shrink-0">{record}</div>
 
                 {#each table.rows.cells[record] as cell,j}
-                    <Cell bind:columnSelection={columnSelection} on:selectCell bind:cell={ cell } />
+                    <Cell bind:selectedCell={selectedCell} bind:columnSelection={columnSelection} on:selectCell={()=>selectCell(cell)} bind:cell={ cell } />
                 {/each}
         
             </div>
