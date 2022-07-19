@@ -52,98 +52,102 @@
   <div>Loading (can be removed)</div>
 {:then entities}
   <div
-    class="flex items-center border-b px-2 bg-white border-zinc-200 space-x-2 "
+    class="flex items-center px-2 bg-white border-zinc-200 space-x-4 "
   >
     <a
       class:flex-grow={!schemaId}
       href="/"
-      class="block text-sm text-zinc-800 rounded leading-8 text-opacity-40"
-      >Prototype</a
-    >
+      class="flex items-center space-x-2 text-zinc-900 rounded leading-8 font-semibold"
+      ><img src="/logo.svg" alt="" class="h-5" /> <span>Mathesar</span>
+    </a>
 
     {#if schemaId}
-      <Dropdown>
-        <button class="py-1 px-2  rounded border-zinc-300" slot="toggle">
-          New <i class="ri-add-line align-bottom font-semibold" />
-        </button>
+      <div class="flex items-center flex-grow">
+        <Dropdown>
+          <button class="py-1 px-2 border-l border-zinc-300" slot="toggle">
+            <i class="ri-add-line align-bottom font-semibold" />
+            New 
+          </button>
 
-        <input
-          type="text"
-          class="bg-zinc-100 bg-opacity-40 flex-grow p-1"
-          placeholder="Search or Jump To…"
-        />
-        <div slot="menu" class="overflow-hidden">
-          <a
-            href="/schema/{schemaId}/queries/{uuidv4()}"
-            target="_self"
-            class="p-1 cursor-pointer block hover:bg-indigo-100">Query</a
-          >
-          <a
-            href="/schema/{schemaId}/tables/{uuidv4()}"
-            target="_self"
-            class="p-1 hover:bg-indigo-100 cursor-pointer block">Table</a
-          >
-        </div>
-      </Dropdown>
-
-      <Dropdown closeOnClick={true} full={true}>
-        <div
-          slot="toggle"
-          class="flex items-center flex-grow border-zinc-300 bg-zinc-200 overflow-hidden"
-        >
-          <i class="ri-search-line align-bottom p-1 text-zinc-500 " />
           <input
             type="text"
-            bind:value={searchTerm}
-            class="bg-zinc-200 bg-opacity-40 flex-grow p-1"
+            class="bg-zinc-100 bg-opacity-40 flex-grow p-1"
             placeholder="Search or Jump To…"
           />
-        </div>
-        <div slot="menu" class="w-80">
-          <div class="border-b-2 flex items-center p-1 space-x-2 bg-zinc-50">
-            <div class="border text-sm px-1 rounded">
-              All
-              {filterByName(schema, searchTerm).length}
-            </div>
-            <div class="border text-sm px-1 rounded">
-              Tables
-              {filterByName(schema, searchTerm).filter((t) => t.type == "table")
-                .length}
-            </div>
-            <div class="border text-sm px-1 rounded">
-              Queries ({filterByName(schema, searchTerm).filter(
-                (t) => t.type == "query"
-              ).length})
-            </div>
+          <div slot="menu" class="overflow-hidden">
+            <a
+              href="/schema/{schemaId}/queries/{uuidv4()}"
+              target="_self"
+              class="p-1 cursor-pointer block hover:bg-indigo-100">Query</a
+            >
+            <a
+              href="/schema/{schemaId}/tables/{uuidv4()}"
+              target="_self"
+              class="p-1 hover:bg-indigo-100 cursor-pointer block">Table</a
+            >
           </div>
-          {#each filterByName(schema, searchTerm) as table}
-            <div class="hover:bg-indigo-100">
-              <a
-                target="_self"
-                href="/schema/{schemaId}/{table.type == 'table'
-                  ? 'tables'
-                  : 'queries'}/{table.id}"
-                class="p-1 block cursor-pointer"
-              >
-                <i class="{icon[table.type]} align-bottom" />
-                {#if searchTerm}
-                  {#each table.name as chunk}
-                    <span
-                      class:bg-yellow-100={chunk.match}
-                      class:font-semibold={chunk.match}>{chunk.text}</span
-                    >
-                  {/each}
-                {:else}
-                  {table.name}
-                {/if}
-              </a>
-            </div>
-          {/each}
-          <a class="block p-2 text-indigo-800" href="/schema/{schemaId}"
-            >All Tables</a
+        </Dropdown>
+
+        <Dropdown closeOnClick={true} full={true}>
+          <div
+            slot="toggle"
+            class="flex items-center flex-grow border-zinc-300 bg-zinc-100 overflow-hidden"
           >
-        </div>
-      </Dropdown>
+            <i class="ri-search-line align-bottom p-1 text-zinc-500 " />
+            <input
+              type="text"
+              bind:value={searchTerm}
+              class="bg-zinc-200 bg-opacity-40 flex-grow p-1"
+              placeholder="Search or Jump To…"
+            />
+          </div>
+          <div slot="menu" class="w-80">
+            <div class="border-b-2 flex items-center p-1 space-x-2 bg-zinc-50">
+              <div class="border text-sm px-1 rounded">
+                All
+                {filterByName(schema, searchTerm).length}
+              </div>
+              <div class="border text-sm px-1 rounded">
+                Tables
+                {filterByName(schema, searchTerm).filter(
+                  (t) => t.type == "table"
+                ).length}
+              </div>
+              <div class="border text-sm px-1 rounded">
+                Queries ({filterByName(schema, searchTerm).filter(
+                  (t) => t.type == "query"
+                ).length})
+              </div>
+            </div>
+            {#each filterByName(schema, searchTerm) as table}
+              <div class="hover:bg-indigo-100">
+                <a
+                  target="_self"
+                  href="/schema/{schemaId}/{table.type == 'table'
+                    ? 'tables'
+                    : 'queries'}/{table.id}"
+                  class="p-1 block cursor-pointer"
+                >
+                  <i class="{icon[table.type]} align-bottom" />
+                  {#if searchTerm}
+                    {#each table.name as chunk}
+                      <span
+                        class:bg-yellow-100={chunk.match}
+                        class:font-semibold={chunk.match}>{chunk.text}</span
+                      >
+                    {/each}
+                  {:else}
+                    {table.name}
+                  {/if}
+                </a>
+              </div>
+            {/each}
+            <a class="block p-2 text-indigo-800" href="/schema/{schemaId}"
+              >All Tables</a
+            >
+          </div>
+        </Dropdown>
+      </div>
     {/if}
     <div class="justify-end flex items-center ml-auto space-x-2">
       <div class="bg-indigo-500 w-6 h-6 rounded flex items-center">
@@ -153,8 +157,6 @@
         <i class="ri-settings-line align-bottom" />
       </div>
     </div>
-
-    
   </div>
 
   <Breadcrumb {page} />

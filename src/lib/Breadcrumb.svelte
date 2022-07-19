@@ -36,7 +36,7 @@
   <div>Loading (can be removed)</div>
 {:then entities}
   <div
-    class="border-b border-zinc-300 px-2 py-1 flex items-center text-sm space-x-2"
+    class="border-y border-zinc-300 px-2 py-1 flex items-center text-sm space-x-2 bg-zinc-200"
   >
     <div>My Database</div>
     {#if schemaId}
