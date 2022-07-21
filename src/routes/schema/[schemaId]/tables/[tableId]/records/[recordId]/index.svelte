@@ -177,57 +177,54 @@
               {/if}
 
               {#if cell.link}
-                <div class="space-y-1">
-                  <div class="flex items-center space-x-1">
-                    <i
-                      class="{icon[
-                        cell.column.type
-                      ]} align-bottom px-1 rounded bg-zinc-100 text-sm"
-                    />
-                    <div class="font-semibold">
-                      {_.startCase(cell.link.column)}
-                    </div>
-                    <span>linked from</span>
-                    <a href="/" target="_self" class="text-indigo-700"
-                      ><i class="ri-table-line align-bottom" />
+                <div>
+                  
+                  
+                  
+                  <div class="bg-zinc-200 rounded-t w-max py-1 px-2 flex items-center space-x-2">
+
+                    <a href="/" target="_self" class="font-semibold"
+                      ><i class="ri-table-line align-bottom " />
                       {cell.link.referenceTable.name}</a
                     >
+
+                    <div>
+                      via
+                   </div>
+
+                    <div class="flex items-center space-x-1">
+                      <i
+                        class="{icon[
+                          cell.column.type
+                        ]} align-bottom px-1 rounded bg-zinc-100 text-sm"
+                      />
+                      <div class="">
+                        {_.startCase(cell.link.column)}
+                      </div>
+                    </div>
+
+                    
+                   
+                    
                   </div>
 
-                  <div
-                    class="border border-zinc-300 bg-white rounded p-2 cursor-pointer hover:border-indigo-500 space-y-2"
-                  >
-                    <a
-                      href="/schema/{schemaId}/tables/{cell.link.referenceTable
-                        .id}/records/{cell.record}"
-                      target="_self"
-                      class="px-2 inline-block rounded-xl"
-                      style="background-color: {cell.link.referenceTable
-                        ?.color};"
+                  <div class="flex items-center border-2 rounded-b rounded-r">
+                    
+
+                    <div
+                      class="flex-grow  bg-white rounded p-2 cursor-pointer hover:border-indigo-500 space-y-2"
                     >
-                      {cell.link.referenceTable.rows.summaries[cell.record]}
-                    </a>
-                    <!--
-                  <div class="border font-semibold">
-                  {getCellByIdx(cell.link.referenceTable,cell.content)[0].table.summary.join(' ')}
-                  </div>
-                  -->
-                    <!--
-                  {#each getCellByIdx(cell.link.referenceTable,cell.content) as cell,i}
-                     
-                      
-                      
-                      {#if cell.link}
-                          
-                      <div class="bg-indigo-200">
-                          {cell.column.name}: {getCellByIdx(cell.link.referenceTable,cell.content)[4].content}
-                      </div>
-                      {/if}
-                      {#if !cell.primary && !cell.link}
-                          <div>{_.startCase(cell.column.name)}: {cell.content}</div>
-                      {/if}
-                  {/each}
-                  -->
+                      <a
+                        href="/schema/{schemaId}/tables/{cell.link
+                          .referenceTable.id}/records/{cell.record}"
+                        target="_self"
+                        class="px-2 inline-block rounded-xl"
+                        style="background-color: {cell.link.referenceTable
+                          ?.color};"
+                      >
+                        {cell.link.referenceTable.rows.summaries[cell.record]}
+                      </a>
+                    </div>
                   </div>
                 </div>
               {/if}
@@ -247,7 +244,9 @@
                 class:font-semibold={activeView == "queries"}
                 on:click={() => (activeView = "queries")}
               >
-                Embedded Queries ({linkedTables.map((l) => getTableQueries(l).length).reduce((a, b) => a + b, 0)})
+                Embedded Queries ({linkedTables
+                  .map((l) => getTableQueries(l).length)
+                  .reduce((a, b) => a + b, 0)})
               </div>
             </div>
 
@@ -255,22 +254,24 @@
               {#each linkedTables as linkedTable}
                 <div class="">
                   <div
-                    class="flex items-center space-x-4 bg-zinc-200 rounded-t w-max"
+                    class="flex items-center space-x-2 bg-zinc-200 rounded-t w-max py-1 px-2"
                   >
-                    <div class="font-semibold leading-6 py-1 px-2">
+                    <div class="font-semibold leading-6">
                       <i class="ri-table-line align-bottom" />
                       {linkedTable.name}
                     </div>
-                  </div>
-                  <div
-                    class="border-2 rounded-b rounded-r bg-white border-zinc-200 space-x-2 flex items-center"
-                  >
-                    <div class="border-r p-2">
+                    <div>via</div>
+                    <div>
                       <i
                         class="ri-key-line bg-zinc-100 p-1 rounded align-bottom"
                       />
                       <span>{getLinkColumn(table, linkedTable).column}</span>
                     </div>
+                  </div>
+                  <div
+                    class="border-2 p-2 rounded-b rounded-r bg-white border-zinc-200 space-x-2 flex items-center"
+                  >
+                    
                     {#each getLinkedRecords(table, linkedTable, cells) as cell}
                       <a
                         href="/schema/{schemaId}/tables/{linkedTable.id}/records/{cell.record}"

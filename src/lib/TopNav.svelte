@@ -26,6 +26,7 @@
 
     if (schema && schema.tables) {
       tables = _.concat(schema.tables, schema.queries);
+      tables = _.orderBy(tables, ['name'], ['desc']);
     }
 
     if (searchTerm) {
@@ -102,23 +103,30 @@
             />
           </div>
           <div slot="menu" class="w-80">
+            {#if searchTerm}
             <div class="border-b-2 flex items-center p-1 space-x-2 bg-zinc-50">
-              <div class="border text-sm px-1 rounded">
-                All
+              <div class="font-semibold ">
+                All Results
                 {filterByName(schema, searchTerm).length}
               </div>
-              <div class="border text-sm px-1 rounded">
+              <div class=" px-1">
                 Tables
                 {filterByName(schema, searchTerm).filter(
                   (t) => t.type == "table"
                 ).length}
               </div>
-              <div class="border text-sm px-1 rounded">
-                Queries ({filterByName(schema, searchTerm).filter(
+              <div class=" px-1">
+                Queries {filterByName(schema, searchTerm).filter(
                   (t) => t.type == "query"
-                ).length})
+                ).length}
               </div>
             </div>
+            {:else}
+            <div class="p-1 flex items-center">
+            <h4 class="text-zinc-700 flex-grow">Recent</h4>
+            <a class="text-indigo-800" href="/schema/{schemaId}">View All</a>
+            </div>
+            {/if}
             {#each filterByName(schema, searchTerm) as table}
               <div class="hover:bg-indigo-100">
                 <a
@@ -142,9 +150,7 @@
                 </a>
               </div>
             {/each}
-            <a class="block p-2 text-indigo-800" href="/schema/{schemaId}"
-              >All Tables</a
-            >
+            
           </div>
         </Dropdown>
       </div>

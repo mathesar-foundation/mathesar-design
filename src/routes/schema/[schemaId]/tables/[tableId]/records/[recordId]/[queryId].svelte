@@ -70,7 +70,7 @@
       style="height: calc(100vh - 76px);"
     >
       <div class="border-b-2 border-zinc-300 p-2 flex items-center space-x-4">
-        <div class="flex-grow text-xl"><i class="ri-file-search-fill align-bottom"></i> New Embedded Query</div>
+        <div class="flex-grow text-xl"><i class="ri-file-search-fill align-bottom"></i> {query.name}</div>
         <div>
         <button class="border p-2 rounded text-sm" on:click={closeQuery}>Save</button>
         <button class="border p-2 rounded text-sm" on:click={closeQuery}>Go Back to Record</button>
